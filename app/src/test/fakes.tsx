@@ -98,6 +98,7 @@ export function fakeRecipes(overrides: Partial<RecipeRepository> = {}): jest.Moc
     cookNow: jest.fn(async () => ({ plannedMealId: 'pm1', shortfall: [{ ingredientId: 'arroz', name: 'Arroz blanco', missingGrams: 300 }] })),
     cookPlanned: jest.fn(async () => ({ plannedMealId: 'pm1', shortfall: [] })),
     undoCook: jest.fn(async () => {}),
+    rate: jest.fn(async () => {}),
     ...overrides,
   } as jest.Mocked<RecipeRepository>;
 }
@@ -160,6 +161,7 @@ export function fakeServices(overrides: Partial<Services> = {}): Services {
     recipes: fakeRecipes(),
     plans: fakePlans(),
     shopping: fakeShopping(),
+    account: { exportData: jest.fn(async () => '{}'), deleteAccount: jest.fn(async () => {}) },
     loginThrottle: createLoginThrottle(),
     ...overrides,
   };

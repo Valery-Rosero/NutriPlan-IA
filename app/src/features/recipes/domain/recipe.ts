@@ -56,7 +56,13 @@ export interface RecipeRepository {
   /** Cocinar una comida ya planeada, con las opciones elegidas (atómico). */
   cookPlanned(plannedMealId: string, choices: Choice[]): Promise<CookResult>;
   undoCook(plannedMealId: string): Promise<void>;
+  /** US-128: calificar lo cocinado (1–5) con etiquetas; una vez por comida. */
+  rate(plannedMealId: string, rating: number, tags: RatingTag[], comment: string): Promise<void>;
 }
+
+/** Etiquetas de calificación (tabla rating_tags); los textos están en i18n. */
+export const RATING_TAGS = ['loved_repeat', 'too_salty', 'too_spicy', 'took_longer', 'bad_taste', 'hard_ingredients'] as const;
+export type RatingTag = (typeof RATING_TAGS)[number];
 
 /**
  * Elegir/quitar una opción respetando el máximo del grupo:

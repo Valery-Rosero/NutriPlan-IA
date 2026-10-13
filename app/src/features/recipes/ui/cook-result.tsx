@@ -5,15 +5,17 @@ import { errorKey } from '@/core/errors/app-error';
 import { formatGrams } from '@/core/format';
 import { useUndoCook } from '@/features/recipes/application/recipe-queries';
 import type { CookResult } from '@/features/recipes/domain/recipe';
+import { RatingForm } from '@/features/recipes/ui/rating-form';
 import { AppText, Banner, Button, Card } from '@/shared/ui';
 
 const UNDO_SECONDS = 10;
 
-/** Resultado de cocinar (US-123): qué faltó y botón de deshacer durante 10 s. */
+/** Resultado de cocinar (US-123): qué faltó, deshacer durante 10 s y calificar (US-128). */
 export function CookResultPanel({ result, onUndone }: { result: CookResult; onUndone: () => void }) {
   const { t } = useTranslation();
   const undo = useUndoCook();
   const [seconds, setSeconds] = useState(UNDO_SECONDS);
+  const [rated, setRated] = useState(false);
 
   useEffect(() => {
     if (seconds <= 0) return;
@@ -34,7 +36,8 @@ export function CookResultPanel({ result, onUndone }: { result: CookResult; onUn
         </>
       )}
       {undo.error && <Banner tone="danger" message={t(errorKey(undo.error))} />}
-      {seconds > 0 && !undo.isSuccess && (
+      {/* Una comida calificada ya no se deshace (la base lo impide): el botón desaparece. */}
+      {seconds > 0 && !rated && !undo.isSuccess && (
         <Button
           label={t('recipe.cooked.undo', { seconds })}
           variant="secondary"
@@ -42,6 +45,7 @@ export function CookResultPanel({ result, onUndone }: { result: CookResult; onUn
           onPress={() => undo.mutate(result.plannedMealId, { onSuccess: onUndone })}
         />
       )}
+      <RatingForm plannedMealId={result.plannedMealId} onRated={() => setRated(true)} />
     </Card>
   );
 }

@@ -304,7 +304,8 @@
     "unknown": "Algo salió mal. Inténtalo de nuevo.",
     "no_eligible_recipes": "No hay recetas que cumplan tus restricciones para armar el plan.",
     "invalid_days": "El plan puede durar entre 1 y 14 días.",
-    "list_not_found": "No encontramos esa lista de compras."
+    "list_not_found": "No encontramos esa lista de compras.",
+    "meal_not_cooked": "Primero marca la comida como cocinada."
   },
   "onboarding": {
     "progress": "Paso {{step}} de {{total}}",
@@ -350,7 +351,23 @@
     },
     "cookPlanned": "Cocinar esta comida",
     "plannedServings_one": "Para {{count}} porción (según tu plan)",
-    "plannedServings_other": "Para {{count}} porciones (según tu plan)"
+    "plannedServings_other": "Para {{count}} porciones (según tu plan)",
+    "rating": {
+      "title": "¿Qué tal quedó?",
+      "stars_one": "{{count}} estrella",
+      "stars_other": "{{count}} estrellas",
+      "comment": "Comentario (opcional, máx. 200)",
+      "send": "Enviar calificación",
+      "thanks": "¡Gracias! Lo tendremos en cuenta en tus próximas sugerencias.",
+      "tags": {
+        "loved_repeat": "Me encantó, repetir",
+        "too_salty": "Muy salado",
+        "too_spicy": "Muy picante",
+        "took_longer": "Tardó más de lo esperado",
+        "bad_taste": "No me gustó el sabor",
+        "hard_ingredients": "Ingredientes difíciles de conseguir"
+      }
+    }
   },
   "units": {
     "kg": "kg",
@@ -399,5 +416,17 @@
     "macro_fit": "Se ajusta a tu objetivo",
     "quick": "Rápida de hacer",
     "user_request": "La elegiste tú"
+  },
+  "account": {
+    "rightsTitle": "Tus datos",
+    "rightsBody": "Puedes descargar todo lo que guardamos de ti o eliminar tu cuenta cuando quieras.",
+    "export": "Descargar mis datos",
+    "exportTitle": "Mis datos de NutriPlan",
+    "exportFirst": "Descargar mis datos antes",
+    "deleteTitle": "Eliminar mi cuenta",
+    "deleteWhat": "Borraremos tu cuenta y todos tus datos: perfil, alergias y dietas, despensa, planes, listas, calificaciones y consentimientos. No se puede deshacer.",
+    "deleteRecipes": "Si publicaste recetas en la comunidad, quedarán sin tu nombre.",
+    "typeToConfirm": "Para confirmar, escribe {{word}}",
+    "deleteButton": "Eliminar mi cuenta para siempre"
   }
 }

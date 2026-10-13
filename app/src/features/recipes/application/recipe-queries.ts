@@ -5,7 +5,7 @@ import { cookingKeys } from '@/features/cooking/application/use-suggestions';
 import type { MealSlot } from '@/features/cooking/domain/cooking';
 import { pantryKeys } from '@/features/pantry/application/pantry-queries';
 import { planKeys } from '@/features/plan/application/plan-queries';
-import type { Choice } from '@/features/recipes/domain/recipe';
+import type { Choice, RatingTag } from '@/features/recipes/domain/recipe';
 
 export const recipeKeys = {
   all: ['recipes'] as const,
@@ -55,6 +55,17 @@ export function useCookPlanned() {
   const invalidate = useInvalidateAfterCooking();
   return useMutation({
     mutationFn: ({ plannedMealId, choices }: { plannedMealId: string; choices: Choice[] }) => recipes.cookPlanned(plannedMealId, choices),
+    onSuccess: invalidate,
+  });
+}
+
+/** Calificar afecta futuras recomendaciones (US-134): se recalculan sugerencias y planes. */
+export function useRateMeal() {
+  const { recipes } = useServices();
+  const invalidate = useInvalidateAfterCooking();
+  return useMutation({
+    mutationFn: ({ plannedMealId, rating, tags, comment }: { plannedMealId: string; rating: number; tags: RatingTag[]; comment: string }) =>
+      recipes.rate(plannedMealId, rating, tags, comment),
     onSuccess: invalidate,
   });
 }

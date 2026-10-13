@@ -1923,6 +1923,9 @@ isOneToOne: false
 "preview_recipe":
 { Args: { "p_choices"?: Json,"p_recipe_id": string,"p_servings": number }; Returns: Json
                            },
+"rate_meal":
+{ Args: { "p_comment"?: string,"p_planned_meal_id": string,"p_rating": number,"p_tags"?: (string)[] }; Returns: string
+                           },
 "recipe_cost":
 { Args: { "p_recipe_id": string,"p_region_id": number,"p_servings"?: number }; Returns: {
               "cost": number,"currency_code": string,"estimated_prices": number,"missing_prices": number

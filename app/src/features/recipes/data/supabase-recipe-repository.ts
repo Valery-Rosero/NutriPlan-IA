@@ -2,7 +2,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 
 import { AppError, toAppError } from '@/core/errors/app-error';
 import type { MealSlot } from '@/features/cooking/domain/cooking';
-import { previewSchema, type Choice, type FlexGroup, type RecipeRepository } from '@/features/recipes/domain/recipe';
+import { previewSchema, type Choice, type FlexGroup, type RatingTag, type RecipeRepository } from '@/features/recipes/domain/recipe';
 import type { Database } from '@/types/database';
 
 const toJson = (choices: Choice[]) => choices.map((c) => ({ group_key: c.groupKey, ingredient_id: c.ingredientId }));
@@ -71,6 +71,13 @@ export class SupabaseRecipeRepository implements RecipeRepository {
     const { data, error } = await this.client.rpc('cook_planned_meal', { p_planned_meal_id: plannedMealId, p_choices: toJson(choices) });
     if (error) throw toAppError(error);
     return toCookResult(data);
+  }
+
+  async rate(plannedMealId: string, rating: number, tags: RatingTag[], comment: string) {
+    const { error } = await this.client.rpc('rate_meal', {
+      p_planned_meal_id: plannedMealId, p_rating: rating, p_tags: tags, p_comment: comment,
+    });
+    if (error) throw toAppError(error);
   }
 
   async undoCook(plannedMealId: string) {

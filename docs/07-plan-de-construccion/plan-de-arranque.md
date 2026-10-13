@@ -53,6 +53,14 @@ Fecha: 13 de octubre de 2026. Complementa a `plan.md` (fases y orden del backlog
 - [x] Cierre del ciclo: "pasar lo comprado a la despensa" (`move_checked_to_pantry`), con vencimiento según la vida útil.
 - [x] 266 verificaciones SQL y 158 pruebas de la app.
 
+## Estado del Sprint 6 (14-oct-2026)
+- [x] US-128 Calificar lo cocinado (estrellas, etiquetas, comentario) con `rate_meal`; lo calificado ya no se deshace.
+- [x] US-134 Lo calificado con 1–2 estrellas no vuelve en 60 días; lo calificado con 4–5 sube en el plan (motivo `high_rating`).
+- [x] US-133 Descargar mis datos (`export_my_data`, hoja de compartir) y eliminar la cuenta (Edge Function `delete-account`, probada de punta a punta en local; confirmación escribiendo ELIMINAR).
+- [x] US-158 Perfiles de EAS (`app/eas.json`: APK de staging y paquete de tienda de producción), permisos mínimos y guía `publicacion-android.md`.
+- [x] 273 verificaciones SQL y 162 pruebas de la app.
+- [ ] Acciones de la dueña del producto: subir a staging (`db push --include-seed`, `functions deploy delete-account`), cuenta de Expo y Google Play, política de privacidad publicada, revisión legal y nutricional.
+
 **Cambio de enfoque (ADR-020):** el producto se centra en familias que no saben qué cocinar con lo que tienen. La pantalla principal es "¿Qué cocino con lo que tengo?" (`cook_with_what_i_have`); el plan semanal se arma con las mismas recetas versátiles.
 
 ## 1. Diagnóstico de la especificación
