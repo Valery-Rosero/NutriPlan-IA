@@ -31,7 +31,7 @@
   "auth": {
     "welcome": {
       "title": "¿Qué cocino hoy?",
-      "subtitle": "Ideas para tu familia con lo que ya tienes en casa, sin riesgos para quien tiene alergias.",
+      "subtitle": "Para familias y estudiantes: te decimos qué cocinar con lo que ya tienes, organizamos tu semana y armamos la lista de mercado con lo que falta. Sin riesgos para quien tiene alergias.",
       "createAccount": "Crear cuenta",
       "signIn": "Ya tengo cuenta",
       "notConnected": "No pudimos conectar con el servidor. Revisa tu conexión."
