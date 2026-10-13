@@ -17,8 +17,13 @@ jobs:
       - name: Supabase local
         working-directory: backend
         run: npx --yes supabase start -x imgproxy,vector,logflare,realtime,studio,storage-api,edge-runtime
-      - name: Pruebas
+      - name: Pruebas SQL (reglas y catálogo)
         run: bash backend/supabase/tests/run_local.sh
+      - name: Integración app ↔ Supabase (adaptadores reales, recorrido completo)
+        run: |
+          eval "$(cd backend && npx supabase status -o env | grep -E '^(API_URL|ANON_KEY)=')"
+          cd app && npm ci
+          SUPABASE_URL="$API_URL" SUPABASE_ANON_KEY="$ANON_KEY" npm run test:integration
 
   app:
     name: App (tipos, lint, pruebas)
