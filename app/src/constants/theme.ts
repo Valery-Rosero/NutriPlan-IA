@@ -1,26 +1,38 @@
-// Paleta con contraste AA (texto normal ≥ 4.5:1 sobre background y surface) en claro y oscuro.
+// Paleta de marca: Space Cadet #25344F · Slate Gray #617891 · Tan #D5B893 · Coffee #6F4D38 · Caput Mortuum #632024.
+// Los tonos que no alcanzan contraste AA como texto se ajustan (oscurecidos en claro, aclarados en oscuro).
+// La prueba src/constants/__tests__/theme.test.ts exige ≥ 4.5:1 en todas las combinaciones de texto.
+export const Brand = {
+  spaceCadet: '#25344F',
+  slateGray: '#617891',
+  tan: '#D5B893',
+  coffee: '#6F4D38',
+  caputMortuum: '#632024',
+} as const;
+
 export const Colors = {
   light: {
-    text: '#14211A',
-    textSecondary: '#4A5A50',
-    background: '#FFFFFF',
-    surface: '#F2F6F3',
-    border: '#C9D6CD',
-    primary: '#1B6B3A',
-    onPrimary: '#FFFFFF',
-    danger: '#B3261E',
-    warning: '#8A5300',
+    text: Brand.spaceCadet,
+    textSecondary: '#4E6378', // slate gray oscurecido: el original da 4.2:1 sobre crema
+    background: '#FAF6EF', // crema
+    surface: '#F1E8DA', // tan muy claro
+    border: Brand.tan,
+    primary: Brand.coffee,
+    onPrimary: '#FAF6EF',
+    accent: Brand.spaceCadet,
+    danger: Brand.caputMortuum,
+    warning: '#8A5A12',
   },
   dark: {
-    text: '#EAF2EC',
-    textSecondary: '#B4C4B9',
-    background: '#0F1712',
-    surface: '#1A251E',
-    border: '#2F3D34',
-    primary: '#7BD49A',
-    onPrimary: '#0B2414',
-    danger: '#FFB4AB',
-    warning: '#F2C14E',
+    text: '#F3EBDD',
+    textSecondary: '#B4C2D3', // slate gray aclarado
+    background: '#141C2B', // space cadet profundo
+    surface: Brand.spaceCadet,
+    border: '#3A4B66',
+    primary: Brand.tan,
+    onPrimary: '#2E1F15', // coffee muy oscuro
+    accent: '#9FB2C8',
+    danger: '#F2A7AB', // caput mortuum aclarado
+    warning: '#E8C27A',
   },
 } as const;
 
