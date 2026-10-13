@@ -6,6 +6,7 @@ import type { CookingRepository } from '@/features/cooking/domain/cooking';
 import type { LegalRepository } from '@/features/legal/domain/legal';
 import type { PantryRepository } from '@/features/pantry/domain/pantry';
 import type { ProfileRepository } from '@/features/profile/domain/profile';
+import type { RecipeRepository } from '@/features/recipes/domain/recipe';
 
 /**
  * Contenedor de dependencias (inyección por contexto). Las features dependen de los puertos;
@@ -17,6 +18,7 @@ export type Services = {
   cooking: CookingRepository;
   profile: ProfileRepository;
   pantry: PantryRepository;
+  recipes: RecipeRepository;
   loginThrottle: LoginThrottle;
 };
 

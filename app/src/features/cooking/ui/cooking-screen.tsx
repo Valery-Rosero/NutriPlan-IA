@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import { FlatList, StyleSheet } from 'react-native';
+import { FlatList, Pressable, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { errorKey } from '@/core/errors/app-error';
@@ -50,11 +50,16 @@ export function CookingScreen() {
 
 function SuggestionCard({ suggestion }: { suggestion: CookingSuggestion }) {
   const { t } = useTranslation();
+  const router = useRouter();
   const c = useTheme();
   const coverage = t('cook.coverage', { percent: Math.round(suggestion.coverage * 100) });
   const missing = t('cook.missing', { count: suggestion.missing.length });
   return (
-    <Card accessibilityLabel={`${suggestion.title}. ${coverage}. ${missing}.`}>
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={`${suggestion.title}. ${coverage}. ${missing}.`}
+      onPress={() => router.push({ pathname: '/recipe/[id]', params: { id: suggestion.recipeId } })}>
+    <Card>
       <AppText variant="subtitle">{suggestion.title}</AppText>
       <AppText secondary>{`${coverage} · ${t('cook.minutes', { count: suggestion.totalMinutes })}`}</AppText>
       {suggestion.missing.length > 0 && <AppText variant="caption" secondary>{missing}</AppText>}
@@ -62,6 +67,7 @@ function SuggestionCard({ suggestion }: { suggestion: CookingSuggestion }) {
         <AppText variant="caption" style={{ color: c.warning }}>{t('cook.usesExpiring')}</AppText>
       )}
     </Card>
+    </Pressable>
   );
 }
 
