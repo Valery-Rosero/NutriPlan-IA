@@ -40,5 +40,5 @@ npx expo start                          # abre en Android con Expo Go o una deve
 Ninguna tabla se crea a mano en el panel: todo entra por migraciones. Para subir migraciones **y el catálogo** a staging: `cd backend && npx supabase db push --include-seed`. La `service_role` key y las claves de terceros (Resend, LLM) nunca van en el repositorio.
 
 ## Estado (14-oct-2026)
-- **Hecho:** Sprints 0 a 4: base de datos con RLS y recetas versátiles, catálogo real, registro y consentimientos, onboarding y perfil, despensa, receta y "Cocinar ahora", plan semanal con presupuesto. 258 verificaciones SQL y 148 pruebas de la app.
-- **Siguiente:** Sprint 5 (lista de compras) y Sprint 6 (calificaciones, derechos del titular, publicación).
+- **Hecho:** Sprints 0 a 5: base de datos con RLS y recetas versátiles, catálogo real, registro y consentimientos, onboarding y perfil, despensa, receta y "Cocinar ahora", plan semanal con presupuesto, lista de compras sin conexión. 266 verificaciones SQL y 158 pruebas de la app.
+- **Siguiente:** Sprint 6 (calificaciones, exportar y eliminar datos, publicación en Android).

@@ -46,6 +46,13 @@ Fecha: 13 de octubre de 2026. Complementa a `plan.md` (fases y orden del backlog
 - [x] Cocinar una comida del plan con sus opciones (`cook_planned_meal`).
 - [x] 258 verificaciones SQL y 148 pruebas de la app.
 
+## Estado del Sprint 5 (14-oct-2026)
+- [x] US-124/US-125 Lista desde el plan restando la despensa; los básicos (sal, aceite, agua) no llenan la lista.
+- [x] US-126 Marcar (optimista y **sin conexión**: se encola y se sincroniza, ADR-014), quitar y agregar ítems manuales.
+- [x] US-135 Secciones del supermercado; lo que ya se tiene va aparte; unidades aproximadas calculadas en la base (vista `my_shopping_items`).
+- [x] Cierre del ciclo: "pasar lo comprado a la despensa" (`move_checked_to_pantry`), con vencimiento según la vida útil.
+- [x] 266 verificaciones SQL y 158 pruebas de la app.
+
 **Cambio de enfoque (ADR-020):** el producto se centra en familias que no saben qué cocinar con lo que tienen. La pantalla principal es "¿Qué cocino con lo que tengo?" (`cook_with_what_i_have`); el plan semanal se arma con las mismas recetas versátiles.
 
 ## 1. Diagnóstico de la especificación

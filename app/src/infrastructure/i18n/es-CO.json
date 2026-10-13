@@ -158,7 +158,26 @@
     }
   },
   "shopping": {
-    "title": "Lista de compras"
+    "title": "Lista de compras",
+    "noPlan": "Primero arma tu plan: la lista sale de las comidas que vas a cocinar.",
+    "goToPlan": "Ir al plan",
+    "noList": "Armamos la lista con lo que necesita tu plan, restando lo que ya tienes en la despensa.",
+    "build": "Armar lista de compras",
+    "refresh": "Actualizar desde el plan",
+    "progress": "{{done}} de {{total}} comprados",
+    "haveSection": "Ya lo tienes en la despensa",
+    "otherSection": "Otros",
+    "youHave": "tienes {{amount}}",
+    "units_one": "{{count}} unidad (≈ {{grams}})",
+    "units_other": "{{count}} unidades (≈ {{grams}})",
+    "remove": "Quitar",
+    "addLabel": "Agregar algo más",
+    "addPlaceholder": "Ej.: bolsas, café",
+    "add": "Agregar a la lista",
+    "moveToPantry_one": "Pasar {{count}} comprado a la despensa",
+    "moveToPantry_other": "Pasar {{count}} comprados a la despensa",
+    "moved_one": "Listo: {{count}} producto quedó en tu despensa.",
+    "moved_other": "Listo: {{count}} productos quedaron en tu despensa."
   },
   "pantry": {
     "title": "Despensa",
@@ -284,7 +303,8 @@
     "network": "Sin conexión. Inténtalo de nuevo.",
     "unknown": "Algo salió mal. Inténtalo de nuevo.",
     "no_eligible_recipes": "No hay recetas que cumplan tus restricciones para armar el plan.",
-    "invalid_days": "El plan puede durar entre 1 y 14 días."
+    "invalid_days": "El plan puede durar entre 1 y 14 días.",
+    "list_not_found": "No encontramos esa lista de compras."
   },
   "onboarding": {
     "progress": "Paso {{step}} de {{total}}",
