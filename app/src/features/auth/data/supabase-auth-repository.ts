@@ -11,6 +11,8 @@ export function mapAuthError(error: unknown): AppError {
   const e = (error ?? {}) as { code?: string; status?: number; message?: string };
   // El trigger de registro (consentimientos, mayoría de edad) llega como este mensaje genérico.
   if (/database error saving new user/i.test(e.message ?? '')) return new AppError('signup_failed', error);
+  // SMTP mal configurado o sin dominio verificado: Supabase no puede enviar el correo de confirmación.
+  if (/error sending .*email/i.test(e.message ?? '')) return new AppError('email_send_failed', error);
   switch (e.code) {
     case 'invalid_credentials':
       return new AppError('invalid_credentials', error);
@@ -19,6 +21,10 @@ export function mapAuthError(error: unknown): AppError {
     case 'user_already_exists':
     case 'email_exists':
       return new AppError('email_taken', error);
+    case 'email_address_not_authorized':
+      return new AppError('email_not_authorized', error);
+    case 'email_address_invalid':
+      return new AppError('email_invalid', error);
     case 'weak_password':
       return new AppError('weak_password', error);
     case 'over_request_rate_limit':

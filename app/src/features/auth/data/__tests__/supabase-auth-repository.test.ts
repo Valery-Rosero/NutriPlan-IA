@@ -47,6 +47,9 @@ describe('mapAuthError (capa anticorrupción)', () => {
     [{ status: 429 }, 'rate_limited'],
     [{ code: 'flow_state_not_found', status: 404 }, 'link_expired'],
     [{ message: 'Database error saving new user', status: 500 }, 'signup_failed'],
+    [{ code: 'email_address_not_authorized', status: 400 }, 'email_not_authorized'],
+    [{ code: 'email_address_invalid', status: 400 }, 'email_invalid'],
+    [{ message: 'Error sending confirmation email', status: 500 }, 'email_send_failed'],
     [{ message: 'algo raro', status: 500 }, 'unknown'],
   ])('%j → %s', (error, code) => {
     expect(mapAuthError(error).code).toBe(code);

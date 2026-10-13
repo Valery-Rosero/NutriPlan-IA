@@ -11,7 +11,7 @@ export const ERROR_CODES = [
   'invalid_quantity', 'unit_incompatible', 'no_eligible_recipes', 'invalid_days', 'list_not_found', 'meal_not_cooked',
   // autenticación
   'invalid_credentials', 'email_not_confirmed', 'email_taken', 'weak_password', 'rate_limited',
-  'link_expired', 'signup_failed', 'too_many_attempts',
+  'link_expired', 'signup_failed', 'too_many_attempts', 'email_not_authorized', 'email_invalid', 'email_send_failed',
   // transversales
   'network', 'unknown',
 ] as const;
