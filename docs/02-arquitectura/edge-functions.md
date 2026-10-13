@@ -2,7 +2,9 @@
 
 Todas: Deno + TypeScript, validan entrada/salida con Zod, exigen `Authorization: Bearer <JWT>` (excepto `send-notifications`, que solo invoca pg_cron con secreto), responden JSON `{ ok: true, data } | { ok: false, error: { code, message } }`, no registran contenido de salud. Estado: **por construir**.
 
-## 1. `generate-plan`  (POST)
+## 1. `generate-plan`  (POST) — REEMPLAZADA por la RPC `generate_plan` (ADR-023)
+> Se conserva como referencia. El plan se genera con reglas en SQL (`generate_plan(p_start, p_days, p_slots)` + `save_generated_plan`). Si más adelante se agrega un LLM para redactar explicaciones, irá en una Edge Function aparte que no decide recetas.
+
 **Entrada:** `{ start_date: 'YYYY-MM-DD', days: 1..14 (def. 7), slots: meal_slot[], budget_limit?: number, servings?: number, pantry_first?: boolean, locked_meals?: [{date,slot,recipe_id}] }`
 **Pasos:** 1) cargar perfil y preferencias (con el JWT del usuario, RLS); 2) por slot, `eligible_recipes(slot, max_minutes)`; 3) si `pantry_first`, ordenar con `recipe_pantry_match` y `recipes_using_expiring_ingredients`; 4) pedir al LLM un JSON `{ meals: [{date, slot, recipe_id, servings, reason_code}] }` usando SOLO ids del conjunto; 5) validar (ids ∈ elegibles, sin repetir más de N veces, costo ≤ presupuesto si se pide, tiempo); si falla, reintentar 1 vez y luego fallback determinista; 6) insertar `meal_plans(status=draft)` + `planned_meals`; 7) `ai_generations(kind='plan')`; 8) evento `plan_generated`.
 **Salida:** `{ plan_id, meals: [...], cost: { estimated, budget_limit, over_by } }`.

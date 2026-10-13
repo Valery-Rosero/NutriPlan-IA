@@ -122,7 +122,40 @@
     "declareAllergies": "Declarar alergias"
   },
   "plan": {
-    "title": "Plan de la semana"
+    "title": "Plan de la semana",
+    "empty": "Aún no tienes plan. Lo armamos con lo que hay en tu despensa, tus restricciones y variedad.",
+    "generateWeek": "Generar plan de la semana",
+    "generateToday": "Solo para hoy",
+    "regenerate": "Volver a generar",
+    "confirm": "Confirmar plan",
+    "range": "Del {{start}} al {{end}}",
+    "today": "Hoy",
+    "status": {
+      "draft": "borrador",
+      "confirmed": "confirmado",
+      "archived": "archivado"
+    },
+    "mealStatus": {
+      "planned": "pendiente",
+      "cooked": "cocinada",
+      "skipped": "omitida"
+    },
+    "swap": "Cambiar",
+    "skip": "Omitir",
+    "swapTitle": "Cambiar comida",
+    "swapHint": "Estas recetas cumplen tus restricciones para el {{slot}}:",
+    "noAlternatives": "No hay otras recetas para este momento del día.",
+    "budget": {
+      "title": "Costo estimado",
+      "estimated": "Costo estimado del plan: {{amount}}",
+      "limit": "Tu presupuesto: {{amount}}",
+      "over": "Te pasas del presupuesto por {{amount}}. Prueba cambiar algunas comidas.",
+      "near": "Estás cerca de tu presupuesto.",
+      "missing_one": "Falta el precio de {{count}} ingrediente: el costo real será mayor.",
+      "missing_other": "Falta el precio de {{count}} ingredientes: el costo real será mayor.",
+      "source": "Precios mayoristas de referencia de Pasto (Fuente: DANE – SIPSA). Son estimados, no precios de tienda.",
+      "setRegion": "Elegir mi ciudad"
+    }
   },
   "shopping": {
     "title": "Lista de compras"
@@ -249,7 +282,9 @@
     "link_expired": "El enlace venció o ya se usó. Pide uno nuevo.",
     "signup_failed": "No pudimos crear la cuenta. Revisa que aceptaste los documentos y que eres mayor de edad.",
     "network": "Sin conexión. Inténtalo de nuevo.",
-    "unknown": "Algo salió mal. Inténtalo de nuevo."
+    "unknown": "Algo salió mal. Inténtalo de nuevo.",
+    "no_eligible_recipes": "No hay recetas que cumplan tus restricciones para armar el plan.",
+    "invalid_days": "El plan puede durar entre 1 y 14 días."
   },
   "onboarding": {
     "progress": "Paso {{step}} de {{total}}",
@@ -292,7 +327,10 @@
       "body": "Descontamos de tu despensa lo que usaste.",
       "shortfall": "No tenías suficiente de:",
       "undo": "Deshacer ({{seconds}} s)"
-    }
+    },
+    "cookPlanned": "Cocinar esta comida",
+    "plannedServings_one": "Para {{count}} porción (según tu plan)",
+    "plannedServings_other": "Para {{count}} porciones (según tu plan)"
   },
   "units": {
     "kg": "kg",
@@ -324,5 +362,22 @@
     "soy": "soya",
     "gluten": "gluten",
     "sesame": "ajonjolí"
+  },
+  "slots": {
+    "breakfast": "desayuno",
+    "lunch": "almuerzo",
+    "dinner": "cena",
+    "snack": "algo"
+  },
+  "reasons": {
+    "pantry_expiring": "Usa algo de tu despensa que vence pronto",
+    "pantry_match": "Usa varios ingredientes que ya tienes",
+    "high_rating": "Te gustó antes",
+    "budget_friendly": "Ayuda con tu presupuesto",
+    "variety": "Para variar",
+    "cuisine_favorite": "De tus cocinas favoritas",
+    "macro_fit": "Se ajusta a tu objetivo",
+    "quick": "Rápida de hacer",
+    "user_request": "La elegiste tú"
   }
 }

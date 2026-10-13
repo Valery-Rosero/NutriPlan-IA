@@ -5,6 +5,7 @@ import type { LoginThrottle } from '@/features/auth/domain/login-throttle';
 import type { CookingRepository } from '@/features/cooking/domain/cooking';
 import type { LegalRepository } from '@/features/legal/domain/legal';
 import type { PantryRepository } from '@/features/pantry/domain/pantry';
+import type { PlanRepository } from '@/features/plan/domain/plan';
 import type { ProfileRepository } from '@/features/profile/domain/profile';
 import type { RecipeRepository } from '@/features/recipes/domain/recipe';
 
@@ -19,6 +20,7 @@ export type Services = {
   profile: ProfileRepository;
   pantry: PantryRepository;
   recipes: RecipeRepository;
+  plans: PlanRepository;
   loginThrottle: LoginThrottle;
 };
 

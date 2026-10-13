@@ -1826,6 +1826,9 @@ isOneToOne: false
 "cook_now":
 { Args: { "p_choices"?: Json,"p_recipe_id": string,"p_servings": number,"p_slot": Database["public"]['Enums']["meal_slot"] }; Returns: Json
                            },
+"cook_planned_meal":
+{ Args: { "p_choices"?: Json,"p_planned_meal_id": string }; Returns: Json
+                           },
 "cook_with_what_i_have":
 { Args: { "p_limit"?: number,"p_servings"?: number,"p_slot"?: Database["public"]['Enums']["meal_slot"] }; Returns: {
               "coverage": number,"missing": Json,"missing_count": number,"recipe_id": string,"title": string,"total_minutes": number,"uses_expiring": boolean
@@ -1861,6 +1864,9 @@ isOneToOne: false
       } },
 "export_my_data":
 { Args: Record<PropertyKey, never>; Returns: Json
+                           },
+"generate_plan":
+{ Args: { "p_days"?: number,"p_slots"?: (Database["public"]['Enums']["meal_slot"])[],"p_start"?: string }; Returns: string
                            },
 "generate_shopping_list":
 { Args: { "p_plan_id": string }; Returns: string

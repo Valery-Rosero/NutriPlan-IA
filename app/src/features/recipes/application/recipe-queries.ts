@@ -4,6 +4,7 @@ import { useServices } from '@/di/services';
 import { cookingKeys } from '@/features/cooking/application/use-suggestions';
 import type { MealSlot } from '@/features/cooking/domain/cooking';
 import { pantryKeys } from '@/features/pantry/application/pantry-queries';
+import { planKeys } from '@/features/plan/application/plan-queries';
 import type { Choice } from '@/features/recipes/domain/recipe';
 
 export const recipeKeys = {
@@ -35,6 +36,7 @@ function useInvalidateAfterCooking() {
     void queryClient.invalidateQueries({ queryKey: pantryKeys.all });
     void queryClient.invalidateQueries({ queryKey: cookingKeys.all });
     void queryClient.invalidateQueries({ queryKey: recipeKeys.all });
+    void queryClient.invalidateQueries({ queryKey: planKeys.all });
   };
 }
 
@@ -44,6 +46,15 @@ export function useCookNow(id: string) {
   return useMutation({
     mutationFn: ({ slot, servings, choices }: { slot: MealSlot; servings: number; choices: Choice[] }) =>
       recipes.cookNow(id, slot, servings, choices),
+    onSuccess: invalidate,
+  });
+}
+
+export function useCookPlanned() {
+  const { recipes } = useServices();
+  const invalidate = useInvalidateAfterCooking();
+  return useMutation({
+    mutationFn: ({ plannedMealId, choices }: { plannedMealId: string; choices: Choice[] }) => recipes.cookPlanned(plannedMealId, choices),
     onSuccess: invalidate,
   });
 }
