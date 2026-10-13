@@ -7,6 +7,7 @@ import { createLoginThrottle } from '@/features/auth/domain/login-throttle';
 import type { LegalDocument, LegalRepository } from '@/features/legal/domain/legal';
 import type { PantryRepository } from '@/features/pantry/domain/pantry';
 import type { Profile, ProfileRepository } from '@/features/profile/domain/profile';
+import type { RecipeDetail, RecipeRepository } from '@/features/recipes/domain/recipe';
 
 export const CURRENT_DOCUMENTS: LegalDocument[] = [
   { id: 1, kind: 'privacy_policy', version: 1, contentUrl: null },
@@ -69,6 +70,35 @@ export function fakePantry(overrides: Partial<PantryRepository> = {}): jest.Mock
   } as jest.Mocked<PantryRepository>;
 }
 
+export const RECIPE: RecipeDetail = {
+  id: 'r1', title: 'Arroz salteado con lo que tengas', description: null, totalMinutes: 40, baseServings: 4, keepsDays: 3,
+  slots: ['lunch', 'dinner'], steps: ['Cocina el arroz.', 'Saltea todo.'],
+  groups: [{
+    key: 1, label: 'Proteína', min: 1, max: 1,
+    options: [
+      { ingredientId: 'pollo', name: 'Pechuga de pollo', inPantry: false, isDefault: true, selected: false },
+      { ingredientId: 'cerdo', name: 'Cerdo', inPantry: true, isDefault: false, selected: true },
+    ],
+  }],
+};
+
+export function fakeRecipes(overrides: Partial<RecipeRepository> = {}): jest.Mocked<RecipeRepository> {
+  return {
+    getDetail: jest.fn(async () => RECIPE),
+    preview: jest.fn(async () => ({
+      lines: [
+        { ingredient_id: 'arroz', ingredient_name: 'Arroz blanco', quantity: 300, unit_code: 'g', grams: 300, is_optional: false, group_key: null, group_label: null, in_pantry: false },
+        { ingredient_id: 'cerdo', ingredient_name: 'Cerdo', quantity: 400, unit_code: 'g', grams: 400, is_optional: false, group_key: 1, group_label: 'Proteína', in_pantry: true },
+      ],
+      per_serving: { kcal: 420, protein_g: 25, carbs_g: 60, fat_g: 8, fiber_g: 2, sugar_g: 1, sodium_mg: 300 },
+      allergens: [],
+    })),
+    cookNow: jest.fn(async () => ({ plannedMealId: 'pm1', shortfall: [{ ingredientId: 'arroz', name: 'Arroz blanco', missingGrams: 300 }] })),
+    undoCook: jest.fn(async () => {}),
+    ...overrides,
+  } as jest.Mocked<RecipeRepository>;
+}
+
 export function fakeServices(overrides: Partial<Services> = {}): Services {
   return {
     auth: fakeAuth(),
@@ -76,6 +106,7 @@ export function fakeServices(overrides: Partial<Services> = {}): Services {
     cooking: { suggestions: jest.fn(async () => []) },
     profile: fakeProfile(),
     pantry: fakePantry(),
+    recipes: fakeRecipes(),
     loginThrottle: createLoginThrottle(),
     ...overrides,
   };

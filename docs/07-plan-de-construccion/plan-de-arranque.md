@@ -32,6 +32,12 @@ Fecha: 13 de octubre de 2026. Complementa a `plan.md` (fases y orden del backlog
 - [x] US-119/US-142 Despensa: buscar sin tildes, cantidades en g, kg, libras o unidades, vencimientos rápidos, quitar.
 - [x] 230 verificaciones SQL y 81 pruebas de la app en verde.
 
+## Estado del Sprint 3 (13-oct-2026)
+- [x] Detalle de receta: elegir opciones de cada grupo (solo las seguras), porciones de 1 a 12 (US-118), ingredientes escalados y marcados "lo tienes / falta", alérgenos, nutrición por porción (US-111, US-115), pasos.
+- [x] RPC `preview_recipe` (todo se calcula en la base) y `cook_now`: cocinar sin plan previo, con deshacer de 10 s y faltantes (US-123).
+- [x] US-121 cubierto por ADR-021 (revisión asistida por IA, visible en la app).
+- [x] 243 verificaciones SQL y 101 pruebas de la app.
+
 **Cambio de enfoque (ADR-020):** el producto se centra en familias que no saben qué cocinar con lo que tienen. La pantalla principal es "¿Qué cocino con lo que tengo?" (`cook_with_what_i_have`); el plan semanal se arma con las mismas recetas versátiles.
 
 ## 1. Diagnóstico de la especificación

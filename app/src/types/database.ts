@@ -1823,6 +1823,9 @@ isOneToOne: false
 "apply_assistant_suggestion":
 { Args: { "p_message_id": number }; Returns: string
                            },
+"cook_now":
+{ Args: { "p_choices"?: Json,"p_recipe_id": string,"p_servings": number,"p_slot": Database["public"]['Enums']["meal_slot"] }; Returns: Json
+                           },
 "cook_with_what_i_have":
 { Args: { "p_limit"?: number,"p_servings"?: number,"p_slot"?: Database["public"]['Enums']["meal_slot"] }; Returns: {
               "coverage": number,"missing": Json,"missing_count": number,"recipe_id": string,"title": string,"total_minutes": number,"uses_expiring": boolean
@@ -1869,6 +1872,9 @@ isOneToOne: false
 { Args: { "p_plan_id": string }; Returns: {
               "budget_limit": number,"currency_code": string,"estimated_cost": number,"estimated_prices": number,"missing_prices": number,"over_by": number
             }[]
+                           },
+"preview_recipe":
+{ Args: { "p_choices"?: Json,"p_recipe_id": string,"p_servings": number }; Returns: Json
                            },
 "recipe_cost":
 { Args: { "p_recipe_id": string,"p_region_id": number,"p_servings"?: number }; Returns: {
