@@ -305,7 +305,10 @@
     "no_eligible_recipes": "No hay recetas que cumplan tus restricciones para armar el plan.",
     "invalid_days": "El plan puede durar entre 1 y 14 días.",
     "list_not_found": "No encontramos esa lista de compras.",
-    "meal_not_cooked": "Primero marca la comida como cocinada."
+    "meal_not_cooked": "Primero marca la comida como cocinada.",
+    "email_not_authorized": "Por ahora no podemos enviar correos a esa dirección. Estamos terminando de configurar el envío de correos; inténtalo más tarde.",
+    "email_invalid": "Ese correo no parece válido. Revísalo.",
+    "email_send_failed": "No pudimos enviarte el correo de confirmación. Inténtalo de nuevo en unos minutos."
   },
   "onboarding": {
     "progress": "Paso {{step}} de {{total}}",

@@ -1,3 +1,5 @@
+// Debe ir primero: Supabase Auth necesita crypto.subtle para PKCE.
+import '@/infrastructure/polyfills/web-crypto';
 import '@/infrastructure/i18n';
 
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
