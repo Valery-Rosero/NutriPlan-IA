@@ -23,6 +23,15 @@ Fecha: 13 de octubre de 2026. Complementa a `plan.md` (fases y orden del backlog
 - [x] 64 pruebas de la app (dominio, adaptador, pantalla de registro con dobles) + prueba de humo contra Supabase Auth real.
 - [ ] Prueba manual en el teléfono contra staging (requiere SMTP de Resend con dominio verificado).
 
+## Estado del Sprint 2 (13-oct-2026)
+- [x] Catálogo real (`backend/supabase/catalog/`): 52 ingredientes con nutrición de referencia USDA y alérgenos revisados, 16 recetas versátiles colombianas con grupos intercambiables. Es el seed del proyecto (`db push --include-seed`); las pruebas usan `tests/fixtures.sql`.
+- [x] Prueba de contenido: para cada momento del día hay recetas para perfiles sin restricciones, veganos y con alergia a huevo, leche, gluten y pescado, y nunca se les resuelve un ingrediente prohibido.
+- [x] US-106/107/108/109 Onboarding (máquina de estados): hogar y región (Pasto), autorización de datos sensibles, alergias y dietas (RPC `set_my_restrictions`), presupuesto.
+- [x] US-116 Editar perfil reutilizando los formularios; revocar la autorización con advertencia R4.
+- [x] US-130 "Completar después" y aviso permanente sin alergias declaradas.
+- [x] US-119/US-142 Despensa: buscar sin tildes, cantidades en g, kg, libras o unidades, vencimientos rápidos, quitar.
+- [x] 230 verificaciones SQL y 81 pruebas de la app en verde.
+
 **Cambio de enfoque (ADR-020):** el producto se centra en familias que no saben qué cocinar con lo que tienen. La pantalla principal es "¿Qué cocino con lo que tengo?" (`cook_with_what_i_have`); el plan semanal se arma con las mismas recetas versátiles.
 
 ## 1. Diagnóstico de la especificación

@@ -1929,6 +1929,9 @@ isOneToOne: false
 "set_meal_choices":
 { Args: { "p_group_key": number,"p_ingredient_ids": (string)[],"p_planned_meal_id": string }; Returns: undefined
                            },
+"set_my_restrictions":
+{ Args: { "p_allergen_ids": (number)[],"p_diet_ids": (number)[] }; Returns: undefined
+                           },
 "suggest_substitutes":
 { Args: { "p_ingredient_id": string }; Returns: {
               "note": string,"ratio": number,"substitute_id": string,"substitute_name": string

@@ -1,20 +1,35 @@
+import { useRouter } from 'expo-router';
 import { FlatList, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { errorKey } from '@/core/errors/app-error';
 import { useCookingSuggestions } from '@/features/cooking/application/use-suggestions';
 import type { CookingSuggestion } from '@/features/cooking/domain/cooking';
+import { useRestrictions } from '@/features/profile/application/profile-queries';
 import { Spacing } from '@/shared/theme/colors';
 import { useTheme } from '@/shared/theme/use-theme';
-import { AppText, Card, EmptyState, ErrorState, LoadingState, Screen } from '@/shared/ui';
+import { AppText, Banner, Card, EmptyState, ErrorState, LoadingState, Screen, TextLink } from '@/shared/ui';
 
 export function CookingScreen() {
   const { t } = useTranslation();
+  const router = useRouter();
   const suggestions = useCookingSuggestions();
+  const restrictions = useRestrictions();
+  // US-130: sin alergias declaradas no podemos filtrarlas; se dice siempre, no se asume.
+  const noAllergies = restrictions.data?.allergenIds.length === 0;
 
   return (
     <Screen>
       <AppText variant="title">{t('cook.title')}</AppText>
+      {noAllergies && (
+        <>
+          <Banner tone="warning" message={t('cook.noAllergies')} />
+          <TextLink
+            label={t('cook.declareAllergies')}
+            onPress={() => router.push({ pathname: '/profile/[section]', params: { section: 'restrictions' } })}
+          />
+        </>
+      )}
       {suggestions.isPending ? (
         <LoadingState />
       ) : suggestions.isError ? (

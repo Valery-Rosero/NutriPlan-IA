@@ -8,7 +8,7 @@ App móvil (Android) para familias en Colombia que no saben qué cocinar: propon
 | Carpeta | Qué contiene |
 |---|---|
 | `app/` | App Expo SDK 57 (Expo Router en `src/app/`, TypeScript estricto) |
-| `backend/supabase/` | Migraciones (13), seed de desarrollo, pruebas SQL (198 verificaciones), borradores legales |
+| `backend/supabase/` | Migraciones, catálogo real (`catalog/`, es el seed), pruebas SQL (`tests/`, 230 verificaciones), borradores legales |
 | `docs/` | Especificación completa: visión, producto, arquitectura, datos, módulos, 73 historias, legal, plan, ADR, referencias |
 | `.github/workflows/` | CI: pruebas de base de datos y de la app |
 
@@ -37,7 +37,7 @@ npx expo start                          # abre en Android con Expo Go o una deve
 | staging | Supabase, São Paulo | `fiesvxiuxsllqcpxidap` |
 | prod | Supabase, São Paulo | `drgzvvkkjxqvolcerpjx` |
 
-Ninguna tabla se crea a mano en el panel: todo entra por migraciones (`npx supabase db push`). La `service_role` key y las claves de terceros (Resend, LLM) nunca van en el repositorio.
+Ninguna tabla se crea a mano en el panel: todo entra por migraciones. Para subir migraciones **y el catálogo** a staging: `cd backend && npx supabase db push --include-seed`. La `service_role` key y las claves de terceros (Resend, LLM) nunca van en el repositorio.
 
 ## Estado (13-oct-2026)
 - **Hecho:** esquema completo con RLS en todas las tablas, refuerzos de seguridad, recetas versátiles (ADR-020), pruebas en verde sobre Supabase real, esqueleto de la app.

@@ -10,6 +10,7 @@ import { createServices } from '@/di/create-services';
 import { ServicesProvider } from '@/di/services';
 import { SessionProvider, useSession } from '@/features/auth/application/session';
 import { useRequiredConsents } from '@/features/legal/application/legal-queries';
+import { useProfile } from '@/features/profile/application/profile-queries';
 import { persister, queryClient, shouldPersistQuery } from '@/infrastructure/query-client';
 import { Colors, type ThemeColors } from '@/shared/theme/colors';
 
@@ -44,15 +45,18 @@ export default function RootLayout() {
 }
 
 /**
- * Tres puertas, en orden: sin sesión → (auth); con documentos por aceptar → consents; si no → (tabs).
- * Las rutas de enlaces de correo y los documentos legales están disponibles siempre.
+ * Puertas, en orden: sin sesión → (auth); documentos por aceptar → consents;
+ * onboarding sin terminar → onboarding; si no → la app. Enlaces de correo y documentos legales, siempre.
  */
 function RootNavigator() {
   const { session, loading } = useSession();
   const consents = useRequiredConsents(session?.userId);
-  const checkingConsents = !!session && consents.isPending;
   const mustConsent = !!session && (consents.isError || (consents.data?.length ?? 0) > 0);
-  const ready = !loading && !checkingConsents;
+  const consentsOk = !!session && consents.isSuccess && !mustConsent;
+  const profile = useProfile(consentsOk);
+  const mustOnboard = consentsOk && profile.isSuccess && profile.data.onboardingCompletedAt === null;
+  const inApp = consentsOk && profile.isSuccess && !mustOnboard;
+  const ready = !loading && (!session || mustConsent || (consentsOk && !profile.isPending) || profile.isError);
 
   useEffect(() => {
     if (ready) void SplashScreen.hideAsync();
@@ -62,11 +66,16 @@ function RootNavigator() {
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Protected guard={!!session && !mustConsent}>
+      <Stack.Protected guard={inApp || (consentsOk && profile.isError)}>
         <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="profile/[section]" />
+        <Stack.Screen name="pantry/add" options={{ presentation: 'modal' }} />
       </Stack.Protected>
       <Stack.Protected guard={mustConsent}>
         <Stack.Screen name="consents" />
+      </Stack.Protected>
+      <Stack.Protected guard={mustOnboard}>
+        <Stack.Screen name="onboarding" />
       </Stack.Protected>
       <Stack.Protected guard={!session}>
         <Stack.Screen name="(auth)" />
