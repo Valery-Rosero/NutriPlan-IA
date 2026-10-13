@@ -1,0 +1,160 @@
+{
+  "common": {
+    "appName": "NutriPlan",
+    "retry": "Reintentar",
+    "loading": "Cargando…",
+    "comingSoon": "Disponible pronto",
+    "continue": "Continuar",
+    "back": "Volver",
+    "read": "Leer",
+    "showPassword": "Mostrar contraseña",
+    "hidePassword": "Ocultar contraseña",
+    "offline": "Sin conexión: estás viendo la última información guardada."
+  },
+  "validation": {
+    "required": "Este campo es obligatorio.",
+    "email": "Escribe un correo válido, por ejemplo nombre@correo.com.",
+    "passwordLength": "La contraseña debe tener al menos 8 caracteres.",
+    "passwordLower": "Incluye al menos una letra minúscula.",
+    "passwordUpper": "Incluye al menos una letra mayúscula.",
+    "passwordDigit": "Incluye al menos un número.",
+    "passwordsMatch": "Las contraseñas no coinciden.",
+    "mustAccept": "Debes marcar esta casilla para continuar."
+  },
+  "auth": {
+    "welcome": {
+      "title": "¿Qué cocino hoy?",
+      "subtitle": "Ideas para tu familia con lo que ya tienes en casa, sin riesgos para quien tiene alergias.",
+      "createAccount": "Crear cuenta",
+      "signIn": "Ya tengo cuenta",
+      "notConnected": "No pudimos conectar con el servidor. Revisa tu conexión."
+    },
+    "signUp": {
+      "title": "Crea tu cuenta",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "passwordHint": "Mínimo 8 caracteres, con mayúscula, minúscula y número.",
+      "isAdult": "Soy mayor de 18 años.",
+      "acceptTerms": "Acepto los Términos y Condiciones.",
+      "acceptPrivacy": "Acepto la Política de Tratamiento de Datos Personales y autorizo la transferencia internacional a los proveedores indicados.",
+      "readTerms": "Leer los Términos y Condiciones",
+      "readPrivacy": "Leer la Política de Tratamiento de Datos",
+      "submit": "Crear cuenta",
+      "haveAccount": "¿Ya tienes cuenta? Inicia sesión",
+      "emailTakenAction": "Iniciar sesión con este correo"
+    },
+    "signIn": {
+      "title": "Inicia sesión",
+      "submit": "Iniciar sesión",
+      "forgot": "¿Olvidaste tu contraseña?",
+      "noAccount": "¿No tienes cuenta? Regístrate",
+      "resend": "Reenviar el correo de confirmación"
+    },
+    "verify": {
+      "title": "Revisa tu correo",
+      "body": "Te enviamos un enlace a {{email}}. Ábrelo desde este teléfono para activar tu cuenta.",
+      "spam": "¿No llega? Revisa la carpeta de spam o promociones.",
+      "resend": "Reenviar correo",
+      "resendIn": "Reenviar en {{seconds}} s",
+      "resent": "Listo, te enviamos un correo nuevo.",
+      "toSignIn": "Ya confirmé, iniciar sesión"
+    },
+    "forgot": {
+      "title": "Recupera tu contraseña",
+      "body": "Escribe tu correo y te enviaremos un enlace para crear una contraseña nueva.",
+      "submit": "Enviar enlace",
+      "sent": "Si hay una cuenta con ese correo, te llegará un enlace en unos minutos. Ábrelo desde este teléfono."
+    },
+    "reset": {
+      "title": "Crea una contraseña nueva",
+      "password": "Contraseña nueva",
+      "confirm": "Repite la contraseña",
+      "submit": "Guardar contraseña",
+      "verifying": "Verificando el enlace…"
+    },
+    "callback": {
+      "verifying": "Activando tu cuenta…",
+      "expired": "El enlace venció o se abrió en otro dispositivo. Si ya confirmaste tu correo, inicia sesión; si no, pide uno nuevo.",
+      "toSignIn": "Ir a iniciar sesión"
+    }
+  },
+  "legal": {
+    "consents": {
+      "title": "Antes de empezar",
+      "body": "Lee y acepta estos documentos para usar NutriPlan.",
+      "updated": "Actualizamos este documento. Léelo y acéptalo para continuar.",
+      "accept": "Aceptar y continuar",
+      "signOut": "Cerrar sesión"
+    },
+    "acceptDoc": "He leído y acepto: {{name}}",
+    "draft": "Borrador pendiente de revisión legal. Puede cambiar antes del lanzamiento.",
+    "kinds": {
+      "privacy_policy": "Política de Tratamiento de Datos",
+      "terms": "Términos y Condiciones",
+      "health_disclaimer": "Aviso de salud",
+      "community_sharing": "Reglas de la comunidad",
+      "sensitive_data_authorization": "Autorización de datos sensibles"
+    }
+  },
+  "tabs": {
+    "cook": "Cocinar",
+    "plan": "Plan",
+    "shopping": "Compras",
+    "pantry": "Despensa",
+    "profile": "Perfil"
+  },
+  "cook": {
+    "title": "¿Qué cocino con lo que tengo?",
+    "empty": "Agrega lo que tienes en la despensa y te diremos qué puedes preparar.",
+    "coverage": "Tienes el {{percent}} % de los ingredientes",
+    "missing_one": "Falta {{count}} ingrediente",
+    "missing_other": "Faltan {{count}} ingredientes",
+    "usesExpiring": "Usa algo que está por vencer",
+    "minutes": "{{count}} min"
+  },
+  "plan": { "title": "Plan de la semana" },
+  "shopping": { "title": "Lista de compras" },
+  "pantry": { "title": "Despensa" },
+  "profile": {
+    "title": "Perfil",
+    "signOut": "Cerrar sesión",
+    "documents": "Documentos legales"
+  },
+  "health": {
+    "disclaimer": "NutriPlan no reemplaza el consejo de un médico o nutricionista.",
+    "aiReview": "Recetas revisadas con apoyo de IA; no reemplazan a un profesional."
+  },
+  "errors": {
+    "consent_required": "Debes aceptar la política de tratamiento de datos y los términos vigentes.",
+    "adult_required": "NutriPlan es solo para mayores de 18 años.",
+    "health_disclaimer_required": "Acepta el aviso de salud antes de registrar condiciones médicas.",
+    "sensitive_authorization_required": "Necesitamos tu autorización para guardar alergias, dietas o datos de salud.",
+    "allergen_conflict": "Esa receta tiene un alérgeno que declaraste.",
+    "diet_conflict": "Esa receta no es compatible con tu dieta.",
+    "slot_mismatch": "Esa receta no corresponde a ese momento del día.",
+    "choice_blocked": "Esa opción tiene un alérgeno o no va con tu dieta.",
+    "too_many_choices": "Elegiste más opciones de las permitidas.",
+    "too_few_choices": "Elige más opciones para este grupo.",
+    "not_eligible": "Esa receta no cumple tus restricciones.",
+    "region_required": "Elige tu ciudad para calcular costos.",
+    "plan_not_found": "No encontramos ese plan.",
+    "meal_not_found": "No encontramos esa comida.",
+    "meal_not_pending": "Esa comida ya se cocinó o se omitió.",
+    "undo_window_expired": "Ya pasó el tiempo para deshacer.",
+    "already_rated": "Ya calificaste esta comida.",
+    "consent_outdated": "Ese documento cambió. Lee la versión nueva.",
+    "plan_overlap_confirmed": "Ya tienes un plan confirmado para esas fechas.",
+    "invalid_quantity": "La cantidad debe ser mayor que cero.",
+    "unit_incompatible": "Esa unidad no sirve para este ingrediente.",
+    "invalid_credentials": "Correo o contraseña incorrectos.",
+    "email_not_confirmed": "Aún no confirmas tu correo. Abre el enlace que te enviamos.",
+    "email_taken": "Este correo ya tiene una cuenta.",
+    "weak_password": "Esa contraseña es muy fácil de adivinar. Prueba con otra.",
+    "rate_limited": "Demasiados intentos. Espera unos minutos y vuelve a intentarlo.",
+    "too_many_attempts": "Por seguridad, espera 15 minutos antes de volver a intentarlo.",
+    "link_expired": "El enlace venció o ya se usó. Pide uno nuevo.",
+    "signup_failed": "No pudimos crear la cuenta. Revisa que aceptaste los documentos y que eres mayor de edad.",
+    "network": "Sin conexión. Inténtalo de nuevo.",
+    "unknown": "Algo salió mal. Inténtalo de nuevo."
+  }
+}

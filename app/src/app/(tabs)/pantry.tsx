@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
-import { AppText, EmptyState, Screen } from '@/components/ui';
+import { AppText, EmptyState, Screen } from '@/shared/ui';
 
 export default function PantryScreen() {
   const { t } = useTranslation();

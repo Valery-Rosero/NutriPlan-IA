@@ -58,13 +58,18 @@
     "android": "expo start --android",
     "lint": "expo lint",
     "typecheck": "tsc --noEmit",
-    "test": "jest"
+    "test": "jest",
+    "legal:drafts": "node scripts/generate-legal-drafts.mjs"
   },
   "private": true,
   "jest": {
     "preset": "jest-expo",
+    "setupFiles": [
+      "./jest.setup.ts"
+    ],
     "testPathIgnorePatterns": [
       "/node_modules/"
-    ]
+    ],
+    "testTimeout": 20000
   }
 }

@@ -3,7 +3,7 @@ import { Tabs } from 'expo-router/js-tabs';
 import type { ComponentProps } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { useTheme } from '@/hooks/use-theme';
+import { useTheme } from '@/shared/theme/use-theme';
 
 type IconName = ComponentProps<typeof Ionicons>['name'];
 
