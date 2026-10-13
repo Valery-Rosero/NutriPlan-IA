@@ -71,6 +71,7 @@ function RootNavigator() {
         <Stack.Screen name="profile/[section]" />
         <Stack.Screen name="pantry/add" options={{ presentation: 'modal' }} />
         <Stack.Screen name="recipe/[id]" />
+        <Stack.Screen name="plan/swap/[mealId]" options={{ presentation: 'modal' }} />
       </Stack.Protected>
       <Stack.Protected guard={mustConsent}>
         <Stack.Screen name="consents" />

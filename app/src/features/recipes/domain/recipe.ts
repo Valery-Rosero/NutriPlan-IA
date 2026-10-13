@@ -53,6 +53,8 @@ export interface RecipeRepository {
   /** Cantidades escaladas, nutrición y alérgenos calculados en la base (nunca en la app). */
   preview(id: string, servings: number, choices: Choice[]): Promise<RecipePreview>;
   cookNow(id: string, slot: MealSlot, servings: number, choices: Choice[]): Promise<CookResult>;
+  /** Cocinar una comida ya planeada, con las opciones elegidas (atómico). */
+  cookPlanned(plannedMealId: string, choices: Choice[]): Promise<CookResult>;
   undoCook(plannedMealId: string): Promise<void>;
 }
 

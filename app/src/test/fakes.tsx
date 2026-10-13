@@ -6,6 +6,7 @@ import type { AuthRepository } from '@/features/auth/domain/auth-repository';
 import { createLoginThrottle } from '@/features/auth/domain/login-throttle';
 import type { LegalDocument, LegalRepository } from '@/features/legal/domain/legal';
 import type { PantryRepository } from '@/features/pantry/domain/pantry';
+import type { MealPlan, PlanRepository } from '@/features/plan/domain/plan';
 import type { Profile, ProfileRepository } from '@/features/profile/domain/profile';
 import type { RecipeDetail, RecipeRepository } from '@/features/recipes/domain/recipe';
 
@@ -94,9 +95,31 @@ export function fakeRecipes(overrides: Partial<RecipeRepository> = {}): jest.Moc
       allergens: [],
     })),
     cookNow: jest.fn(async () => ({ plannedMealId: 'pm1', shortfall: [{ ingredientId: 'arroz', name: 'Arroz blanco', missingGrams: 300 }] })),
+    cookPlanned: jest.fn(async () => ({ plannedMealId: 'pm1', shortfall: [] })),
     undoCook: jest.fn(async () => {}),
     ...overrides,
   } as jest.Mocked<RecipeRepository>;
+}
+
+export const PLAN: MealPlan = {
+  id: 'plan1', startDate: '2026-10-13', endDate: '2026-10-19', status: 'draft', budgetLimit: 150000,
+  meals: [
+    { id: 'm2', date: '2026-10-13', slot: 'dinner', recipeId: 'r2', recipeTitle: 'Sopa de verduras del día', totalMinutes: 50, servings: 4, status: 'planned', reasonCode: 'variety' },
+    { id: 'm1', date: '2026-10-13', slot: 'lunch', recipeId: 'r1', recipeTitle: 'Arroz salteado con lo que tengas', totalMinutes: 40, servings: 4, status: 'planned', reasonCode: 'pantry_expiring' },
+  ],
+};
+
+export function fakePlans(overrides: Partial<PlanRepository> = {}): jest.Mocked<PlanRepository> {
+  return {
+    current: jest.fn(async () => PLAN),
+    generate: jest.fn(async () => 'plan1'),
+    budget: jest.fn(async () => ({ estimatedCost: 160000, budgetLimit: 150000, overBy: 10000, missingPrices: 12 })),
+    alternatives: jest.fn(async () => [{ id: 'r3', title: 'Lentejas guisadas con lo que haya', totalMinutes: 50 }]),
+    swap: jest.fn(async () => {}),
+    skip: jest.fn(async () => {}),
+    confirm: jest.fn(async () => {}),
+    ...overrides,
+  } as jest.Mocked<PlanRepository>;
 }
 
 export function fakeServices(overrides: Partial<Services> = {}): Services {
@@ -107,6 +130,7 @@ export function fakeServices(overrides: Partial<Services> = {}): Services {
     profile: fakeProfile(),
     pantry: fakePantry(),
     recipes: fakeRecipes(),
+    plans: fakePlans(),
     loginThrottle: createLoginThrottle(),
     ...overrides,
   };

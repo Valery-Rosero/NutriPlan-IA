@@ -7,6 +7,7 @@ import { SupabaseCookingRepository } from '@/features/cooking/data/supabase-cook
 import { legalDrafts } from '@/features/legal/data/legal-drafts.generated';
 import { SupabaseLegalRepository } from '@/features/legal/data/supabase-legal-repository';
 import { SupabasePantryRepository } from '@/features/pantry/data/supabase-pantry-repository';
+import { SupabasePlanRepository } from '@/features/plan/data/supabase-plan-repository';
 import { SupabaseProfileRepository } from '@/features/profile/data/supabase-profile-repository';
 import { SupabaseRecipeRepository } from '@/features/recipes/data/supabase-recipe-repository';
 import { supabase } from '@/infrastructure/supabase/client';
@@ -20,6 +21,7 @@ export function createServices(): Services {
     profile: new SupabaseProfileRepository(supabase),
     pantry: new SupabasePantryRepository(supabase),
     recipes: new SupabaseRecipeRepository(supabase),
+    plans: new SupabasePlanRepository(supabase),
     loginThrottle: createLoginThrottle(),
   };
 }

@@ -64,15 +64,25 @@ export class SupabaseRecipeRepository implements RecipeRepository {
       p_recipe_id: id, p_slot: slot, p_servings: servings, p_choices: toJson(choices),
     });
     if (error) throw toAppError(error);
-    const row = data as unknown as CookRow;
-    return {
-      plannedMealId: row.planned_meal_id,
-      shortfall: row.shortfall.map((s) => ({ ingredientId: s.ingredient_id, name: s.ingredient_name, missingGrams: s.missing_g })),
-    };
+    return toCookResult(data);
+  }
+
+  async cookPlanned(plannedMealId: string, choices: Choice[]) {
+    const { data, error } = await this.client.rpc('cook_planned_meal', { p_planned_meal_id: plannedMealId, p_choices: toJson(choices) });
+    if (error) throw toAppError(error);
+    return toCookResult(data);
   }
 
   async undoCook(plannedMealId: string) {
     const { error } = await this.client.rpc('undo_meal_cooked', { p_planned_meal_id: plannedMealId });
     if (error) throw toAppError(error);
   }
+}
+
+function toCookResult(data: unknown) {
+  const row = data as CookRow;
+  return {
+    plannedMealId: row.planned_meal_id,
+    shortfall: row.shortfall.map((s) => ({ ingredientId: s.ingredient_id, name: s.ingredient_name, missingGrams: s.missing_g })),
+  };
 }

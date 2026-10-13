@@ -38,6 +38,14 @@ Fecha: 13 de octubre de 2026. Complementa a `plan.md` (fases y orden del backlog
 - [x] US-121 cubierto por ADR-021 (revisión asistida por IA, visible en la app).
 - [x] 243 verificaciones SQL y 101 pruebas de la app.
 
+## Estado del Sprint 4 (14-oct-2026)
+- [x] US-117/US-139 Plan semanal o solo para hoy con generador determinista en SQL (ADR-023): solo recetas elegibles, prioriza despensa y vencimientos, variedad, motivo verdadero (US-145, US-146, US-155).
+- [x] US-129 Cambiar una comida por alternativas elegibles; omitir; confirmar el plan. Regenerar archiva (no borra) lo ya cocinado.
+- [x] US-120/US-127/US-132 Costo estimado frente al presupuesto con alertas (cerca / se pasa) y conteo honesto de precios faltantes.
+- [x] US-112 (parcial): fuente DANE–SIPSA registrada con 3 precios mayoristas verificados de Pasto (`catalog/03_prices.sql`). **Pendiente:** completar con el anexo mensual de SIPSA.
+- [x] Cocinar una comida del plan con sus opciones (`cook_planned_meal`).
+- [x] 258 verificaciones SQL y 148 pruebas de la app.
+
 **Cambio de enfoque (ADR-020):** el producto se centra en familias que no saben qué cocinar con lo que tienen. La pantalla principal es "¿Qué cocino con lo que tengo?" (`cook_with_what_i_have`); el plan semanal se arma con las mismas recetas versátiles.
 
 ## 1. Diagnóstico de la especificación

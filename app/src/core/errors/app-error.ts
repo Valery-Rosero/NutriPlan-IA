@@ -8,7 +8,7 @@ export const ERROR_CODES = [
   'allergen_conflict', 'diet_conflict', 'slot_mismatch', 'choice_blocked', 'too_many_choices', 'too_few_choices',
   'not_eligible', 'region_required', 'plan_not_found', 'meal_not_found', 'meal_not_pending',
   'undo_window_expired', 'already_rated', 'consent_outdated', 'plan_overlap_confirmed',
-  'invalid_quantity', 'unit_incompatible',
+  'invalid_quantity', 'unit_incompatible', 'no_eligible_recipes', 'invalid_days',
   // autenticación
   'invalid_credentials', 'email_not_confirmed', 'email_taken', 'weak_password', 'rate_limited',
   'link_expired', 'signup_failed', 'too_many_attempts',

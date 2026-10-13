@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { errorKey } from '@/core/errors/app-error';
 import { HealthDisclaimerNote } from '@/features/legal/ui/health-disclaimer-note';
 import { useProfile } from '@/features/profile/application/profile-queries';
-import { useCookNow, useRecipe, useRecipePreview } from '@/features/recipes/application/recipe-queries';
+import { useCookNow, useCookPlanned, useRecipe, useRecipePreview } from '@/features/recipes/application/recipe-queries';
 import {
   initialChoices,
   slotForNow,
@@ -25,7 +25,8 @@ import { AppText, Banner, Button, Card, Chip, ChipGroup, ErrorState, LoadingStat
 /** US-118 (escalar), US-115 (nutrición por porción), ADR-020 (opciones con lo que hay), US-123 (cocinar). */
 export function RecipeScreen() {
   const { t } = useTranslation();
-  const { id } = useLocalSearchParams<{ id: string }>();
+  // mealId: se abrió desde el plan; cocinar marca ESA comida (con sus porciones).
+  const { id, mealId, servings: plannedServings } = useLocalSearchParams<{ id: string; mealId?: string; servings?: string }>();
   const recipe = useRecipe(id);
   const profile = useProfile();
   const [servings, setServings] = useState<number | null>(null);
@@ -33,19 +34,24 @@ export function RecipeScreen() {
   const [result, setResult] = useState<CookResult | null>(null);
 
   const detail = recipe.data;
-  const currentServings = servings ?? profile.data?.householdSize ?? detail?.baseServings ?? 4;
+  const currentServings =
+    servings ?? (plannedServings ? Number(plannedServings) : null) ?? profile.data?.householdSize ?? detail?.baseServings ?? 4;
   const currentChoices = choices ?? (detail ? initialChoices(detail.groups) : null);
   const preview = useRecipePreview(id, currentServings, currentChoices);
-  const cook = useCookNow(id);
+  const cookNow = useCookNow(id);
+  const cookPlanned = useCookPlanned();
+  const cook = mealId ? cookPlanned : cookNow;
 
   if (recipe.isPending) return <Screen><LoadingState /></Screen>;
   if (recipe.isError) return <Screen><ErrorState message={t(errorKey(recipe.error))} onRetry={() => void recipe.refetch()} /></Screen>;
 
   const onCook = () =>
-    cook.mutate(
-      { slot: slotForNow(recipe.data.slots, new Date().getHours()), servings: currentServings, choices: currentChoices ?? [] },
-      { onSuccess: setResult },
-    );
+    mealId
+      ? cookPlanned.mutate({ plannedMealId: mealId, choices: currentChoices ?? [] }, { onSuccess: setResult })
+      : cookNow.mutate(
+          { slot: slotForNow(recipe.data.slots, new Date().getHours()), servings: currentServings, choices: currentChoices ?? [] },
+          { onSuccess: setResult },
+        );
 
   return (
     <>
@@ -58,7 +64,8 @@ export function RecipeScreen() {
           {recipe.data.keepsDays ? ` · ${t('recipe.keeps', { count: recipe.data.keepsDays })}` : ''}
         </AppText>
 
-        <Stepper label={t('recipe.servings')} value={currentServings} min={1} max={12} onChange={setServings} />
+        {!mealId && <Stepper label={t('recipe.servings')} value={currentServings} min={1} max={12} onChange={setServings} />}
+        {mealId && <AppText secondary>{t('recipe.plannedServings', { count: currentServings })}</AppText>}
 
         <FlexGroups detail={recipe.data} choices={currentChoices ?? []} onChange={setChoices} />
 
@@ -79,7 +86,7 @@ export function RecipeScreen() {
         {result ? (
           <CookResultPanel result={result} onUndone={() => setResult(null)} />
         ) : (
-          <Button label={t('recipe.cookNow')} hint={t('recipe.cookNowHint')} loading={cook.isPending} onPress={onCook} />
+          <Button label={t(mealId ? 'recipe.cookPlanned' : 'recipe.cookNow')} hint={t('recipe.cookNowHint')} loading={cook.isPending} onPress={onCook} />
         )}
         <HealthDisclaimerNote />
       </Screen>

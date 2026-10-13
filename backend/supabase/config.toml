@@ -70,7 +70,7 @@ enabled = true
 # Specifies an ordered list of seed files to load during db reset.
 # Supports glob patterns relative to supabase directory: "./seeds/*.sql"
 # Catálogo REAL (ingredientes y recetas versátiles). Las pruebas usan tests/fixtures.sql.
-sql_paths = ["./catalog/01_ingredients.sql", "./catalog/02_recipes.sql"]
+sql_paths = ["./catalog/01_ingredients.sql", "./catalog/02_recipes.sql", "./catalog/03_prices.sql"]
 
 [db.network_restrictions]
 # Enable management of network restrictions.

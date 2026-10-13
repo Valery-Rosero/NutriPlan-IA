@@ -10,3 +10,13 @@ export function formatGrams(grams: number) {
   if (grams >= 1000) return `${(grams / 1000).toLocaleString('es-CO', { maximumFractionDigits: 1 })} kg`;
   return `${Math.round(grams)} g`;
 }
+
+/** Fecha ISO "2026-10-14" → "martes 14 de octubre" (se interpreta como fecha local, sin hora). */
+export function formatDay(iso: string) {
+  return new Date(`${iso}T12:00:00Z`).toLocaleDateString('es-CO', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    timeZone: 'UTC',
+  });
+}
