@@ -1,0 +1,69 @@
+{
+  "common": {
+    "appName": "NutriPlan",
+    "retry": "Reintentar",
+    "loading": "Cargando…",
+    "comingSoon": "Disponible pronto",
+    "offline": "Sin conexión: estás viendo la última información guardada."
+  },
+  "auth": {
+    "welcome": {
+      "title": "¿Qué cocino hoy?",
+      "subtitle": "Ideas para tu familia con lo que ya tienes en casa, sin riesgos para quien tiene alergias.",
+      "createAccount": "Crear cuenta",
+      "signIn": "Ya tengo cuenta",
+      "connected": "Conectado al servidor de NutriPlan",
+      "notConnected": "No pudimos conectar con el servidor"
+    }
+  },
+  "tabs": {
+    "cook": "Cocinar",
+    "plan": "Plan",
+    "shopping": "Compras",
+    "pantry": "Despensa",
+    "profile": "Perfil"
+  },
+  "cook": {
+    "title": "¿Qué cocino con lo que tengo?",
+    "empty": "Agrega lo que tienes en la despensa y te diremos qué puedes preparar.",
+    "coverage": "Tienes el {{percent}} % de los ingredientes",
+    "missing_one": "Falta {{count}} ingrediente",
+    "missing_other": "Faltan {{count}} ingredientes",
+    "usesExpiring": "Usa algo que está por vencer",
+    "minutes": "{{count}} min"
+  },
+  "plan": { "title": "Plan de la semana" },
+  "shopping": { "title": "Lista de compras" },
+  "pantry": { "title": "Despensa" },
+  "profile": { "title": "Perfil", "signOut": "Cerrar sesión" },
+  "health": {
+    "disclaimer": "NutriPlan no reemplaza el consejo de un médico o nutricionista.",
+    "aiReview": "Recetas revisadas con apoyo de IA; no reemplazan a un profesional."
+  },
+  "errors": {
+    "consent_required": "Debes aceptar la política de tratamiento de datos y los términos vigentes.",
+    "adult_required": "NutriPlan es solo para mayores de 18 años.",
+    "health_disclaimer_required": "Acepta el aviso de salud antes de registrar condiciones médicas.",
+    "sensitive_authorization_required": "Necesitamos tu autorización para guardar alergias, dietas o datos de salud.",
+    "allergen_conflict": "Esa receta tiene un alérgeno que declaraste.",
+    "diet_conflict": "Esa receta no es compatible con tu dieta.",
+    "slot_mismatch": "Esa receta no corresponde a ese momento del día.",
+    "choice_blocked": "Esa opción tiene un alérgeno o no va con tu dieta.",
+    "too_many_choices": "Elegiste más opciones de las permitidas.",
+    "too_few_choices": "Elige más opciones para este grupo.",
+    "not_eligible": "Esa receta no cumple tus restricciones.",
+    "region_required": "Elige tu ciudad para calcular costos.",
+    "plan_not_found": "No encontramos ese plan.",
+    "meal_not_found": "No encontramos esa comida.",
+    "meal_not_pending": "Esa comida ya se cocinó o se omitió.",
+    "undo_window_expired": "Ya pasó el tiempo para deshacer.",
+    "already_rated": "Ya calificaste esta comida.",
+    "consent_outdated": "Ese documento cambió. Lee la versión nueva.",
+    "plan_overlap_confirmed": "Ya tienes un plan confirmado para esas fechas.",
+    "invalid_quantity": "La cantidad debe ser mayor que cero.",
+    "unit_incompatible": "Esa unidad no sirve para este ingrediente.",
+    "signup_failed": "No pudimos crear la cuenta. Revisa que aceptaste los documentos y que eres mayor de edad.",
+    "network": "Sin conexión. Inténtalo de nuevo.",
+    "unknown": "Algo salió mal. Inténtalo de nuevo."
+  }
+}

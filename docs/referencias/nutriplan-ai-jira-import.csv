@@ -1,0 +1,941 @@
+"Issue Id","Issue Type","Summary","Parent","Epic Name","Epic Link","Description","Priority","Labels","Labels","Labels","Labels"
+"1","Epic","Perfil y personalización","","Perfil y personalización","","Product Goal: Que cada usuario deje de improvisar qué cocinar y planifique su semana de comidas respetando su salud, sus gustos y su presupuesto.
+
+Captura y mantiene las preferencias, restricciones y ajustes finos del usuario (dieta, alergias, presupuesto, macros, tiempo de cocina) que alimentan cada recomendación de la app.","High","","","",""
+"2","Epic","Planificación inteligente de comidas","","Planificación inteligente de comidas","","Product Goal: Que cada usuario deje de improvisar qué cocinar y planifique su semana de comidas respetando su salud, sus gustos y su presupuesto.
+
+Genera, ajusta y explica los planes de comidas diarios y semanales: motor de recomendación, escalado de porciones, adaptación de recetas, asistente conversacional y recordatorios.","High","","","",""
+"3","Epic","Compras, presupuesto y despensa","","Compras, presupuesto y despensa","","Product Goal: Que cada usuario deje de improvisar qué cocinar y planifique su semana de comidas respetando su salud, sus gustos y su presupuesto.
+
+Convierte el plan de comidas en una lista de compras accionable, controla el gasto frente al presupuesto declarado, reduce el desperdicio de alimentos y prepara el terreno para foto/OCR e integraciones con supermercados.","High","","","",""
+"4","Epic","Nutrición y feedback","","Nutrición y feedback","","Product Goal: Que cada usuario deje de improvisar qué cocinar y planifique su semana de comidas respetando su salud, sus gustos y su presupuesto.
+
+Muestra información nutricional confiable por receta y por día, y usa las calificaciones y comentarios del usuario para mejorar las próximas recomendaciones.","Medium","","","",""
+"5","Epic","Comunidad y confianza","","Comunidad y confianza","","Product Goal: Que cada usuario deje de improvisar qué cocinar y planifique su semana de comidas respetando su salud, sus gustos y su presupuesto.
+
+Habilita el intercambio social de recetas y comentarios entre usuarios, y protege los datos sensibles con cifrado, consentimiento y moderación de contenido.","Medium","","","",""
+"6","Epic","Fundamentos, calidad y lanzamiento","","Fundamentos, calidad y lanzamiento","","Product Goal: Que cada usuario deje de improvisar qué cocinar y planifique su semana de comidas respetando su salud, sus gustos y su presupuesto.
+
+Habilita construir, medir, asegurar la calidad y lanzar el producto: despliegue automático, monitoreo, analítica, accesibilidad, rendimiento, validación con usuarios y publicación en tiendas.","Medium","","","",""
+"101","Story","Validar el prototipo con usuarios reales antes de construir","6","","Fundamentos, calidad y lanzamiento","Historia de usuario
+Como Product Owner, quiero validar el prototipo del onboarding, el plan semanal y la lista de compras con usuarios reales, para construir lo que de verdad necesitan y no lo que suponemos.
+
+Criterios de aceptación
+- Dado el prototipo navegable actual
+  Cuando se realizan 5 sesiones de prueba con personas que planifican sus comidas (al menos 1 con alergia alimentaria)
+  Entonces al menos 4 de 5 completan las tareas ""declarar mis alergias"", ""cambiar una comida"" y ""generar la lista de compras"" sin ayuda.
+- Caso borde: cada hallazgo de usabilidad se registra como ítem del backlog, con evidencia (nota o grabación), dentro de los 3 días siguientes a la última sesión.
+
+Ref. backlog: HU-01 | Subárea: Calidad","High","calidad","mvp","agregada-por-po",""
+"102","Story","Desplegar versiones nuevas de forma automática y segura","6","","Fundamentos, calidad y lanzamiento","Historia de usuario
+Como usuario, quiero que las actualizaciones de la app lleguen sin caídas ni fallas, para poder planificar mis comidas cuando lo necesite.
+
+Criterios de aceptación
+- Dado un cambio aprobado que se integra a la rama principal
+  Cuando pasan las pruebas automáticas
+  Entonces se despliega a un entorno de pruebas (staging) en máximo 15 minutos sin intervención manual.
+- Caso borde: si las pruebas fallan, el despliegue se detiene y se notifica al equipo; cualquier versión en producción puede revertirse a la anterior en menos de 10 minutos.
+
+Ref. backlog: HU-02 | Subárea: Plataforma","High","plataforma","mvp","agregada-por-po",""
+"1001","Sub-task","Configurar entornos de pruebas y producción","102","","","Parte de: Desplegar versiones nuevas de forma automática y segura","","","","",""
+"1002","Sub-task","Crear el pipeline de integración continua con pruebas automáticas","102","","","Parte de: Desplegar versiones nuevas de forma automática y segura","","","","",""
+"1003","Sub-task","Automatizar el despliegue a staging","102","","","Parte de: Desplegar versiones nuevas de forma automática y segura","","","","",""
+"1004","Sub-task","Documentar y probar el procedimiento de reversión","102","","","Parte de: Desplegar versiones nuevas de forma automática y segura","","","","",""
+"103","Story","Spike: validar la arquitectura del motor de recomendación","2","","Planificación inteligente de comidas","Historia de usuario
+Como equipo de desarrollo, necesitamos validar la arquitectura del motor de recomendación (reglas, ranking y modelo de lenguaje) y su costo por usuario, para decidir qué construir antes de comprometer el plan semanal.
+
+Criterios de aceptación
+- Dado un timebox de 3 días
+  Cuando termina el spike
+  Entonces existe un documento con la arquitectura recomendada y una prueba de concepto que genera un plan de 7 días respetando 5 perfiles de prueba (incluyendo uno con alergia a frutos secos y uno vegano), junto con el costo estimado por plan generado.
+- Caso borde: si el costo por plan supera el umbral acordado con el Product Owner antes de iniciar, el documento propone al menos 2 alternativas para reducirlo.
+
+Ref. backlog: HU-03 | Subárea: Plan de comidas","High","plan-de-comidas","mvp","spike","agregada-por-po"
+"104","Story","Crear cuenta e iniciar sesión","1","","Perfil y personalización","Historia de usuario
+Como usuaria nueva, quiero crear una cuenta e iniciar sesión con correo y contraseña, para conservar mi perfil y mis planes entre dispositivos.
+
+Criterios de aceptación
+- Dado que ingreso un correo válido y una contraseña de al menos 8 caracteres con una mayúscula y un número
+  Cuando toco ""Crear cuenta""
+  Entonces se crea mi cuenta, recibo un correo de verificación y accedo al onboarding.
+- Caso borde: si el correo ya está registrado, se muestra ""Este correo ya tiene una cuenta"" con enlace a ""Iniciar sesión""; tras 5 intentos fallidos de inicio de sesión, la cuenta se bloquea 15 minutos.
+
+Ref. backlog: HU-04 | Subárea: Perfil","High","perfil","mvp","agregada-por-po",""
+"1005","Sub-task","Diseñar las pantallas de registro e inicio de sesión","104","","","Parte de: Crear cuenta e iniciar sesión","","","","",""
+"1006","Sub-task","Implementar registro con verificación por correo (API)","104","","","Parte de: Crear cuenta e iniciar sesión","","","","",""
+"1007","Sub-task","Implementar bloqueo temporal tras 5 intentos fallidos","104","","","Parte de: Crear cuenta e iniciar sesión","","","","",""
+"1008","Sub-task","Construir las pantallas de registro e inicio de sesión en la app","104","","","Parte de: Crear cuenta e iniciar sesión","","","","",""
+"1009","Sub-task","Pruebas de aceptación de registro, verificación y bloqueo","104","","","Parte de: Crear cuenta e iniciar sesión","","","","",""
+"105","Story","Cifrar datos de salud sensibles (reposo y tránsito)","5","","Comunidad y confianza","Historia de usuario
+Como usuario, quiero que mis datos de salud (alergias, peso, condiciones médicas) estén cifrados, para proteger mi información sensible.
+
+Criterios de aceptación
+- Dado que guardo una condición médica en mi perfil
+  Cuando el dato se transmite del cliente al servidor y se almacena
+  Entonces la transmisión usa TLS 1.2 o superior y el campo se almacena cifrado en la base de datos, verificable en una auditoría de seguridad; ningún log de la aplicación muestra el valor en texto plano.
+
+Ref. backlog: HU-05 | Subárea: Privacidad","High","privacidad","mvp","",""
+"1010","Sub-task","Definir qué campos son datos sensibles y el esquema de cifrado en reposo","105","","","Parte de: Cifrar datos de salud sensibles (reposo y tránsito)","","","","",""
+"1011","Sub-task","Configurar TLS 1.2 o superior en todos los servicios","105","","","Parte de: Cifrar datos de salud sensibles (reposo y tránsito)","","","","",""
+"1012","Sub-task","Implementar cifrado de campos sensibles en la base de datos","105","","","Parte de: Cifrar datos de salud sensibles (reposo y tránsito)","","","","",""
+"1013","Sub-task","Revisar los logs para confirmar que no exponen datos sensibles","105","","","Parte de: Cifrar datos de salud sensibles (reposo y tránsito)","","","","",""
+"1014","Sub-task","Prueba de seguridad de la configuración","105","","","Parte de: Cifrar datos de salud sensibles (reposo y tránsito)","","","","",""
+"106","Story","Seleccionar tipo de dieta en el onboarding","1","","Perfil y personalización","Historia de usuario
+Como usuaria nueva, quiero indicar mi tipo de dieta (omnívoro, vegetariano, vegano, etc.) para que la app filtre recetas compatibles desde el primer uso.
+
+Criterios de aceptación
+- Dado que estoy en el paso ""Estilo de alimentación""
+  Cuando selecciono ""Vegetariano"" y confirmo
+  Entonces mi perfil guarda dieta_tipo=""vegetariano"" y el primer plan generado tiene 0% de recetas con carne o pescado como ingrediente principal.
+- Caso borde: si no selecciono ninguna opción, el botón ""Continuar"" queda deshabilitado y se muestra ""Selecciona una opción para continuar"".
+
+Dependencias (deben estar resueltas antes o en paralelo)
+- Crear cuenta e iniciar sesión
+
+Ref. backlog: HU-06 | Subárea: Perfil","High","perfil","mvp","",""
+"1015","Sub-task","Diseñar UX/UI: Seleccionar tipo de dieta en el onboarding","106","","","Parte de: Seleccionar tipo de dieta en el onboarding","","","","",""
+"1016","Sub-task","Implementar lógica y API: Seleccionar tipo de dieta en el onboarding","106","","","Parte de: Seleccionar tipo de dieta en el onboarding","","","","",""
+"1017","Sub-task","Construir interfaz en la app: Seleccionar tipo de dieta en el onboarding","106","","","Parte de: Seleccionar tipo de dieta en el onboarding","","","","",""
+"1018","Sub-task","Pruebas de aceptación: Seleccionar tipo de dieta en el onboarding","106","","","Parte de: Seleccionar tipo de dieta en el onboarding","","","","",""
+"107","Story","Declarar alergias alimentarias como restricción dura","1","","Perfil y personalización","Historia de usuario
+Como usuaria con alergias, quiero declarar mis alergias alimentarias para que la app nunca me sugiera recetas que las contengan.
+
+Criterios de aceptación
+- Dado que marqué ""Frutos secos"" y ""Mariscos"" como alergias
+  Cuando se genera cualquier plan o resultado de búsqueda
+  Entonces 0 recetas devueltas contienen esos alérgenos en su lista de ingredientes, incluida cualquier sustitución sugerida.
+- Caso borde: si una receta ya guardada en mis favoritos contiene un alérgeno recién declarado, se elimina automáticamente de favoritos y se me notifica el motivo.
+
+Dependencias (deben estar resueltas antes o en paralelo)
+- Crear cuenta e iniciar sesión
+
+Ref. backlog: HU-07 | Subárea: Perfil","High","perfil","mvp","",""
+"1019","Sub-task","Diseñar UX/UI: Declarar alergias alimentarias como restricción dura","107","","","Parte de: Declarar alergias alimentarias como restricción dura","","","","",""
+"1020","Sub-task","Implementar lógica y API: Declarar alergias alimentarias como restricción dura","107","","","Parte de: Declarar alergias alimentarias como restricción dura","","","","",""
+"1021","Sub-task","Construir interfaz en la app: Declarar alergias alimentarias como restricción dura","107","","","Parte de: Declarar alergias alimentarias como restricción dura","","","","",""
+"1022","Sub-task","Pruebas de aceptación: Declarar alergias alimentarias como restricción dura","107","","","Parte de: Declarar alergias alimentarias como restricción dura","","","","",""
+"108","Story","Declarar presupuesto semanal o mensual de comida","1","","Perfil y personalización","Historia de usuario
+Como usuario, quiero declarar mi presupuesto semanal o mensual de comida para que los planes generados respeten ese límite.
+
+Criterios de aceptación
+- Dado que ingreso $60.000 como presupuesto semanal para 2 personas
+  Cuando guardo el dato
+  Entonces el valor queda reflejado como techo de gasto en la pantalla de plan semanal.
+- Caso borde: el campo rechaza valores no numéricos o menores a $10.000 mostrando ""Ingresa un monto válido"", y no permite avanzar hasta corregirlo.
+
+Dependencias (deben estar resueltas antes o en paralelo)
+- Crear cuenta e iniciar sesión
+
+Ref. backlog: HU-08 | Subárea: Perfil","High","perfil","mvp","",""
+"1023","Sub-task","Diseñar UX/UI: Declarar presupuesto semanal o mensual de comida","108","","","Parte de: Declarar presupuesto semanal o mensual de comida","","","","",""
+"1024","Sub-task","Implementar lógica y API: Declarar presupuesto semanal o mensual de comida","108","","","Parte de: Declarar presupuesto semanal o mensual de comida","","","","",""
+"1025","Sub-task","Construir interfaz en la app: Declarar presupuesto semanal o mensual de comida","108","","","Parte de: Declarar presupuesto semanal o mensual de comida","","","","",""
+"1026","Sub-task","Pruebas de aceptación: Declarar presupuesto semanal o mensual de comida","108","","","Parte de: Declarar presupuesto semanal o mensual de comida","","","","",""
+"109","Story","Definir número de porciones habituales","1","","Perfil y personalización","Historia de usuario
+Como usuario, quiero indicar cuántas personas o porciones cocino habitualmente para que las cantidades vengan ajustadas desde el inicio.
+
+Criterios de aceptación
+- Dado que indiqué ""2 personas"" en el onboarding
+  Cuando se genera cualquier receta nueva
+  Entonces la porción por defecto se muestra en 2 y las cantidades de ingredientes se calculan con el factor porciones/porción_base (ej. base 4 → factor 0.5).
+
+Dependencias (deben estar resueltas antes o en paralelo)
+- Crear cuenta e iniciar sesión
+
+Ref. backlog: HU-09 | Subárea: Perfil","High","perfil","mvp","",""
+"1027","Sub-task","Diseñar UX/UI: Definir número de porciones habituales","109","","","Parte de: Definir número de porciones habituales","","","","",""
+"1028","Sub-task","Implementar lógica y API: Definir número de porciones habituales","109","","","Parte de: Definir número de porciones habituales","","","","",""
+"1029","Sub-task","Construir interfaz en la app: Definir número de porciones habituales","109","","","Parte de: Definir número de porciones habituales","","","","",""
+"1030","Sub-task","Pruebas de aceptación: Definir número de porciones habituales","109","","","Parte de: Definir número de porciones habituales","","","","",""
+"110","Story","Disponer de un catálogo inicial de recetas variado y compatible con cada dieta","2","","Planificación inteligente de comidas","Historia de usuario
+Como usuario, quiero encontrar desde el primer día recetas variadas que respeten mi dieta y mis alergias, para no encontrarme con resultados vacíos ni repetidos.
+
+Criterios de aceptación
+- Dado el catálogo cargado
+  Cuando se ejecuta la validación automática
+  Entonces el 100% de las recetas tiene ingredientes con cantidad y unidad normalizadas, porciones base, tiempo de preparación y al menos una etiqueta de dieta, y ninguna receta con alérgenos mayores carece de su etiqueta de alérgeno.
+- Caso borde: el catálogo incluye al menos 20 recetas aptas por cada dieta soportada (omnívoro, vegetariano, vegano, sin gluten, sin lactosa) para que el filtrado nunca devuelva listas vacías.
+
+Ref. backlog: HU-10 | Subárea: Recetas","High","recetas","mvp","agregada-por-po",""
+"1031","Sub-task","Definir el esquema de datos de receta (ingredientes, unidades, etiquetas)","110","","","Parte de: Disponer de un catálogo inicial de recetas variado y compatible con cada dieta","","","","",""
+"1032","Sub-task","Cargar y normalizar las 150 recetas iniciales","110","","","Parte de: Disponer de un catálogo inicial de recetas variado y compatible con cada dieta","","","","",""
+"1033","Sub-task","Crear el script de validación automática del catálogo","110","","","Parte de: Disponer de un catálogo inicial de recetas variado y compatible con cada dieta","","","","",""
+"1034","Sub-task","Verificar cobertura mínima de 20 recetas por dieta soportada","110","","","Parte de: Disponer de un catálogo inicial de recetas variado y compatible con cada dieta","","","","",""
+"111","Story","Calcular la información nutricional de cada receta a partir de sus ingredientes","4","","Nutrición y feedback","Historia de usuario
+Como usuario, quiero que la información nutricional de cada receta sea confiable y se calcule a partir de sus ingredientes, para tomar decisiones informadas sin dudar de los datos.
+
+Criterios de aceptación
+- Dado un ingrediente del catálogo
+  Cuando se consulta su registro nutricional
+  Entonces devuelve los 7 valores por 100 g junto con su fuente.
+- Dado una receta de 4 porciones
+  Cuando se calcula su información nutricional
+  Entonces el total por porción difiere en ≤5% del cálculo manual de referencia en una muestra de 10 recetas de validación.
+- Caso borde: una receta con algún ingrediente sin dato nutricional no puede publicarse en el catálogo.
+
+Dependencias (deben estar resueltas antes o en paralelo)
+- Disponer de un catálogo inicial de recetas variado y compatible con cada dieta
+
+Ref. backlog: HU-11 | Subárea: Nutrición","High","nutricion","mvp","agregada-por-po",""
+"1035","Sub-task","Seleccionar y verificar licencia de la fuente de datos nutricionales","111","","","Parte de: Calcular la información nutricional de cada receta a partir de sus ingredientes","","","","",""
+"1036","Sub-task","Cargar los valores por 100 g de los ingredientes del catálogo","111","","","Parte de: Calcular la información nutricional de cada receta a partir de sus ingredientes","","","","",""
+"1037","Sub-task","Implementar el cálculo nutricional por porción","111","","","Parte de: Calcular la información nutricional de cada receta a partir de sus ingredientes","","","","",""
+"1038","Sub-task","Validar contra 10 recetas de referencia (tolerancia ≤5%)","111","","","Parte de: Calcular la información nutricional de cada receta a partir de sus ingredientes","","","","",""
+"112","Story","Spike: validar fuentes de precios de alimentos para la región piloto","3","","Compras, presupuesto y despensa","Historia de usuario
+Como equipo de desarrollo, necesitamos validar de dónde obtener precios promedio de alimentos confiables para la región piloto, para saber si la estimación de costos es viable.
+
+Criterios de aceptación
+- Dado un timebox de 2 días
+  Cuando termina el spike
+  Entonces se documentan al menos 3 fuentes candidatas con su cobertura de los ingredientes del catálogo inicial, su frecuencia de actualización y sus condiciones de uso.
+- Caso borde: si ninguna fuente cubre al menos el 80% de los ingredientes, se propone un plan de relevamiento propio con esfuerzo estimado.
+
+Ref. backlog: HU-12 | Subárea: Presupuesto","High","presupuesto","mvp","spike","agregada-por-po"
+"113","Story","Aceptar la política de privacidad y tratamiento de datos al registrarme","5","","Comunidad y confianza","Historia de usuario
+Como usuario, quiero conocer y aceptar de forma explícita cómo se tratan mis datos personales y de salud al crear mi cuenta, para decidir con información si los comparto.
+
+Criterios de aceptación
+- Dado que estoy creando mi cuenta
+  Cuando llego al paso de registro
+  Entonces veo un enlace a la política de privacidad y una casilla de aceptación sin premarcar; el botón ""Crear cuenta"" permanece deshabilitado hasta marcarla.
+- Caso borde: el sistema guarda la versión de la política aceptada y la fecha y hora de aceptación; si la política cambia, se pide aceptar de nuevo en el siguiente inicio de sesión. La redacción debe validarse con asesoría legal conforme a la Ley 1581 de 2012 de protección de datos personales en Colombia.
+
+Dependencias (deben estar resueltas antes o en paralelo)
+- Crear cuenta e iniciar sesión
+
+Ref. backlog: HU-13 | Subárea: Privacidad","High","privacidad","mvp","agregada-por-po",""
+"1039","Sub-task","Diseñar UX/UI: Aceptar la política de privacidad y tratamiento de datos al registrarme","113","","","Parte de: Aceptar la política de privacidad y tratamiento de datos al registrarme","","","","",""
+"1040","Sub-task","Implementar lógica y API: Aceptar la política de privacidad y tratamiento de datos al registrarme","113","","","Parte de: Aceptar la política de privacidad y tratamiento de datos al registrarme","","","","",""
+"1041","Sub-task","Construir interfaz en la app: Aceptar la política de privacidad y tratamiento de datos al registrarme","113","","","Parte de: Aceptar la política de privacidad y tratamiento de datos al registrarme","","","","",""
+"1042","Sub-task","Pruebas de aceptación: Aceptar la política de privacidad y tratamiento de datos al registrarme","113","","","Parte de: Aceptar la política de privacidad y tratamiento de datos al registrarme","","","","",""
+"114","Story","Informar que la app no reemplaza el consejo médico o nutricional","4","","Nutrición y feedback","Historia de usuario
+Como usuario con una condición de salud, quiero que la app me aclare que no reemplaza a un profesional, para saber cuándo debo consultar a mi médico o nutricionista.
+
+Criterios de aceptación
+- Dado que declaro una condición médica (por ejemplo diabetes o hipertensión) en mi perfil
+  Cuando termino ese paso del onboarding
+  Entonces veo un aviso que debo aceptar antes de continuar, con el texto ""Esta app es una herramienta de apoyo y no reemplaza el consejo de un profesional de la salud"".
+- Caso borde: el aviso queda disponible de forma permanente en Configuración > Acerca de y no se vuelve a mostrar en cada inicio de sesión.
+
+Ref. backlog: HU-14 | Subárea: Nutrición","High","nutricion","mvp","agregada-por-po",""
+"1043","Sub-task","Diseñar UX/UI: Informar que la app no reemplaza el consejo médico o nutricional","114","","","Parte de: Informar que la app no reemplaza el consejo médico o nutricional","","","","",""
+"1044","Sub-task","Implementar lógica y API: Informar que la app no reemplaza el consejo médico o nutricional","114","","","Parte de: Informar que la app no reemplaza el consejo médico o nutricional","","","","",""
+"1045","Sub-task","Construir interfaz en la app: Informar que la app no reemplaza el consejo médico o nutricional","114","","","Parte de: Informar que la app no reemplaza el consejo médico o nutricional","","","","",""
+"1046","Sub-task","Pruebas de aceptación: Informar que la app no reemplaza el consejo médico o nutricional","114","","","Parte de: Informar que la app no reemplaza el consejo médico o nutricional","","","","",""
+"115","Story","Mostrar calorías y macros por porción en cada receta","4","","Nutrición y feedback","Historia de usuario
+Como usuario, quiero ver las calorías y macronutrientes de cada receta por porción, para tomar decisiones informadas.
+
+Criterios de aceptación
+- Dado cualquier receta del catálogo
+  Cuando abro su detalle
+  Entonces veo kcal, proteína (g), carbohidratos (g) y grasa (g) por porción, visibles sin necesidad de scroll adicional, calculados desde la base de datos nutricional (no estimados manualmente por el equipo de contenido).
+
+Dependencias (deben estar resueltas antes o en paralelo)
+- Calcular la información nutricional de cada receta a partir de sus ingredientes
+
+Ref. backlog: HU-15 | Subárea: Nutrición","High","nutricion","mvp","",""
+"1047","Sub-task","Diseñar UX/UI: Mostrar calorías y macros por porción en cada receta","115","","","Parte de: Mostrar calorías y macros por porción en cada receta","","","","",""
+"1048","Sub-task","Implementar lógica y API: Mostrar calorías y macros por porción en cada receta","115","","","Parte de: Mostrar calorías y macros por porción en cada receta","","","","",""
+"1049","Sub-task","Construir interfaz en la app: Mostrar calorías y macros por porción en cada receta","115","","","Parte de: Mostrar calorías y macros por porción en cada receta","","","","",""
+"1050","Sub-task","Pruebas de aceptación: Mostrar calorías y macros por porción en cada receta","115","","","Parte de: Mostrar calorías y macros por porción en cada receta","","","","",""
+"116","Story","Editar perfil en cualquier momento","1","","Perfil y personalización","Historia de usuario
+Como usuario, quiero poder editar mi perfil (dieta, alergias, presupuesto) en cualquier momento, no solo durante el registro.
+
+Criterios de aceptación
+- Dado que tengo un perfil ya creado
+  Cuando entro a ""Mi perfil"" y cambio mi presupuesto de $60.000 a $40.000
+  Entonces el plan de la semana en curso recalcula el gasto restante contra el nuevo monto sin necesidad de cerrar sesión.
+- Caso borde: si el nuevo presupuesto es menor al gasto ya registrado esa semana, se muestra ""Ya superaste tu nuevo presupuesto"" sin bloquear el guardado del cambio.
+
+Dependencias (deben estar resueltas antes o en paralelo)
+- Seleccionar tipo de dieta en el onboarding
+- Declarar alergias alimentarias como restricción dura
+
+Ref. backlog: HU-16 | Subárea: Perfil","High","perfil","mvp","",""
+"1051","Sub-task","Diseñar UX/UI: Editar perfil en cualquier momento","116","","","Parte de: Editar perfil en cualquier momento","","","","",""
+"1052","Sub-task","Implementar lógica y API: Editar perfil en cualquier momento","116","","","Parte de: Editar perfil en cualquier momento","","","","",""
+"1053","Sub-task","Construir interfaz en la app: Editar perfil en cualquier momento","116","","","Parte de: Editar perfil en cualquier momento","","","","",""
+"1054","Sub-task","Pruebas de aceptación: Editar perfil en cualquier momento","116","","","Parte de: Editar perfil en cualquier momento","","","","",""
+"117","Story","Generar plan de comidas semanal automático","2","","Planificación inteligente de comidas","Historia de usuario
+Como usuario, quiero recibir un plan de comidas semanal generado automáticamente, para no tener que decidir qué cocinar cada día.
+
+Criterios de aceptación
+- Dado que mi perfil tiene dieta, alergias y presupuesto completos
+  Cuando toco ""Generar plan semanal""
+  Entonces se generan 21 comidas (7 días x 3 comidas), 0 de ellas viola mis alergias o dieta, el tiempo de generación es ≤5 segundos en el 95% de las mediciones, y el costo total estimado se muestra junto al presupuesto declarado.
+
+Dependencias (deben estar resueltas antes o en paralelo)
+- Disponer de un catálogo inicial de recetas variado y compatible con cada dieta
+- Declarar alergias alimentarias como restricción dura
+- Spike: validar la arquitectura del motor de recomendación
+
+Ref. backlog: HU-17 | Subárea: Plan de comidas","High","plan-de-comidas","mvp","",""
+"1055","Sub-task","Diseñar UX/UI: Generar plan de comidas semanal automático","117","","","Parte de: Generar plan de comidas semanal automático","","","","",""
+"1056","Sub-task","Implementar lógica y API: Generar plan de comidas semanal automático","117","","","Parte de: Generar plan de comidas semanal automático","","","","",""
+"1057","Sub-task","Construir interfaz en la app: Generar plan de comidas semanal automático","117","","","Parte de: Generar plan de comidas semanal automático","","","","",""
+"1058","Sub-task","Pruebas de aceptación: Generar plan de comidas semanal automático","117","","","Parte de: Generar plan de comidas semanal automático","","","","",""
+"118","Story","Escalar porciones de una receta con recálculo automático","2","","Planificación inteligente de comidas","Historia de usuario
+Como usuario, quiero cambiar el número de porciones de una receta y que las cantidades de ingredientes se recalculen automáticamente.
+
+Criterios de aceptación
+- Dado que una receta base para 4 porciones lleva 200g de garbanzos
+  Cuando cambio a 6 porciones
+  Entonces la cantidad se recalcula a 300g (factor 1.5) en menos de 200ms, y la información nutricional se multiplica por el mismo factor.
+
+Dependencias (deben estar resueltas antes o en paralelo)
+- Disponer de un catálogo inicial de recetas variado y compatible con cada dieta
+
+Ref. backlog: HU-18 | Subárea: Recetas","High","recetas","mvp","",""
+"1059","Sub-task","Diseñar UX/UI: Escalar porciones de una receta con recálculo automático","118","","","Parte de: Escalar porciones de una receta con recálculo automático","","","","",""
+"1060","Sub-task","Implementar lógica y API: Escalar porciones de una receta con recálculo automático","118","","","Parte de: Escalar porciones de una receta con recálculo automático","","","","",""
+"1061","Sub-task","Construir interfaz en la app: Escalar porciones de una receta con recálculo automático","118","","","Parte de: Escalar porciones de una receta con recálculo automático","","","","",""
+"1062","Sub-task","Pruebas de aceptación: Escalar porciones de una receta con recálculo automático","118","","","Parte de: Escalar porciones de una receta con recálculo automático","","","","",""
+"119","Story","Gestionar ingredientes de la despensa (agregar, editar, eliminar)","3","","Compras, presupuesto y despensa","Historia de usuario
+Como usuario, quiero agregar, editar y eliminar ingredientes de mi despensa con su cantidad y unidad, para que la app sepa qué tengo en casa.
+
+Criterios de aceptación
+- Dado que estoy en la pantalla Despensa
+  Cuando agrego ""lentejas"" con 500 g
+  Entonces el ítem aparece en mi inventario con cantidad y unidad y queda disponible para el cruce con listas de compras y el ranking de recetas.
+- Caso borde: si agrego un ingrediente que ya existe con unidad compatible, la cantidad se suma (200 g + 300 g = 500 g) en vez de duplicar el ítem; si la unidad es incompatible (g vs unidades), se pide confirmar antes de guardar.
+
+Dependencias (deben estar resueltas antes o en paralelo)
+- Crear cuenta e iniciar sesión
+
+Ref. backlog: HU-19 | Subárea: Compras","High","compras","mvp","agregada-por-po",""
+"1063","Sub-task","Diseñar UX/UI: Gestionar ingredientes de la despensa (agregar, editar, eliminar)","119","","","Parte de: Gestionar ingredientes de la despensa (agregar, editar, eliminar)","","","","",""
+"1064","Sub-task","Implementar lógica y API: Gestionar ingredientes de la despensa (agregar, editar, eliminar)","119","","","Parte de: Gestionar ingredientes de la despensa (agregar, editar, eliminar)","","","","",""
+"1065","Sub-task","Construir interfaz en la app: Gestionar ingredientes de la despensa (agregar, editar, eliminar)","119","","","Parte de: Gestionar ingredientes de la despensa (agregar, editar, eliminar)","","","","",""
+"1066","Sub-task","Pruebas de aceptación: Gestionar ingredientes de la despensa (agregar, editar, eliminar)","119","","","Parte de: Gestionar ingredientes de la despensa (agregar, editar, eliminar)","","","","",""
+"120","Story","Estimar costos con precios promedio reales de mi región","3","","Compras, presupuesto y despensa","Historia de usuario
+Como usuario, quiero que los costos estimados se basen en precios promedio de mi región y muestren qué tan actualizados están, para confiar en el presupuesto que veo.
+
+Criterios de aceptación
+- Dado un ingrediente del catálogo y la región del usuario
+  Cuando se consulta su precio
+  Entonces se devuelve precio por unidad base (kg, L o unidad) en COP y la fecha de su última actualización; el 100% de los ingredientes del catálogo inicial tiene precio en la región piloto.
+- Caso borde: si falta el precio regional, se usa el promedio nacional y el resultado se marca como ""estimado"".
+
+Dependencias (deben estar resueltas antes o en paralelo)
+- Spike: validar fuentes de precios de alimentos para la región piloto
+- Disponer de un catálogo inicial de recetas variado y compatible con cada dieta
+
+Ref. backlog: HU-20 | Subárea: Presupuesto","High","presupuesto","mvp","agregada-por-po",""
+"1067","Sub-task","Cargar los precios de la región piloto en COP","120","","","Parte de: Estimar costos con precios promedio reales de mi región","","","","",""
+"1068","Sub-task","Implementar el servicio de consulta con respaldo de promedio nacional","120","","","Parte de: Estimar costos con precios promedio reales de mi región","","","","",""
+"1069","Sub-task","Marcar los precios estimados en la interfaz","120","","","Parte de: Estimar costos con precios promedio reales de mi región","","","","",""
+"1070","Sub-task","Verificar cobertura del 100% de los ingredientes del catálogo","120","","","Parte de: Estimar costos con precios promedio reales de mi región","","","","",""
+"121","Story","Revisar con un nutricionista titulado las recetas y reglas nutricionales","4","","Nutrición y feedback","Historia de usuario
+Como usuario con una condición de salud, quiero que las recetas y las reglas nutricionales de la app hayan sido revisadas por un nutricionista titulado, para confiar en lo que me recomienda.
+
+Criterios de aceptación
+- Dado el catálogo inicial de recetas
+  Cuando el nutricionista termina la revisión
+  Entonces el 100% de las recetas tiene registrados el nombre del revisor y la fecha de revisión, y las recetas rechazadas no se publican.
+- Caso borde: las reglas de sustitución (por ejemplo leche por leche de almendra) y los umbrales de sodio y calorías que usa la app quedan aprobados por escrito antes de usarse en producción.
+
+Dependencias (deben estar resueltas antes o en paralelo)
+- Disponer de un catálogo inicial de recetas variado y compatible con cada dieta
+
+Ref. backlog: HU-21 | Subárea: Nutrición","High","nutricion","mvp","agregada-por-po",""
+"1071","Sub-task","Coordinar al nutricionista revisor y acordar el alcance","121","","","Parte de: Revisar con un nutricionista titulado las recetas y reglas nutricionales","","","","",""
+"1072","Sub-task","Definir el formato de revisión y de registro del revisor","121","","","Parte de: Revisar con un nutricionista titulado las recetas y reglas nutricionales","","","","",""
+"1073","Sub-task","Revisar las recetas del catálogo inicial","121","","","Parte de: Revisar con un nutricionista titulado las recetas y reglas nutricionales","","","","",""
+"1074","Sub-task","Aprobar por escrito las reglas de sustitución y los umbrales","121","","","Parte de: Revisar con un nutricionista titulado las recetas y reglas nutricionales","","","","",""
+"122","Story","Detectar y corregir fallas de la app rápidamente","6","","Fundamentos, calidad y lanzamiento","Historia de usuario
+Como usuario, quiero que las fallas de la app se detecten y se corrijan rápido, para que no me impidan planificar mis comidas.
+
+Criterios de aceptación
+- Dado que ocurre un error no controlado en la app o en el servidor
+  Cuando se registra
+  Entonces el equipo recibe una alerta en máximo 5 minutos con el detalle técnico y sin incluir datos de salud del usuario.
+- Caso borde: existe un panel con tasa de errores y disponibilidad semanal, y se dispara una alerta cuando la disponibilidad cae por debajo del 99%.
+
+Ref. backlog: HU-22 | Subárea: Plataforma","Medium","plataforma","agregada-por-po","",""
+"1075","Sub-task","Diseñar UX/UI: Detectar y corregir fallas de la app rápidamente","122","","","Parte de: Detectar y corregir fallas de la app rápidamente","","","","",""
+"1076","Sub-task","Implementar lógica y API: Detectar y corregir fallas de la app rápidamente","122","","","Parte de: Detectar y corregir fallas de la app rápidamente","","","","",""
+"1077","Sub-task","Construir interfaz en la app: Detectar y corregir fallas de la app rápidamente","122","","","Parte de: Detectar y corregir fallas de la app rápidamente","","","","",""
+"1078","Sub-task","Pruebas de aceptación: Detectar y corregir fallas de la app rápidamente","122","","","Parte de: Detectar y corregir fallas de la app rápidamente","","","","",""
+"123","Story","Marcar una comida como cocinada","2","","Planificación inteligente de comidas","Historia de usuario
+Como usuario, quiero marcar una comida del plan como cocinada, para llevar el registro de lo que realmente preparé.
+
+Criterios de aceptación
+- Dado una comida planificada para hoy
+  Cuando toco ""Marcar como cocinada""
+  Entonces la comida pasa a estado ""cocinada"" con la hora de registro, se descuentan de la despensa las cantidades de ingredientes usados y se abre el selector de calificación.
+- Caso borde: si la despensa no tiene cantidad suficiente de un ingrediente, se descuenta hasta 0 sin quedar negativa y la acción no se bloquea; puedo deshacer la acción durante 10 segundos.
+
+Dependencias (deben estar resueltas antes o en paralelo)
+- Generar plan de comidas semanal automático
+- Gestionar ingredientes de la despensa (agregar, editar, eliminar)
+
+Ref. backlog: HU-23 | Subárea: Plan de comidas","High","plan-de-comidas","mvp","agregada-por-po",""
+"1079","Sub-task","Diseñar UX/UI: Marcar una comida como cocinada","123","","","Parte de: Marcar una comida como cocinada","","","","",""
+"1080","Sub-task","Implementar lógica y API: Marcar una comida como cocinada","123","","","Parte de: Marcar una comida como cocinada","","","","",""
+"1081","Sub-task","Construir interfaz en la app: Marcar una comida como cocinada","123","","","Parte de: Marcar una comida como cocinada","","","","",""
+"1082","Sub-task","Pruebas de aceptación: Marcar una comida como cocinada","123","","","Parte de: Marcar una comida como cocinada","","","","",""
+"124","Story","Generar lista de compras desde el plan semanal","3","","Compras, presupuesto y despensa","Historia de usuario
+Como usuario, quiero generar automáticamente la lista de compras a partir de mi plan semanal, para no armarla manualmente.
+
+Criterios de aceptación
+- Dado un plan semanal ya generado con 21 comidas
+  Cuando toco ""Generar lista de compras""
+  Entonces los ingredientes que se repiten en 2 o más recetas aparecen como una sola línea con la suma exacta de cantidades (ej. ""3 tazas de garbanzos"" en vez de 3 líneas separadas).
+
+Dependencias (deben estar resueltas antes o en paralelo)
+- Generar plan de comidas semanal automático
+
+Ref. backlog: HU-24 | Subárea: Compras","High","compras","mvp","",""
+"125","Story","Excluir de la lista los ingredientes ya en despensa","3","","Compras, presupuesto y despensa","Historia de usuario
+Como usuario, quiero que los ingredientes que ya tengo en despensa no aparezcan como pendientes de comprar.
+
+Criterios de aceptación
+- Dado que tengo 200g de lentejas en despensa y el plan requiere 250g en total
+  Cuando se genera la lista de compras
+  Entonces el ítem ""lentejas"" aparece con cantidad neta a comprar = 50g.
+- Caso borde: si la despensa cubre el 100% del requerimiento, el ítem aparece tachado con la nota ""ya tienes esto"" en vez de omitirse silenciosamente.
+
+Dependencias (deben estar resueltas antes o en paralelo)
+- Generar lista de compras desde el plan semanal
+- Gestionar ingredientes de la despensa (agregar, editar, eliminar)
+
+Ref. backlog: HU-25 | Subárea: Compras","High","compras","mvp","",""
+"126","Story","Marcar, eliminar y agregar ítems manualmente en la lista","3","","Compras, presupuesto y despensa","Historia de usuario
+Como usuario, quiero tachar o eliminar ítems de la lista manualmente, para ajustarla a mi realidad.
+
+Criterios de aceptación
+- Dado que estoy viendo mi lista de compras
+  Cuando toco el checkbox de un ítem
+  Entonces el ítem se tacha visualmente y se mueve al final de su sección; además puedo agregar un ítem libre mediante un campo de texto que no queda vinculado a ninguna receta.
+
+Ref. backlog: HU-26 | Subárea: Compras","High","compras","mvp","",""
+"127","Story","Mostrar costo estimado del plan semanal","3","","Compras, presupuesto y despensa","Historia de usuario
+Como usuario, quiero ver el costo estimado de mi plan semanal antes de ir a comprar, para saber si se ajusta a mi presupuesto.
+
+Criterios de aceptación
+- Dado un plan semanal generado
+  Cuando abro el resumen
+  Entonces veo el costo total estimado (suma de precio_promedio x cantidad por ingrediente) desglosado por receta, con la fuente y antigüedad del precio visible (ej. ""precios promedio Nariño, actualizados hace 5 días"").
+
+Dependencias (deben estar resueltas antes o en paralelo)
+- Estimar costos con precios promedio reales de mi región
+- Generar plan de comidas semanal automático
+
+Ref. backlog: HU-27 | Subárea: Presupuesto","High","presupuesto","mvp","",""
+"128","Story","Calificar una receta después de cocinarla","4","","Nutrición y feedback","Historia de usuario
+Como usuario, quiero calificar una receta después de cocinarla, para mejorar mis futuras recomendaciones.
+
+Criterios de aceptación
+- Dado que marco una receta como ""cocinada""
+  Cuando confirmo esa acción
+  Entonces se despliega un selector de 1 a 5 estrellas obligatorio antes de cerrar el modal, y la calificación queda asociada a receta+usuario+fecha en el historial.
+
+Dependencias (deben estar resueltas antes o en paralelo)
+- Marcar una comida como cocinada
+
+Ref. backlog: HU-28 | Subárea: Feedback","High","feedback","mvp","",""
+"129","Story","Cambiar una comida del plan por una alternativa","2","","Planificación inteligente de comidas","Historia de usuario
+Como usuario, quiero cambiar una comida específica del plan por una alternativa sugerida, sin regenerar todo el plan.
+
+Criterios de aceptación
+- Dado que estoy viendo la cena del jueves en mi plan semanal
+  Cuando toco ""Cambiar""
+  Entonces se muestran entre 2 y 4 alternativas compatibles con mi perfil; al elegir una, solo esa celda del plan cambia y el resumen de calorías y gasto se recalcula sin refrescar el resto del plan.
+
+Dependencias (deben estar resueltas antes o en paralelo)
+- Generar plan de comidas semanal automático
+
+Ref. backlog: HU-29 | Subárea: Plan de comidas","High","plan-de-comidas","mvp","",""
+"130","Story","Omitir onboarding y completarlo después","1","","Perfil y personalización","Historia de usuario
+Como usuario ocupado, quiero poder saltar el onboarding completo y completarlo después, para empezar a usar la app de inmediato.
+
+Criterios de aceptación
+- Dado que estoy en el paso 1 del onboarding
+  Cuando toco ""Completar después""
+  Entonces accedo directo al plan semanal con valores por defecto (sin restricciones, presupuesto no definido, 2 porciones) y veo un banner persistente ""Completa tu perfil para mejores recomendaciones"" hasta que lo complete o lo descarte 3 veces.
+
+Ref. backlog: HU-30 | Subárea: Perfil","Medium","perfil","","",""
+"131","Story","Medir el uso de las funciones clave para priorizar con datos","6","","Fundamentos, calidad y lanzamiento","Historia de usuario
+Como Product Owner, quiero medir el uso de las funciones clave, para decidir qué priorizar en el backlog con datos y no con intuición.
+
+Criterios de aceptación
+- Dado que un usuario completa el onboarding, genera un plan, genera una lista de compras o marca una comida como cocinada
+  Cuando ocurre cada acción
+  Entonces se registra un evento anónimo con fecha y tipo de acción.
+- Caso borde: ningún evento incluye alergias, condiciones médicas ni datos personales identificables, y el usuario puede desactivar la analítica desde Configuración.
+
+Ref. backlog: HU-31 | Subárea: Analítica","Medium","analitica","agregada-por-po","",""
+"132","Story","Alertar cuando el plan supera el presupuesto","3","","Compras, presupuesto y despensa","Historia de usuario
+Como usuario, quiero que la app me avise si mi plan supera el presupuesto declarado, antes de confirmarlo.
+
+Criterios de aceptación
+- Dado un presupuesto semanal de $60.000 y un plan con costo estimado de $68.000
+  Cuando intento confirmar el plan
+  Entonces aparece una alerta bloqueante ""Tu plan cuesta $8.000 más de tu presupuesto"" con las opciones ""Ajustar automáticamente"" y ""Confirmar de todos modos""; no puedo avanzar sin elegir una.
+
+Dependencias (deben estar resueltas antes o en paralelo)
+- Mostrar costo estimado del plan semanal
+- Declarar presupuesto semanal o mensual de comida
+
+Ref. backlog: HU-32 | Subárea: Presupuesto","High","presupuesto","mvp","",""
+"133","Story","Exportar o eliminar todos mis datos","5","","Comunidad y confianza","Historia de usuario
+Como usuario, quiero poder exportar o eliminar todos mis datos de la app, para tener control sobre mi información.
+
+Criterios de aceptación
+- Dado que estoy en configuración de privacidad
+  Cuando toco ""Eliminar mi cuenta y datos"" y confirmo reingresando mi contraseña
+  Entonces todos mis datos personales se eliminan o anonimizan en un plazo máximo de 30 días, con confirmación enviada por correo.
+
+Dependencias (deben estar resueltas antes o en paralelo)
+- Crear cuenta e iniciar sesión
+
+Ref. backlog: HU-33 | Subárea: Privacidad","High","privacidad","mvp","",""
+"134","Story","Usar calificaciones para ajustar futuras recomendaciones","4","","Nutrición y feedback","Historia de usuario
+Como usuario, quiero que mis calificaciones afecten las próximas recomendaciones, para no volver a ver recetas que no me gustaron.
+
+Criterios de aceptación
+- Dado que califiqué ""Sopa de lentejas"" con 1 estrella
+  Cuando se genera mi próximo plan semanal
+  Entonces esa receta específica no vuelve a aparecer durante al menos 60 días, y recetas con ingredientes principales similares bajan su prioridad en el ranking un 20%.
+
+Dependencias (deben estar resueltas antes o en paralelo)
+- Calificar una receta después de cocinarla
+
+Ref. backlog: HU-34 | Subárea: Feedback","High","feedback","mvp","",""
+"135","Story","Organizar lista de compras por sección del supermercado","3","","Compras, presupuesto y despensa","Historia de usuario
+Como usuario, quiero que la lista esté organizada por sección del supermercado (verdulería, lácteos, despensa), para comprar más rápido.
+
+Criterios de aceptación
+- Dado una lista de compras con 15 ítems de distintas categorías
+  Cuando se muestra la lista
+  Entonces los ítems se agrupan bajo mínimo 4 encabezados de sección; si arrastro un encabezado a otra posición, el nuevo orden se recuerda en la siguiente lista generada.
+
+Dependencias (deben estar resueltas antes o en paralelo)
+- Generar lista de compras desde el plan semanal
+
+Ref. backlog: HU-35 | Subárea: Compras","Medium","compras","","",""
+"136","Story","Ajustar objetivo de macronutrientes (slider de proteína)","1","","Perfil y personalización","Historia de usuario
+Como usuario, quiero ajustar mi objetivo de proteína, carbohidratos y grasa para que las recetas sugeridas respeten mis macros.
+
+Criterios de aceptación
+- Dado que muevo el slider de proteína de 30% a 40% y lo suelto
+  Cuando el sistema recalcula
+  Entonces la franja de macros se actualiza en menos de 300ms (carbohidratos y grasa se ajustan para sumar 100%) y las recetas sugeridas desde ese momento aportan un mínimo de 35% de calorías provenientes de proteína.
+
+Ref. backlog: HU-36 | Subárea: Personalización","Medium","personalizacion","","",""
+"137","Story","Fijar tiempo máximo de cocina","1","","Perfil y personalización","Historia de usuario
+Como usuario con poco tiempo, quiero fijar un tiempo máximo de cocción para que solo se me sugieran recetas que respeten ese límite.
+
+Criterios de aceptación
+- Dado que fijo 20 minutos como tiempo máximo
+  Cuando se genera el plan semanal o busco una receta
+  Entonces ninguna receta con tiempo_preparación > 20 minutos aparece en los resultados.
+- Caso borde: si no existe ninguna receta compatible con el resto de mis restricciones, se muestra ""No encontramos recetas de 20 min o menos con tus restricciones actuales, ¿probamos con 30?"" en vez de una lista vacía.
+
+Ref. backlog: HU-37 | Subárea: Personalización","Medium","personalizacion","","",""
+"138","Story","Seleccionar cocinas favoritas","1","","Perfil y personalización","Historia de usuario
+Como usuario, quiero seleccionar mis cocinas favoritas (mediterránea, asiática, mexicana, etc.) para recibir más variedad dentro de mi gusto.
+
+Criterios de aceptación
+- Dado que selecciono ""Mediterránea"" y ""Asiática"" como cocinas favoritas
+  Cuando se genera el plan semanal
+  Entonces al menos el 60% de las 21 comidas del plan pertenecen a esas dos categorías, salvo que eso entre en conflicto con la regla de no repetir proteína (épica Motor de planes).
+
+Ref. backlog: HU-38 | Subárea: Personalización","Medium","personalizacion","","",""
+"139","Story","Generar plan solo para hoy","2","","Planificación inteligente de comidas","Historia de usuario
+Como usuario, quiero poder pedir un plan solo para hoy en vez de la semana completa, para decisiones del día a día.
+
+Criterios de aceptación
+- Dado que estoy en la pantalla principal
+  Cuando toco ""Plan de hoy""
+  Entonces se genera una sugerencia de desayuno/almuerzo/cena en menos de 3 segundos, usando como filtro adicional el tiempo disponible que declaré para hoy (si lo indiqué).
+
+Ref. backlog: HU-39 | Subárea: Plan de comidas","Medium","plan-de-comidas","","",""
+"140","Story","Usar la app con baja visión o lector de pantalla","6","","Fundamentos, calidad y lanzamiento","Historia de usuario
+Como usuario con baja visión, quiero que la app tenga buen contraste, texto escalable y compatibilidad con lector de pantalla, para poder planificar mis comidas sin ayuda.
+
+Criterios de aceptación
+- Dado cualquiera de las pantallas principales (preferencias, plan semanal, receta y lista de compras)
+  Cuando se revisa con una herramienta de contraste
+  Entonces todos los textos cumplen una relación de contraste mínima de 4.5:1.
+- Dado que aumento el tamaño de fuente del sistema al 200%
+  Cuando abro esas pantallas
+  Entonces no hay texto cortado ni controles superpuestos, y todos los botones e imágenes tienen una etiqueta legible por lector de pantalla.
+
+Ref. backlog: HU-40 | Subárea: Calidad","Medium","calidad","agregada-por-po","",""
+"141","Story","Ver gasto acumulado mensual vs. presupuesto","3","","Compras, presupuesto y despensa","Historia de usuario
+Como usuario, quiero ver mi gasto acumulado del mes frente a mi presupuesto mensual, para tomar decisiones informadas.
+
+Criterios de aceptación
+- Dado que registré compras durante el mes
+  Cuando abro la pantalla de despensa y gasto
+  Entonces veo gasto_acumulado/presupuesto_mensual con el porcentaje exacto (ej. ""64% — $38.200 de $60.000""); si supera el 100%, la barra cambia a color de alerta.
+
+Ref. backlog: HU-41 | Subárea: Presupuesto","Medium","presupuesto","","",""
+"142","Story","Registrar fecha de vencimiento de ingredientes","3","","Compras, presupuesto y despensa","Historia de usuario
+Como usuario, quiero registrar la fecha de vencimiento de los ingredientes de mi despensa, para que la app me avise antes de que se echen a perder.
+
+Criterios de aceptación
+- Dado que agrego ""cilantro"" a mi despensa
+  Cuando completo el campo opcional de fecha de vencimiento
+  Entonces el ítem aparece en la sección ""por vencer"" ordenado ascendentemente por días restantes.
+- Caso borde: si no indico fecha, el ítem se lista en ""sin fecha"" y no genera alertas.
+
+Dependencias (deben estar resueltas antes o en paralelo)
+- Gestionar ingredientes de la despensa (agregar, editar, eliminar)
+
+Ref. backlog: HU-42 | Subárea: Desperdicio","Medium","desperdicio","","",""
+"143","Story","Mostrar micronutrientes clave (sodio, azúcar, fibra)","4","","Nutrición y feedback","Historia de usuario
+Como usuario con una condición médica, quiero ver sodio, azúcar y fibra por receta, para cuidar mi condición.
+
+Criterios de aceptación
+- Dado que declaré hipertensión en mi perfil
+  Cuando abro el detalle nutricional expandido de una receta
+  Entonces veo el contenido de sodio en mg junto con una referencia visual si supera el 30% de la ingesta diaria recomendada.
+
+Dependencias (deben estar resueltas antes o en paralelo)
+- Calcular la información nutricional de cada receta a partir de sus ingredientes
+
+Ref. backlog: HU-43 | Subárea: Nutrición","Medium","nutricion","","",""
+"144","Story","Dejar comentario corto sobre una receta","4","","Nutrición y feedback","Historia de usuario
+Como usuario, quiero dejar un comentario corto sobre una receta (ej. 'muy salado'), para dar contexto además de la calificación numérica.
+
+Criterios de aceptación
+- Dado que califiqué una receta con 2 estrellas
+  Cuando se me pregunta ""¿qué pasó?""
+  Entonces puedo elegir una etiqueta rápida (""muy salado"", ""tardó más de lo esperado"", ""no me gustó el sabor"") o escribir texto libre de hasta 200 caracteres; el campo es opcional y puedo omitirlo con un toque.
+
+Ref. backlog: HU-44 | Subárea: Feedback","Medium","feedback","","",""
+"145","Story","Activar modo «priorizar despensa»","1","","Perfil y personalización","Historia de usuario
+Como usuario, quiero activar 'priorizar despensa' para que el sistema sugiera primero recetas que usan lo que ya tengo en casa.
+
+Criterios de aceptación
+- Dado que activo el interruptor ""Priorizar despensa"" y tengo garbanzos y espinaca en mi inventario
+  Cuando se genera el plan del día
+  Entonces las recetas que usan 2 o más ingredientes ya declarados en despensa ocupan las primeras 3 posiciones del ranking, por encima de recetas con igual calificación pero 0 ingredientes en despensa.
+
+Dependencias (deben estar resueltas antes o en paralelo)
+- Gestionar ingredientes de la despensa (agregar, editar, eliminar)
+- Generar plan de comidas semanal automático
+
+Ref. backlog: HU-45 | Subárea: Personalización","Medium","personalizacion","","",""
+"146","Story","Evitar repetir proteína principal en días consecutivos","2","","Planificación inteligente de comidas","Historia de usuario
+Como usuario, quiero que el plan no repita la misma proteína principal más de 2 veces seguidas, para tener variedad.
+
+Criterios de aceptación
+- Dado que el almuerzo del lunes tiene pollo como proteína principal
+  Cuando se genera el almuerzo del martes
+  Entonces el martes no puede tener pollo como proteína principal; a partir del tercer día consecutivo sin esa proteína, puede volver a aparecer.
+
+Dependencias (deben estar resueltas antes o en paralelo)
+- Generar plan de comidas semanal automático
+
+Ref. backlog: HU-46 | Subárea: Plan de comidas","Medium","plan-de-comidas","","",""
+"147","Story","Sugerir sustitutos de ingredientes según restricciones","2","","Planificación inteligente de comidas","Historia de usuario
+Como usuario con alguna intolerancia leve, quiero que la app me sugiera sustitutos de un ingrediente que no puedo comer dentro de una receta que me gusta.
+
+Criterios de aceptación
+- Dado que tengo intolerancia a la lactosa declarada y veo una receta con ""leche"" en sus ingredientes
+  Cuando abro el detalle
+  Entonces aparece un ícono de sustitución junto a ""leche"" que ofrece ""leche de almendra"" o ""leche sin lactosa"" validada contra mi restricción, con un toque para reemplazarla también en la lista de compras.
+
+Dependencias (deben estar resueltas antes o en paralelo)
+- Disponer de un catálogo inicial de recetas variado y compatible con cada dieta
+
+Ref. backlog: HU-47 | Subárea: Recetas","Medium","recetas","","",""
+"148","Story","Recordatorio de la próxima comida","2","","Planificación inteligente de comidas","Historia de usuario
+Como usuario, quiero recibir un recordatorio de cuál es mi próxima comida, para no olvidarme del plan del día.
+
+Criterios de aceptación
+- Dado que tengo notificaciones activadas y una cena planificada a las 20:00
+  Cuando llegan las 19:30 (30 min configurable antes)
+  Entonces recibo una notificación push ""Tu cena de hoy: [nombre receta]"".
+- Caso borde: si ya marqué esa comida como cocinada antes de las 19:30, la notificación no se envía.
+
+Dependencias (deben estar resueltas antes o en paralelo)
+- Generar plan de comidas semanal automático
+- Marcar una comida como cocinada
+
+Ref. backlog: HU-48 | Subárea: Notificaciones","Medium","notificaciones","","",""
+"149","Story","Configurar frecuencia de notificaciones","2","","Planificación inteligente de comidas","Historia de usuario
+Como usuario, quiero poder desactivar o ajustar la frecuencia de las notificaciones, para que no se sientan invasivas.
+
+Criterios de aceptación
+- Dado que estoy en configuración de notificaciones
+  Cuando selecciono ""Solo resumen semanal""
+  Entonces dejo de recibir recordatorios diarios de comida y en su lugar recibo un único resumen los domingos, aplicado desde la próxima notificación programada.
+
+Ref. backlog: HU-49 | Subárea: Notificaciones","Medium","notificaciones","","",""
+"150","Story","Abrir y navegar la app con rapidez","6","","Fundamentos, calidad y lanzamiento","Historia de usuario
+Como usuario, quiero que la app abra y responda rápido incluso con conexión limitada, para no perder tiempo al planificar mis comidas.
+
+Criterios de aceptación
+- Dado un teléfono de gama media con conexión 4G
+  Cuando abro la app
+  Entonces la pantalla principal es utilizable en máximo 3 segundos en el 95% de las mediciones.
+- Caso borde: si la conexión falla durante la carga, se muestra un mensaje claro con la opción de reintentar, nunca una pantalla en blanco.
+
+Ref. backlog: HU-50 | Subárea: Calidad","Medium","calidad","agregada-por-po","",""
+"151","Story","Reportar un problema o enviar sugerencias desde la app","4","","Nutrición y feedback","Historia de usuario
+Como usuario, quiero reportar un problema o enviar una sugerencia desde la app, para que el equipo mejore el producto.
+
+Criterios de aceptación
+- Dado que estoy en cualquier pantalla
+  Cuando abro Configuración > Ayuda y envío un mensaje de hasta 500 caracteres con una captura opcional
+  Entonces recibo una confirmación y el equipo lo recibe con la versión de la app y el modelo del dispositivo.
+- Caso borde: el envío no incluye datos de salud ni de perfil, salvo que yo los escriba en el mensaje.
+
+Ref. backlog: HU-51 | Subárea: Feedback","Medium","feedback","agregada-por-po","",""
+"152","Story","Sugerir reemplazos para ajustar el plan al presupuesto","3","","Compras, presupuesto y despensa","Historia de usuario
+Como usuario que excede su presupuesto, quiero recibir sugerencias automáticas de reemplazo (ej. proteína más económica) para ajustarme sin rehacer todo el plan.
+
+Criterios de aceptación
+- Dado que mi plan excede el presupuesto en $8.000
+  Cuando toco ""Ajustar automáticamente""
+  Entonces el sistema propone al menos 2 sustituciones concretas con el ahorro exacto (ej. ""cambiar salmón por atún enlatado: ahorras $6.500"") y recalcula el nuevo total en tiempo real al aceptar cada una.
+
+Dependencias (deben estar resueltas antes o en paralelo)
+- Alertar cuando el plan supera el presupuesto
+
+Ref. backlog: HU-52 | Subárea: Presupuesto","Medium","presupuesto","","",""
+"153","Story","Notificar ingredientes por vencer con recetas sugeridas","3","","Compras, presupuesto y despensa","Historia de usuario
+Como usuario, quiero recibir una notificación cuando un ingrediente esté por vencer, junto con recetas que lo usan.
+
+Criterios de aceptación
+- Dado un ingrediente que vence en 2 días
+  Cuando el sistema ejecuta su revisión diaria programada
+  Entonces se envía una notificación push con al menos 1 receta real del catálogo que use ese ingrediente como principal, nunca una sugerencia genérica de ""cocina algo con esto"".
+
+Dependencias (deben estar resueltas antes o en paralelo)
+- Registrar fecha de vencimiento de ingredientes
+- Recordatorio de la próxima comida
+
+Ref. backlog: HU-53 | Subárea: Desperdicio","Medium","desperdicio","","",""
+"154","Story","Solicitar consentimiento explícito para funciones de comunidad","5","","Comunidad y confianza","Historia de usuario
+Como usuario, quiero dar consentimiento explícito antes de que mis datos se usen para funciones de comunidad, para decidir qué comparto.
+
+Criterios de aceptación
+- Dado que nunca he usado funciones de comunidad
+  Cuando intento publicar una receta o comentario por primera vez
+  Entonces se muestra un modal de consentimiento explícito explicando qué se hará público; sin aceptar, la acción de publicar queda bloqueada.
+
+Ref. backlog: HU-54 | Subárea: Privacidad","Medium","privacidad","","",""
+"155","Story","Mostrar motivo de cada receta sugerida","2","","Planificación inteligente de comidas","Historia de usuario
+Como usuario, quiero ver por qué se me sugirió cada receta, para confiar más en las recomendaciones.
+
+Criterios de aceptación
+- Dado que una receta fue sugerida porque usa un ingrediente de mi despensa próximo a vencer
+  Cuando abro su detalle
+  Entonces veo una etiqueta con el motivo específico (ej. ""Sugerida porque tu cilantro vence en 2 días""), nunca un texto genérico como ""Recomendado para ti"".
+
+Dependencias (deben estar resueltas antes o en paralelo)
+- Generar plan de comidas semanal automático
+
+Ref. backlog: HU-55 | Subárea: Plan de comidas","Medium","plan-de-comidas","","",""
+"156","Story","Manejar ingredientes no lineales al escalar porciones","2","","Planificación inteligente de comidas","Historia de usuario
+Como usuario, quiero que cantidades no lineales (especias, tiempos de horno) no escalen de forma absurda al cambiar porciones.
+
+Criterios de aceptación
+- Dado que una receta marca ""1 cucharadita de sal"" como ingrediente no lineal
+  Cuando escalo de 4 a 12 porciones (factor 3)
+  Entonces la sal NO se multiplica linealmente a 3 cucharaditas, sino que se ajusta según la regla definida, dentro de un rango validado por un nutricionista.
+
+Ref. backlog: HU-56 | Subárea: Recetas","Medium","recetas","","",""
+"157","Story","Cambiar una comida mediante el asistente conversacional","2","","Planificación inteligente de comidas","Historia de usuario
+Como usuario, quiero pedirle al asistente en lenguaje natural que me cambie una comida del día, para ajustar el plan sin navegar menús.
+
+Criterios de aceptación
+- Dado que escribo ""cámbiame la cena, no quiero lentejas""
+  Cuando envío el mensaje
+  Entonces el asistente responde en menos de 2 segundos con una alternativa que NO contiene lentejas y un botón ""Aplicar"" que reemplaza la cena sin salir del chat.
+
+Dependencias (deben estar resueltas antes o en paralelo)
+- Cambiar una comida del plan por una alternativa
+
+Ref. backlog: HU-57 | Subárea: Asistente IA","Medium","asistente-ia","","",""
+"158","Story","Descargar la app desde la tienda oficial de mi teléfono","6","","Fundamentos, calidad y lanzamiento","Historia de usuario
+Como usuario, quiero descargar NutriPlan AI desde la tienda oficial de mi teléfono, para instalarla de forma segura y recibir actualizaciones.
+
+Criterios de aceptación
+- Dado la versión 1.0 aprobada en la Sprint Review
+  Cuando se envía a Google Play y App Store
+  Entonces la ficha cumple los requisitos de cada tienda (descripción, capturas, clasificación de contenido y URL de la política de privacidad) y la versión queda aprobada y publicada.
+- Caso borde: si una tienda rechaza la versión, el motivo se registra como ítem del backlog con prioridad alta y se corrige antes de reenviar.
+
+Dependencias (deben estar resueltas antes o en paralelo)
+- Aceptar la política de privacidad y tratamiento de datos al registrarme
+- Desplegar versiones nuevas de forma automática y segura
+
+Ref. backlog: HU-58 | Subárea: Lanzamiento","High","lanzamiento","mvp","agregada-por-po",""
+"159","Story","Resumen nutricional diario vs. objetivos","4","","Nutrición y feedback","Historia de usuario
+Como usuario, quiero ver un resumen nutricional diario comparado contra mis objetivos, para saber si voy bien encaminado.
+
+Criterios de aceptación
+- Dado que marqué como cocinadas 2 de las 3 comidas de hoy
+  Cuando abro ""Mi día""
+  Entonces veo el total acumulado de kcal y macros de esas 2 comidas comparado contra mi objetivo diario, con la comida faltante mostrada como ""pendiente"" y no contabilizada como 0.
+
+Dependencias (deben estar resueltas antes o en paralelo)
+- Marcar una comida como cocinada
+- Mostrar calorías y macros por porción en cada receta
+
+Ref. backlog: HU-59 | Subárea: Nutrición","Medium","nutricion","","",""
+"160","Story","Armar comida solo con ingredientes de la despensa (asistente)","2","","Planificación inteligente de comidas","Historia de usuario
+Como usuario, quiero poder pedirle al asistente que arme mi próxima comida solo con lo que tengo en la despensa.
+
+Criterios de aceptación
+- Dado que escribo ""arma algo solo con lo que tengo""
+  Cuando el asistente procesa el pedido
+  Entonces la receta devuelta usa el 100% de sus ingredientes principales desde mi despensa declarada, sin agregar ítems que requieran compra.
+- Caso borde: si no es posible, responde explícitamente ""no tengo una receta completa solo con tu despensa, te falta X"" en vez de forzar una sugerencia incompleta.
+
+Dependencias (deben estar resueltas antes o en paralelo)
+- Gestionar ingredientes de la despensa (agregar, editar, eliminar)
+- Cambiar una comida mediante el asistente conversacional
+
+Ref. backlog: HU-60 | Subárea: Asistente IA","Medium","asistente-ia","","",""
+"161","Story","Compartir lista de compras con otra persona","3","","Compras, presupuesto y despensa","Historia de usuario
+Como usuario, quiero compartir mi lista de compras con otra persona de mi hogar, para dividir la compra.
+
+Criterios de aceptación
+- Dado que tengo una lista de compras generada
+  Cuando toco ""Compartir"" y la otra persona abre el enlace
+  Entonces si esa persona marca un ítem como comprado, el cambio se refleja en mi app en menos de 5 segundos.
+
+Dependencias (deben estar resueltas antes o en paralelo)
+- Generar lista de compras desde el plan semanal
+
+Ref. backlog: HU-61 | Subárea: Compras","Low","compras","","",""
+"162","Story","Sugerir recetas de aprovechamiento de sobras","3","","Compras, presupuesto y despensa","Historia de usuario
+Como usuario, quiero que sobras de una receta (ej. medio pimiento) generen sugerencias de aprovechamiento para el día siguiente.
+
+Criterios de aceptación
+- Dado que marco ""sobró medio pimiento"" al finalizar una receta
+  Cuando se genera el plan del día siguiente
+  Entonces al menos una receta sugerida incluye pimiento entre sus ingredientes principales.
+
+Ref. backlog: HU-62 | Subárea: Desperdicio","Low","desperdicio","","",""
+"163","Story","Reconocer ingredientes desde una foto","3","","Compras, presupuesto y despensa","Historia de usuario
+Como usuario, quiero tomar una foto de mi despensa o refrigerador para que la app identifique automáticamente los ingredientes disponibles.
+
+Criterios de aceptación
+- Dado que tomo una foto de mi refrigerador
+  Cuando la app procesa la imagen
+  Entonces identifica correctamente al menos el 70% de los ítems presentes sobre una lista de prueba de 20 alimentos comunes, y me permite corregir o eliminar cualquier ítem mal identificado antes de guardar.
+
+Dependencias (deben estar resueltas antes o en paralelo)
+- Gestionar ingredientes de la despensa (agregar, editar, eliminar)
+
+Ref. backlog: HU-63 | Subárea: Foto y OCR","Low","foto-y-ocr","","",""
+"164","Story","Escanear recibo de compra con OCR","3","","Compras, presupuesto y despensa","Historia de usuario
+Como usuario, quiero escanear el recibo de mi compra para actualizar mi despensa y mi gasto real automáticamente.
+
+Criterios de aceptación
+- Dado que subo la foto de un recibo de supermercado estándar
+  Cuando se procesa con OCR
+  Entonces se extraen correctamente ítem, cantidad y precio del 80% de las líneas en una muestra de prueba de 20 recibos; las líneas no reconocidas quedan marcadas para revisión manual, nunca se descartan silenciosamente.
+
+Dependencias (deben estar resueltas antes o en paralelo)
+- Gestionar ingredientes de la despensa (agregar, editar, eliminar)
+- Ver gasto acumulado mensual vs. presupuesto
+
+Ref. backlog: HU-64 | Subárea: Foto y OCR","Low","foto-y-ocr","","",""
+"165","Story","Mostrar precios actualizados según supermercado elegido","3","","Compras, presupuesto y despensa","Historia de usuario
+Como usuario, quiero ver el precio actualizado de los ingredientes de mi lista según el supermercado que elijo, para presupuestar con precisión.
+
+Criterios de aceptación
+- Dado que selecciono ""Supermercado X"" como mi tienda habitual
+  Cuando genero mi lista de compras
+  Entonces cada ítem muestra el precio obtenido vía API de esa tienda con antigüedad ≤24 horas.
+- Caso borde: si la API falla, se usa el precio promedio histórico y se indica ""precio estimado, no en tiempo real"".
+
+Dependencias (deben estar resueltas antes o en paralelo)
+- Estimar costos con precios promedio reales de mi región
+
+Ref. backlog: HU-65 | Subárea: Supermercados","Low","supermercados","","",""
+"166","Story","Enviar lista de compras como pedido al supermercado","3","","Compras, presupuesto y despensa","Historia de usuario
+Como usuario, quiero hacer el pedido de mi lista de compras directamente desde la app, para no tener que reingresarla en otra plataforma.
+
+Criterios de aceptación
+- Dado que tengo una lista de compras completa y un supermercado conectado
+  Cuando toco ""Pedir ahora""
+  Entonces los ítems se agregan al carrito externo vía su API y veo una pantalla de confirmación con el total antes de que se procese cualquier pago, sin cobros automáticos sin confirmación explícita.
+
+Dependencias (deben estar resueltas antes o en paralelo)
+- Mostrar precios actualizados según supermercado elegido
+- Generar lista de compras desde el plan semanal
+
+Ref. backlog: HU-66 | Subárea: Supermercados","Low","supermercados","","",""
+"167","Story","Publicar receta propia o adaptación","5","","Comunidad y confianza","Historia de usuario
+Como usuario, quiero publicar una receta propia o una adaptación, para compartirla con otros usuarios.
+
+Criterios de aceptación
+- Dado que completo nombre, ingredientes y pasos de una receta propia
+  Cuando toco ""Publicar""
+  Entonces la receta pasa a estado ""en revisión"" si contiene palabras clave sensibles (ej. términos médicos), o se publica de inmediato en el feed comunitario si no las contiene.
+
+Dependencias (deben estar resueltas antes o en paralelo)
+- Crear cuenta e iniciar sesión
+- Solicitar consentimiento explícito para funciones de comunidad
+
+Ref. backlog: HU-67 | Subárea: Comunidad","Low","comunidad","","",""
+"168","Story","Comentar y dejar tips en recetas de la comunidad","5","","Comunidad y confianza","Historia de usuario
+Como usuario, quiero comentar y dejar tips en recetas de otros usuarios, para enriquecer la experiencia colectiva.
+
+Criterios de aceptación
+- Dado una receta publicada en el feed comunitario
+  Cuando otro usuario escribe un comentario
+  Entonces el comentario aparece ordenado cronológicamente en menos de 3 segundos, con un botón ""Reportar"" visible en cada comentario.
+
+Dependencias (deben estar resueltas antes o en paralelo)
+- Publicar receta propia o adaptación
+
+Ref. backlog: HU-68 | Subárea: Comunidad","Low","comunidad","","",""
+"169","Story","Moderar contenido publicado por usuarios","5","","Comunidad y confianza","Historia de usuario
+Como administrador de la plataforma, quiero moderar el contenido publicado por usuarios, para evitar spam o consejos nutricionales peligrosos.
+
+Criterios de aceptación
+- Dado que un comentario recibe 3 reportes de usuarios distintos
+  Cuando se alcanza ese umbral
+  Entonces el comentario se oculta automáticamente del feed público y queda en cola de revisión manual dentro de las siguientes 24 horas.
+
+Dependencias (deben estar resueltas antes o en paralelo)
+- Publicar receta propia o adaptación
+
+Ref. backlog: HU-69 | Subárea: Comunidad","Low","comunidad","","",""
+"170","Story","Activar modo batch cooking","1","","Perfil y personalización","Historia de usuario
+Como usuario que cocina para varios días, quiero activar el modo 'batch cooking' para recibir recetas que rindan varias porciones y se conserven bien.
+
+Criterios de aceptación
+- Dado que activo el modo ""Batch cooking""
+  Cuando se genera una receta de almuerzo o cena
+  Entonces solo se sugieren recetas etiquetadas con rendimiento ≥4 porciones y con indicación de conservación (refrigerador o congelador) visible en el detalle.
+
+Ref. backlog: HU-70 | Subárea: Personalización","Low","personalizacion","","",""
+"171","Story","Definir nivel de picante preferido","1","","Perfil y personalización","Historia de usuario
+Como usuario, quiero indicar mi nivel de picante preferido para que las recetas se ajusten a mi tolerancia.
+
+Criterios de aceptación
+- Dado que fijo el nivel de picante en ""Ninguno""
+  Cuando se genera cualquier receta
+  Entonces se excluyen recetas con ingredientes marcados como picantes (ají, chile, pimienta de cayena), salvo que yo los agregue manualmente como opcional.
+
+Ref. backlog: HU-71 | Subárea: Personalización","Low","personalizacion","","",""
+"172","Story","Ofrecer «versión rápida» de una receta","2","","Planificación inteligente de comidas","Historia de usuario
+Como usuario con poco tiempo, quiero pedir una 'versión rápida' de una receta para reducir el tiempo de preparación.
+
+Criterios de aceptación
+- Dado que una receta tiene un tiempo estimado de 40 minutos
+  Cuando toco ""Versión rápida""
+  Entonces se muestra una variante con tiempo estimado ≤25 minutos, señalando explícitamente qué pasos se combinaron o qué atajo se usó (ej. ""salsa de tomate en lata en vez de tomates frescos"").
+
+Ref. backlog: HU-72 | Subárea: Recetas","Low","recetas","","",""
+"173","Story","Respuestas rápidas en el chat del asistente","2","","Planificación inteligente de comidas","Historia de usuario
+Como usuario, quiero usar respuestas rápidas predefinidas en el chat, para no tener que escribir siempre mi pedido.
+
+Criterios de aceptación
+- Dado que abro el asistente por primera vez en el día
+  Cuando se carga la pantalla
+  Entonces se muestran exactamente 3 chips de pedidos frecuentes basados en mi historial de uso (ej. si suelo pedir ""menos calorías"", ese chip aparece primero).
+
+Ref. backlog: HU-73 | Subárea: Asistente IA","Low","asistente-ia","","",""

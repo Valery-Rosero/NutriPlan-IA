@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NutriPlan AI — Vista previa del producto</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FBF7EF;
+    --paper-dim:#F2ECDD;
+    --card:#FFFFFF;
+    --ink:#20241D;
+    --ink-soft:#5B5B4E;
+    --ink-faint:#8C8C7C;
+    --herb:#2E4A34;
+    --herb-deep:#1D3123;
+    --yolk:#E2A63B;
+    --clay:#B1512E;
+    --sage:#8FA187;
+    --sage-bg:#E7ECE5;
+    --line: rgba(32,36,29,0.12);
+    --bezel:#181A14;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--paper); color:var(--ink); font-family:'Inter',sans-serif;}
+  h1,h2,h3,.serif{font-family:'Fraunces',serif; font-weight:500; letter-spacing:-0.01em;}
+
+  .topbar{padding:2.6rem 6vw 1.6rem; border-bottom:1px solid var(--line);}
+  .topbar .eyebrow{color:var(--clay); font-size:0.82rem; margin:0 0 0.5rem;}
+  .topbar h1{font-size:clamp(1.9rem,3.4vw,2.6rem); margin:0 0 0.5rem; color:var(--herb-deep);}
+  .topbar p{margin:0; color:var(--ink-soft); max-width:58ch; font-size:1rem;}
+
+  .stage{
+    display:grid;
+    grid-template-columns:220px auto 1fr;
+    gap:3rem;
+    max-width:1260px;
+    margin:0 auto;
+    padding:3rem 6vw 6rem;
+    align-items:start;
+  }
+  @media (max-width:1020px){ .stage{grid-template-columns:1fr; justify-items:center;} }
+
+  .tabs{display:flex; flex-direction:column; gap:0.15rem; position:sticky; top:2rem;}
+  @media (max-width:1020px){
+    .tabs{flex-direction:row; overflow-x:auto; width:100%; position:static; padding-bottom:0.5rem; gap:0.3rem;}
+  }
+  .tab-btn{
+    display:flex; align-items:baseline; gap:0.65rem;
+    background:none; border:none; border-left:2px solid transparent;
+    padding:0.5rem 0.9rem; margin-left:-2px;
+    font-family:'Inter',sans-serif; font-size:0.9rem; color:var(--ink-soft);
+    text-align:left; cursor:pointer; white-space:nowrap; transition:color .15s, border-color .15s;
+  }
+  .tab-btn .n{font-family:'Fraunces',serif; font-style:italic; color:var(--sage); min-width:1.2em;}
+  .tab-btn:hover{color:var(--herb-deep);}
+  .tab-btn.active{color:var(--herb-deep); border-left-color:var(--yolk); font-weight:600;}
+  .tab-btn.active .n{color:var(--clay);}
+
+  .phone{
+    width:336px; background:var(--bezel); border-radius:46px; padding:14px;
+    box-shadow:0 30px 60px -20px rgba(29,49,35,0.35), 0 4px 12px rgba(0,0,0,0.15);
+  }
+  .screen-window{position:relative; width:308px; height:658px; background:var(--paper); border-radius:32px; overflow:hidden;}
+  .status-bar{display:flex; justify-content:space-between; align-items:center; padding:0.7rem 1.3rem 0.3rem; font-size:0.78rem; font-weight:600; color:var(--ink);}
+  .status-bar .dots{display:flex; gap:4px; align-items:center;}
+  .status-bar .dots span{width:5px; height:5px; border-radius:50%; background:var(--ink);}
+
+  .app-screen{display:none; height:calc(100% - 30px); overflow-y:auto; padding:0 1.1rem 1.4rem; scrollbar-width:none;}
+  .app-screen::-webkit-scrollbar{display:none;}
+  .app-screen.active{display:block;}
+
+  .scr-head{margin:0.3rem 0 1rem; display:flex; justify-content:space-between; align-items:flex-start;}
+  .scr-head .sub{font-size:0.76rem; color:var(--ink-faint);}
+  .scr-head h2{font-size:1.3rem; margin:0.1rem 0 0; color:var(--herb-deep);}
+
+  .chip{display:inline-flex; align-items:center; gap:0.35rem; border:1px solid var(--line); background:var(--card); padding:0.42rem 0.8rem; border-radius:999px; font-size:0.8rem; color:var(--ink); margin:0 0.35rem 0.5rem 0; cursor:pointer; user-select:none;}
+  .chip.on{background:var(--herb-deep); color:var(--paper); border-color:var(--herb-deep);}
+  .chip.warn{border-color:var(--clay); color:var(--clay); background:#FBEDE6;}
+
+  .btn-primary{display:block; width:100%; background:var(--herb-deep); color:var(--paper); border:none; padding:0.8rem; border-radius:14px; font-size:0.92rem; font-weight:600; font-family:'Inter',sans-serif; margin-top:1rem; cursor:pointer;}
+  .btn-ghost{display:inline-block; background:none; border:1px solid var(--line); color:var(--herb-deep); padding:0.4rem 0.8rem; border-radius:10px; font-size:0.78rem; font-weight:600; cursor:pointer;}
+
+  .card{background:var(--card); border:1px solid var(--line); border-radius:16px; padding:0.85rem 1rem; margin-bottom:0.65rem;}
+  svg{display:block;}
+
+  /* --- sliders / personalización --- */
+  .pref-block{margin-bottom:1.3rem;}
+  .pref-block .row-label{display:flex; justify-content:space-between; font-size:0.84rem; margin-bottom:0.35rem;}
+  .pref-block .row-label .val{color:var(--clay); font-weight:600;}
+  input[type=range]{
+    -webkit-appearance:none; width:100%; height:4px; border-radius:2px;
+    background:var(--paper-dim); accent-color:var(--herb);
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none; width:16px; height:16px; border-radius:50%;
+    background:var(--herb-deep); border:2px solid var(--paper); cursor:pointer;
+    box-shadow:0 1px 3px rgba(0,0,0,0.25);
+  }
+  .macro-split{display:flex; height:10px; border-radius:6px; overflow:hidden; margin-top:0.4rem;}
+  .macro-split div{height:100%;}
+
+  .switch-row{display:flex; justify-content:space-between; align-items:center; padding:0.6rem 0; border-bottom:1px solid var(--line);}
+  .switch-row .lab{font-size:0.86rem;}
+  .switch-row .sub{font-size:0.72rem; color:var(--ink-faint);}
+  .switch{width:38px; height:22px; border-radius:11px; background:var(--line); position:relative; cursor:pointer; flex:0 0 auto;}
+  .switch.on{background:var(--herb);}
+  .switch .knob{position:absolute; top:2px; left:2px; width:18px; height:18px; border-radius:50%; background:#fff; transition:left .15s;}
+  .switch.on .knob{left:18px;}
+
+  /* --- chat --- */
+  .chat-thread{display:flex; flex-direction:column; gap:0.7rem; margin-bottom:0.8rem;}
+  .msg{max-width:82%; padding:0.6rem 0.85rem; border-radius:14px; font-size:0.86rem; line-height:1.45;}
+  .msg.ai{background:var(--card); border:1px solid var(--line); align-self:flex-start; border-bottom-left-radius:4px;}
+  .msg.user{background:var(--herb-deep); color:var(--paper); align-self:flex-end; border-bottom-right-radius:4px;}
+  .msg-suggest{background:var(--paper-dim); border-radius:12px; padding:0.6rem 0.7rem; margin-top:0.5rem; display:flex; justify-content:space-between; align-items:center; gap:0.5rem;}
+  .msg-suggest .txt{font-size:0.8rem;}
+  .msg-suggest .txt b{display:block; color:var(--herb-deep); font-size:0.86rem;}
+  .quick-replies{display:flex; flex-wrap:wrap; gap:0.4rem; margin-bottom:0.8rem;}
+  .qr{border:1px solid var(--line); background:var(--card); padding:0.4rem 0.7rem; border-radius:999px; font-size:0.76rem; color:var(--herb-deep); cursor:pointer;}
+  .chat-input-row{position:sticky; bottom:0; background:var(--paper); display:flex; gap:0.5rem; padding-top:0.5rem;}
+  .chat-input-row input{flex:1; border:1px solid var(--line); border-radius:12px; padding:0.6rem 0.8rem; font-size:0.84rem; font-family:'Inter',sans-serif; background:var(--card);}
+  .chat-send{background:var(--herb-deep); color:var(--paper); border:none; border-radius:12px; width:40px; font-size:1rem; cursor:pointer;}
+
+  /* --- plan semanal / swap --- */
+  .week-row{display:flex; gap:0.4rem; margin-bottom:1.1rem;}
+  .day-pill{flex:1; text-align:center; padding:0.5rem 0.2rem; border-radius:12px; font-size:0.76rem; color:var(--ink-soft); border:1px solid var(--line);}
+  .day-pill.today{background:var(--herb-deep); color:var(--paper); border-color:var(--herb-deep);}
+  .summary-bar{display:flex; justify-content:space-between; background:var(--sage-bg); border-radius:14px; padding:0.7rem 0.9rem; margin-bottom:1.1rem;}
+  .summary-bar .metric .val{font-family:'Fraunces',serif; font-size:1.1rem; color:var(--herb-deep); display:block;}
+  .summary-bar .metric .lab{font-size:0.68rem; color:var(--ink-soft);}
+  .meal-card{display:flex; gap:0.8rem; align-items:center;}
+  .meal-thumb{width:50px; height:50px; border-radius:12px; flex:0 0 auto; display:flex; align-items:center; justify-content:center;}
+  .meal-info{flex:1;}
+  .meal-info .slot{font-size:0.7rem; color:var(--ink-faint); text-transform:uppercase; letter-spacing:0.03em;}
+  .meal-info .name{font-size:0.9rem; font-weight:600; margin:0.1rem 0;}
+  .meal-info .kcal{font-size:0.76rem; color:var(--ink-soft);}
+  .swap-btn{border:none; background:none; color:var(--clay); font-size:0.72rem; font-weight:600; cursor:pointer; white-space:nowrap;}
+  .swap-panel{display:none; margin:-0.3rem 0 0.65rem; padding:0.6rem 0.7rem; background:var(--paper-dim); border-radius:0 0 14px 14px; font-size:0.8rem;}
+  .swap-panel.open{display:block;}
+  .swap-opt{display:flex; justify-content:space-between; align-items:center; padding:0.4rem 0; border-bottom:1px dashed var(--line);}
+  .swap-opt:last-child{border-bottom:none;}
+  .swap-opt button{border:1px solid var(--herb-deep); background:none; color:var(--herb-deep); font-size:0.7rem; border-radius:8px; padding:0.2rem 0.5rem; cursor:pointer;}
+
+  /* --- receta --- */
+  .recipe-hero{height:140px; border-radius:16px; margin-bottom:1rem; background:linear-gradient(135deg,#E2A63B 0%,#B1512E 100%); display:flex; align-items:flex-end; padding:0.9rem;}
+  .recipe-hero .badge{background:rgba(251,247,239,0.9); color:var(--herb-deep); font-size:0.7rem; padding:0.25rem 0.6rem; border-radius:8px; font-weight:600;}
+  .servings-row{display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem;}
+  .stepper{display:flex; align-items:center; gap:0.7rem; border:1px solid var(--line); border-radius:10px; padding:0.25rem 0.6rem;}
+  .stepper button{border:none; background:none; font-size:1rem; color:var(--herb-deep); cursor:pointer; width:20px;}
+  .nutri-row{display:flex; gap:0.5rem; margin-bottom:1rem;}
+  .nutri-pill{flex:1; text-align:center; background:var(--paper-dim); border-radius:10px; padding:0.5rem 0.2rem;}
+  .nutri-pill .v{font-family:'Fraunces',serif; font-size:0.98rem; color:var(--herb-deep); display:block;}
+  .nutri-pill .l{font-size:0.63rem; color:var(--ink-soft);}
+  .ingredient-row{display:flex; align-items:center; gap:0.6rem; padding:0.45rem 0; border-bottom:1px solid var(--line); font-size:0.86rem;}
+  .ingredient-row input{accent-color:var(--herb);}
+  .step-item{display:flex; gap:0.7rem; margin-bottom:0.85rem; font-size:0.84rem;}
+  .step-item .idx{font-family:'Fraunces',serif; font-style:italic; color:var(--clay);}
+
+  /* --- compras --- */
+  .budget-track{background:var(--paper-dim); border-radius:12px; height:8px; overflow:hidden; margin:0.5rem 0 1.1rem;}
+  .budget-track .fill{background:var(--herb); height:100%;}
+  .section-label{font-size:0.73rem; text-transform:uppercase; letter-spacing:0.03em; color:var(--ink-faint); margin:1rem 0 0.4rem;}
+  .item-row{display:flex; align-items:center; gap:0.6rem; padding:0.5rem 0; border-bottom:1px solid var(--line);}
+  .item-row .name{flex:1; font-size:0.86rem;}
+  .item-row .price{font-size:0.8rem; color:var(--ink-soft);}
+  .item-row input{accent-color:var(--herb);}
+
+  /* --- despensa --- */
+  .expiry-row{display:flex; justify-content:space-between; align-items:center; padding:0.5rem 0; border-bottom:1px solid var(--line); font-size:0.86rem;}
+  .expiry-tag{font-size:0.68rem; padding:0.2rem 0.5rem; border-radius:7px;}
+  .expiry-tag.soon{background:#FBEDE6; color:var(--clay);}
+  .expiry-tag.ok{background:var(--sage-bg); color:var(--herb-deep);}
+  .banner{background:var(--herb-deep); color:var(--paper); border-radius:14px; padding:0.85rem 0.95rem; font-size:0.82rem; margin-top:0.9rem;}
+  .banner b{color:var(--yolk);}
+
+  /* --- progreso --- */
+  .streak-row{display:flex; gap:0.6rem; margin-bottom:1rem;}
+  .streak-card{flex:1; text-align:center; background:var(--card); border:1px solid var(--line); border-radius:14px; padding:0.8rem 0.3rem;}
+  .streak-card .v{font-family:'Fraunces',serif; font-size:1.4rem; color:var(--herb-deep); display:block;}
+  .streak-card .l{font-size:0.68rem; color:var(--ink-soft);}
+  .bar-chart{display:flex; align-items:flex-end; gap:0.5rem; height:110px; margin:0.8rem 0 0.3rem;}
+  .bar-col{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%;}
+  .bar-col .bar{width:100%; border-radius:6px 6px 3px 3px; background:var(--sage);}
+  .bar-col .bar.over{background:var(--clay);}
+  .bar-col .bar.today{background:var(--herb-deep);}
+  .bar-col .d{font-size:0.65rem; color:var(--ink-faint); margin-top:0.3rem;}
+  .badge-grid{display:flex; gap:0.6rem; flex-wrap:wrap; margin-top:0.6rem;}
+  .badge-pill{display:flex; align-items:center; gap:0.4rem; background:var(--paper-dim); border-radius:12px; padding:0.5rem 0.7rem; font-size:0.76rem;}
+
+  .panel{padding-top:0.4rem; max-width:370px;}
+  .panel .tag-line{font-size:0.8rem; color:var(--clay); margin-bottom:0.4rem;}
+  .panel h3{font-size:1.45rem; margin:0 0 0.8rem; color:var(--herb-deep);}
+  .panel ul{padding-left:1.1rem; margin:0; color:var(--ink-soft); font-size:0.93rem;}
+  .panel ul li{margin-bottom:0.6rem;}
+  .panel .try{margin-top:1rem; font-size:0.82rem; color:var(--herb); background:var(--sage-bg); padding:0.7rem 0.9rem; border-radius:10px;}
+  @media (max-width:1020px){ .panel{max-width:308px;} }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <p class="eyebrow">Prototipo navegable</p>
+  <h1>Así se vería NutriPlan AI</h1>
+  <p>Siete pantallas del producto, con la personalización funcionando de verdad: mueve los controles, cambia una comida, escríbele al asistente. Cada acción responde en el momento.</p>
+</div>
+
+<div class="stage">
+
+  <div class="tabs" id="tabs">
+    <button class="tab-btn active" data-screen="onboarding"><span class="n">01</span>Preferencias</button>
+    <button class="tab-btn" data-screen="personalizacion"><span class="n">02</span>Ajustes finos</button>
+    <button class="tab-btn" data-screen="plan"><span class="n">03</span>Plan semanal</button>
+    <button class="tab-btn" data-screen="asistente"><span class="n">04</span>Asistente IA</button>
+    <button class="tab-btn" data-screen="receta"><span class="n">05</span>Receta</button>
+    <button class="tab-btn" data-screen="compras"><span class="n">06</span>Lista de compras</button>
+    <button class="tab-btn" data-screen="despensa"><span class="n">07</span>Despensa y gasto</button>
+  </div>
+
+  <div class="phone">
+    <div class="screen-window">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span class="dots"><span></span><span></span><span></span></span>
+      </div>
+
+      <!-- 01 ONBOARDING -->
+      <div class="app-screen active" id="scr-onboarding">
+        <div class="scr-head"><div><div class="sub">Paso 2 de 4</div><h2>¿Qué debemos evitar?</h2></div></div>
+        <div class="pref-block">
+          <div class="row-label" style="margin-bottom:0.5rem;">Estilo de alimentación</div>
+          <span class="chip">Omnívoro</span><span class="chip on">Vegetariano</span><span class="chip">Vegano</span><span class="chip">Pescetariano</span>
+        </div>
+        <div class="pref-block">
+          <div class="row-label" style="margin-bottom:0.5rem;">Alergias — no negociable</div>
+          <span class="chip warn">Frutos secos</span><span class="chip">Mariscos</span><span class="chip">Huevo</span><span class="chip">Soja</span>
+        </div>
+        <div class="pref-block">
+          <div class="row-label" style="margin-bottom:0.5rem;">Presupuesto semanal</div>
+          <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-family:'Fraunces',serif; font-size:1.25rem; color:var(--herb-deep);">$60.000</span>
+            <span style="font-size:0.76rem; color:var(--ink-soft);">para 2 personas</span>
+          </div>
+        </div>
+        <button class="btn-primary">Continuar a ajustes finos →</button>
+      </div>
+
+      <!-- 02 PERSONALIZACIÓN -->
+      <div class="app-screen" id="scr-personalizacion">
+        <div class="scr-head"><div><div class="sub">Se aplica a todo el plan</div><h2>Ajustes finos</h2></div></div>
+
+        <div class="pref-block">
+          <div class="row-label"><span>Proteína objetivo</span><span class="val" id="proteinVal">30%</span></div>
+          <input type="range" min="10" max="50" value="30" id="proteinSlider">
+          <div class="macro-split" id="macroSplit">
+            <div style="background:var(--herb-deep); width:30%;"></div>
+            <div style="background:var(--yolk); width:40%;"></div>
+            <div style="background:var(--sage); width:30%;"></div>
+          </div>
+        </div>
+
+        <div class="pref-block">
+          <div class="row-label"><span>Tiempo máx. de cocina</span><span class="val" id="timeVal">30 min</span></div>
+          <input type="range" min="10" max="60" step="5" value="30" id="timeSlider">
+        </div>
+
+        <div class="pref-block">
+          <div class="row-label"><span>Nivel de picante</span><span class="val" id="spiceVal">Medio</span></div>
+          <input type="range" min="0" max="3" value="1" id="spiceSlider">
+        </div>
+
+        <div class="pref-block">
+          <div class="row-label" style="margin-bottom:0.5rem;">Cocinas favoritas</div>
+          <span class="chip on">Mediterránea</span><span class="chip">Mexicana</span><span class="chip on">Asiática</span><span class="chip">Andina</span><span class="chip">Italiana</span>
+        </div>
+
+        <div class="switch-row">
+          <div><div class="lab">Priorizar despensa</div><div class="sub">Sugerir primero lo que ya tienes</div></div>
+          <div class="switch on" id="switchDespensa"><div class="knob"></div></div>
+        </div>
+        <div class="switch-row" style="border-bottom:none;">
+          <div><div class="lab">Modo batch cooking</div><div class="sub">Recetas que rinden para varios días</div></div>
+          <div class="switch" id="switchBatch"><div class="knob"></div></div>
+        </div>
+      </div>
+
+      <!-- 03 PLAN SEMANAL -->
+      <div class="app-screen" id="scr-plan">
+        <div class="scr-head"><div><div class="sub">Semana del 1 al 7 de sept.</div><h2>Tu plan</h2></div></div>
+
+        <div class="week-row">
+          <div class="day-pill">L</div><div class="day-pill">M</div><div class="day-pill today">M</div>
+          <div class="day-pill">J</div><div class="day-pill">V</div><div class="day-pill">S</div><div class="day-pill">D</div>
+        </div>
+
+        <div class="summary-bar">
+          <div class="metric"><span class="val">1.840</span><span class="lab">kcal hoy</span></div>
+          <div class="metric"><span class="val">$38.200</span><span class="lab">gastado / $60.000</span></div>
+          <div class="metric"><span class="val">2</span><span class="lab">por vencer</span></div>
+        </div>
+
+        <div class="card">
+          <div class="meal-card">
+            <div class="meal-thumb" style="background:#F3D9A6;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#B1512E" stroke-width="1.6"/><path d="M7 12h10M12 7v10" stroke="#B1512E" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </div>
+            <div class="meal-info"><div class="slot">Desayuno</div><div class="name" id="meal-desayuno-name">Avena con manzana y canela</div><div class="kcal" id="meal-desayuno-kcal">320 kcal · 12 min</div></div>
+            <button class="swap-btn" onclick="toggleSwap('desayuno')">Cambiar</button>
+          </div>
+          <div class="swap-panel" id="swap-desayuno">
+            <div class="swap-opt"><span>Tostadas con palta y tomate · 290 kcal</span><button onclick="applySwap('desayuno','Tostadas con palta y tomate','290 kcal · 8 min')">Usar</button></div>
+            <div class="swap-opt"><span>Batido de plátano y avena · 260 kcal</span><button onclick="applySwap('desayuno','Batido de plátano y avena','260 kcal · 5 min')">Usar</button></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="meal-card">
+            <div class="meal-thumb" style="background:#DCE6D9;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M5 9c0-3 3-5 7-5s7 2 7 5-3 9-7 9-7-6-7-9Z" stroke="#2E4A34" stroke-width="1.6"/></svg>
+            </div>
+            <div class="meal-info"><div class="slot">Almuerzo</div><div class="name" id="meal-almuerzo-name">Bowl de garbanzos y espinaca</div><div class="kcal" id="meal-almuerzo-kcal">540 kcal · 25 min</div></div>
+            <button class="swap-btn" onclick="toggleSwap('almuerzo')">Cambiar</button>
+          </div>
+          <div class="swap-panel" id="swap-almuerzo">
+            <div class="swap-opt"><span>Curry de lentejas rojas · 510 kcal</span><button onclick="applySwap('almuerzo','Curry de lentejas rojas','510 kcal · 28 min')">Usar</button></div>
+            <div class="swap-opt"><span>Ensalada tibia de quinoa · 470 kcal</span><button onclick="applySwap('almuerzo','Ensalada tibia de quinoa','470 kcal · 20 min')">Usar</button></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="meal-card">
+            <div class="meal-thumb" style="background:#F0DCC8;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M6 4v6a6 6 0 0 0 12 0V4" stroke="#B1512E" stroke-width="1.6" stroke-linecap="round"/><path d="M12 14v6" stroke="#B1512E" stroke-width="1.6"/></svg>
+            </div>
+            <div class="meal-info"><div class="slot">Cena</div><div class="name" id="meal-cena-name">Sopa de lentejas con cilantro</div><div class="kcal" id="meal-cena-kcal">410 kcal · 30 min</div></div>
+            <button class="swap-btn" onclick="toggleSwap('cena')">Cambiar</button>
+          </div>
+          <div class="swap-panel" id="swap-cena">
+            <div class="swap-opt"><span>Crema de zapallo · 350 kcal</span><button onclick="applySwap('cena','Crema de zapallo','350 kcal · 22 min')">Usar</button></div>
+            <div class="swap-opt"><span>Wrap de garbanzo y espinaca · 400 kcal</span><button onclick="applySwap('cena','Wrap de garbanzo y espinaca','400 kcal · 15 min')">Usar</button></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 04 ASISTENTE IA -->
+      <div class="app-screen" id="scr-asistente">
+        <div class="scr-head"><div><div class="sub">Siempre disponible</div><h2>Asistente</h2></div></div>
+        <div class="chat-thread" id="chatThread">
+          <div class="msg ai">¿Qué necesitas ajustar hoy? Puedo cambiar comidas, bajar calorías o usar lo que ya tienes en casa.</div>
+        </div>
+        <div class="quick-replies">
+          <span class="qr" onclick="sendQuick('Cámbiame la cena, no quiero lentejas')">Cámbiame la cena</span>
+          <span class="qr" onclick="sendQuick('Necesito algo con menos calorías hoy')">Menos calorías hoy</span>
+          <span class="qr" onclick="sendQuick('Usa lo que ya tengo en la despensa')">Usa mi despensa</span>
+        </div>
+        <div class="chat-input-row">
+          <input type="text" placeholder="Escribe lo que necesitas..." id="chatInput">
+          <button class="chat-send" onclick="sendCustom()">↑</button>
+        </div>
+      </div>
+
+      <!-- 05 RECETA -->
+      <div class="app-screen" id="scr-receta">
+        <div class="recipe-hero"><span class="badge">★ 4.6 · 214 valoraciones</span></div>
+        <div class="scr-head" style="margin-top:0.2rem;"><div><div class="sub">Almuerzo · 25 min</div><h2>Bowl de garbanzos y espinaca</h2></div></div>
+
+        <div class="servings-row">
+          <span style="font-size:0.84rem; color:var(--ink-soft);">Porciones</span>
+          <div class="stepper"><button onclick="changeServings(-1)">–</button><span id="servingsVal" style="font-weight:600;">2</span><button onclick="changeServings(1)">+</button></div>
+        </div>
+
+        <div class="nutri-row">
+          <div class="nutri-pill"><span class="v" id="nutriKcal">540</span><span class="l">kcal</span></div>
+          <div class="nutri-pill"><span class="v" id="nutriProt">22g</span><span class="l">proteína</span></div>
+          <div class="nutri-pill"><span class="v" id="nutriCarb">61g</span><span class="l">carbos</span></div>
+          <div class="nutri-pill"><span class="v" id="nutriFat">18g</span><span class="l">grasa</span></div>
+        </div>
+
+        <div class="section-label">Ingredientes — se recalculan solos</div>
+        <div class="ingredient-row"><input type="checkbox" checked><span id="ing-0">1 taza de garbanzos cocidos</span></div>
+        <div class="ingredient-row"><input type="checkbox" checked><span id="ing-1">2 puñados de espinaca fresca</span></div>
+        <div class="ingredient-row"><input type="checkbox"><span id="ing-2">0.5 pimiento rojo</span></div>
+        <div class="ingredient-row"><input type="checkbox"><span id="ing-3">Jugo de 0.5 limón</span></div>
+
+        <div class="section-label">Preparación</div>
+        <div class="step-item"><span class="idx">1</span><span>Saltea el pimiento en aceite de oliva a fuego medio, 4 minutos.</span></div>
+        <div class="step-item"><span class="idx">2</span><span>Agrega los garbanzos y cocina 3 minutos más.</span></div>
+        <div class="step-item"><span class="idx">3</span><span>Incorpora la espinaca hasta que se marchite y termina con jugo de limón.</span></div>
+      </div>
+
+      <!-- 06 LISTA DE COMPRAS -->
+      <div class="app-screen" id="scr-compras">
+        <div class="scr-head"><div><div class="sub">6 ítems · faltan por comprar</div><h2>Lista de compras</h2></div></div>
+        <div class="budget-track"><div class="fill" style="width:64%;"></div></div>
+        <div style="display:flex; justify-content:space-between; font-size:0.78rem; color:var(--ink-soft); margin-top:-0.9rem; margin-bottom:1rem;">
+          <span>$38.200 usados</span><span>$60.000</span>
+        </div>
+        <div class="section-label">Verdulería</div>
+        <div class="item-row"><input type="checkbox"><span class="name">Espinaca fresca</span><span class="price">$2.200</span></div>
+        <div class="item-row"><input type="checkbox"><span class="name">Pimiento rojo</span><span class="price">$1.500</span></div>
+        <div class="item-row"><input type="checkbox" checked><span class="name" style="text-decoration:line-through; color:var(--ink-faint);">Cilantro — ya en despensa</span><span class="price">—</span></div>
+        <div class="section-label">Despensa</div>
+        <div class="item-row"><input type="checkbox"><span class="name">Garbanzos secos</span><span class="price">$1.800</span></div>
+        <div class="item-row"><input type="checkbox"><span class="name">Lentejas</span><span class="price">$1.600</span></div>
+        <div class="section-label">Lácteos</div>
+        <div class="item-row"><input type="checkbox"><span class="name">Yogur natural</span><span class="price">$2.400</span></div>
+      </div>
+
+      <!-- 07 DESPENSA -->
+      <div class="app-screen" id="scr-despensa">
+        <div class="scr-head"><div><div class="sub">Actualizado hoy</div><h2>Despensa y gasto</h2></div></div>
+        <div class="banner">Tienes <b>cilantro</b> que vence en 2 días. Ya lo incluimos en la cena del jueves.</div>
+        <div class="section-label" style="margin-top:1.1rem;">Por vencer pronto</div>
+        <div class="expiry-row"><span>Cilantro fresco</span><span class="expiry-tag soon">2 días</span></div>
+        <div class="expiry-row"><span>Yogur natural</span><span class="expiry-tag soon">4 días</span></div>
+        <div class="section-label">En buen estado</div>
+        <div class="expiry-row"><span>Garbanzos secos</span><span class="expiry-tag ok">3 meses</span></div>
+        <div class="expiry-row"><span>Lentejas</span><span class="expiry-tag ok">5 meses</span></div>
+        <div class="expiry-row"><span>Arroz integral</span><span class="expiry-tag ok">6 meses</span></div>
+        <div class="section-label">Gasto de septiembre</div>
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem;">
+            <span style="font-size:0.84rem; color:var(--ink-soft);">$38.200 de $60.000</span>
+            <span style="font-size:0.84rem; color:var(--herb-deep); font-weight:600;">64%</span>
+          </div>
+          <div class="budget-track" style="margin:0;"><div class="fill" style="width:64%;"></div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="panel" id="panel"></div>
+
+</div>
+
+<script>
+  const details = {
+    onboarding:{tag:"Pantalla 01", title:"Preferencias y restricciones", points:[
+      "Selección por chips en vez de formularios largos: menos fricción, más velocidad de captura.",
+      "Las alergias se marcan visualmente distintas — nunca son negociables para el motor de recomendación."],
+      tip:"Toca los chips de estilo de alimentación y alergias para ver el estado activo/inactivo."},
+    personalizacion:{tag:"Pantalla 02", title:"Ajustes finos", points:[
+      "Este es el corazón de la personalización: cada slider alimenta directamente al motor de recomendación del capítulo 02.",
+      "La franja de macros se recalcula en vivo al mover la proteína objetivo.",
+      "Los interruptores cambian el comportamiento del sistema, no solo la apariencia — priorizar despensa reordena qué recetas aparecen primero."],
+      tip:"Mueve el slider de proteína y mira cómo cambia la franja de macros debajo."},
+    plan:{tag:"Pantalla 03", title:"Plan semanal", points:[
+      "Cada comida tiene un botón \"Cambiar\" que despliega alternativas generadas por el motor, no un menú fijo.",
+      "Elegir una alternativa reemplaza la tarjeta al instante — así se siente realmente adaptable.",
+      "La barra de resumen arriba se recalcularía con cada cambio en un producto real."],
+      tip:"Toca \"Cambiar\" en cualquier comida y elige una alternativa."},
+    asistente:{tag:"Pantalla 04", title:"Asistente conversacional", points:[
+      "Complementa al plan estructurado con control por lenguaje natural, para ajustes que no caben en un botón.",
+      "Las respuestas rápidas cubren los pedidos más comunes sin obligar a escribir.",
+      "Cada respuesta del asistente puede traer una sugerencia accionable directamente en el chat."],
+      tip:"Toca una respuesta rápida o escribe tu propio mensaje."},
+    receta:{tag:"Pantalla 05", title:"Detalle de receta", points:[
+      "El selector de porciones recalcula las cantidades de ingredientes al instante — la lógica del capítulo 03.",
+      "Los ingredientes ya disponibles en la despensa aparecen premarcados.",
+      "La información nutricional se ajusta junto con las porciones."],
+      tip:"Usa los botones + / – de porciones y observa cómo cambian los ingredientes."},
+    compras:{tag:"Pantalla 06", title:"Lista de compras", points:[
+      "Organizada por sección del supermercado para reducir vueltas al hacer la compra.",
+      "Los ítems que ya están en la despensa se tachan automáticamente.",
+      "La barra de presupuesto se actualiza en vivo a medida que se marcan ítems."],
+      tip:"Marca o desmarca ítems de la lista."},
+    despensa:{tag:"Pantalla 07", title:"Despensa y gasto", points:[
+      "Los ingredientes próximos a vencer disparan sugerencias de recetas de aprovechamiento.",
+      "El aviso superior conecta directamente con el plan semanal.",
+      "El seguimiento de gasto da contexto antes de generar el siguiente plan."],
+      tip:"Esta pantalla es principalmente informativa — el aviso superior es el elemento clave."}
+  };
+
+  const tabs = document.querySelectorAll('.tab-btn');
+  const screens = document.querySelectorAll('.app-screen');
+  const panel = document.getElementById('panel');
+
+  function render(key){
+    const d = details[key];
+    panel.innerHTML = `
+      <div class="tag-line">${d.tag}</div>
+      <h3>${d.title}</h3>
+      <ul>${d.points.map(p => `<li>${p}</li>`).join('')}</ul>
+      <div class="try">Prueba esto → ${d.tip}</div>
+    `;
+  }
+
+  tabs.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const key = btn.dataset.screen;
+      tabs.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      screens.forEach(s => s.classList.remove('active'));
+      document.getElementById('scr-' + key).classList.add('active');
+      render(key);
+    });
+  });
+  render('onboarding');
+
+  // ---- chips toggle (onboarding + personalización) ----
+  document.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => chip.classList.toggle('on'));
+  });
+
+  // ---- switches ----
+  document.querySelectorAll('.switch').forEach(sw => {
+    sw.addEventListener('click', () => sw.classList.toggle('on'));
+  });
+
+  // ---- sliders ----
+  const proteinSlider = document.getElementById('proteinSlider');
+  const proteinVal = document.getElementById('proteinVal');
+  const macroSplit = document.getElementById('macroSplit');
+  proteinSlider.addEventListener('input', () => {
+    const p = parseInt(proteinSlider.value);
+    proteinVal.textContent = p + '%';
+    const fat = Math.max(15, Math.round((100 - p) * 0.35));
+    const carb = 100 - p - fat;
+    macroSplit.children[0].style.width = p + '%';
+    macroSplit.children[1].style.width = carb + '%';
+    macroSplit.children[2].style.width = fat + '%';
+  });
+
+  const timeSlider = document.getElementById('timeSlider');
+  const timeVal = document.getElementById('timeVal');
+  timeSlider.addEventListener('input', () => timeVal.textContent = timeSlider.value + ' min');
+
+  const spiceSlider = document.getElementById('spiceSlider');
+  const spiceVal = document.getElementById('spiceVal');
+  const spiceLabels = ['Ninguno','Suave','Medio','Picante'];
+  spiceSlider.addEventListener('input', () => spiceVal.textContent = spiceLabels[spiceSlider.value]);
+
+  // ---- meal swap ----
+  function toggleSwap(meal){
+    document.querySelectorAll('.swap-panel').forEach(p => {
+      if (p.id !== 'swap-' + meal) p.classList.remove('open');
+    });
+    document.getElementById('swap-' + meal).classList.toggle('open');
+  }
+  function applySwap(meal, name, kcal){
+    document.getElementById('meal-' + meal + '-name').textContent = name;
+    document.getElementById('meal-' + meal + '-kcal').textContent = kcal;
+    document.getElementById('swap-' + meal).classList.remove('open');
+  }
+
+  // ---- servings recalculation ----
+  let servings = 2;
+  const base = {
+    ing0: {amount:1, unit:'taza de garbanzos cocidos'},
+    ing1: {amount:2, unit:'puñados de espinaca fresca'},
+    ing2: {amount:0.5, unit:'pimiento rojo'},
+    ing3: {amount:0.5, unit:'limón (en jugo)'}
+  };
+  const baseNutri = {kcal:540, prot:22, carb:61, fat:18};
+  function changeServings(delta){
+    const next = servings + delta;
+    if (next < 1 || next > 8) return;
+    servings = next;
+    document.getElementById('servingsVal').textContent = servings;
+    const factor = servings / 2;
+    document.getElementById('ing-0').textContent = fmt(base.ing0.amount*factor) + ' ' + base.ing0.unit;
+    document.getElementById('ing-1').textContent = fmt(base.ing1.amount*factor) + ' ' + base.ing1.unit;
+    document.getElementById('ing-2').textContent = fmt(base.ing2.amount*factor) + ' ' + base.ing2.unit;
+    document.getElementById('ing-3').textContent = 'Jugo de ' + fmt(base.ing3.amount*factor) + ' limón';
+    document.getElementById('nutriKcal').textContent = Math.round(baseNutri.kcal*factor);
+    document.getElementById('nutriProt').textContent = Math.round(baseNutri.prot*factor) + 'g';
+    document.getElementById('nutriCarb').textContent = Math.round(baseNutri.carb*factor) + 'g';
+    document.getElementById('nutriFat').textContent = Math.round(baseNutri.fat*factor) + 'g';
+  }
+  function fmt(n){
+    const r = Math.round(n*2)/2;
+    return (r % 1 === 0) ? r.toString() : r.toString();
+  }
+
+  // ---- chat ----
+  const chatThread = document.getElementById('chatThread');
+  const chatInput = document.getElementById('chatInput');
+
+  function addMsg(text, cls){
+    const div = document.createElement('div');
+    div.className = 'msg ' + cls;
+    div.textContent = text;
+    chatThread.appendChild(div);
+    chatThread.scrollTop = chatThread.scrollHeight;
+    return div;
+  }
+
+  function aiReplyFor(text){
+    const t = text.toLowerCase();
+    if (t.includes('cena')) {
+      return {reply:'Listo, cambié tu cena de hoy. Elegí algo que ya usa ingredientes de tu despensa.', name:'Crema de zapallo', meta:'350 kcal · 22 min'};
+    }
+    if (t.includes('calor')) {
+      return {reply:'Bajé el almuerzo de hoy a una opción más liviana sin perder proteína.', name:'Ensalada tibia de quinoa', meta:'470 kcal · 20 min'};
+    }
+    if (t.includes('despensa')) {
+      return {reply:'Prioricé lo que ya tienes: cilantro, garbanzos y lentejas antes de que venzan.', name:'Sopa de lentejas con cilantro', meta:'410 kcal · 30 min'};
+    }
+    return {reply:'Anotado. Ajusté tu plan de hoy según lo que me pediste.', name:'Bowl de garbanzos y espinaca', meta:'540 kcal · 25 min'};
+  }
+
+  function respond(text){
+    addMsg(text, 'user');
+    setTimeout(() => {
+      const r = aiReplyFor(text);
+      const bubble = addMsg(r.reply, 'ai');
+      const suggest = document.createElement('div');
+      suggest.className = 'msg-suggest';
+      suggest.innerHTML = `<span class="txt"><b>${r.name}</b>${r.meta}</span><button class="btn-ghost" onclick="this.closest('.msg-suggest').style.opacity=0.5; this.textContent='Aplicado'">Aplicar</button>`;
+      bubble.appendChild(suggest);
+    }, 450);
+  }
+
+  function sendQuick(text){ respond(text); }
+  function sendCustom(){
+    const v = chatInput.value.trim();
+    if (!v) return;
+    respond(v);
+    chatInput.value = '';
+  }
+  chatInput.addEventListener('keydown', e => { if (e.key === 'Enter') sendCustom(); });
+</script>
+
+</body>
+</html>
