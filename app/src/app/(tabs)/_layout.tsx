@@ -24,7 +24,7 @@ export default function TabsLayout() {
         headerShown: false,
         tabBarActiveTintColor: c.primary,
         tabBarInactiveTintColor: c.textSecondary,
-        tabBarStyle: { backgroundColor: c.background, borderTopColor: c.border },
+        tabBarStyle: { backgroundColor: c.surface, borderTopColor: c.border },
       }}>
       {TABS.map((tab) => (
         <Tabs.Screen
