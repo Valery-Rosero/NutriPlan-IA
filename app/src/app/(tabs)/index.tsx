@@ -1,1 +1,1 @@
-export { CookingScreen as default } from '@/features/cooking/ui/cooking-screen';
+export { TodayScreen as default } from '@/features/today/ui/today-screen';

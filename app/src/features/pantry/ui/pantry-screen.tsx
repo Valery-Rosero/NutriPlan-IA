@@ -1,26 +1,29 @@
 import { useRouter } from 'expo-router';
-import { Alert, FlatList, StyleSheet, View } from 'react-native';
+import { useState, type ReactNode } from 'react';
+import { Alert, FlatList, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { errorKey } from '@/core/errors/app-error';
 import { formatGrams } from '@/core/format';
 import { usePantry, useRemovePantryItem } from '@/features/pantry/application/pantry-queries';
 import { daysBetween, expiryStatus, todayIso, type PantryItem } from '@/features/pantry/domain/pantry';
+import { QuickAdd } from '@/features/pantry/ui/quick-add';
 import { Spacing } from '@/shared/theme/colors';
 import { useTheme } from '@/shared/theme/use-theme';
 import { AppText, Banner, Button, Card, EmptyState, ErrorState, LoadingState, Screen, TextLink } from '@/shared/ui';
 
 /** US-119 / US-142: lo que hay en casa, con lo que vence primero arriba. */
-export function PantryScreen() {
+export function PantryScreen({ embedded }: { embedded?: boolean }) {
   const { t } = useTranslation();
   const router = useRouter();
   const pantry = usePantry();
   const remove = useRemovePantryItem();
   const add = () => router.push('/pantry/add');
+  const Container = embedded ? EmbeddedContainer : Screen;
 
   return (
-    <Screen>
-      <AppText variant="title">{t('pantry.title')}</AppText>
+    <Container>
+      {!embedded && <AppText variant="title">{t('pantry.title')}</AppText>}
       <Button label={t('pantry.add')} onPress={add} />
       {remove.error && <Banner tone="danger" message={t(errorKey(remove.error))} />}
       {pantry.isPending ? (
@@ -28,9 +31,13 @@ export function PantryScreen() {
       ) : pantry.isError ? (
         <ErrorState message={t(errorKey(pantry.error))} onRetry={() => void pantry.refetch()} />
       ) : pantry.data.length === 0 ? (
-        <EmptyState message={t('pantry.empty')} />
+        <ScrollView contentContainerStyle={styles.list}>
+          <EmptyState message={t('pantry.empty')} />
+          <QuickAdd />
+        </ScrollView>
       ) : (
         <FlatList
+          ListHeaderComponent={<QuickAddCollapsible />}
           data={pantry.data}
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.list}
@@ -47,7 +54,23 @@ export function PantryScreen() {
           )}
         />
       )}
-    </Screen>
+    </Container>
+  );
+}
+
+function EmbeddedContainer({ children }: { children: ReactNode }) {
+  return <View style={styles.embedded}>{children}</View>;
+}
+
+/** Con despensa llena, el agregado rápido queda plegado para no estorbar la lista. */
+function QuickAddCollapsible() {
+  const { t } = useTranslation();
+  const [open, setOpen] = useState(false);
+  return (
+    <View style={styles.quick}>
+      <TextLink label={open ? t('kitchen.quickHide') : t('kitchen.quickShow')} onPress={() => setOpen((o) => !o)} />
+      {open && <QuickAdd />}
+    </View>
   );
 }
 
@@ -81,6 +104,8 @@ function PantryRow({ item, onRemove }: { item: PantryItem; onRemove: () => void 
 
 const styles = StyleSheet.create({
   list: { gap: Spacing.sm, paddingBottom: Spacing.lg },
+  embedded: { flex: 1, gap: Spacing.md },
+  quick: { gap: Spacing.sm, paddingBottom: Spacing.sm },
   row: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
   info: { flex: 1, gap: 2 },
 });

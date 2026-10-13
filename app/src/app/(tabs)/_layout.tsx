@@ -7,12 +7,11 @@ import { useTheme } from '@/shared/theme/use-theme';
 
 type IconName = ComponentProps<typeof Ionicons>['name'];
 
+// Tres preguntas, tres pestañas (ADR-024): ¿qué cocino hoy? · ¿qué tengo y qué me falta? · ¿cómo va mi semana?
 const TABS: { name: string; label: string; icon: IconName }[] = [
-  { name: 'index', label: 'tabs.cook', icon: 'restaurant-outline' },
-  { name: 'plan', label: 'tabs.plan', icon: 'calendar-outline' },
-  { name: 'shopping', label: 'tabs.shopping', icon: 'cart-outline' },
-  { name: 'pantry', label: 'tabs.pantry', icon: 'basket-outline' },
-  { name: 'profile', label: 'tabs.profile', icon: 'person-outline' },
+  { name: 'index', label: 'tabs.today', icon: 'restaurant-outline' },
+  { name: 'kitchen', label: 'tabs.kitchen', icon: 'basket-outline' },
+  { name: 'week', label: 'tabs.week', icon: 'calendar-outline' },
 ];
 
 export default function TabsLayout() {

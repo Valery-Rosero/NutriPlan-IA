@@ -38,7 +38,7 @@ describe('ShoppingScreen (US-124, US-125, US-126, US-135)', () => {
   it('sin plan pide armarlo primero', async () => {
     const plans = fakePlans({ current: jest.fn(async () => null) });
     await render(<ShoppingScreen />, { wrapper: withServices(fakeServices({ plans })) });
-    expect(await screen.findByRole('button', { name: 'Ir al plan' })).toBeOnTheScreen();
+    expect(await screen.findByRole('button', { name: 'Organizar mi semana' })).toBeOnTheScreen();
   });
 
   it('agrega un ítem manual', async () => {

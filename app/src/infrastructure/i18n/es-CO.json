@@ -104,25 +104,25 @@
     }
   },
   "tabs": {
-    "cook": "Cocinar",
-    "plan": "Plan",
-    "shopping": "Compras",
-    "pantry": "Despensa",
-    "profile": "Perfil"
+    "today": "Hoy",
+    "kitchen": "Mi cocina",
+    "week": "Mi semana"
   },
   "cook": {
     "title": "¿Qué cocino con lo que tengo?",
-    "empty": "Agrega lo que tienes en la despensa y te diremos qué puedes preparar.",
+    "empty": "Aún no hay ideas: cuéntanos qué tienes en tu cocina.",
     "coverage": "Tienes el {{percent}} % de los ingredientes",
     "missing_one": "Falta {{count}} ingrediente",
     "missing_other": "Faltan {{count}} ingredientes",
     "usesExpiring": "Usa algo que está por vencer",
     "minutes": "{{count}} min",
     "noAllergies": "No has declarado alergias, así que no podemos filtrarlas.",
-    "declareAllergies": "Declarar alergias"
+    "declareAllergies": "Declarar alergias",
+    "missingList": "Te falta: {{list}}",
+    "haveAll": "Tienes todo lo necesario"
   },
   "plan": {
-    "title": "Plan de la semana",
+    "title": "Mi semana",
     "empty": "Aún no tienes plan. Lo armamos con lo que hay en tu despensa, tus restricciones y variedad.",
     "generateWeek": "Generar plan de la semana",
     "generateToday": "Solo para hoy",
@@ -159,8 +159,8 @@
   },
   "shopping": {
     "title": "Lista de compras",
-    "noPlan": "Primero arma tu plan: la lista sale de las comidas que vas a cocinar.",
-    "goToPlan": "Ir al plan",
+    "noPlan": "Organiza tu semana y armamos la lista con lo que te falta.",
+    "goToPlan": "Organizar mi semana",
     "noList": "Armamos la lista con lo que necesita tu plan, restando lo que ya tienes en la despensa.",
     "build": "Armar lista de compras",
     "refresh": "Actualizar desde el plan",
@@ -211,10 +211,10 @@
     "documents": "Documentos legales",
     "none": "Ninguna",
     "household": {
-      "title": "¿Dónde y para cuántos cocinas?",
+      "title": "¿Para cuántas personas cocinas?",
       "region": "Ciudad (la usamos para estimar precios):",
       "size": "Personas que comen en casa",
-      "sizeHint": "Las recetas se calculan para este número de porciones."
+      "sizeHint": "Si cocinas solo para ti (por ejemplo, si eres estudiante), deja 1. Las recetas se calculan para este número de porciones."
     },
     "sensitive": {
       "title": "Autorización de datos sensibles",
@@ -317,11 +317,13 @@
       "sensitive": "Alergias y dietas",
       "restrictions": "¿Qué debemos evitar?",
       "budget": "Tu presupuesto",
-      "done": "¡Listo!"
+      "done": "¡Listo!",
+      "kitchen": "¿Qué hay en tu cocina?"
     },
-    "finish": "Terminar",
+    "finish": "Listo, ver qué cocino",
     "later": "Completar después",
-    "laterHint": "Puedes terminar tu perfil desde la pestaña Perfil."
+    "laterHint": "Puedes terminar tu perfil desde la pestaña Perfil.",
+    "kitchenIntro": "Las recetas se adaptan a lo que tienes. Marca lo que hay hoy en tu cocina (puedes cambiarlo cuando quieras)."
   },
   "recipe": {
     "meta": "{{minutes}} min",
@@ -431,5 +433,34 @@
     "deleteRecipes": "Si publicaste recetas en la comunidad, quedarán sin tu nombre.",
     "typeToConfirm": "Para confirmar, escribe {{word}}",
     "deleteButton": "Eliminar mi cuenta para siempre"
+  },
+  "today": {
+    "title": "Hoy",
+    "emptyKitchenTitle": "¿Qué hay en tu cocina?",
+    "kitchenTitle": "Tu cocina",
+    "kitchenCount_one": "Tienes {{count}} ingrediente registrado.",
+    "kitchenCount_other": "Tienes {{count}} ingredientes registrados.",
+    "expiring": "Vence pronto: {{list}}. Úsalo primero.",
+    "openKitchen": "Ver mi cocina",
+    "planned": "Lo que planeaste para hoy",
+    "suggestionsTitle": "¿Qué cocino para el {{moment}}?",
+    "suggestionsHint": "Recetas que se adaptan a lo que tienes. Toca una para elegir con qué hacerla.",
+    "weekTitle": "Tu semana",
+    "weekPitch": "Organiza los desayunos, almuerzos y cenas de la semana con lo que tienes, y te armamos la lista de mercado con lo que falta.",
+    "organizeWeek": "Organizar mi semana",
+    "weekSummary_one": "Te queda {{count}} comida por cocinar esta semana.",
+    "weekSummary_other": "Te quedan {{count}} comidas por cocinar esta semana.",
+    "toBuy_one": "Falta comprar {{count}} cosa.",
+    "toBuy_other": "Faltan comprar {{count}} cosas.",
+    "openWeek": "Ver mi semana",
+    "openList": "Ver lista de mercado"
+  },
+  "kitchen": {
+    "title": "Mi cocina",
+    "have": "Lo que tengo",
+    "list": "Lista de mercado",
+    "quickHint": "Toca lo que tengas; luego puedes ajustar cantidades.",
+    "quickShow": "Agregar lo típico con un toque",
+    "quickHide": "Ocultar lo típico"
   }
 }

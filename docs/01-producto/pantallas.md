@@ -4,8 +4,8 @@ Referencia visual: `referencias/app-nutricion-ia-prototipo.html` (clicable) y `r
 
 ## Navegación (Expo Router)
 - **Grupo `(auth)`:** Bienvenida · Registro · Inicio de sesión · Verificación de correo · Recuperar contraseña.
-- **Grupo `(onboarding)`:** Estilo de alimentación → Alergias → Presupuesto → Porciones → Autorización de datos sensibles → Aviso de salud (omitible/volver después: US-130).
-- **Grupo `(tabs)`:** Plan · Asistente · Compras · Despensa · Perfil.
+- **Onboarding:** Hogar (región y personas) → Autorización de datos sensibles → Alergias y dieta → Presupuesto → ¿Qué hay en tu cocina? (omitible: US-130). El aviso de salud se acepta antes, en la puerta de consentimientos.
+- **Pestañas (ADR-024):** **Hoy** (¿qué cocino?) · **Mi cocina** (lo que tengo + lista de mercado) · **Mi semana** (plan y presupuesto). Perfil desde el ícono superior. El asistente (F2) irá dentro de Hoy.
 - **Modales/pilas:** Receta (detalle), Sustituir comida, Preferencias (picante, cocinas, tiempo, macros, batch), Consentimientos y privacidad, Exportar/Eliminar datos, Comunidad (publicar/calificar/reportar), Notificaciones.
 
 ## Pantallas base (prototipo)

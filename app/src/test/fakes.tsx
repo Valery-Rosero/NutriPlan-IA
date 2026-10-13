@@ -67,7 +67,12 @@ export function fakePantry(overrides: Partial<PantryRepository> = {}): jest.Mock
     add: jest.fn(async () => {}),
     remove: jest.fn(async () => {}),
     search: jest.fn(async () => []),
-    listUnits: jest.fn(async () => [{ id: 1, code: 'g', name: 'gramo', dimension: 'mass' as const }]),
+    findByNames: jest.fn(async (names: string[]) => names.map((n) => ({ id: n, name: n, shelfLifeDays: 7 }))),
+    listUnits: jest.fn(async () => [
+      { id: 1, code: 'g', name: 'gramo', dimension: 'mass' as const },
+      { id: 2, code: 'kg', name: 'kilogramo', dimension: 'mass' as const },
+      { id: 8, code: 'unit', name: 'unidad', dimension: 'count' as const },
+    ]),
     ...overrides,
   } as jest.Mocked<PantryRepository>;
 }

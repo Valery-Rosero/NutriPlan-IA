@@ -76,6 +76,7 @@ function RootNavigator() {
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Protected guard={inApp || (consentsOk && profile.isError)}>
         <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="profile/index" options={{ headerShown: true, title: '' }} />
         <Stack.Screen name="profile/[section]" />
         <Stack.Screen name="pantry/add" options={{ presentation: 'modal' }} />
         <Stack.Screen name="recipe/[id]" />

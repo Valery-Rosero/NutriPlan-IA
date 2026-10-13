@@ -2,7 +2,8 @@ import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tansta
 
 import { useServices } from '@/di/services';
 import { cookingKeys } from '@/features/cooking/application/use-suggestions';
-import { sortPantry, type NewPantryItem } from '@/features/pantry/domain/pantry';
+import { addDays, sortPantry, todayIso, type NewPantryItem } from '@/features/pantry/domain/pantry';
+import type { QuickItem } from '@/features/pantry/domain/quick-add';
 
 export const pantryKeys = {
   all: ['pantry'] as const,
@@ -29,6 +30,26 @@ export function useAddToPantry() {
   const { pantry } = useServices();
   const invalidate = useInvalidatePantry();
   return useMutation({ mutationFn: (item: NewPantryItem) => pantry.add(item), onSuccess: invalidate });
+}
+
+/** Un toque: agrega lo típico con vencimiento según la vida útil del ingrediente. */
+export function useQuickAdd() {
+  const { pantry } = useServices();
+  const invalidate = useInvalidatePantry();
+  return useMutation({
+    mutationFn: async (item: QuickItem) => {
+      const [[ingredient], units] = await Promise.all([pantry.findByNames([item.name]), pantry.listUnits()]);
+      const unit = units.find((u) => u.code === item.unitCode);
+      if (!ingredient || !unit) throw new Error('unknown');
+      await pantry.add({
+        ingredientId: ingredient.id,
+        quantity: item.quantity,
+        unitId: unit.id,
+        expiresOn: ingredient.shelfLifeDays ? addDays(todayIso(), ingredient.shelfLifeDays) : null,
+      });
+    },
+    onSuccess: invalidate,
+  });
 }
 
 export function useRemovePantryItem() {

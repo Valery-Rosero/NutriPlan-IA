@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import type { MealSlot, MissingIngredient } from '@/features/cooking/domain/cooking';
+import { momentOfDay, type MealSlot, type MissingIngredient } from '@/features/cooking/domain/cooking';
 
 export type FlexOption = { ingredientId: string; name: string; inPantry: boolean; isDefault: boolean; selected: boolean };
 export type FlexGroup = { key: number; label: string; min: number; max: number; options: FlexOption[] };
@@ -90,7 +90,7 @@ const SLOT_ORDER: MealSlot[] = ['breakfast', 'lunch', 'snack', 'dinner'];
 
 /** Momento del día para "Cocinar ahora" según la hora; si la receta no sirve para él, el siguiente que sí. */
 export function slotForNow(recipeSlots: MealSlot[], hour: number): MealSlot {
-  const byHour: MealSlot = hour < 11 ? 'breakfast' : hour < 16 ? 'lunch' : hour < 18 ? 'snack' : 'dinner';
+  const byHour = momentOfDay(hour);
   if (recipeSlots.includes(byHour)) return byHour;
   const start = SLOT_ORDER.indexOf(byHour);
   const rotated = [...SLOT_ORDER.slice(start), ...SLOT_ORDER.slice(0, start)];

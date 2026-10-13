@@ -34,9 +34,21 @@ function usePlanMutation<T>(fn: (input: T) => Promise<unknown>) {
   return useMutation({ mutationFn: fn, onSuccess: () => queryClient.invalidateQueries({ queryKey: planKeys.all }) });
 }
 
+/** Organizar la semana deja lista también la lista de mercado (lo que falta según la cocina). */
 export function useGeneratePlan() {
-  const { plans } = useServices();
-  return usePlanMutation((input: GeneratePlanInput) => plans.generate(input));
+  const { plans, shopping } = useServices();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (input: GeneratePlanInput) => {
+      const planId = await plans.generate(input);
+      await shopping.generate(planId);
+      return planId;
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: planKeys.all });
+      void queryClient.invalidateQueries({ queryKey: ['shopping'] });
+    },
+  });
 }
 
 export function useSwapMeal() {
