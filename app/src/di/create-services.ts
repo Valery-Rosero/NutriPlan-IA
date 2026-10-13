@@ -10,6 +10,7 @@ import { SupabasePantryRepository } from '@/features/pantry/data/supabase-pantry
 import { SupabasePlanRepository } from '@/features/plan/data/supabase-plan-repository';
 import { SupabaseProfileRepository } from '@/features/profile/data/supabase-profile-repository';
 import { SupabaseRecipeRepository } from '@/features/recipes/data/supabase-recipe-repository';
+import { SupabaseShoppingRepository } from '@/features/shopping/data/supabase-shopping-repository';
 import { supabase } from '@/infrastructure/supabase/client';
 
 /** Raíz de composición: único lugar que conoce las implementaciones concretas. */
@@ -22,6 +23,7 @@ export function createServices(): Services {
     pantry: new SupabasePantryRepository(supabase),
     recipes: new SupabaseRecipeRepository(supabase),
     plans: new SupabasePlanRepository(supabase),
+    shopping: new SupabaseShoppingRepository(supabase),
     loginThrottle: createLoginThrottle(),
   };
 }

@@ -499,6 +499,12 @@ isOneToOne: false
 isOneToOne: false
       referencedRelation: "ingredient_categories"
       referencedColumns: ["id"]
+    },{
+      foreignKeyName: "ingredients_store_category_id_fkey"
+      columns: ["store_category_id"]
+isOneToOne: false
+      referencedRelation: "my_shopping_items"
+      referencedColumns: ["category_id"]
     }
                   ]
                 },"legal_documents": {
@@ -1355,14 +1361,14 @@ isOneToOne: false
                   ]
                 },"shopping_list_items": {
                   Row: {
-                    "checked_at": string | null,"created_at": string,"custom_name": string | null,"id": string,"ingredient_id": string | null,"is_checked": boolean,"list_id": string,"needed_g": number | null,"pantry_g": number,"source": Database["public"]['Enums']["shopping_item_source"],"store_category_id": number | null,"to_buy_g": number | null
+                    "checked_at": string | null,"created_at": string,"custom_name": string | null,"id": string,"ingredient_id": string | null,"is_checked": boolean,"list_id": string,"moved_to_pantry_at": string | null,"needed_g": number | null,"pantry_g": number,"source": Database["public"]['Enums']["shopping_item_source"],"store_category_id": number | null,"to_buy_g": number | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "checked_at"?: string | null,"created_at"?: string,"custom_name"?: string | null,"id"?: string,"ingredient_id"?: string | null,"is_checked"?: boolean,"list_id": string,"needed_g"?: number | null,"pantry_g"?: number,"source"?: Database["public"]['Enums']["shopping_item_source"],"store_category_id"?: number | null,"to_buy_g"?: never
+                    "checked_at"?: string | null,"created_at"?: string,"custom_name"?: string | null,"id"?: string,"ingredient_id"?: string | null,"is_checked"?: boolean,"list_id": string,"moved_to_pantry_at"?: string | null,"needed_g"?: number | null,"pantry_g"?: number,"source"?: Database["public"]['Enums']["shopping_item_source"],"store_category_id"?: number | null,"to_buy_g"?: never
                   }
                   Update: {
-                    "checked_at"?: string | null,"created_at"?: string,"custom_name"?: string | null,"id"?: string,"ingredient_id"?: string | null,"is_checked"?: boolean,"list_id"?: string,"needed_g"?: number | null,"pantry_g"?: number,"source"?: Database["public"]['Enums']["shopping_item_source"],"store_category_id"?: number | null,"to_buy_g"?: never
+                    "checked_at"?: string | null,"created_at"?: string,"custom_name"?: string | null,"id"?: string,"ingredient_id"?: string | null,"is_checked"?: boolean,"list_id"?: string,"moved_to_pantry_at"?: string | null,"needed_g"?: number | null,"pantry_g"?: number,"source"?: Database["public"]['Enums']["shopping_item_source"],"store_category_id"?: number | null,"to_buy_g"?: never
                   }
                   Relationships: [
                     {
@@ -1383,6 +1389,12 @@ isOneToOne: false
 isOneToOne: false
       referencedRelation: "ingredient_categories"
       referencedColumns: ["id"]
+    },{
+      foreignKeyName: "shopping_list_items_store_category_id_fkey"
+      columns: ["store_category_id"]
+isOneToOne: false
+      referencedRelation: "my_shopping_items"
+      referencedColumns: ["category_id"]
     }
                   ]
                 },"shopping_lists": {
@@ -1652,6 +1664,12 @@ isOneToOne: false
       referencedRelation: "ingredient_categories"
       referencedColumns: ["id"]
     },{
+      foreignKeyName: "user_section_order_store_category_id_fkey"
+      columns: ["store_category_id"]
+isOneToOne: false
+      referencedRelation: "my_shopping_items"
+      referencedColumns: ["category_id"]
+    },{
       foreignKeyName: "user_section_order_user_id_fkey"
       columns: ["user_id"]
 isOneToOne: false
@@ -1719,6 +1737,26 @@ isOneToOne: false
       columns: ["recipe_id"]
 isOneToOne: false
       referencedRelation: "recipes"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"my_shopping_items": {
+                  Row: {
+                    "approx_units": number | null,"category_id": number | null,"category_name": string | null,"category_position": number | null,"id": string | null,"ingredient_id": string | null,"is_checked": boolean | null,"list_id": string | null,"moved_to_pantry_at": string | null,"name": string | null,"needed_g": number | null,"pantry_g": number | null,"source": Database["public"]['Enums']["shopping_item_source"] | null,"to_buy_g": number | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    {
+      foreignKeyName: "shopping_list_items_ingredient_id_fkey"
+      columns: ["ingredient_id"]
+isOneToOne: false
+      referencedRelation: "ingredients"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "shopping_list_items_list_id_fkey"
+      columns: ["list_id"]
+isOneToOne: false
+      referencedRelation: "shopping_lists"
       referencedColumns: ["id"]
     }
                   ]
@@ -1873,6 +1911,9 @@ isOneToOne: false
                            },
 "mark_meal_cooked":
 { Args: { "p_planned_meal_id": string }; Returns: Json
+                           },
+"move_checked_to_pantry":
+{ Args: { "p_list_id": string }; Returns: number
                            },
 "plan_budget_status":
 { Args: { "p_plan_id": string }; Returns: {

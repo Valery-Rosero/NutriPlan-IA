@@ -11,6 +11,7 @@ import { ServicesProvider } from '@/di/services';
 import { SessionProvider, useSession } from '@/features/auth/application/session';
 import { useRequiredConsents } from '@/features/legal/application/legal-queries';
 import { useProfile } from '@/features/profile/application/profile-queries';
+import { registerShoppingMutations } from '@/features/shopping/application/shopping-queries';
 import { persister, queryClient, shouldPersistQuery } from '@/infrastructure/query-client';
 import { Colors, type ThemeColors } from '@/shared/theme/colors';
 
@@ -28,12 +29,17 @@ function navColors(c: ThemeColors) {
 
 export default function RootLayout() {
   const scheme = useColorScheme();
-  const [services] = useState(createServices);
+  const [services] = useState(() => {
+    const created = createServices();
+    registerShoppingMutations(queryClient, created); // para reanudar casillas pendientes tras reiniciar
+    return created;
+  });
   return (
     <ServicesProvider services={services}>
       <PersistQueryClientProvider
         client={queryClient}
-        persistOptions={{ persister, dehydrateOptions: { shouldDehydrateQuery: shouldPersistQuery } }}>
+        persistOptions={{ persister, dehydrateOptions: { shouldDehydrateQuery: shouldPersistQuery } }}
+        onSuccess={() => void queryClient.resumePausedMutations()}>
         <SessionProvider>
           <ThemeProvider value={scheme === 'dark' ? navigationThemes.dark : navigationThemes.light}>
             <RootNavigator />

@@ -9,6 +9,7 @@ import type { PantryRepository } from '@/features/pantry/domain/pantry';
 import type { MealPlan, PlanRepository } from '@/features/plan/domain/plan';
 import type { Profile, ProfileRepository } from '@/features/profile/domain/profile';
 import type { RecipeDetail, RecipeRepository } from '@/features/recipes/domain/recipe';
+import type { ShoppingList, ShoppingRepository } from '@/features/shopping/domain/shopping';
 
 export const CURRENT_DOCUMENTS: LegalDocument[] = [
   { id: 1, kind: 'privacy_policy', version: 1, contentUrl: null },
@@ -122,6 +123,33 @@ export function fakePlans(overrides: Partial<PlanRepository> = {}): jest.Mocked<
   } as jest.Mocked<PlanRepository>;
 }
 
+const item = (over: Partial<ShoppingList['items'][number]>): ShoppingList['items'][number] => ({
+  id: 'i', ingredientId: 'x', name: 'x', categoryName: 'Verdulería y frutas', categoryPosition: 1, toBuyGrams: 100, pantryGrams: 0,
+  approxUnits: null, checked: false, source: 'plan', movedToPantry: false, ...over,
+});
+
+export const SHOPPING: ShoppingList = {
+  id: 'list1',
+  items: [
+    item({ id: 'i1', ingredientId: 'tomate', name: 'Tomate', toBuyGrams: 360, approxUnits: 3 }),
+    item({ id: 'i2', ingredientId: 'huevo', name: 'Huevo', categoryName: 'Lácteos y huevos', categoryPosition: 3, toBuyGrams: 200, approxUnits: 4 }),
+    item({ id: 'i3', ingredientId: 'arroz', name: 'Arroz blanco', categoryName: 'Despensa', categoryPosition: 5, toBuyGrams: 0, pantryGrams: 1000 }),
+    item({ id: 'i4', ingredientId: null, name: 'Bolsas', categoryName: null, categoryPosition: 99, toBuyGrams: null, source: 'manual' }),
+  ],
+};
+
+export function fakeShopping(overrides: Partial<ShoppingRepository> = {}): jest.Mocked<ShoppingRepository> {
+  return {
+    forPlan: jest.fn(async () => SHOPPING),
+    generate: jest.fn(async () => 'list1'),
+    setChecked: jest.fn(async () => {}),
+    addManual: jest.fn(async () => {}),
+    remove: jest.fn(async () => {}),
+    moveCheckedToPantry: jest.fn(async () => 1),
+    ...overrides,
+  } as jest.Mocked<ShoppingRepository>;
+}
+
 export function fakeServices(overrides: Partial<Services> = {}): Services {
   return {
     auth: fakeAuth(),
@@ -131,6 +159,7 @@ export function fakeServices(overrides: Partial<Services> = {}): Services {
     pantry: fakePantry(),
     recipes: fakeRecipes(),
     plans: fakePlans(),
+    shopping: fakeShopping(),
     loginThrottle: createLoginThrottle(),
     ...overrides,
   };
