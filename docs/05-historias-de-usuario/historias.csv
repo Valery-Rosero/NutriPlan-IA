@@ -1,0 +1,74 @@
+﻿id,titulo,epica,modulo,fase,prioridad,rank,tipo,etiquetas,ref_backlog,subarea,dependencias,n_criterios,n_subtareas
+US-101,Validar el prototipo con usuarios reales antes de construir,E6,M11,0,High,1,enabler,calidad mvp agregada-por-po,HU-01,Calidad,,2,0
+US-102,Desplegar versiones nuevas de forma automática y segura,E6,M11,0,High,2,enabler,plataforma mvp agregada-por-po,HU-02,Plataforma,,2,4
+US-103,Spike: validar la arquitectura del motor de recomendación,E2,M04,0,High,3,spike,plan-de-comidas mvp spike agregada-por-po,HU-03,Plan de comidas,,2,0
+US-104,Crear cuenta e iniciar sesión,E1,M01,0,High,4,historia,perfil mvp agregada-por-po,HU-04,Perfil,,2,5
+US-105,Cifrar datos de salud sensibles (reposo y tránsito),E5,M01,0,High,5,historia,privacidad mvp,HU-05,Privacidad,,1,5
+US-106,Seleccionar tipo de dieta en el onboarding,E1,M02,1,High,6,historia,perfil mvp,HU-06,Perfil,US-104,2,4
+US-107,Declarar alergias alimentarias como restricción dura,E1,M02,1,High,7,historia,perfil mvp,HU-07,Perfil,US-104,2,4
+US-108,Declarar presupuesto semanal o mensual de comida,E1,M02,1,High,8,historia,perfil mvp,HU-08,Perfil,US-104,2,4
+US-109,Definir número de porciones habituales,E1,M02,1,High,9,historia,perfil mvp,HU-09,Perfil,US-104,1,4
+US-110,Disponer de un catálogo inicial de recetas variado y compatible con cada dieta,E2,M03,1,High,10,historia,recetas mvp agregada-por-po,HU-10,Recetas,,2,4
+US-111,Calcular la información nutricional de cada receta a partir de sus ingredientes,E4,M03,1,High,11,historia,nutricion mvp agregada-por-po,HU-11,Nutrición,US-110,3,4
+US-112,Spike: validar fuentes de precios de alimentos para la región piloto,E3,M07,0,High,12,spike,presupuesto mvp spike agregada-por-po,HU-12,Presupuesto,,2,0
+US-113,Aceptar la política de privacidad y tratamiento de datos al registrarme,E5,M01,0,High,13,historia,privacidad mvp agregada-por-po,HU-13,Privacidad,US-104,2,4
+US-114,Informar que la app no reemplaza el consejo médico o nutricional,E4,M01,0,High,14,historia,nutricion mvp agregada-por-po,HU-14,Nutrición,,2,4
+US-115,Mostrar calorías y macros por porción en cada receta,E4,M08,1,High,15,historia,nutricion mvp,HU-15,Nutrición,US-111,1,4
+US-116,Editar perfil en cualquier momento,E1,M02,1,High,16,historia,perfil mvp,HU-16,Perfil,US-106 US-107,2,4
+US-117,Generar plan de comidas semanal automático,E2,M04,1,High,17,historia,plan-de-comidas mvp,HU-17,Plan de comidas,US-110 US-107 US-103,1,4
+US-118,Escalar porciones de una receta con recálculo automático,E2,M03,1,High,18,historia,recetas mvp,HU-18,Recetas,US-110,1,4
+US-119,"Gestionar ingredientes de la despensa (agregar, editar, eliminar)",E3,M06,1,High,19,historia,compras mvp agregada-por-po,HU-19,Compras,US-104,2,4
+US-120,Estimar costos con precios promedio reales de mi región,E3,M07,1,High,20,historia,presupuesto mvp agregada-por-po,HU-20,Presupuesto,US-112 US-110,2,4
+US-121,Revisar con un nutricionista titulado las recetas y reglas nutricionales,E4,M03,1,High,21,historia,nutricion mvp agregada-por-po,HU-21,Nutrición,US-110,2,4
+US-122,Detectar y corregir fallas de la app rápidamente,E6,M11,2,Medium,22,enabler,plataforma agregada-por-po,HU-22,Plataforma,,2,4
+US-123,Marcar una comida como cocinada,E2,M04,1,High,23,historia,plan-de-comidas mvp agregada-por-po,HU-23,Plan de comidas,US-117 US-119,2,4
+US-124,Generar lista de compras desde el plan semanal,E3,M06,1,High,24,historia,compras mvp,HU-24,Compras,US-117,1,0
+US-125,Excluir de la lista los ingredientes ya en despensa,E3,M06,1,High,25,historia,compras mvp,HU-25,Compras,US-124 US-119,2,0
+US-126,"Marcar, eliminar y agregar ítems manualmente en la lista",E3,M06,1,High,26,historia,compras mvp,HU-26,Compras,,1,0
+US-127,Mostrar costo estimado del plan semanal,E3,M07,1,High,27,historia,presupuesto mvp,HU-27,Presupuesto,US-120 US-117,1,0
+US-128,Calificar una receta después de cocinarla,E4,M08,1,High,28,historia,feedback mvp,HU-28,Feedback,US-123,1,0
+US-129,Cambiar una comida del plan por una alternativa,E2,M04,1,High,29,historia,plan-de-comidas mvp,HU-29,Plan de comidas,US-117,1,0
+US-130,Omitir onboarding y completarlo después,E1,M02,2,Medium,30,historia,perfil,HU-30,Perfil,,1,0
+US-131,Medir el uso de las funciones clave para priorizar con datos,E6,M11,2,Medium,31,enabler,analitica agregada-por-po,HU-31,Analítica,,2,0
+US-132,Alertar cuando el plan supera el presupuesto,E3,M07,1,High,32,historia,presupuesto mvp,HU-32,Presupuesto,US-127 US-108,1,0
+US-133,Exportar o eliminar todos mis datos,E5,M01,1,High,33,historia,privacidad mvp,HU-33,Privacidad,US-104,1,0
+US-134,Usar calificaciones para ajustar futuras recomendaciones,E4,M08,1,High,34,historia,feedback mvp,HU-34,Feedback,US-128,1,0
+US-135,Organizar lista de compras por sección del supermercado,E3,M06,2,Medium,35,historia,compras,HU-35,Compras,US-124,1,0
+US-136,Ajustar objetivo de macronutrientes (slider de proteína),E1,M02,2,Medium,36,historia,personalizacion,HU-36,Personalización,,1,0
+US-137,Fijar tiempo máximo de cocina,E1,M02,2,Medium,37,historia,personalizacion,HU-37,Personalización,,2,0
+US-138,Seleccionar cocinas favoritas,E1,M02,2,Medium,38,historia,personalizacion,HU-38,Personalización,,1,0
+US-139,Generar plan solo para hoy,E2,M04,2,Medium,39,historia,plan-de-comidas,HU-39,Plan de comidas,,1,0
+US-140,Usar la app con baja visión o lector de pantalla,E6,M11,2,Medium,40,enabler,calidad agregada-por-po,HU-40,Calidad,,2,0
+US-141,Ver gasto acumulado mensual vs. presupuesto,E3,M07,2,Medium,41,historia,presupuesto,HU-41,Presupuesto,,1,0
+US-142,Registrar fecha de vencimiento de ingredientes,E3,M06,2,Medium,42,historia,desperdicio,HU-42,Desperdicio,US-119,2,0
+US-143,"Mostrar micronutrientes clave (sodio, azúcar, fibra)",E4,M08,2,Medium,43,historia,nutricion,HU-43,Nutrición,US-111,1,0
+US-144,Dejar comentario corto sobre una receta,E4,M08,2,Medium,44,historia,feedback,HU-44,Feedback,,1,0
+US-145,Activar modo «priorizar despensa»,E1,M02,2,Medium,45,historia,personalizacion,HU-45,Personalización,US-119 US-117,1,0
+US-146,Evitar repetir proteína principal en días consecutivos,E2,M04,2,Medium,46,historia,plan-de-comidas,HU-46,Plan de comidas,US-117,1,0
+US-147,Sugerir sustitutos de ingredientes según restricciones,E2,M03,2,Medium,47,historia,recetas,HU-47,Recetas,US-110,1,0
+US-148,Recordatorio de la próxima comida,E2,M09,2,Medium,48,historia,notificaciones,HU-48,Notificaciones,US-117 US-123,2,0
+US-149,Configurar frecuencia de notificaciones,E2,M09,2,Medium,49,historia,notificaciones,HU-49,Notificaciones,,1,0
+US-150,Abrir y navegar la app con rapidez,E6,M11,2,Medium,50,enabler,calidad agregada-por-po,HU-50,Calidad,,2,0
+US-151,Reportar un problema o enviar sugerencias desde la app,E4,M08,2,Medium,51,historia,feedback agregada-por-po,HU-51,Feedback,,2,0
+US-152,Sugerir reemplazos para ajustar el plan al presupuesto,E3,M07,2,Medium,52,historia,presupuesto,HU-52,Presupuesto,US-132,1,0
+US-153,Notificar ingredientes por vencer con recetas sugeridas,E3,M06,2,Medium,53,historia,desperdicio,HU-53,Desperdicio,US-142 US-148,1,0
+US-154,Solicitar consentimiento explícito para funciones de comunidad,E5,M10,3,Medium,54,historia,privacidad,HU-54,Privacidad,,1,0
+US-155,Mostrar motivo de cada receta sugerida,E2,M04,2,Medium,55,historia,plan-de-comidas,HU-55,Plan de comidas,US-117,1,0
+US-156,Manejar ingredientes no lineales al escalar porciones,E2,M03,2,Medium,56,historia,recetas,HU-56,Recetas,,1,0
+US-157,Cambiar una comida mediante el asistente conversacional,E2,M05,2,Medium,57,historia,asistente-ia,HU-57,Asistente IA,US-129,1,0
+US-158,Descargar la app desde la tienda oficial de mi teléfono,E6,M11,1,High,58,enabler,lanzamiento mvp agregada-por-po,HU-58,Lanzamiento,US-113 US-102,2,0
+US-159,Resumen nutricional diario vs. objetivos,E4,M08,2,Medium,59,historia,nutricion,HU-59,Nutrición,US-123 US-115,1,0
+US-160,Armar comida solo con ingredientes de la despensa (asistente),E2,M05,2,Medium,60,historia,asistente-ia,HU-60,Asistente IA,US-119 US-157,2,0
+US-161,Compartir lista de compras con otra persona,E3,M06,3,Low,61,historia,compras,HU-61,Compras,US-124,1,0
+US-162,Sugerir recetas de aprovechamiento de sobras,E3,M06,3,Low,62,historia,desperdicio,HU-62,Desperdicio,,1,0
+US-163,Reconocer ingredientes desde una foto,E3,M12,3,Low,63,historia,foto-y-ocr,HU-63,Foto y OCR,US-119,1,0
+US-164,Escanear recibo de compra con OCR,E3,M12,3,Low,64,historia,foto-y-ocr,HU-64,Foto y OCR,US-119 US-141,1,0
+US-165,Mostrar precios actualizados según supermercado elegido,E3,M12,3,Low,65,historia,supermercados,HU-65,Supermercados,US-120,2,0
+US-166,Enviar lista de compras como pedido al supermercado,E3,M12,3,Low,66,historia,supermercados,HU-66,Supermercados,US-165 US-124,1,0
+US-167,Publicar receta propia o adaptación,E5,M10,3,Low,67,historia,comunidad,HU-67,Comunidad,US-104 US-154,1,0
+US-168,Comentar y dejar tips en recetas de la comunidad,E5,M10,3,Low,68,historia,comunidad,HU-68,Comunidad,US-167,1,0
+US-169,Moderar contenido publicado por usuarios,E5,M10,3,Low,69,historia,comunidad,HU-69,Comunidad,US-167,1,0
+US-170,Activar modo batch cooking,E1,M02,3,Low,70,historia,personalizacion,HU-70,Personalización,,1,0
+US-171,Definir nivel de picante preferido,E1,M02,3,Low,71,historia,personalizacion,HU-71,Personalización,,1,0
+US-172,Ofrecer «versión rápida» de una receta,E2,M03,3,Low,72,historia,recetas,HU-72,Recetas,,1,0
+US-173,Respuestas rápidas en el chat del asistente,E2,M05,3,Low,73,historia,asistente-ia,HU-73,Asistente IA,,1,0

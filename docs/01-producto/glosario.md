@@ -1,0 +1,16 @@
+# Glosario
+- **Plan:** conjunto de comidas planificadas (`planned_meals`) para una semana; estados borrador/confirmado.
+- **Slot:** momento del día (`meal_slot`: desayuno, almuerzo, cena, snack…).
+- **Receta oficial / comunidad:** oficial = curada por el equipo; comunidad = publicada por usuarios, con flujo de moderación.
+- **Elegible:** receta que cumple alergias, dieta y condiciones del usuario (`eligible_recipes`).
+- **Despensa (pantry):** ingredientes que el usuario tiene, con cantidad y vencimiento.
+- **Escalado:** `qty = base × (porciones/base)^scaling_exponent`; especias usan exponente <1.
+- **Presupuesto:** límite semanal/mensual en COP; `plan_budget_status` compara con el costo estimado.
+- **Precio estimado:** precio regional de referencia (SIPSA/DANE), no precio de tienda.
+- **Datos sensibles:** salud, alergias, condiciones, dietas. Requieren autorización expresa.
+- **Consentimiento:** aceptación versionada de un documento legal (`user_consents`), con hash del texto.
+- **RPC:** función SQL expuesta vía PostgREST/`supabase.rpc`.
+- **Edge Function:** función Deno en Supabase; único lugar que llama al LLM.
+- **Brecha:** capacidad pedida por una historia que aún no existe en el esquema.
+- **Spike:** historia de investigación con entregable de decisión.
+- **Enabler:** historia técnica habilitadora (plataforma, CI/CD, calidad).

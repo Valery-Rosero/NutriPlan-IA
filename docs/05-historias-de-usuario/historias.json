@@ -1,0 +1,3612 @@
+[
+ {
+  "id": 101,
+  "key": "US-101",
+  "title": "Validar el prototipo con usuarios reales antes de construir",
+  "epic_id": 6,
+  "epic": "Fundamentos, calidad y lanzamiento",
+  "epic_code": "E6",
+  "module": "M11",
+  "module_name": "Plataforma, calidad y lanzamiento",
+  "phase": 0,
+  "phase_name": "F0 Fundaciones y validación",
+  "priority": "High",
+  "rank": 1,
+  "type": "enabler",
+  "labels": [
+   "calidad",
+   "mvp",
+   "agregada-por-po"
+  ],
+  "ref": "HU-01",
+  "subarea": "Calidad",
+  "rol": "Product Owner",
+  "quiero": "validar el prototipo del onboarding, el plan semanal y la lista de compras con usuarios reales",
+  "para": "construir lo que de verdad necesitan y no lo que suponemos",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado el prototipo navegable actual",
+     "Cuando se realizan 5 sesiones de prueba con personas que planifican sus comidas (al menos 1 con alergia alimentaria)",
+     "Entonces al menos 4 de 5 completan las tareas \"declarar mis alergias\", \"cambiar una comida\" y \"generar la lista de compras\" sin ayuda."
+    ]
+   },
+   {
+    "kind": "borde",
+    "lines": [
+     "Caso borde: cada hallazgo de usabilidad se registra como ítem del backlog, con evidencia (nota o grabación), dentro de los 3 días siguientes a la última sesión."
+    ]
+   }
+  ],
+  "deps": [],
+  "backend": "Entregable de producto: informe de 5 sesiones sobre el prototipo (`referencias/prototipo/`).",
+  "screens": "Prototipo navegable",
+  "notes": "Al menos 1 participante con alergia alimentaria.",
+  "tests": "",
+  "subtasks": []
+ },
+ {
+  "id": 102,
+  "key": "US-102",
+  "title": "Desplegar versiones nuevas de forma automática y segura",
+  "epic_id": 6,
+  "epic": "Fundamentos, calidad y lanzamiento",
+  "epic_code": "E6",
+  "module": "M11",
+  "module_name": "Plataforma, calidad y lanzamiento",
+  "phase": 0,
+  "phase_name": "F0 Fundaciones y validación",
+  "priority": "High",
+  "rank": 2,
+  "type": "enabler",
+  "labels": [
+   "plataforma",
+   "mvp",
+   "agregada-por-po"
+  ],
+  "ref": "HU-02",
+  "subarea": "Plataforma",
+  "rol": "usuario",
+  "quiero": "que las actualizaciones de la app lleguen sin caídas ni fallas",
+  "para": "poder planificar mis comidas cuando lo necesite",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado un cambio aprobado que se integra a la rama principal",
+     "Cuando pasan las pruebas automáticas",
+     "Entonces se despliega a un entorno de pruebas (staging) en máximo 15 minutos sin intervención manual."
+    ]
+   },
+   {
+    "kind": "borde",
+    "lines": [
+     "Caso borde: si las pruebas fallan, el despliegue se detiene y se notifica al equipo; cualquier versión en producción puede revertirse a la anterior en menos de 10 minutos."
+    ]
+   }
+  ],
+  "deps": [],
+  "backend": "GitHub Actions: lint, tipos, `tests/run.sh`, build de EAS; `supabase db push` a staging y luego producción.",
+  "screens": "—",
+  "notes": "Tres proyectos Supabase (dev, staging, producción). El seed solo en dev.",
+  "tests": "",
+  "subtasks": [
+   {
+    "id": 1001,
+    "title": "Configurar entornos de pruebas y producción"
+   },
+   {
+    "id": 1002,
+    "title": "Crear el pipeline de integración continua con pruebas automáticas"
+   },
+   {
+    "id": 1003,
+    "title": "Automatizar el despliegue a staging"
+   },
+   {
+    "id": 1004,
+    "title": "Documentar y probar el procedimiento de reversión"
+   }
+  ]
+ },
+ {
+  "id": 103,
+  "key": "US-103",
+  "title": "Spike: validar la arquitectura del motor de recomendación",
+  "epic_id": 2,
+  "epic": "Planificación inteligente de comidas",
+  "epic_code": "E2",
+  "module": "M04",
+  "module_name": "Motor de planificación",
+  "phase": 0,
+  "phase_name": "F0 Fundaciones y validación",
+  "priority": "High",
+  "rank": 3,
+  "type": "spike",
+  "labels": [
+   "plan-de-comidas",
+   "mvp",
+   "spike",
+   "agregada-por-po"
+  ],
+  "ref": "HU-03",
+  "subarea": "Plan de comidas",
+  "rol": "equipo de desarrollo",
+  "quiero": "validar la arquitectura del motor de recomendación (reglas, ranking y modelo de lenguaje) y su costo por usuario",
+  "para": "decidir qué construir antes de comprometer el plan semanal",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado un timebox de 3 días",
+     "Cuando termina el spike",
+     "Entonces existe un documento con la arquitectura recomendada y una prueba de concepto que genera un plan de 7 días respetando 5 perfiles de prueba (incluyendo uno con alergia a frutos secos y uno vegano), junto con el costo estimado por plan generado."
+    ]
+   },
+   {
+    "kind": "borde",
+    "lines": [
+     "Caso borde: si el costo por plan supera el umbral acordado con el Product Owner antes de iniciar, el documento propone al menos 2 alternativas para reducirlo."
+    ]
+   }
+  ],
+  "deps": [],
+  "backend": "Entregable: ADR + prueba de concepto de la Edge Function `generate-plan` (reglas SQL + ranking + LLM) con 5 perfiles de prueba y costo por plan.",
+  "screens": "—",
+  "notes": "Timebox de 3 días. Partir de la arquitectura ya decidida: el modelo propone SOLO entre candidatos que devuelve `eligible_recipes`; la base valida.",
+  "tests": "",
+  "subtasks": []
+ },
+ {
+  "id": 104,
+  "key": "US-104",
+  "title": "Crear cuenta e iniciar sesión",
+  "epic_id": 1,
+  "epic": "Perfil y personalización",
+  "epic_code": "E1",
+  "module": "M01",
+  "module_name": "Cuenta, consentimientos y privacidad",
+  "phase": 0,
+  "phase_name": "F0 Fundaciones y validación",
+  "priority": "High",
+  "rank": 4,
+  "type": "historia",
+  "labels": [
+   "perfil",
+   "mvp",
+   "agregada-por-po"
+  ],
+  "ref": "HU-04",
+  "subarea": "Perfil",
+  "rol": "usuaria nueva",
+  "quiero": "crear una cuenta e iniciar sesión con correo y contraseña",
+  "para": "conservar mi perfil y mis planes entre dispositivos",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que ingreso un correo válido y una contraseña de al menos 8 caracteres con una mayúscula y un número",
+     "Cuando toco \"Crear cuenta\"",
+     "Entonces se crea mi cuenta, recibo un correo de verificación y accedo al onboarding."
+    ]
+   },
+   {
+    "kind": "borde",
+    "lines": [
+     "Caso borde: si el correo ya está registrado, se muestra \"Este correo ya tiene una cuenta\" con enlace a \"Iniciar sesión\"; tras 5 intentos fallidos de inicio de sesión, la cuenta se bloquea 15 minutos."
+    ]
+   }
+  ],
+  "deps": [],
+  "backend": "Supabase Auth `signUp` (correo+contraseña) con `options.data = {privacy_policy_document_id, terms_document_id, is_adult:true}`. El trigger `private.handle_new_user` crea `profiles`, `notification_preferences` y `user_consents`; rechaza con `consent_required` o `adult_required`.",
+  "screens": "Registro, Inicio de sesión, Verificación de correo",
+  "notes": "Reglas de contraseña (≥8, mayúscula, número) se validan en la app y en la configuración de Auth. El bloqueo de 15 min tras 5 intentos NO viene configurable por defecto en Supabase Auth: verificar sus límites de tasa; si no alcanzan, implementar contador de intentos en una Edge Function. Nunca crear el perfil desde la app: lo hace el trigger.",
+  "tests": "tests/10_signup_rls.sql (registro con y sin consentimiento, mayoría de edad)",
+  "subtasks": [
+   {
+    "id": 1005,
+    "title": "Diseñar las pantallas de registro e inicio de sesión"
+   },
+   {
+    "id": 1006,
+    "title": "Implementar registro con verificación por correo (API)"
+   },
+   {
+    "id": 1007,
+    "title": "Implementar bloqueo temporal tras 5 intentos fallidos"
+   },
+   {
+    "id": 1008,
+    "title": "Construir las pantallas de registro e inicio de sesión en la app"
+   },
+   {
+    "id": 1009,
+    "title": "Pruebas de aceptación de registro, verificación y bloqueo"
+   }
+  ]
+ },
+ {
+  "id": 105,
+  "key": "US-105",
+  "title": "Cifrar datos de salud sensibles (reposo y tránsito)",
+  "epic_id": 5,
+  "epic": "Comunidad y confianza",
+  "epic_code": "E5",
+  "module": "M01",
+  "module_name": "Cuenta, consentimientos y privacidad",
+  "phase": 0,
+  "phase_name": "F0 Fundaciones y validación",
+  "priority": "High",
+  "rank": 5,
+  "type": "historia",
+  "labels": [
+   "privacidad",
+   "mvp"
+  ],
+  "ref": "HU-05",
+  "subarea": "Privacidad",
+  "rol": "usuario",
+  "quiero": "que mis datos de salud (alergias, peso, condiciones médicas) estén cifrados",
+  "para": "proteger mi información sensible",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que guardo una condición médica en mi perfil",
+     "Cuando el dato se transmite del cliente al servidor y se almacena",
+     "Entonces la transmisión usa TLS 1.2 o superior y el campo se almacena cifrado en la base de datos, verificable en una auditoría de seguridad; ningún log de la aplicación muestra el valor en texto plano."
+    ]
+   }
+  ],
+  "deps": [],
+  "backend": "No requiere código nuevo: TLS en tránsito y cifrado en reposo de Supabase, RLS en las 59 tablas y separación de `profile_health`. Decisión ADR-008: sin cifrado por campo en el MVP.",
+  "screens": "—",
+  "notes": "El criterio original pide cifrado de datos de salud; se cumple con cifrado en tránsito y en reposo de la plataforma. Si el abogado o un auditor exigen cifrado por campo, ver ADR-008 (alternativa: cifrar en Edge Function). Entregable de la historia: verificación documentada (conexiones solo TLS, RLS probado, backups cifrados).",
+  "tests": "tests/10 (RLS en todas las tablas)",
+  "subtasks": [
+   {
+    "id": 1010,
+    "title": "Definir qué campos son datos sensibles y el esquema de cifrado en reposo"
+   },
+   {
+    "id": 1011,
+    "title": "Configurar TLS 1.2 o superior en todos los servicios"
+   },
+   {
+    "id": 1012,
+    "title": "Implementar cifrado de campos sensibles en la base de datos"
+   },
+   {
+    "id": 1013,
+    "title": "Revisar los logs para confirmar que no exponen datos sensibles"
+   },
+   {
+    "id": 1014,
+    "title": "Prueba de seguridad de la configuración"
+   }
+  ]
+ },
+ {
+  "id": 106,
+  "key": "US-106",
+  "title": "Seleccionar tipo de dieta en el onboarding",
+  "epic_id": 1,
+  "epic": "Perfil y personalización",
+  "epic_code": "E1",
+  "module": "M02",
+  "module_name": "Perfil y preferencias",
+  "phase": 1,
+  "phase_name": "F1 MVP",
+  "priority": "High",
+  "rank": 6,
+  "type": "historia",
+  "labels": [
+   "perfil",
+   "mvp"
+  ],
+  "ref": "HU-06",
+  "subarea": "Perfil",
+  "rol": "usuaria nueva",
+  "quiero": "indicar mi tipo de dieta (omnívoro, vegetariano, vegano, etc.)",
+  "para": "que la app filtre recetas compatibles desde el primer uso",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que estoy en el paso \"Estilo de alimentación\"",
+     "Cuando selecciono \"Vegetariano\" y confirmo",
+     "Entonces mi perfil guarda dieta_tipo=\"vegetariano\" y el primer plan generado tiene 0% de recetas con carne o pescado como ingrediente principal."
+    ]
+   },
+   {
+    "kind": "borde",
+    "lines": [
+     "Caso borde: si no selecciono ninguna opción, el botón \"Continuar\" queda deshabilitado y se muestra \"Selecciona una opción para continuar\"."
+    ]
+   }
+  ],
+  "deps": [
+   104
+  ],
+  "backend": "`user_diets(user_id, diet_id)`; catálogo `diets` (kind `rule_based` o `curated`); compatibilidad en la vista `recipe_diets`. Requiere autorización de datos sensibles (trigger).",
+  "screens": "Onboarding paso 2, Personalización",
+  "notes": "Omnívoro = ausencia de filas. Una dieta es restricción DURA: `eligible_recipes` solo devuelve recetas compatibles con TODAS las dietas del usuario. Si no hay autorización de datos sensibles, la app oculta el paso o lo marca como opcional.",
+  "tests": "tests/30 (dietas vegetarianas)",
+  "subtasks": [
+   {
+    "id": 1015,
+    "title": "Diseñar UX/UI: Seleccionar tipo de dieta en el onboarding"
+   },
+   {
+    "id": 1016,
+    "title": "Implementar lógica y API: Seleccionar tipo de dieta en el onboarding"
+   },
+   {
+    "id": 1017,
+    "title": "Construir interfaz en la app: Seleccionar tipo de dieta en el onboarding"
+   },
+   {
+    "id": 1018,
+    "title": "Pruebas de aceptación: Seleccionar tipo de dieta en el onboarding"
+   }
+  ]
+ },
+ {
+  "id": 107,
+  "key": "US-107",
+  "title": "Declarar alergias alimentarias como restricción dura",
+  "epic_id": 1,
+  "epic": "Perfil y personalización",
+  "epic_code": "E1",
+  "module": "M02",
+  "module_name": "Perfil y preferencias",
+  "phase": 1,
+  "phase_name": "F1 MVP",
+  "priority": "High",
+  "rank": 7,
+  "type": "historia",
+  "labels": [
+   "perfil",
+   "mvp"
+  ],
+  "ref": "HU-07",
+  "subarea": "Perfil",
+  "rol": "usuaria con alergias",
+  "quiero": "declarar mis alergias alimentarias",
+  "para": "que la app nunca me sugiera recetas que las contengan",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que marqué \"Frutos secos\" y \"Mariscos\" como alergias",
+     "Cuando se genera cualquier plan o resultado de búsqueda",
+     "Entonces 0 recetas devueltas contienen esos alérgenos en su lista de ingredientes, incluida cualquier sustitución sugerida."
+    ]
+   },
+   {
+    "kind": "borde",
+    "lines": [
+     "Caso borde: si una receta ya guardada en mis favoritos contiene un alérgeno recién declarado, se elimina automáticamente de favoritos y se me notifica el motivo."
+    ]
+   }
+  ],
+  "deps": [
+   104
+  ],
+  "backend": "`user_allergens`; triggers `planned_meals_validate` y `purge_favorites_on_new_allergen`; `private.recipe_conflicts_with_user`. Requiere autorización de datos sensibles.",
+  "screens": "Onboarding paso 2, Personalización",
+  "notes": "Restricción DURA y la más importante del producto: se aplica en el filtro, en el trigger del plan y en las sugerencias del asistente. Considera también ingredientes opcionales. Nunca delegar esta verificación al modelo de lenguaje ni a la app.",
+  "tests": "tests/30 y tests/40 (alergia rechazada por trigger)",
+  "subtasks": [
+   {
+    "id": 1019,
+    "title": "Diseñar UX/UI: Declarar alergias alimentarias como restricción dura"
+   },
+   {
+    "id": 1020,
+    "title": "Implementar lógica y API: Declarar alergias alimentarias como restricción dura"
+   },
+   {
+    "id": 1021,
+    "title": "Construir interfaz en la app: Declarar alergias alimentarias como restricción dura"
+   },
+   {
+    "id": 1022,
+    "title": "Pruebas de aceptación: Declarar alergias alimentarias como restricción dura"
+   }
+  ]
+ },
+ {
+  "id": 108,
+  "key": "US-108",
+  "title": "Declarar presupuesto semanal o mensual de comida",
+  "epic_id": 1,
+  "epic": "Perfil y personalización",
+  "epic_code": "E1",
+  "module": "M02",
+  "module_name": "Perfil y preferencias",
+  "phase": 1,
+  "phase_name": "F1 MVP",
+  "priority": "High",
+  "rank": 8,
+  "type": "historia",
+  "labels": [
+   "perfil",
+   "mvp"
+  ],
+  "ref": "HU-08",
+  "subarea": "Perfil",
+  "rol": "usuario",
+  "quiero": "declarar mi presupuesto semanal o mensual de comida",
+  "para": "que los planes generados respeten ese límite",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que ingreso $60.000 como presupuesto semanal para 2 personas",
+     "Cuando guardo el dato",
+     "Entonces el valor queda reflejado como techo de gasto en la pantalla de plan semanal."
+    ]
+   },
+   {
+    "kind": "borde",
+    "lines": [
+     "Caso borde: el campo rechaza valores no numéricos o menores a $10.000 mostrando \"Ingresa un monto válido\", y no permite avanzar hasta corregirlo."
+    ]
+   }
+  ],
+  "deps": [
+   104
+  ],
+  "backend": "`profiles.budget_amount` + `budget_period` (week|month); `meal_plans.budget_limit` es una foto calculada por trigger (semana: monto×días/7; mes: monto×días/30).",
+  "screens": "Onboarding paso 3, Personalización",
+  "notes": "Moneda derivada de `profiles.region_id` → `regions` → `countries`; no se guarda por usuario. Monto y periodo van juntos (check).",
+  "tests": "tests/40 (presupuesto semanal)",
+  "subtasks": [
+   {
+    "id": 1023,
+    "title": "Diseñar UX/UI: Declarar presupuesto semanal o mensual de comida"
+   },
+   {
+    "id": 1024,
+    "title": "Implementar lógica y API: Declarar presupuesto semanal o mensual de comida"
+   },
+   {
+    "id": 1025,
+    "title": "Construir interfaz en la app: Declarar presupuesto semanal o mensual de comida"
+   },
+   {
+    "id": 1026,
+    "title": "Pruebas de aceptación: Declarar presupuesto semanal o mensual de comida"
+   }
+  ]
+ },
+ {
+  "id": 109,
+  "key": "US-109",
+  "title": "Definir número de porciones habituales",
+  "epic_id": 1,
+  "epic": "Perfil y personalización",
+  "epic_code": "E1",
+  "module": "M02",
+  "module_name": "Perfil y preferencias",
+  "phase": 1,
+  "phase_name": "F1 MVP",
+  "priority": "High",
+  "rank": 9,
+  "type": "historia",
+  "labels": [
+   "perfil",
+   "mvp"
+  ],
+  "ref": "HU-09",
+  "subarea": "Perfil",
+  "rol": "usuario",
+  "quiero": "indicar cuántas personas o porciones cocino habitualmente",
+  "para": "que las cantidades vengan ajustadas desde el inicio",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que indiqué \"2 personas\" en el onboarding",
+     "Cuando se genera cualquier receta nueva",
+     "Entonces la porción por defecto se muestra en 2 y las cantidades de ingredientes se calculan con el factor porciones/porción_base (ej. base 4 → factor 0.5)."
+    ]
+   }
+  ],
+  "deps": [
+   104
+  ],
+  "backend": "`profiles.household_size` (1-12) como valor por defecto; `planned_meals.servings` por comida.",
+  "screens": "Onboarding paso 3, Plan",
+  "notes": "`household_size` solo cuenta personas: no hay perfiles de hijos ni de otras personas (ver 01-producto/limitaciones.md).",
+  "tests": "",
+  "subtasks": [
+   {
+    "id": 1027,
+    "title": "Diseñar UX/UI: Definir número de porciones habituales"
+   },
+   {
+    "id": 1028,
+    "title": "Implementar lógica y API: Definir número de porciones habituales"
+   },
+   {
+    "id": 1029,
+    "title": "Construir interfaz en la app: Definir número de porciones habituales"
+   },
+   {
+    "id": 1030,
+    "title": "Pruebas de aceptación: Definir número de porciones habituales"
+   }
+  ]
+ },
+ {
+  "id": 110,
+  "key": "US-110",
+  "title": "Disponer de un catálogo inicial de recetas variado y compatible con cada dieta",
+  "epic_id": 2,
+  "epic": "Planificación inteligente de comidas",
+  "epic_code": "E2",
+  "module": "M03",
+  "module_name": "Catálogo de recetas e ingredientes",
+  "phase": 1,
+  "phase_name": "F1 MVP",
+  "priority": "High",
+  "rank": 10,
+  "type": "historia",
+  "labels": [
+   "recetas",
+   "mvp",
+   "agregada-por-po"
+  ],
+  "ref": "HU-10",
+  "subarea": "Recetas",
+  "rol": "usuario",
+  "quiero": "encontrar desde el primer día recetas variadas que respeten mi dieta y mis alergias",
+  "para": "no encontrarme con resultados vacíos ni repetidos",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado el catálogo cargado",
+     "Cuando se ejecuta la validación automática",
+     "Entonces el 100% de las recetas tiene ingredientes con cantidad y unidad normalizadas, porciones base, tiempo de preparación y al menos una etiqueta de dieta, y ninguna receta con alérgenos mayores carece de su etiqueta de alérgeno."
+    ]
+   },
+   {
+    "kind": "borde",
+    "lines": [
+     "Caso borde: el catálogo incluye al menos 20 recetas aptas por cada dieta soportada (omnívoro, vegetariano, vegano, sin gluten, sin lactosa) para que el filtrado nunca devuelva listas vacías."
+    ]
+   }
+  ],
+  "deps": [],
+  "backend": "Tablas `ingredients`, `ingredient_nutrition`, `ingredient_prices`, `recipes`, `recipe_ingredients`, `recipe_steps`, `recipe_meal_slots`, `recipe_diet_tags`; flujo borrador → revisión → publicada.",
+  "screens": "Back-office (carga) y todas las pantallas de receta",
+  "notes": "Carga con script de importación, nunca con `seed.sql` (solo desarrollo). Fuentes con licencia verificada (ver 06-legal). Meta MVP: cubrir cada dieta soportada con variedad por franja. Publicar exige ingredientes, pasos, nutrición completa y revisión aprobada (triggers).",
+  "tests": "tests/20 (reglas de publicación)",
+  "subtasks": [
+   {
+    "id": 1031,
+    "title": "Definir el esquema de datos de receta (ingredientes, unidades, etiquetas)"
+   },
+   {
+    "id": 1032,
+    "title": "Cargar y normalizar las 150 recetas iniciales"
+   },
+   {
+    "id": 1033,
+    "title": "Crear el script de validación automática del catálogo"
+   },
+   {
+    "id": 1034,
+    "title": "Verificar cobertura mínima de 20 recetas por dieta soportada"
+   }
+  ]
+ },
+ {
+  "id": 111,
+  "key": "US-111",
+  "title": "Calcular la información nutricional de cada receta a partir de sus ingredientes",
+  "epic_id": 4,
+  "epic": "Nutrición y feedback",
+  "epic_code": "E4",
+  "module": "M03",
+  "module_name": "Catálogo de recetas e ingredientes",
+  "phase": 1,
+  "phase_name": "F1 MVP",
+  "priority": "High",
+  "rank": 11,
+  "type": "historia",
+  "labels": [
+   "nutricion",
+   "mvp",
+   "agregada-por-po"
+  ],
+  "ref": "HU-11",
+  "subarea": "Nutrición",
+  "rol": "usuario",
+  "quiero": "que la información nutricional de cada receta sea confiable y se calcule a partir de sus ingredientes",
+  "para": "tomar decisiones informadas sin dudar de los datos",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado un ingrediente del catálogo",
+     "Cuando se consulta su registro nutricional",
+     "Entonces devuelve los 7 valores por 100 g junto con su fuente."
+    ]
+   },
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado una receta de 4 porciones",
+     "Cuando se calcula su información nutricional",
+     "Entonces el total por porción difiere en ≤5% del cálculo manual de referencia en una muestra de 10 recetas de validación."
+    ]
+   },
+   {
+    "kind": "borde",
+    "lines": [
+     "Caso borde: una receta con algún ingrediente sin dato nutricional no puede publicarse en el catálogo."
+    ]
+   }
+  ],
+  "deps": [
+   110
+  ],
+  "backend": "Vista `recipe_nutrition` (por porción base) a partir de `ingredient_nutrition` (por 100 g) y `private.to_grams`.",
+  "screens": "Receta",
+  "notes": "Nunca se captura nutrición por receta a mano. Los ingredientes opcionales NO suman.",
+  "tests": "tests/20 (nutrición vs cálculo manual)",
+  "subtasks": [
+   {
+    "id": 1035,
+    "title": "Seleccionar y verificar licencia de la fuente de datos nutricionales"
+   },
+   {
+    "id": 1036,
+    "title": "Cargar los valores por 100 g de los ingredientes del catálogo"
+   },
+   {
+    "id": 1037,
+    "title": "Implementar el cálculo nutricional por porción"
+   },
+   {
+    "id": 1038,
+    "title": "Validar contra 10 recetas de referencia (tolerancia ≤5%)"
+   }
+  ]
+ },
+ {
+  "id": 112,
+  "key": "US-112",
+  "title": "Spike: validar fuentes de precios de alimentos para la región piloto",
+  "epic_id": 3,
+  "epic": "Compras, presupuesto y despensa",
+  "epic_code": "E3",
+  "module": "M07",
+  "module_name": "Presupuesto y precios",
+  "phase": 0,
+  "phase_name": "F0 Fundaciones y validación",
+  "priority": "High",
+  "rank": 12,
+  "type": "spike",
+  "labels": [
+   "presupuesto",
+   "mvp",
+   "spike",
+   "agregada-por-po"
+  ],
+  "ref": "HU-12",
+  "subarea": "Presupuesto",
+  "rol": "equipo de desarrollo",
+  "quiero": "validar de dónde obtener precios promedio de alimentos confiables",
+  "para": "la región piloto, para saber si la estimación de costos es viable",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado un timebox de 2 días",
+     "Cuando termina el spike",
+     "Entonces se documentan al menos 3 fuentes candidatas con su cobertura de los ingredientes del catálogo inicial, su frecuencia de actualización y sus condiciones de uso."
+    ]
+   },
+   {
+    "kind": "borde",
+    "lines": [
+     "Caso borde: si ninguna fuente cubre al menos el 80% de los ingredientes, se propone un plan de relevamiento propio con esfuerzo estimado."
+    ]
+   }
+  ],
+  "deps": [],
+  "backend": "Entregable: filas en `price_sources` (con `license_notes`) y primer lote de `ingredient_prices` para la región piloto; informe de cobertura.",
+  "screens": "—",
+  "notes": "Seguir 06-legal/datos-y-licencias.md: USDA FDC (CC0) y DANE con cita; ICBF requiere permiso. SIPSA son precios mayoristas: marcar como estimados.",
+  "tests": "",
+  "subtasks": []
+ },
+ {
+  "id": 113,
+  "key": "US-113",
+  "title": "Aceptar la política de privacidad y tratamiento de datos al registrarme",
+  "epic_id": 5,
+  "epic": "Comunidad y confianza",
+  "epic_code": "E5",
+  "module": "M01",
+  "module_name": "Cuenta, consentimientos y privacidad",
+  "phase": 0,
+  "phase_name": "F0 Fundaciones y validación",
+  "priority": "High",
+  "rank": 13,
+  "type": "historia",
+  "labels": [
+   "privacidad",
+   "mvp",
+   "agregada-por-po"
+  ],
+  "ref": "HU-13",
+  "subarea": "Privacidad",
+  "rol": "usuario",
+  "quiero": "conocer y aceptar de forma explícita cómo se tratan mis datos personales y de salud al crear mi cuenta",
+  "para": "decidir con información si los comparto",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que estoy creando mi cuenta",
+     "Cuando llego al paso de registro",
+     "Entonces veo un enlace a la política de privacidad y una casilla de aceptación sin premarcar; el botón \"Crear cuenta\" permanece deshabilitado hasta marcarla."
+    ]
+   },
+   {
+    "kind": "borde",
+    "lines": [
+     "Caso borde: el sistema guarda la versión de la política aceptada y la fecha y hora de aceptación; si la política cambia, se pide aceptar de nuevo en el siguiente inicio de sesión. La redacción debe validarse con asesoría legal conforme a la Ley 1581 de 2012 de protección de datos personales en Colombia."
+    ]
+   }
+  ],
+  "deps": [
+   104
+  ],
+  "backend": "Mismo `signUp`; versión vigente = `private.latest_legal_document('privacy_policy')`. Evidencia: `user_consents(accepted_at)` + `legal_documents.content_sha256`.",
+  "screens": "Registro (casillas: mayor de 18, términos, política)",
+  "notes": "Las casillas NO vienen premarcadas. La app debe leer el id del documento vigente desde `legal_documents` (lectura anónima permitida) y enviarlo. Textos en `06-legal-y-cumplimiento/borradores/`; no publicar hasta que `private.legal_readiness()` muestre todo en verdadero.",
+  "tests": "tests/10 y tests/60",
+  "subtasks": [
+   {
+    "id": 1039,
+    "title": "Diseñar UX/UI: Aceptar la política de privacidad y tratamiento de datos al registrarme"
+   },
+   {
+    "id": 1040,
+    "title": "Implementar lógica y API: Aceptar la política de privacidad y tratamiento de datos al registrarme"
+   },
+   {
+    "id": 1041,
+    "title": "Construir interfaz en la app: Aceptar la política de privacidad y tratamiento de datos al registrarme"
+   },
+   {
+    "id": 1042,
+    "title": "Pruebas de aceptación: Aceptar la política de privacidad y tratamiento de datos al registrarme"
+   }
+  ]
+ },
+ {
+  "id": 114,
+  "key": "US-114",
+  "title": "Informar que la app no reemplaza el consejo médico o nutricional",
+  "epic_id": 4,
+  "epic": "Nutrición y feedback",
+  "epic_code": "E4",
+  "module": "M01",
+  "module_name": "Cuenta, consentimientos y privacidad",
+  "phase": 0,
+  "phase_name": "F0 Fundaciones y validación",
+  "priority": "High",
+  "rank": 14,
+  "type": "historia",
+  "labels": [
+   "nutricion",
+   "mvp",
+   "agregada-por-po"
+  ],
+  "ref": "HU-14",
+  "subarea": "Nutrición",
+  "rol": "usuario con una condición de salud",
+  "quiero": "que la app me aclare que no reemplaza a un profesional",
+  "para": "saber cuándo debo consultar a mi médico o nutricionista",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que declaro una condición médica (por ejemplo diabetes o hipertensión) en mi perfil",
+     "Cuando termino ese paso del onboarding",
+     "Entonces veo un aviso que debo aceptar antes de continuar, con el texto \"Esta app es una herramienta de apoyo y no reemplaza el consejo de un profesional de la salud\"."
+    ]
+   },
+   {
+    "kind": "borde",
+    "lines": [
+     "Caso borde: el aviso queda disponible de forma permanente en Configuración > Acerca de y no se vuelve a mostrar en cada inicio de sesión."
+    ]
+   }
+  ],
+  "deps": [],
+  "backend": "`legal_documents` kind `health_disclaimer`; trigger `require_health_disclaimer` en `user_conditions`; función `accept_consent(document_id)`.",
+  "screens": "Onboarding (antes de condiciones médicas), Receta, Plan (pie fijo)",
+  "notes": "El aviso es informativo y se acepta con casilla. La app lo muestra además la primera vez que se genera un plan. Sin alertas médicas ni lenguaje de diagnóstico en toda la UI.",
+  "tests": "tests/10",
+  "subtasks": [
+   {
+    "id": 1043,
+    "title": "Diseñar UX/UI: Informar que la app no reemplaza el consejo médico o nutricional"
+   },
+   {
+    "id": 1044,
+    "title": "Implementar lógica y API: Informar que la app no reemplaza el consejo médico o nutricional"
+   },
+   {
+    "id": 1045,
+    "title": "Construir interfaz en la app: Informar que la app no reemplaza el consejo médico o nutricional"
+   },
+   {
+    "id": 1046,
+    "title": "Pruebas de aceptación: Informar que la app no reemplaza el consejo médico o nutricional"
+   }
+  ]
+ },
+ {
+  "id": 115,
+  "key": "US-115",
+  "title": "Mostrar calorías y macros por porción en cada receta",
+  "epic_id": 4,
+  "epic": "Nutrición y feedback",
+  "epic_code": "E4",
+  "module": "M08",
+  "module_name": "Nutrición y feedback",
+  "phase": 1,
+  "phase_name": "F1 MVP",
+  "priority": "High",
+  "rank": 15,
+  "type": "historia",
+  "labels": [
+   "nutricion",
+   "mvp"
+  ],
+  "ref": "HU-15",
+  "subarea": "Nutrición",
+  "rol": "usuario",
+  "quiero": "ver las calorías y macronutrientes de cada receta por porción",
+  "para": "tomar decisiones informadas",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado cualquier receta del catálogo",
+     "Cuando abro su detalle",
+     "Entonces veo kcal, proteína (g), carbohidratos (g) y grasa (g) por porción, visibles sin necesidad de scroll adicional, calculados desde la base de datos nutricional (no estimados manualmente por el equipo de contenido)."
+    ]
+   }
+  ],
+  "deps": [
+   111
+  ],
+  "backend": "Vista `recipe_nutrition` (kcal, proteína, carbohidratos, grasa por porción).",
+  "screens": "Receta",
+  "notes": "Escalar porciones no cambia el valor por porción.",
+  "tests": "tests/20",
+  "subtasks": [
+   {
+    "id": 1047,
+    "title": "Diseñar UX/UI: Mostrar calorías y macros por porción en cada receta"
+   },
+   {
+    "id": 1048,
+    "title": "Implementar lógica y API: Mostrar calorías y macros por porción en cada receta"
+   },
+   {
+    "id": 1049,
+    "title": "Construir interfaz en la app: Mostrar calorías y macros por porción en cada receta"
+   },
+   {
+    "id": 1050,
+    "title": "Pruebas de aceptación: Mostrar calorías y macros por porción en cada receta"
+   }
+  ]
+ },
+ {
+  "id": 116,
+  "key": "US-116",
+  "title": "Editar perfil en cualquier momento",
+  "epic_id": 1,
+  "epic": "Perfil y personalización",
+  "epic_code": "E1",
+  "module": "M02",
+  "module_name": "Perfil y preferencias",
+  "phase": 1,
+  "phase_name": "F1 MVP",
+  "priority": "High",
+  "rank": 16,
+  "type": "historia",
+  "labels": [
+   "perfil",
+   "mvp"
+  ],
+  "ref": "HU-16",
+  "subarea": "Perfil",
+  "rol": "usuario",
+  "quiero": "poder editar mi perfil (dieta, alergias, presupuesto) en cualquier momento, no solo durante el registro",
+  "para": "",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que tengo un perfil ya creado",
+     "Cuando entro a \"Mi perfil\" y cambio mi presupuesto de $60.000 a $40.000",
+     "Entonces el plan de la semana en curso recalcula el gasto restante contra el nuevo monto sin necesidad de cerrar sesión."
+    ]
+   },
+   {
+    "kind": "borde",
+    "lines": [
+     "Caso borde: si el nuevo presupuesto es menor al gasto ya registrado esa semana, se muestra \"Ya superaste tu nuevo presupuesto\" sin bloquear el guardado del cambio."
+    ]
+   }
+  ],
+  "deps": [
+   106,
+   107
+  ],
+  "backend": "UPDATE sobre `profiles`, `user_*` por RLS; vista `my_plan_conflicts` marca comidas planeadas que ya no cumplen el perfil.",
+  "screens": "Perfil, Personalización",
+  "notes": "Los cambios aplican a planes futuros; los planes existentes que entren en conflicto se marcan, no se borran en silencio.",
+  "tests": "",
+  "subtasks": [
+   {
+    "id": 1051,
+    "title": "Diseñar UX/UI: Editar perfil en cualquier momento"
+   },
+   {
+    "id": 1052,
+    "title": "Implementar lógica y API: Editar perfil en cualquier momento"
+   },
+   {
+    "id": 1053,
+    "title": "Construir interfaz en la app: Editar perfil en cualquier momento"
+   },
+   {
+    "id": 1054,
+    "title": "Pruebas de aceptación: Editar perfil en cualquier momento"
+   }
+  ]
+ },
+ {
+  "id": 117,
+  "key": "US-117",
+  "title": "Generar plan de comidas semanal automático",
+  "epic_id": 2,
+  "epic": "Planificación inteligente de comidas",
+  "epic_code": "E2",
+  "module": "M04",
+  "module_name": "Motor de planificación",
+  "phase": 1,
+  "phase_name": "F1 MVP",
+  "priority": "High",
+  "rank": 17,
+  "type": "historia",
+  "labels": [
+   "plan-de-comidas",
+   "mvp"
+  ],
+  "ref": "HU-17",
+  "subarea": "Plan de comidas",
+  "rol": "usuario",
+  "quiero": "recibir un plan de comidas semanal generado automáticamente",
+  "para": "no tener que decidir qué cocinar cada día",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que mi perfil tiene dieta, alergias y presupuesto completos",
+     "Cuando toco \"Generar plan semanal\"",
+     "Entonces se generan 21 comidas (7 días x 3 comidas), 0 de ellas viola mis alergias o dieta, el tiempo de generación es ≤5 segundos en el 95% de las mediciones, y el costo total estimado se muestra junto al presupuesto declarado."
+    ]
+   }
+  ],
+  "deps": [
+   110,
+   107,
+   103
+  ],
+  "backend": "Edge Function `generate-plan` (contrato en 02-arquitectura/edge-functions.md): `eligible_recipes` → ranking → (LLM opcional para explicaciones) → INSERT en `meal_plans` y `planned_meals` con `reason_code`; trigger `planned_meals_validate`; `plan_budget_status` para el costo.",
+  "screens": "Plan (generar), Inicio",
+  "notes": "Objetivo ≤5 s p95. Si el LLM falla o tarda, el plan se genera igual solo con reglas y ranking (degradación elegante). Registrar uso en `ai_generations` (solo service role). Plan máximo 14 días (check); sin traslape (`meal_plans_no_overlap`).",
+  "tests": "tests/40 (plan, traslape, trigger de alergia)",
+  "subtasks": [
+   {
+    "id": 1055,
+    "title": "Diseñar UX/UI: Generar plan de comidas semanal automático"
+   },
+   {
+    "id": 1056,
+    "title": "Implementar lógica y API: Generar plan de comidas semanal automático"
+   },
+   {
+    "id": 1057,
+    "title": "Construir interfaz en la app: Generar plan de comidas semanal automático"
+   },
+   {
+    "id": 1058,
+    "title": "Pruebas de aceptación: Generar plan de comidas semanal automático"
+   }
+  ]
+ },
+ {
+  "id": 118,
+  "key": "US-118",
+  "title": "Escalar porciones de una receta con recálculo automático",
+  "epic_id": 2,
+  "epic": "Planificación inteligente de comidas",
+  "epic_code": "E2",
+  "module": "M03",
+  "module_name": "Catálogo de recetas e ingredientes",
+  "phase": 1,
+  "phase_name": "F1 MVP",
+  "priority": "High",
+  "rank": 18,
+  "type": "historia",
+  "labels": [
+   "recetas",
+   "mvp"
+  ],
+  "ref": "HU-18",
+  "subarea": "Recetas",
+  "rol": "usuario",
+  "quiero": "cambiar el número de porciones de una receta y que las cantidades de ingredientes se recalculen automáticamente",
+  "para": "",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que una receta base para 4 porciones lleva 200g de garbanzos",
+     "Cuando cambio a 6 porciones",
+     "Entonces la cantidad se recalcula a 300g (factor 1.5) en menos de 200ms, y la información nutricional se multiplica por el mismo factor."
+    ]
+   }
+  ],
+  "deps": [
+   110
+  ],
+  "backend": "RPC `scale_recipe(recipe_id, servings)` devuelve cantidad, unidad y gramos por ingrediente.",
+  "screens": "Receta (selector de porciones)",
+  "notes": "El cliente NO calcula cantidades: muestra lo que devuelve la función. Mínimo `greatest(paso, …)`: nada escala a cero.",
+  "tests": "tests/20 (lineal, x0.5, sublineal)",
+  "subtasks": [
+   {
+    "id": 1059,
+    "title": "Diseñar UX/UI: Escalar porciones de una receta con recálculo automático"
+   },
+   {
+    "id": 1060,
+    "title": "Implementar lógica y API: Escalar porciones de una receta con recálculo automático"
+   },
+   {
+    "id": 1061,
+    "title": "Construir interfaz en la app: Escalar porciones de una receta con recálculo automático"
+   },
+   {
+    "id": 1062,
+    "title": "Pruebas de aceptación: Escalar porciones de una receta con recálculo automático"
+   }
+  ]
+ },
+ {
+  "id": 119,
+  "key": "US-119",
+  "title": "Gestionar ingredientes de la despensa (agregar, editar, eliminar)",
+  "epic_id": 3,
+  "epic": "Compras, presupuesto y despensa",
+  "epic_code": "E3",
+  "module": "M06",
+  "module_name": "Compras y despensa",
+  "phase": 1,
+  "phase_name": "F1 MVP",
+  "priority": "High",
+  "rank": 19,
+  "type": "historia",
+  "labels": [
+   "compras",
+   "mvp",
+   "agregada-por-po"
+  ],
+  "ref": "HU-19",
+  "subarea": "Compras",
+  "rol": "usuario",
+  "quiero": "agregar, editar y eliminar ingredientes de mi despensa con su cantidad y unidad",
+  "para": "que la app sepa qué tengo en casa",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que estoy en la pantalla Despensa",
+     "Cuando agrego \"lentejas\" con 500 g",
+     "Entonces el ítem aparece en mi inventario con cantidad y unidad y queda disponible para el cruce con listas de compras y el ranking de recetas."
+    ]
+   },
+   {
+    "kind": "borde",
+    "lines": [
+     "Caso borde: si agrego un ingrediente que ya existe con unidad compatible, la cantidad se suma (200 g + 300 g = 500 g) en vez de duplicar el ítem; si la unidad es incompatible (g vs unidades), se pide confirmar antes de guardar."
+    ]
+   }
+  ],
+  "deps": [
+   104
+  ],
+  "backend": "RPC `add_to_pantry(ingredient, cantidad, unidad, vence)` (convierte a gramos; fusiona lotes iguales); CRUD sobre `pantry_items`.",
+  "screens": "Despensa",
+  "notes": "Unidades sin equivalencia en gramos se rechazan (`unit_incompatible`). Lotes: mismo ingrediente + mismo vencimiento = una fila.",
+  "tests": "tests/30 (despensa)",
+  "subtasks": [
+   {
+    "id": 1063,
+    "title": "Diseñar UX/UI: Gestionar ingredientes de la despensa (agregar, editar, eliminar)"
+   },
+   {
+    "id": 1064,
+    "title": "Implementar lógica y API: Gestionar ingredientes de la despensa (agregar, editar, eliminar)"
+   },
+   {
+    "id": 1065,
+    "title": "Construir interfaz en la app: Gestionar ingredientes de la despensa (agregar, editar, eliminar)"
+   },
+   {
+    "id": 1066,
+    "title": "Pruebas de aceptación: Gestionar ingredientes de la despensa (agregar, editar, eliminar)"
+   }
+  ]
+ },
+ {
+  "id": 120,
+  "key": "US-120",
+  "title": "Estimar costos con precios promedio reales de mi región",
+  "epic_id": 3,
+  "epic": "Compras, presupuesto y despensa",
+  "epic_code": "E3",
+  "module": "M07",
+  "module_name": "Presupuesto y precios",
+  "phase": 1,
+  "phase_name": "F1 MVP",
+  "priority": "High",
+  "rank": 20,
+  "type": "historia",
+  "labels": [
+   "presupuesto",
+   "mvp",
+   "agregada-por-po"
+  ],
+  "ref": "HU-20",
+  "subarea": "Presupuesto",
+  "rol": "usuario",
+  "quiero": "que los costos estimados se basen en precios promedio de mi región y muestren qué tan actualizados están",
+  "para": "confiar en el presupuesto que veo",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado un ingrediente del catálogo y la región del usuario",
+     "Cuando se consulta su precio",
+     "Entonces se devuelve precio por unidad base (kg, L o unidad) en COP y la fecha de su última actualización; el 100% de los ingredientes del catálogo inicial tiene precio en la región piloto."
+    ]
+   },
+   {
+    "kind": "borde",
+    "lines": [
+     "Caso borde: si falta el precio regional, se usa el promedio nacional y el resultado se marca como \"estimado\"."
+    ]
+   }
+  ],
+  "deps": [
+   112,
+   110
+  ],
+  "backend": "`ingredient_prices` (precio por kg, por región y fuente, con fecha) y `private.ingredient_price` con respaldo al ancestro (Pasto → Nariño → Colombia) marcando `is_estimated`.",
+  "screens": "Plan, Compras",
+  "notes": "La UI debe diferenciar precio exacto de estimado. Precios faltantes se cuentan en `missing_prices`, no se inventan.",
+  "tests": "tests/20 (respaldo regional)",
+  "subtasks": [
+   {
+    "id": 1067,
+    "title": "Cargar los precios de la región piloto en COP"
+   },
+   {
+    "id": 1068,
+    "title": "Implementar el servicio de consulta con respaldo de promedio nacional"
+   },
+   {
+    "id": 1069,
+    "title": "Marcar los precios estimados en la interfaz"
+   },
+   {
+    "id": 1070,
+    "title": "Verificar cobertura del 100% de los ingredientes del catálogo"
+   }
+  ]
+ },
+ {
+  "id": 121,
+  "key": "US-121",
+  "title": "Revisar con un nutricionista titulado las recetas y reglas nutricionales",
+  "epic_id": 4,
+  "epic": "Nutrición y feedback",
+  "epic_code": "E4",
+  "module": "M03",
+  "module_name": "Catálogo de recetas e ingredientes",
+  "phase": 1,
+  "phase_name": "F1 MVP",
+  "priority": "High",
+  "rank": 21,
+  "type": "historia",
+  "labels": [
+   "nutricion",
+   "mvp",
+   "agregada-por-po"
+  ],
+  "ref": "HU-21",
+  "subarea": "Nutrición",
+  "rol": "usuario con una condición de salud",
+  "quiero": "que las recetas y las reglas nutricionales de la app hayan sido revisadas por un nutricionista titulado",
+  "para": "confiar en lo que me recomienda",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado el catálogo inicial de recetas",
+     "Cuando el nutricionista termina la revisión",
+     "Entonces el 100% de las recetas tiene registrados el nombre del revisor y la fecha de revisión, y las recetas rechazadas no se publican."
+    ]
+   },
+   {
+    "kind": "borde",
+    "lines": [
+     "Caso borde: las reglas de sustitución (por ejemplo leche por leche de almendra) y los umbrales de sodio y calorías que usa la app quedan aprobados por escrito antes de usarse en producción."
+    ]
+   }
+  ],
+  "deps": [
+   110
+  ],
+  "backend": "`nutritionist_reviews` + rol `nutritionist` en `user_roles`; trigger `enforce_recipe_publishable` exige una revisión aprobada para recetas oficiales.",
+  "screens": "Back-office de revisión (Supabase Studio en el MVP)",
+  "notes": "No hay panel propio en el MVP; se opera desde Supabase Studio con el rol de servicio. La revisión es externa: la historia se cumple cuando existe el procedimiento y el registro.",
+  "tests": "tests/20",
+  "subtasks": [
+   {
+    "id": 1071,
+    "title": "Coordinar al nutricionista revisor y acordar el alcance"
+   },
+   {
+    "id": 1072,
+    "title": "Definir el formato de revisión y de registro del revisor"
+   },
+   {
+    "id": 1073,
+    "title": "Revisar las recetas del catálogo inicial"
+   },
+   {
+    "id": 1074,
+    "title": "Aprobar por escrito las reglas de sustitución y los umbrales"
+   }
+  ]
+ },
+ {
+  "id": 122,
+  "key": "US-122",
+  "title": "Detectar y corregir fallas de la app rápidamente",
+  "epic_id": 6,
+  "epic": "Fundamentos, calidad y lanzamiento",
+  "epic_code": "E6",
+  "module": "M11",
+  "module_name": "Plataforma, calidad y lanzamiento",
+  "phase": 2,
+  "phase_name": "F2 Mejora y retención",
+  "priority": "Medium",
+  "rank": 22,
+  "type": "enabler",
+  "labels": [
+   "plataforma",
+   "agregada-por-po"
+  ],
+  "ref": "HU-22",
+  "subarea": "Plataforma",
+  "rol": "usuario",
+  "quiero": "que las fallas de la app se detecten y se corrijan rápido",
+  "para": "que no me impidan planificar mis comidas",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que ocurre un error no controlado en la app o en el servidor",
+     "Cuando se registra",
+     "Entonces el equipo recibe una alerta en máximo 5 minutos con el detalle técnico y sin incluir datos de salud del usuario."
+    ]
+   },
+   {
+    "kind": "borde",
+    "lines": [
+     "Caso borde: existe un panel con tasa de errores y disponibilidad semanal, y se dispara una alerta cuando la disponibilidad cae por debajo del 99%."
+    ]
+   }
+  ],
+  "deps": [],
+  "backend": "Sentry en app y Edge Functions con scrubbing de datos de salud.",
+  "screens": "—",
+  "notes": "Nunca enviar a Sentry alergias, condiciones ni medidas.",
+  "tests": "",
+  "subtasks": [
+   {
+    "id": 1075,
+    "title": "Diseñar UX/UI: Detectar y corregir fallas de la app rápidamente"
+   },
+   {
+    "id": 1076,
+    "title": "Implementar lógica y API: Detectar y corregir fallas de la app rápidamente"
+   },
+   {
+    "id": 1077,
+    "title": "Construir interfaz en la app: Detectar y corregir fallas de la app rápidamente"
+   },
+   {
+    "id": 1078,
+    "title": "Pruebas de aceptación: Detectar y corregir fallas de la app rápidamente"
+   }
+  ]
+ },
+ {
+  "id": 123,
+  "key": "US-123",
+  "title": "Marcar una comida como cocinada",
+  "epic_id": 2,
+  "epic": "Planificación inteligente de comidas",
+  "epic_code": "E2",
+  "module": "M04",
+  "module_name": "Motor de planificación",
+  "phase": 1,
+  "phase_name": "F1 MVP",
+  "priority": "High",
+  "rank": 23,
+  "type": "historia",
+  "labels": [
+   "plan-de-comidas",
+   "mvp",
+   "agregada-por-po"
+  ],
+  "ref": "HU-23",
+  "subarea": "Plan de comidas",
+  "rol": "usuario",
+  "quiero": "marcar una comida del plan como cocinada",
+  "para": "llevar el registro de lo que realmente preparé",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado una comida planificada para hoy",
+     "Cuando toco \"Marcar como cocinada\"",
+     "Entonces la comida pasa a estado \"cocinada\" con la hora de registro, se descuentan de la despensa las cantidades de ingredientes usados y se abre el selector de calificación."
+    ]
+   },
+   {
+    "kind": "borde",
+    "lines": [
+     "Caso borde: si la despensa no tiene cantidad suficiente de un ingrediente, se descuenta hasta 0 sin quedar negativa y la acción no se bloquea; puedo deshacer la acción durante 10 segundos."
+    ]
+   }
+  ],
+  "deps": [
+   117,
+   119
+  ],
+  "backend": "RPC `mark_meal_cooked(planned_meal_id)` (descuenta despensa FIFO por vencimiento, sin negativos, informa faltantes) y `undo_meal_cooked(id)` (ventana 10 s).",
+  "screens": "Receta (cocinar ahora) → selector de calificación",
+  "notes": "La app muestra el `shortfall` devuelto, no bloquea. Deshacer falla si ya se calificó.",
+  "tests": "tests/40 (FIFO, faltantes, deshacer y plazo)",
+  "subtasks": [
+   {
+    "id": 1079,
+    "title": "Diseñar UX/UI: Marcar una comida como cocinada"
+   },
+   {
+    "id": 1080,
+    "title": "Implementar lógica y API: Marcar una comida como cocinada"
+   },
+   {
+    "id": 1081,
+    "title": "Construir interfaz en la app: Marcar una comida como cocinada"
+   },
+   {
+    "id": 1082,
+    "title": "Pruebas de aceptación: Marcar una comida como cocinada"
+   }
+  ]
+ },
+ {
+  "id": 124,
+  "key": "US-124",
+  "title": "Generar lista de compras desde el plan semanal",
+  "epic_id": 3,
+  "epic": "Compras, presupuesto y despensa",
+  "epic_code": "E3",
+  "module": "M06",
+  "module_name": "Compras y despensa",
+  "phase": 1,
+  "phase_name": "F1 MVP",
+  "priority": "High",
+  "rank": 24,
+  "type": "historia",
+  "labels": [
+   "compras",
+   "mvp"
+  ],
+  "ref": "HU-24",
+  "subarea": "Compras",
+  "rol": "usuario",
+  "quiero": "generar automáticamente la lista de compras a partir de mi plan semanal",
+  "para": "no armarla manualmente",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado un plan semanal ya generado con 21 comidas",
+     "Cuando toco \"Generar lista de compras\"",
+     "Entonces los ingredientes que se repiten en 2 o más recetas aparecen como una sola línea con la suma exacta de cantidades (ej. \"3 tazas de garbanzos\" en vez de 3 líneas separadas)."
+    ]
+   }
+  ],
+  "deps": [
+   117
+  ],
+  "backend": "RPC `generate_shopping_list(plan_id)` (idempotente; una lista por plan).",
+  "screens": "Compras",
+  "notes": "Respeta ítems ya marcados; retira los que ya no se necesitan.",
+  "tests": "tests/40 (lista de compras)",
+  "subtasks": []
+ },
+ {
+  "id": 125,
+  "key": "US-125",
+  "title": "Excluir de la lista los ingredientes ya en despensa",
+  "epic_id": 3,
+  "epic": "Compras, presupuesto y despensa",
+  "epic_code": "E3",
+  "module": "M06",
+  "module_name": "Compras y despensa",
+  "phase": 1,
+  "phase_name": "F1 MVP",
+  "priority": "High",
+  "rank": 25,
+  "type": "historia",
+  "labels": [
+   "compras",
+   "mvp"
+  ],
+  "ref": "HU-25",
+  "subarea": "Compras",
+  "rol": "usuario",
+  "quiero": "que los ingredientes que ya tengo en despensa no aparezcan como pendientes de comprar",
+  "para": "",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que tengo 200g de lentejas en despensa y el plan requiere 250g en total",
+     "Cuando se genera la lista de compras",
+     "Entonces el ítem \"lentejas\" aparece con cantidad neta a comprar = 50g."
+    ]
+   },
+   {
+    "kind": "borde",
+    "lines": [
+     "Caso borde: si la despensa cubre el 100% del requerimiento, el ítem aparece tachado con la nota \"ya tienes esto\" en vez de omitirse silenciosamente."
+    ]
+   }
+  ],
+  "deps": [
+   124,
+   119
+  ],
+  "backend": "`shopping_list_items.pantry_g` (foto) y `to_buy_g` (columna generada = max(necesario − despensa, 0)).",
+  "screens": "Compras",
+  "notes": "Un ítem totalmente cubierto queda con `to_buy_g = 0` y se muestra aparte.",
+  "tests": "tests/40",
+  "subtasks": []
+ },
+ {
+  "id": 126,
+  "key": "US-126",
+  "title": "Marcar, eliminar y agregar ítems manualmente en la lista",
+  "epic_id": 3,
+  "epic": "Compras, presupuesto y despensa",
+  "epic_code": "E3",
+  "module": "M06",
+  "module_name": "Compras y despensa",
+  "phase": 1,
+  "phase_name": "F1 MVP",
+  "priority": "High",
+  "rank": 26,
+  "type": "historia",
+  "labels": [
+   "compras",
+   "mvp"
+  ],
+  "ref": "HU-26",
+  "subarea": "Compras",
+  "rol": "usuario",
+  "quiero": "tachar o eliminar ítems de la lista manualmente",
+  "para": "ajustarla a mi realidad",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que estoy viendo mi lista de compras",
+     "Cuando toco el checkbox de un ítem",
+     "Entonces el ítem se tacha visualmente y se mueve al final de su sección; además puedo agregar un ítem libre mediante un campo de texto que no queda vinculado a ninguna receta."
+    ]
+   }
+  ],
+  "deps": [],
+  "backend": "CRUD sobre `shopping_list_items` (`is_checked`, `custom_name`, `source` = plan|manual).",
+  "screens": "Compras",
+  "notes": "Ítems manuales usan `custom_name` y `store_category_id`; los de plan usan `ingredient_id`.",
+  "tests": "",
+  "subtasks": []
+ },
+ {
+  "id": 127,
+  "key": "US-127",
+  "title": "Mostrar costo estimado del plan semanal",
+  "epic_id": 3,
+  "epic": "Compras, presupuesto y despensa",
+  "epic_code": "E3",
+  "module": "M07",
+  "module_name": "Presupuesto y precios",
+  "phase": 1,
+  "phase_name": "F1 MVP",
+  "priority": "High",
+  "rank": 27,
+  "type": "historia",
+  "labels": [
+   "presupuesto",
+   "mvp"
+  ],
+  "ref": "HU-27",
+  "subarea": "Presupuesto",
+  "rol": "usuario",
+  "quiero": "ver el costo estimado de mi plan semanal antes de ir a comprar",
+  "para": "saber si se ajusta a mi presupuesto",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado un plan semanal generado",
+     "Cuando abro el resumen",
+     "Entonces veo el costo total estimado (suma de precio_promedio x cantidad por ingrediente) desglosado por receta, con la fuente y antigüedad del precio visible (ej. \"precios promedio Nariño, actualizados hace 5 días\")."
+    ]
+   }
+  ],
+  "deps": [
+   120,
+   117
+  ],
+  "backend": "RPC `recipe_cost(recipe, region, porciones)` y `plan_budget_status(plan)`.",
+  "screens": "Plan (encabezado con costo vs presupuesto)",
+  "notes": "Requiere `profiles.region_id`; sin región falla con `region_required`.",
+  "tests": "tests/40",
+  "subtasks": []
+ },
+ {
+  "id": 128,
+  "key": "US-128",
+  "title": "Calificar una receta después de cocinarla",
+  "epic_id": 4,
+  "epic": "Nutrición y feedback",
+  "epic_code": "E4",
+  "module": "M08",
+  "module_name": "Nutrición y feedback",
+  "phase": 1,
+  "phase_name": "F1 MVP",
+  "priority": "High",
+  "rank": 28,
+  "type": "historia",
+  "labels": [
+   "feedback",
+   "mvp"
+  ],
+  "ref": "HU-28",
+  "subarea": "Feedback",
+  "rol": "usuario",
+  "quiero": "calificar una receta después de cocinarla",
+  "para": "mejorar mis futuras recomendaciones",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que marco una receta como \"cocinada\"",
+     "Cuando confirmo esa acción",
+     "Entonces se despliega un selector de 1 a 5 estrellas obligatorio antes de cerrar el modal, y la calificación queda asociada a receta+usuario+fecha en el historial."
+    ]
+   }
+  ],
+  "deps": [
+   123
+  ],
+  "backend": "`recipe_ratings` (1-5) + `recipe_rating_tag_links` → `rating_tags`; trigger `validate_rating` (la comida debe ser del usuario y de esa receta).",
+  "screens": "Receta (calificar tras cocinar)",
+  "notes": "Cada vez que se cocina y califica queda una fila (historial).",
+  "tests": "tests/50 (calificaciones)",
+  "subtasks": []
+ },
+ {
+  "id": 129,
+  "key": "US-129",
+  "title": "Cambiar una comida del plan por una alternativa",
+  "epic_id": 2,
+  "epic": "Planificación inteligente de comidas",
+  "epic_code": "E2",
+  "module": "M04",
+  "module_name": "Motor de planificación",
+  "phase": 1,
+  "phase_name": "F1 MVP",
+  "priority": "High",
+  "rank": 29,
+  "type": "historia",
+  "labels": [
+   "plan-de-comidas",
+   "mvp"
+  ],
+  "ref": "HU-29",
+  "subarea": "Plan de comidas",
+  "rol": "usuario",
+  "quiero": "cambiar una comida específica del plan por una alternativa sugerida, sin regenerar todo el plan",
+  "para": "",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que estoy viendo la cena del jueves en mi plan semanal",
+     "Cuando toco \"Cambiar\"",
+     "Entonces se muestran entre 2 y 4 alternativas compatibles con mi perfil; al elegir una, solo esa celda del plan cambia y el resumen de calorías y gasto se recalcula sin refrescar el resto del plan."
+    ]
+   }
+  ],
+  "deps": [
+   117
+  ],
+  "backend": "UPDATE de `planned_meals.recipe_id` guardando `replaced_recipe_id`; `eligible_recipes(slot)` para alternativas; validación por trigger.",
+  "screens": "Plan (cambiar comida)",
+  "notes": "Solo comidas en estado `planned`. La lista de compras y el presupuesto se recalculan después del cambio.",
+  "tests": "tests/40",
+  "subtasks": []
+ },
+ {
+  "id": 130,
+  "key": "US-130",
+  "title": "Omitir onboarding y completarlo después",
+  "epic_id": 1,
+  "epic": "Perfil y personalización",
+  "epic_code": "E1",
+  "module": "M02",
+  "module_name": "Perfil y preferencias",
+  "phase": 2,
+  "phase_name": "F2 Mejora y retención",
+  "priority": "Medium",
+  "rank": 30,
+  "type": "historia",
+  "labels": [
+   "perfil"
+  ],
+  "ref": "HU-30",
+  "subarea": "Perfil",
+  "rol": "usuario ocupado",
+  "quiero": "poder saltar el onboarding completo y completarlo después",
+  "para": "empezar a usar la app de inmediato",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que estoy en el paso 1 del onboarding",
+     "Cuando toco \"Completar después\"",
+     "Entonces accedo directo al plan semanal con valores por defecto (sin restricciones, presupuesto no definido, 2 porciones) y veo un banner persistente \"Completa tu perfil para mejores recomendaciones\" hasta que lo complete o lo descarte 3 veces."
+    ]
+   }
+  ],
+  "deps": [],
+  "backend": "`profiles.onboarding_completed_at` nulo = pendiente.",
+  "screens": "Onboarding (botón «Completar después»), banner en Inicio",
+  "notes": "Sin alergias declaradas la app debe advertir que no puede garantizar filtrado.",
+  "tests": "",
+  "subtasks": []
+ },
+ {
+  "id": 131,
+  "key": "US-131",
+  "title": "Medir el uso de las funciones clave para priorizar con datos",
+  "epic_id": 6,
+  "epic": "Fundamentos, calidad y lanzamiento",
+  "epic_code": "E6",
+  "module": "M11",
+  "module_name": "Plataforma, calidad y lanzamiento",
+  "phase": 2,
+  "phase_name": "F2 Mejora y retención",
+  "priority": "Medium",
+  "rank": 31,
+  "type": "enabler",
+  "labels": [
+   "analitica",
+   "agregada-por-po"
+  ],
+  "ref": "HU-31",
+  "subarea": "Analítica",
+  "rol": "Product Owner",
+  "quiero": "medir el uso de las funciones clave",
+  "para": "decidir qué priorizar en el backlog con datos y no con intuición",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que un usuario completa el onboarding, genera un plan, genera una lista de compras o marca una comida como cocinada",
+     "Cuando ocurre cada acción",
+     "Entonces se registra un evento anónimo con fecha y tipo de acción."
+    ]
+   },
+   {
+    "kind": "borde",
+    "lines": [
+     "Caso borde: ningún evento incluye alergias, condiciones médicas ni datos personales identificables, y el usuario puede desactivar la analítica desde Configuración."
+    ]
+   }
+  ],
+  "deps": [],
+  "backend": "`analytics_events` (anónima, sin `user_id`); bloqueo por `profiles.analytics_enabled` en RLS.",
+  "screens": "Ajustes (interruptor de analítica)",
+  "notes": "Eventos solo del enum `analytics_event`. Identificador anónimo generado en el dispositivo.",
+  "tests": "tests/50 (opt-out)",
+  "subtasks": []
+ },
+ {
+  "id": 132,
+  "key": "US-132",
+  "title": "Alertar cuando el plan supera el presupuesto",
+  "epic_id": 3,
+  "epic": "Compras, presupuesto y despensa",
+  "epic_code": "E3",
+  "module": "M07",
+  "module_name": "Presupuesto y precios",
+  "phase": 1,
+  "phase_name": "F1 MVP",
+  "priority": "High",
+  "rank": 32,
+  "type": "historia",
+  "labels": [
+   "presupuesto",
+   "mvp"
+  ],
+  "ref": "HU-32",
+  "subarea": "Presupuesto",
+  "rol": "usuario",
+  "quiero": "que la app me avise si mi plan supera el presupuesto declarado, antes de confirmarlo",
+  "para": "",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado un presupuesto semanal de $60.000 y un plan con costo estimado de $68.000",
+     "Cuando intento confirmar el plan",
+     "Entonces aparece una alerta bloqueante \"Tu plan cuesta $8.000 más de tu presupuesto\" con las opciones \"Ajustar automáticamente\" y \"Confirmar de todos modos\"; no puedo avanzar sin elegir una."
+    ]
+   }
+  ],
+  "deps": [
+   127,
+   108
+  ],
+  "backend": "`plan_budget_status.over_by > 0`.",
+  "screens": "Plan (banner de alerta)",
+  "notes": "La alerta se evalúa al generar, al cambiar comidas y al editar porciones.",
+  "tests": "tests/40 (exceso)",
+  "subtasks": []
+ },
+ {
+  "id": 133,
+  "key": "US-133",
+  "title": "Exportar o eliminar todos mis datos",
+  "epic_id": 5,
+  "epic": "Comunidad y confianza",
+  "epic_code": "E5",
+  "module": "M01",
+  "module_name": "Cuenta, consentimientos y privacidad",
+  "phase": 1,
+  "phase_name": "F1 MVP",
+  "priority": "High",
+  "rank": 33,
+  "type": "historia",
+  "labels": [
+   "privacidad",
+   "mvp"
+  ],
+  "ref": "HU-33",
+  "subarea": "Privacidad",
+  "rol": "usuario",
+  "quiero": "poder exportar o eliminar todos mis datos de la app",
+  "para": "tener control sobre mi información",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que estoy en configuración de privacidad",
+     "Cuando toco \"Eliminar mi cuenta y datos\" y confirmo reingresando mi contraseña",
+     "Entonces todos mis datos personales se eliminan o anonimizan en un plazo máximo de 30 días, con confirmación enviada por correo."
+    ]
+   }
+  ],
+  "deps": [
+   104
+  ],
+  "backend": "RPC `export_my_data()` (JSON completo del usuario); `revoke_consent('sensitive_data_authorization')`; Edge Function `delete-account` que llama `auth.admin.deleteUser` (la FK en cascada borra todo). Ver `02-arquitectura/edge-functions.md`.",
+  "screens": "Perfil > Privacidad",
+  "notes": "`auth.users` solo se borra con service role: nunca desde el cliente. Eliminar cuenta exige confirmación reforzada (escribir la contraseña o `ELIMINAR`). Las recetas publicadas por el usuario se anonimizan (`author_id` pasa a nulo), no se pierden.",
+  "tests": "tests/50 (exportación aislada y borrado en cascada)",
+  "subtasks": []
+ },
+ {
+  "id": 134,
+  "key": "US-134",
+  "title": "Usar calificaciones para ajustar futuras recomendaciones",
+  "epic_id": 4,
+  "epic": "Nutrición y feedback",
+  "epic_code": "E4",
+  "module": "M08",
+  "module_name": "Nutrición y feedback",
+  "phase": 1,
+  "phase_name": "F1 MVP",
+  "priority": "High",
+  "rank": 34,
+  "type": "historia",
+  "labels": [
+   "feedback",
+   "mvp"
+  ],
+  "ref": "HU-34",
+  "subarea": "Feedback",
+  "rol": "usuario",
+  "quiero": "que mis calificaciones afecten las próximas recomendaciones",
+  "para": "no volver a ver recetas que no me gustaron",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que califiqué \"Sopa de lentejas\" con 1 estrella",
+     "Cuando se genera mi próximo plan semanal",
+     "Entonces esa receta específica no vuelve a aparecer durante al menos 60 días, y recetas con ingredientes principales similares bajan su prioridad en el ranking un 20%."
+    ]
+   }
+  ],
+  "deps": [
+   128
+  ],
+  "backend": "`eligible_recipes` excluye recetas con 1-2 estrellas de los últimos 60 días; el ranking de `generate-plan` usa el historial.",
+  "screens": "—",
+  "notes": "",
+  "tests": "tests/30 (ventana de 60 días)",
+  "subtasks": []
+ },
+ {
+  "id": 135,
+  "key": "US-135",
+  "title": "Organizar lista de compras por sección del supermercado",
+  "epic_id": 3,
+  "epic": "Compras, presupuesto y despensa",
+  "epic_code": "E3",
+  "module": "M06",
+  "module_name": "Compras y despensa",
+  "phase": 2,
+  "phase_name": "F2 Mejora y retención",
+  "priority": "Medium",
+  "rank": 35,
+  "type": "historia",
+  "labels": [
+   "compras"
+  ],
+  "ref": "HU-35",
+  "subarea": "Compras",
+  "rol": "usuario",
+  "quiero": "que la lista esté organizada por sección del supermercado (verdulería, lácteos, despensa)",
+  "para": "comprar más rápido",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado una lista de compras con 15 ítems de distintas categorías",
+     "Cuando se muestra la lista",
+     "Entonces los ítems se agrupan bajo mínimo 4 encabezados de sección; si arrastro un encabezado a otra posición, el nuevo orden se recuerda en la siguiente lista generada."
+    ]
+   }
+  ],
+  "deps": [
+   124
+  ],
+  "backend": "`ingredient_categories.sort_order`; ítem de plan hereda categoría del ingrediente.",
+  "screens": "Compras",
+  "notes": "",
+  "tests": "",
+  "subtasks": []
+ },
+ {
+  "id": 136,
+  "key": "US-136",
+  "title": "Ajustar objetivo de macronutrientes (slider de proteína)",
+  "epic_id": 1,
+  "epic": "Perfil y personalización",
+  "epic_code": "E1",
+  "module": "M02",
+  "module_name": "Perfil y preferencias",
+  "phase": 2,
+  "phase_name": "F2 Mejora y retención",
+  "priority": "Medium",
+  "rank": 36,
+  "type": "historia",
+  "labels": [
+   "personalizacion"
+  ],
+  "ref": "HU-36",
+  "subarea": "Personalización",
+  "rol": "usuario",
+  "quiero": "ajustar mi objetivo de proteína, carbohidratos y grasa",
+  "para": "que las recetas sugeridas respeten mis macros",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que muevo el slider de proteína de 30% a 40% y lo suelto",
+     "Cuando el sistema recalcula",
+     "Entonces la franja de macros se actualiza en menos de 300ms (carbohidratos y grasa se ajustan para sumar 100%) y las recetas sugeridas desde ese momento aportan un mínimo de 35% de calorías provenientes de proteína."
+    ]
+   }
+  ],
+  "deps": [],
+  "backend": "`profiles.target_protein_pct` (10-50); carbohidratos y grasa se derivan, no se guardan.",
+  "screens": "Personalización",
+  "notes": "Slider solo de proteína; el resto se calcula.",
+  "tests": "",
+  "subtasks": []
+ },
+ {
+  "id": 137,
+  "key": "US-137",
+  "title": "Fijar tiempo máximo de cocina",
+  "epic_id": 1,
+  "epic": "Perfil y personalización",
+  "epic_code": "E1",
+  "module": "M02",
+  "module_name": "Perfil y preferencias",
+  "phase": 2,
+  "phase_name": "F2 Mejora y retención",
+  "priority": "Medium",
+  "rank": 37,
+  "type": "historia",
+  "labels": [
+   "personalizacion"
+  ],
+  "ref": "HU-37",
+  "subarea": "Personalización",
+  "rol": "usuario con poco tiempo",
+  "quiero": "fijar un tiempo máximo de cocción",
+  "para": "que solo se me sugieran recetas que respeten ese límite",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que fijo 20 minutos como tiempo máximo",
+     "Cuando se genera el plan semanal o busco una receta",
+     "Entonces ninguna receta con tiempo_preparación > 20 minutos aparece en los resultados."
+    ]
+   },
+   {
+    "kind": "borde",
+    "lines": [
+     "Caso borde: si no existe ninguna receta compatible con el resto de mis restricciones, se muestra \"No encontramos recetas de 20 min o menos con tus restricciones actuales, ¿probamos con 30?\" en vez de una lista vacía."
+    ]
+   }
+  ],
+  "deps": [],
+  "backend": "`profiles.max_cook_minutes` (5-240) → filtro en `eligible_recipes` (`recipes.total_minutes` es columna generada).",
+  "screens": "Personalización",
+  "notes": "",
+  "tests": "tests/30 (filtro de minutos)",
+  "subtasks": []
+ },
+ {
+  "id": 138,
+  "key": "US-138",
+  "title": "Seleccionar cocinas favoritas",
+  "epic_id": 1,
+  "epic": "Perfil y personalización",
+  "epic_code": "E1",
+  "module": "M02",
+  "module_name": "Perfil y preferencias",
+  "phase": 2,
+  "phase_name": "F2 Mejora y retención",
+  "priority": "Medium",
+  "rank": 38,
+  "type": "historia",
+  "labels": [
+   "personalizacion"
+  ],
+  "ref": "HU-38",
+  "subarea": "Personalización",
+  "rol": "usuario",
+  "quiero": "seleccionar mis cocinas favoritas (mediterránea, asiática, mexicana, etc.)",
+  "para": "recibir más variedad dentro de mi gusto",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que selecciono \"Mediterránea\" y \"Asiática\" como cocinas favoritas",
+     "Cuando se genera el plan semanal",
+     "Entonces al menos el 60% de las 21 comidas del plan pertenecen a esas dos categorías, salvo que eso entre en conflicto con la regla de no repetir proteína (épica Motor de planes)."
+    ]
+   }
+  ],
+  "deps": [],
+  "backend": "`user_cuisines`; razón `cuisine_favorite` en `recommendation_reasons`.",
+  "screens": "Personalización",
+  "notes": "Preferencia blanda: sube el ranking, no excluye.",
+  "tests": "",
+  "subtasks": []
+ },
+ {
+  "id": 139,
+  "key": "US-139",
+  "title": "Generar plan solo para hoy",
+  "epic_id": 2,
+  "epic": "Planificación inteligente de comidas",
+  "epic_code": "E2",
+  "module": "M04",
+  "module_name": "Motor de planificación",
+  "phase": 2,
+  "phase_name": "F2 Mejora y retención",
+  "priority": "Medium",
+  "rank": 39,
+  "type": "historia",
+  "labels": [
+   "plan-de-comidas"
+  ],
+  "ref": "HU-39",
+  "subarea": "Plan de comidas",
+  "rol": "usuario",
+  "quiero": "poder pedir un plan solo",
+  "para": "hoy en vez de la semana completa, para decisiones del día a día",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que estoy en la pantalla principal",
+     "Cuando toco \"Plan de hoy\"",
+     "Entonces se genera una sugerencia de desayuno/almuerzo/cena en menos de 3 segundos, usando como filtro adicional el tiempo disponible que declaré para hoy (si lo indiqué)."
+    ]
+   }
+  ],
+  "deps": [],
+  "backend": "`generate-plan` con `days=1` (plan de un día: `start_date = end_date`).",
+  "screens": "Inicio (plan para hoy)",
+  "notes": "",
+  "tests": "",
+  "subtasks": []
+ },
+ {
+  "id": 140,
+  "key": "US-140",
+  "title": "Usar la app con baja visión o lector de pantalla",
+  "epic_id": 6,
+  "epic": "Fundamentos, calidad y lanzamiento",
+  "epic_code": "E6",
+  "module": "M11",
+  "module_name": "Plataforma, calidad y lanzamiento",
+  "phase": 2,
+  "phase_name": "F2 Mejora y retención",
+  "priority": "Medium",
+  "rank": 40,
+  "type": "enabler",
+  "labels": [
+   "calidad",
+   "agregada-por-po"
+  ],
+  "ref": "HU-40",
+  "subarea": "Calidad",
+  "rol": "usuario con baja visión",
+  "quiero": "que la app tenga buen contraste, texto escalable y compatibilidad con lector de pantalla",
+  "para": "poder planificar mis comidas sin ayuda",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado cualquiera de las pantallas principales (preferencias, plan semanal, receta y lista de compras)",
+     "Cuando se revisa con una herramienta de contraste",
+     "Entonces todos los textos cumplen una relación de contraste mínima de 4.5:1."
+    ]
+   },
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que aumento el tamaño de fuente del sistema al 200%",
+     "Cuando abro esas pantallas",
+     "Entonces no hay texto cortado ni controles superpuestos, y todos los botones e imágenes tienen una etiqueta legible por lector de pantalla."
+    ]
+   }
+  ],
+  "deps": [],
+  "backend": "—",
+  "screens": "Todas",
+  "notes": "Línea base desde el día uno (ver AGENTS.md): contraste, texto escalable, etiquetas de accesibilidad. La historia es la auditoría con lector de pantalla.",
+  "tests": "",
+  "subtasks": []
+ },
+ {
+  "id": 141,
+  "key": "US-141",
+  "title": "Ver gasto acumulado mensual vs. presupuesto",
+  "epic_id": 3,
+  "epic": "Compras, presupuesto y despensa",
+  "epic_code": "E3",
+  "module": "M07",
+  "module_name": "Presupuesto y precios",
+  "phase": 2,
+  "phase_name": "F2 Mejora y retención",
+  "priority": "Medium",
+  "rank": 41,
+  "type": "historia",
+  "labels": [
+   "presupuesto"
+  ],
+  "ref": "HU-41",
+  "subarea": "Presupuesto",
+  "rol": "usuario",
+  "quiero": "ver mi gasto acumulado del mes frente a mi presupuesto mensual",
+  "para": "tomar decisiones informadas",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que registré compras durante el mes",
+     "Cuando abro la pantalla de despensa y gasto",
+     "Entonces veo gasto_acumulado/presupuesto_mensual con el porcentaje exacto (ej. \"64% — $38.200 de $60.000\"); si supera el 100%, la barra cambia a color de alerta."
+    ]
+   }
+  ],
+  "deps": [],
+  "backend": "Vista `my_monthly_spend` sobre `purchases` y `purchase_items`.",
+  "screens": "Presupuesto (mensual)",
+  "notes": "`purchases.total_amount` es lo pagado realmente (independiente de la suma de ítems).",
+  "tests": "",
+  "subtasks": []
+ },
+ {
+  "id": 142,
+  "key": "US-142",
+  "title": "Registrar fecha de vencimiento de ingredientes",
+  "epic_id": 3,
+  "epic": "Compras, presupuesto y despensa",
+  "epic_code": "E3",
+  "module": "M06",
+  "module_name": "Compras y despensa",
+  "phase": 2,
+  "phase_name": "F2 Mejora y retención",
+  "priority": "Medium",
+  "rank": 42,
+  "type": "historia",
+  "labels": [
+   "desperdicio"
+  ],
+  "ref": "HU-42",
+  "subarea": "Desperdicio",
+  "rol": "usuario",
+  "quiero": "registrar la fecha de vencimiento de los ingredientes de mi despensa",
+  "para": "que la app me avise antes de que se echen a perder",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que agrego \"cilantro\" a mi despensa",
+     "Cuando completo el campo opcional de fecha de vencimiento",
+     "Entonces el ítem aparece en la sección \"por vencer\" ordenado ascendentemente por días restantes."
+    ]
+   },
+   {
+    "kind": "borde",
+    "lines": [
+     "Caso borde: si no indico fecha, el ítem se lista en \"sin fecha\" y no genera alertas."
+    ]
+   }
+  ],
+  "deps": [
+   119
+  ],
+  "backend": "`pantry_items.expires_on`; índice parcial de vencimientos.",
+  "screens": "Despensa",
+  "notes": "",
+  "tests": "",
+  "subtasks": []
+ },
+ {
+  "id": 143,
+  "key": "US-143",
+  "title": "Mostrar micronutrientes clave (sodio, azúcar, fibra)",
+  "epic_id": 4,
+  "epic": "Nutrición y feedback",
+  "epic_code": "E4",
+  "module": "M08",
+  "module_name": "Nutrición y feedback",
+  "phase": 2,
+  "phase_name": "F2 Mejora y retención",
+  "priority": "Medium",
+  "rank": 43,
+  "type": "historia",
+  "labels": [
+   "nutricion"
+  ],
+  "ref": "HU-43",
+  "subarea": "Nutrición",
+  "rol": "usuario con una condición médica",
+  "quiero": "ver sodio, azúcar y fibra por receta",
+  "para": "cuidar mi condición",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que declaré hipertensión en mi perfil",
+     "Cuando abro el detalle nutricional expandido de una receta",
+     "Entonces veo el contenido de sodio en mg junto con una referencia visual si supera el 30% de la ingesta diaria recomendada."
+    ]
+   }
+  ],
+  "deps": [
+   111
+  ],
+  "backend": "Misma vista: fibra, azúcar y sodio por porción.",
+  "screens": "Receta",
+  "notes": "",
+  "tests": "tests/20",
+  "subtasks": []
+ },
+ {
+  "id": 144,
+  "key": "US-144",
+  "title": "Dejar comentario corto sobre una receta",
+  "epic_id": 4,
+  "epic": "Nutrición y feedback",
+  "epic_code": "E4",
+  "module": "M08",
+  "module_name": "Nutrición y feedback",
+  "phase": 2,
+  "phase_name": "F2 Mejora y retención",
+  "priority": "Medium",
+  "rank": 44,
+  "type": "historia",
+  "labels": [
+   "feedback"
+  ],
+  "ref": "HU-44",
+  "subarea": "Feedback",
+  "rol": "usuario",
+  "quiero": "dejar un comentario corto sobre una receta (ej. 'muy salado')",
+  "para": "dar contexto además de la calificación numérica",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que califiqué una receta con 2 estrellas",
+     "Cuando se me pregunta \"¿qué pasó?\"",
+     "Entonces puedo elegir una etiqueta rápida (\"muy salado\", \"tardó más de lo esperado\", \"no me gustó el sabor\") o escribir texto libre de hasta 200 caracteres; el campo es opcional y puedo omitirlo con un toque."
+    ]
+   }
+  ],
+  "deps": [],
+  "backend": "`recipe_ratings.comment` (≤200 caracteres). No confundir con `recipe_comments` (comunidad).",
+  "screens": "Receta (calificar)",
+  "notes": "",
+  "tests": "",
+  "subtasks": []
+ },
+ {
+  "id": 145,
+  "key": "US-145",
+  "title": "Activar modo «priorizar despensa»",
+  "epic_id": 1,
+  "epic": "Perfil y personalización",
+  "epic_code": "E1",
+  "module": "M02",
+  "module_name": "Perfil y preferencias",
+  "phase": 2,
+  "phase_name": "F2 Mejora y retención",
+  "priority": "Medium",
+  "rank": 45,
+  "type": "historia",
+  "labels": [
+   "personalizacion"
+  ],
+  "ref": "HU-45",
+  "subarea": "Personalización",
+  "rol": "usuario",
+  "quiero": "activar 'priorizar despensa'",
+  "para": "que el sistema sugiera primero recetas que usan lo que ya tengo en casa",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que activo el interruptor \"Priorizar despensa\" y tengo garbanzos y espinaca en mi inventario",
+     "Cuando se genera el plan del día",
+     "Entonces las recetas que usan 2 o más ingredientes ya declarados en despensa ocupan las primeras 3 posiciones del ranking, por encima de recetas con igual calificación pero 0 ingredientes en despensa."
+    ]
+   }
+  ],
+  "deps": [
+   119,
+   117
+  ],
+  "backend": "`profiles.prioritize_pantry`; funciones `recipe_pantry_match` y `recipes_using_expiring_ingredients`.",
+  "screens": "Personalización",
+  "notes": "El ranking vive en la Edge Function `generate-plan`, no en la base.",
+  "tests": "tests/30 (despensa)",
+  "subtasks": []
+ },
+ {
+  "id": 146,
+  "key": "US-146",
+  "title": "Evitar repetir proteína principal en días consecutivos",
+  "epic_id": 2,
+  "epic": "Planificación inteligente de comidas",
+  "epic_code": "E2",
+  "module": "M04",
+  "module_name": "Motor de planificación",
+  "phase": 2,
+  "phase_name": "F2 Mejora y retención",
+  "priority": "Medium",
+  "rank": 46,
+  "type": "historia",
+  "labels": [
+   "plan-de-comidas"
+  ],
+  "ref": "HU-46",
+  "subarea": "Plan de comidas",
+  "rol": "usuario",
+  "quiero": "que el plan no repita la misma proteína principal más de 2 veces seguidas",
+  "para": "tener variedad",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que el almuerzo del lunes tiene pollo como proteína principal",
+     "Cuando se genera el almuerzo del martes",
+     "Entonces el martes no puede tener pollo como proteína principal; a partir del tercer día consecutivo sin esa proteína, puede volver a aparecer."
+    ]
+   }
+  ],
+  "deps": [
+   117
+  ],
+  "backend": "Regla de ranking en `generate-plan` usando `recipes.main_protein_id`; no es restricción de base de datos.",
+  "screens": "—",
+  "notes": "Regla blanda: si no hay candidatas suficientes se permite repetir.",
+  "tests": "",
+  "subtasks": []
+ },
+ {
+  "id": 147,
+  "key": "US-147",
+  "title": "Sugerir sustitutos de ingredientes según restricciones",
+  "epic_id": 2,
+  "epic": "Planificación inteligente de comidas",
+  "epic_code": "E2",
+  "module": "M03",
+  "module_name": "Catálogo de recetas e ingredientes",
+  "phase": 2,
+  "phase_name": "F2 Mejora y retención",
+  "priority": "Medium",
+  "rank": 47,
+  "type": "historia",
+  "labels": [
+   "recetas"
+  ],
+  "ref": "HU-47",
+  "subarea": "Recetas",
+  "rol": "usuario con alguna intolerancia leve",
+  "quiero": "que la app me sugiera sustitutos de un ingrediente que no puedo comer dentro de una receta que me gusta",
+  "para": "",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que tengo intolerancia a la lactosa declarada y veo una receta con \"leche\" en sus ingredientes",
+     "Cuando abro el detalle",
+     "Entonces aparece un ícono de sustitución junto a \"leche\" que ofrece \"leche de almendra\" o \"leche sin lactosa\" validada contra mi restricción, con un toque para reemplazarla también en la lista de compras."
+    ]
+   }
+  ],
+  "deps": [
+   110
+  ],
+  "backend": "RPC `suggest_substitutes(ingredient_id)` sobre `ingredient_substitutions`, filtrada por alérgenos y dietas del usuario.",
+  "screens": "Receta (sustituir ingrediente)",
+  "notes": "El filtro por restricciones del usuario se hace en la función, no en la app.",
+  "tests": "",
+  "subtasks": []
+ },
+ {
+  "id": 148,
+  "key": "US-148",
+  "title": "Recordatorio de la próxima comida",
+  "epic_id": 2,
+  "epic": "Planificación inteligente de comidas",
+  "epic_code": "E2",
+  "module": "M09",
+  "module_name": "Notificaciones",
+  "phase": 2,
+  "phase_name": "F2 Mejora y retención",
+  "priority": "Medium",
+  "rank": 48,
+  "type": "historia",
+  "labels": [
+   "notificaciones"
+  ],
+  "ref": "HU-48",
+  "subarea": "Notificaciones",
+  "rol": "usuario",
+  "quiero": "recibir un recordatorio de cuál es mi próxima comida",
+  "para": "no olvidarme del plan del día",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que tengo notificaciones activadas y una cena planificada a las 20:00",
+     "Cuando llegan las 19:30 (30 min configurable antes)",
+     "Entonces recibo una notificación push \"Tu cena de hoy: [nombre receta]\"."
+    ]
+   },
+   {
+    "kind": "borde",
+    "lines": [
+     "Caso borde: si ya marqué esa comida como cocinada antes de las 19:30, la notificación no se envía."
+    ]
+   }
+  ],
+  "deps": [
+   117,
+   123
+  ],
+  "backend": "`push_devices` (token de Expo), `notification_preferences.meal_reminder_lead_minutes`; Edge Function `send-notifications` por `pg_cron`; `notifications` con unicidad para no duplicar.",
+  "screens": "Ajustes de notificaciones",
+  "notes": "Pedir permiso de notificaciones en contexto, no al abrir.",
+  "tests": "",
+  "subtasks": []
+ },
+ {
+  "id": 149,
+  "key": "US-149",
+  "title": "Configurar frecuencia de notificaciones",
+  "epic_id": 2,
+  "epic": "Planificación inteligente de comidas",
+  "epic_code": "E2",
+  "module": "M09",
+  "module_name": "Notificaciones",
+  "phase": 2,
+  "phase_name": "F2 Mejora y retención",
+  "priority": "Medium",
+  "rank": 49,
+  "type": "historia",
+  "labels": [
+   "notificaciones"
+  ],
+  "ref": "HU-49",
+  "subarea": "Notificaciones",
+  "rol": "usuario",
+  "quiero": "poder desactivar o ajustar la frecuencia de las notificaciones",
+  "para": "que no se sientan invasivas",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que estoy en configuración de notificaciones",
+     "Cuando selecciono \"Solo resumen semanal\"",
+     "Entonces dejo de recibir recordatorios diarios de comida y en su lugar recibo un único resumen los domingos, aplicado desde la próxima notificación programada."
+    ]
+   }
+  ],
+  "deps": [],
+  "backend": "`notification_preferences.frequency` (enum) y `expiry_alerts_enabled`.",
+  "screens": "Ajustes de notificaciones",
+  "notes": "",
+  "tests": "",
+  "subtasks": []
+ },
+ {
+  "id": 150,
+  "key": "US-150",
+  "title": "Abrir y navegar la app con rapidez",
+  "epic_id": 6,
+  "epic": "Fundamentos, calidad y lanzamiento",
+  "epic_code": "E6",
+  "module": "M11",
+  "module_name": "Plataforma, calidad y lanzamiento",
+  "phase": 2,
+  "phase_name": "F2 Mejora y retención",
+  "priority": "Medium",
+  "rank": 50,
+  "type": "enabler",
+  "labels": [
+   "calidad",
+   "agregada-por-po"
+  ],
+  "ref": "HU-50",
+  "subarea": "Calidad",
+  "rol": "usuario",
+  "quiero": "que la app abra y responda rápido incluso con conexión limitada",
+  "para": "no perder tiempo al planificar mis comidas",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado un teléfono de gama media con conexión 4G",
+     "Cuando abro la app",
+     "Entonces la pantalla principal es utilizable en máximo 3 segundos en el 95% de las mediciones."
+    ]
+   },
+   {
+    "kind": "borde",
+    "lines": [
+     "Caso borde: si la conexión falla durante la carga, se muestra un mensaje claro con la opción de reintentar, nunca una pantalla en blanco."
+    ]
+   }
+  ],
+  "deps": [],
+  "backend": "Caché del plan y la lista con persistencia local (TanStack Query persist).",
+  "screens": "Todas",
+  "notes": "Presupuestos de rendimiento en los criterios; medir en gama media.",
+  "tests": "",
+  "subtasks": []
+ },
+ {
+  "id": 151,
+  "key": "US-151",
+  "title": "Reportar un problema o enviar sugerencias desde la app",
+  "epic_id": 4,
+  "epic": "Nutrición y feedback",
+  "epic_code": "E4",
+  "module": "M08",
+  "module_name": "Nutrición y feedback",
+  "phase": 2,
+  "phase_name": "F2 Mejora y retención",
+  "priority": "Medium",
+  "rank": 51,
+  "type": "historia",
+  "labels": [
+   "feedback",
+   "agregada-por-po"
+  ],
+  "ref": "HU-51",
+  "subarea": "Feedback",
+  "rol": "usuario",
+  "quiero": "reportar un problema o enviar una sugerencia desde la app",
+  "para": "que el equipo mejore el producto",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que estoy en cualquier pantalla",
+     "Cuando abro Configuración > Ayuda y envío un mensaje de hasta 500 caracteres con una captura opcional",
+     "Entonces recibo una confirmación y el equipo lo recibe con la versión de la app y el modelo del dispositivo."
+    ]
+   },
+   {
+    "kind": "borde",
+    "lines": [
+     "Caso borde: el envío no incluye datos de salud ni de perfil, salvo que yo los escriba en el mensaje."
+    ]
+   }
+  ],
+  "deps": [],
+  "backend": "`support_tickets` (inmutable para el usuario) + Storage para capturas.",
+  "screens": "Perfil > Ayuda",
+  "notes": "Capturas con políticas por usuario; sin datos de salud en los logs adjuntos.",
+  "tests": "",
+  "subtasks": []
+ },
+ {
+  "id": 152,
+  "key": "US-152",
+  "title": "Sugerir reemplazos para ajustar el plan al presupuesto",
+  "epic_id": 3,
+  "epic": "Compras, presupuesto y despensa",
+  "epic_code": "E3",
+  "module": "M07",
+  "module_name": "Presupuesto y precios",
+  "phase": 2,
+  "phase_name": "F2 Mejora y retención",
+  "priority": "Medium",
+  "rank": 52,
+  "type": "historia",
+  "labels": [
+   "presupuesto"
+  ],
+  "ref": "HU-52",
+  "subarea": "Presupuesto",
+  "rol": "usuario que excede su presupuesto",
+  "quiero": "recibir sugerencias automáticas de reemplazo (ej. proteína más económica)",
+  "para": "ajustarme sin rehacer todo el plan",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que mi plan excede el presupuesto en $8.000",
+     "Cuando toco \"Ajustar automáticamente\"",
+     "Entonces el sistema propone al menos 2 sustituciones concretas con el ahorro exacto (ej. \"cambiar salmón por atún enlatado: ahorras $6.500\") y recalcula el nuevo total en tiempo real al aceptar cada una."
+    ]
+   }
+  ],
+  "deps": [
+   132
+  ],
+  "backend": "Reemplazos por receta más barata: `eligible_recipes` ordenadas por `recipe_cost`.",
+  "screens": "Plan (sugerencias de ahorro)",
+  "notes": "Sugerir, no aplicar sin confirmación.",
+  "tests": "",
+  "subtasks": []
+ },
+ {
+  "id": 153,
+  "key": "US-153",
+  "title": "Notificar ingredientes por vencer con recetas sugeridas",
+  "epic_id": 3,
+  "epic": "Compras, presupuesto y despensa",
+  "epic_code": "E3",
+  "module": "M06",
+  "module_name": "Compras y despensa",
+  "phase": 2,
+  "phase_name": "F2 Mejora y retención",
+  "priority": "Medium",
+  "rank": 53,
+  "type": "historia",
+  "labels": [
+   "desperdicio"
+  ],
+  "ref": "HU-53",
+  "subarea": "Desperdicio",
+  "rol": "usuario",
+  "quiero": "recibir una notificación cuando un ingrediente esté por vencer, junto con recetas que lo usan",
+  "para": "",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado un ingrediente que vence en 2 días",
+     "Cuando el sistema ejecuta su revisión diaria programada",
+     "Entonces se envía una notificación push con al menos 1 receta real del catálogo que use ese ingrediente como principal, nunca una sugerencia genérica de \"cocina algo con esto\"."
+    ]
+   }
+  ],
+  "deps": [
+   142,
+   148
+  ],
+  "backend": "`recipes_using_expiring_ingredients(dias)`; `pg_cron` + Edge Function `send-notifications`; tabla `notifications` con unicidad para idempotencia.",
+  "screens": "Notificaciones push, Despensa",
+  "notes": "Máximo según `notification_preferences.frequency`. Mensaje sin datos de salud en el texto de la notificación.",
+  "tests": "tests/30",
+  "subtasks": []
+ },
+ {
+  "id": 154,
+  "key": "US-154",
+  "title": "Solicitar consentimiento explícito para funciones de comunidad",
+  "epic_id": 5,
+  "epic": "Comunidad y confianza",
+  "epic_code": "E5",
+  "module": "M10",
+  "module_name": "Comunidad y moderación",
+  "phase": 3,
+  "phase_name": "F3 Después",
+  "priority": "Medium",
+  "rank": 54,
+  "type": "historia",
+  "labels": [
+   "privacidad"
+  ],
+  "ref": "HU-54",
+  "subarea": "Privacidad",
+  "rol": "usuario",
+  "quiero": "dar consentimiento explícito antes de que mis datos se usen",
+  "para": "funciones de comunidad, para decidir qué comparto",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que nunca he usado funciones de comunidad",
+     "Cuando intento publicar una receta o comentario por primera vez",
+     "Entonces se muestra un modal de consentimiento explícito explicando qué se hará público; sin aceptar, la acción de publicar queda bloqueada."
+    ]
+   }
+  ],
+  "deps": [],
+  "backend": "`accept_consent(doc community_sharing)`; trigger `require_community_consent`; `revoke_consent('community_sharing')` borra comentarios y despublica recetas propias; vista `my_pending_consents`.",
+  "screens": "Diálogo de consentimiento comunitario (primer uso de comentar/compartir)",
+  "notes": "Aceptar es independiente de usar la app. Revocar tiene efectos destructivos: avisar antes.",
+  "tests": "tests/60",
+  "subtasks": []
+ },
+ {
+  "id": 155,
+  "key": "US-155",
+  "title": "Mostrar motivo de cada receta sugerida",
+  "epic_id": 2,
+  "epic": "Planificación inteligente de comidas",
+  "epic_code": "E2",
+  "module": "M04",
+  "module_name": "Motor de planificación",
+  "phase": 2,
+  "phase_name": "F2 Mejora y retención",
+  "priority": "Medium",
+  "rank": 55,
+  "type": "historia",
+  "labels": [
+   "plan-de-comidas"
+  ],
+  "ref": "HU-55",
+  "subarea": "Plan de comidas",
+  "rol": "usuario",
+  "quiero": "ver por qué se me sugirió cada receta",
+  "para": "confiar más en las recomendaciones",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que una receta fue sugerida porque usa un ingrediente de mi despensa próximo a vencer",
+     "Cuando abro su detalle",
+     "Entonces veo una etiqueta con el motivo específico (ej. \"Sugerida porque tu cilantro vence en 2 días\"), nunca un texto genérico como \"Recomendado para ti\"."
+    ]
+   }
+  ],
+  "deps": [
+   117
+  ],
+  "backend": "`planned_meals.reason_code` → `recommendation_reasons`; `reason_ingredient_id` para «usa espinaca de tu despensa».",
+  "screens": "Plan (detalle de comida)",
+  "notes": "El motivo lo asigna el motor de reglas (verdadero siempre), no se inventa con el LLM.",
+  "tests": "",
+  "subtasks": []
+ },
+ {
+  "id": 156,
+  "key": "US-156",
+  "title": "Manejar ingredientes no lineales al escalar porciones",
+  "epic_id": 2,
+  "epic": "Planificación inteligente de comidas",
+  "epic_code": "E2",
+  "module": "M03",
+  "module_name": "Catálogo de recetas e ingredientes",
+  "phase": 2,
+  "phase_name": "F2 Mejora y retención",
+  "priority": "Medium",
+  "rank": 56,
+  "type": "historia",
+  "labels": [
+   "recetas"
+  ],
+  "ref": "HU-56",
+  "subarea": "Recetas",
+  "rol": "usuario",
+  "quiero": "que cantidades no lineales (especias, tiempos de horno) no escalen de forma absurda al cambiar porciones",
+  "para": "",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que una receta marca \"1 cucharadita de sal\" como ingrediente no lineal",
+     "Cuando escalo de 4 a 12 porciones (factor 3)",
+     "Entonces la sal NO se multiplica linealmente a 3 cucharaditas, sino que se ajusta según la regla definida, dentro de un rango validado por un nutricionista."
+    ]
+   }
+  ],
+  "deps": [],
+  "backend": "`recipe_ingredients.scaling_exponent` (0-1); `scale_recipe` redondea al paso de la unidad o del ingrediente.",
+  "screens": "Receta",
+  "notes": "Fórmula: `cantidad = base × (porciones/base)^exponente`. Los tiempos de cocción NO se escalan en el MVP (limitación).",
+  "tests": "tests/20 (sublineal y redondeo)",
+  "subtasks": []
+ },
+ {
+  "id": 157,
+  "key": "US-157",
+  "title": "Cambiar una comida mediante el asistente conversacional",
+  "epic_id": 2,
+  "epic": "Planificación inteligente de comidas",
+  "epic_code": "E2",
+  "module": "M05",
+  "module_name": "Asistente IA",
+  "phase": 2,
+  "phase_name": "F2 Mejora y retención",
+  "priority": "Medium",
+  "rank": 57,
+  "type": "historia",
+  "labels": [
+   "asistente-ia"
+  ],
+  "ref": "HU-57",
+  "subarea": "Asistente IA",
+  "rol": "usuario",
+  "quiero": "pedirle al asistente en lenguaje natural que me cambie una comida del día",
+  "para": "ajustar el plan sin navegar menús",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que escribo \"cámbiame la cena, no quiero lentejas\"",
+     "Cuando envío el mensaje",
+     "Entonces el asistente responde en menos de 2 segundos con una alternativa que NO contiene lentejas y un botón \"Aplicar\" que reemplaza la cena sin salir del chat."
+    ]
+   }
+  ],
+  "deps": [
+   129
+  ],
+  "backend": "Edge Function `assistant-chat`; `assistant_conversations`/`assistant_messages` con `suggested_recipe_id` + `target_planned_meal_id`; RPC `apply_assistant_suggestion(message_id)`.",
+  "screens": "Asistente",
+  "notes": "La sugerencia es un dato tipado, no texto libre. El usuario confirma; aplicar pasa por las MISMAS validaciones que un cambio manual.",
+  "tests": "tests/40 (alergia rechazada, doble aplicación)",
+  "subtasks": []
+ },
+ {
+  "id": 158,
+  "key": "US-158",
+  "title": "Descargar la app desde la tienda oficial de mi teléfono",
+  "epic_id": 6,
+  "epic": "Fundamentos, calidad y lanzamiento",
+  "epic_code": "E6",
+  "module": "M11",
+  "module_name": "Plataforma, calidad y lanzamiento",
+  "phase": 1,
+  "phase_name": "F1 MVP",
+  "priority": "High",
+  "rank": 58,
+  "type": "enabler",
+  "labels": [
+   "lanzamiento",
+   "mvp",
+   "agregada-por-po"
+  ],
+  "ref": "HU-58",
+  "subarea": "Lanzamiento",
+  "rol": "usuario",
+  "quiero": "descargar NutriPlan AI desde la tienda oficial de mi teléfono",
+  "para": "instalarla de forma segura y recibir actualizaciones",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado la versión 1.0 aprobada en la Sprint Review",
+     "Cuando se envía a Google Play y App Store",
+     "Entonces la ficha cumple los requisitos de cada tienda (descripción, capturas, clasificación de contenido y URL de la política de privacidad) y la versión queda aprobada y publicada."
+    ]
+   },
+   {
+    "kind": "borde",
+    "lines": [
+     "Caso borde: si una tienda rechaza la versión, el motivo se registra como ítem del backlog con prioridad alta y se corrige antes de reenviar."
+    ]
+   }
+  ],
+  "deps": [
+   113,
+   102
+  ],
+  "backend": "EAS Build + EAS Submit (App Store y Google Play).",
+  "screens": "—",
+  "notes": "Marcar la app como 18+. Política de privacidad y términos enlazados en la ficha de la tienda.",
+  "tests": "",
+  "subtasks": []
+ },
+ {
+  "id": 159,
+  "key": "US-159",
+  "title": "Resumen nutricional diario vs. objetivos",
+  "epic_id": 4,
+  "epic": "Nutrición y feedback",
+  "epic_code": "E4",
+  "module": "M08",
+  "module_name": "Nutrición y feedback",
+  "phase": 2,
+  "phase_name": "F2 Mejora y retención",
+  "priority": "Medium",
+  "rank": 59,
+  "type": "historia",
+  "labels": [
+   "nutricion"
+  ],
+  "ref": "HU-59",
+  "subarea": "Nutrición",
+  "rol": "usuario",
+  "quiero": "ver un resumen nutricional diario comparado contra mis objetivos",
+  "para": "saber si voy bien encaminado",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que marqué como cocinadas 2 de las 3 comidas de hoy",
+     "Cuando abro \"Mi día\"",
+     "Entonces veo el total acumulado de kcal y macros de esas 2 comidas comparado contra mi objetivo diario, con la comida faltante mostrada como \"pendiente\" y no contabilizada como 0."
+    ]
+   }
+  ],
+  "deps": [
+   123,
+   115
+  ],
+  "backend": "BRECHA MENOR: crear RPC `daily_nutrition(date)` que sume `recipe_nutrition × servings` de las comidas cocinadas o planeadas del día. Objetivo: `profiles.daily_kcal_target`, `target_protein_pct`.",
+  "screens": "Plan (resumen del día)",
+  "notes": "Es un indicador informativo; sin lenguaje de recomendación médica.",
+  "tests": "",
+  "subtasks": []
+ },
+ {
+  "id": 160,
+  "key": "US-160",
+  "title": "Armar comida solo con ingredientes de la despensa (asistente)",
+  "epic_id": 2,
+  "epic": "Planificación inteligente de comidas",
+  "epic_code": "E2",
+  "module": "M05",
+  "module_name": "Asistente IA",
+  "phase": 2,
+  "phase_name": "F2 Mejora y retención",
+  "priority": "Medium",
+  "rank": 60,
+  "type": "historia",
+  "labels": [
+   "asistente-ia"
+  ],
+  "ref": "HU-60",
+  "subarea": "Asistente IA",
+  "rol": "usuario",
+  "quiero": "poder pedirle al asistente que arme mi próxima comida solo con lo que tengo en la despensa",
+  "para": "",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que escribo \"arma algo solo con lo que tengo\"",
+     "Cuando el asistente procesa el pedido",
+     "Entonces la receta devuelta usa el 100% de sus ingredientes principales desde mi despensa declarada, sin agregar ítems que requieran compra."
+    ]
+   },
+   {
+    "kind": "borde",
+    "lines": [
+     "Caso borde: si no es posible, responde explícitamente \"no tengo una receta completa solo con tu despensa, te falta X\" en vez de forzar una sugerencia incompleta."
+    ]
+   }
+  ],
+  "deps": [
+   119,
+   157
+  ],
+  "backend": "`assistant-chat` usando `recipe_pantry_match` y `eligible_recipes`.",
+  "screens": "Asistente",
+  "notes": "Solo propone recetas publicadas y elegibles.",
+  "tests": "",
+  "subtasks": []
+ },
+ {
+  "id": 161,
+  "key": "US-161",
+  "title": "Compartir lista de compras con otra persona",
+  "epic_id": 3,
+  "epic": "Compras, presupuesto y despensa",
+  "epic_code": "E3",
+  "module": "M06",
+  "module_name": "Compras y despensa",
+  "phase": 3,
+  "phase_name": "F3 Después",
+  "priority": "Low",
+  "rank": 61,
+  "type": "historia",
+  "labels": [
+   "compras"
+  ],
+  "ref": "HU-61",
+  "subarea": "Compras",
+  "rol": "usuario",
+  "quiero": "compartir mi lista de compras con otra persona de mi hogar",
+  "para": "dividir la compra",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que tengo una lista de compras generada",
+     "Cuando toco \"Compartir\" y la otra persona abre el enlace",
+     "Entonces si esa persona marca un ítem como comprado, el cambio se refleja en mi app en menos de 5 segundos."
+    ]
+   }
+  ],
+  "deps": [
+   124
+  ],
+  "backend": "BRECHA: no hay hogares ni listas compartidas en el esquema. Requiere migración de membresías.",
+  "screens": "Compras (compartir)",
+  "notes": "Dato personal de terceros: pedir consentimiento de quien recibe. Diseñar junto a hogares.",
+  "tests": "",
+  "subtasks": []
+ },
+ {
+  "id": 162,
+  "key": "US-162",
+  "title": "Sugerir recetas de aprovechamiento de sobras",
+  "epic_id": 3,
+  "epic": "Compras, presupuesto y despensa",
+  "epic_code": "E3",
+  "module": "M06",
+  "module_name": "Compras y despensa",
+  "phase": 3,
+  "phase_name": "F3 Después",
+  "priority": "Low",
+  "rank": 62,
+  "type": "historia",
+  "labels": [
+   "desperdicio"
+  ],
+  "ref": "HU-62",
+  "subarea": "Desperdicio",
+  "rol": "usuario",
+  "quiero": "que sobras de una receta (ej. medio pimiento) generen sugerencias de aprovechamiento",
+  "para": "el día siguiente",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que marco \"sobró medio pimiento\" al finalizar una receta",
+     "Cuando se genera el plan del día siguiente",
+     "Entonces al menos una receta sugerida incluye pimiento entre sus ingredientes principales."
+    ]
+   }
+  ],
+  "deps": [],
+  "backend": "Parcial: `recipes_using_expiring_ingredients` + generación asistida. BRECHA: no se modela «sobras».",
+  "screens": "Receta, Despensa",
+  "notes": "",
+  "tests": "",
+  "subtasks": []
+ },
+ {
+  "id": 163,
+  "key": "US-163",
+  "title": "Reconocer ingredientes desde una foto",
+  "epic_id": 3,
+  "epic": "Compras, presupuesto y despensa",
+  "epic_code": "E3",
+  "module": "M12",
+  "module_name": "Integraciones futuras",
+  "phase": 3,
+  "phase_name": "F3 Después",
+  "priority": "Low",
+  "rank": 63,
+  "type": "historia",
+  "labels": [
+   "foto-y-ocr"
+  ],
+  "ref": "HU-63",
+  "subarea": "Foto y OCR",
+  "rol": "usuario",
+  "quiero": "tomar una foto de mi despensa o refrigerador",
+  "para": "que la app identifique automáticamente los ingredientes disponibles",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que tomo una foto de mi refrigerador",
+     "Cuando la app procesa la imagen",
+     "Entonces identifica correctamente al menos el 70% de los ítems presentes sobre una lista de prueba de 20 alimentos comunes, y me permite corregir o eliminar cualquier ítem mal identificado antes de guardar."
+    ]
+   }
+  ],
+  "deps": [
+   119
+  ],
+  "backend": "Edge Function con proveedor de visión + Storage; BRECHA: mapeo producto → ingrediente.",
+  "screens": "Despensa (foto)",
+  "notes": "Las fotos son datos personales: Storage por usuario, borrado tras procesar.",
+  "tests": "",
+  "subtasks": []
+ },
+ {
+  "id": 164,
+  "key": "US-164",
+  "title": "Escanear recibo de compra con OCR",
+  "epic_id": 3,
+  "epic": "Compras, presupuesto y despensa",
+  "epic_code": "E3",
+  "module": "M12",
+  "module_name": "Integraciones futuras",
+  "phase": 3,
+  "phase_name": "F3 Después",
+  "priority": "Low",
+  "rank": 64,
+  "type": "historia",
+  "labels": [
+   "foto-y-ocr"
+  ],
+  "ref": "HU-64",
+  "subarea": "Foto y OCR",
+  "rol": "usuario",
+  "quiero": "escanear el recibo de mi compra",
+  "para": "actualizar mi despensa y mi gasto real automáticamente",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que subo la foto de un recibo de supermercado estándar",
+     "Cuando se procesa con OCR",
+     "Entonces se extraen correctamente ítem, cantidad y precio del 80% de las líneas en una muestra de prueba de 20 recibos; las líneas no reconocidas quedan marcadas para revisión manual, nunca se descartan silenciosamente."
+    ]
+   }
+  ],
+  "deps": [
+   119,
+   141
+  ],
+  "backend": "Edge Function de OCR; resultado a `purchases` y `purchase_items`; BRECHA: presentaciones de empaque (bolsa de 500 g).",
+  "screens": "Compras (escanear recibo)",
+  "notes": "",
+  "tests": "",
+  "subtasks": []
+ },
+ {
+  "id": 165,
+  "key": "US-165",
+  "title": "Mostrar precios actualizados según supermercado elegido",
+  "epic_id": 3,
+  "epic": "Compras, presupuesto y despensa",
+  "epic_code": "E3",
+  "module": "M12",
+  "module_name": "Integraciones futuras",
+  "phase": 3,
+  "phase_name": "F3 Después",
+  "priority": "Low",
+  "rank": 65,
+  "type": "historia",
+  "labels": [
+   "supermercados"
+  ],
+  "ref": "HU-65",
+  "subarea": "Supermercados",
+  "rol": "usuario",
+  "quiero": "ver el precio actualizado de los ingredientes de mi lista según el supermercado que elijo",
+  "para": "presupuestar con precisión",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que selecciono \"Supermercado X\" como mi tienda habitual",
+     "Cuando genero mi lista de compras",
+     "Entonces cada ítem muestra el precio obtenido vía API de esa tienda con antigüedad ≤24 horas."
+    ]
+   },
+   {
+    "kind": "borde",
+    "lines": [
+     "Caso borde: si la API falla, se usa el precio promedio histórico y se indica \"precio estimado, no en tiempo real\"."
+    ]
+   }
+  ],
+  "deps": [
+   120
+  ],
+  "backend": "`price_sources` por supermercado + `ingredient_prices`; BRECHA: precios por tienda/ubicación.",
+  "screens": "Compras",
+  "notes": "Requiere acuerdos y licencias con los supermercados.",
+  "tests": "",
+  "subtasks": []
+ },
+ {
+  "id": 166,
+  "key": "US-166",
+  "title": "Enviar lista de compras como pedido al supermercado",
+  "epic_id": 3,
+  "epic": "Compras, presupuesto y despensa",
+  "epic_code": "E3",
+  "module": "M12",
+  "module_name": "Integraciones futuras",
+  "phase": 3,
+  "phase_name": "F3 Después",
+  "priority": "Low",
+  "rank": 66,
+  "type": "historia",
+  "labels": [
+   "supermercados"
+  ],
+  "ref": "HU-66",
+  "subarea": "Supermercados",
+  "rol": "usuario",
+  "quiero": "hacer el pedido de mi lista de compras directamente desde la app",
+  "para": "no tener que reingresarla en otra plataforma",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que tengo una lista de compras completa y un supermercado conectado",
+     "Cuando toco \"Pedir ahora\"",
+     "Entonces los ítems se agregan al carrito externo vía su API y veo una pantalla de confirmación con el total antes de que se procese cualquier pago, sin cobros automáticos sin confirmación explícita."
+    ]
+   }
+  ],
+  "deps": [
+   165,
+   124
+  ],
+  "backend": "BRECHA: no hay pedidos. Depende de una alianza y de una API de terceros.",
+  "screens": "Compras",
+  "notes": "",
+  "tests": "",
+  "subtasks": []
+ },
+ {
+  "id": 167,
+  "key": "US-167",
+  "title": "Publicar receta propia o adaptación",
+  "epic_id": 5,
+  "epic": "Comunidad y confianza",
+  "epic_code": "E5",
+  "module": "M10",
+  "module_name": "Comunidad y moderación",
+  "phase": 3,
+  "phase_name": "F3 Después",
+  "priority": "Low",
+  "rank": 67,
+  "type": "historia",
+  "labels": [
+   "comunidad"
+  ],
+  "ref": "HU-67",
+  "subarea": "Comunidad",
+  "rol": "usuario",
+  "quiero": "publicar una receta propia o una adaptación",
+  "para": "compartirla con otros usuarios",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que completo nombre, ingredientes y pasos de una receta propia",
+     "Cuando toco \"Publicar\"",
+     "Entonces la receta pasa a estado \"en revisión\" si contiene palabras clave sensibles (ej. términos médicos), o se publica de inmediato en el feed comunitario si no las contiene."
+    ]
+   }
+  ],
+  "deps": [
+   104,
+   154
+  ],
+  "backend": "`recipes.author_id` no nulo; estados `draft → in_review → published | rejected`; las mismas reglas de publicación; requiere consentimiento de comunidad.",
+  "screens": "Receta (publicar)",
+  "notes": "Las recetas de comunidad NO pasan por revisión nutricional (se indica en la UI). Revisión de moderación sí.",
+  "tests": "tests/20 (publicación)",
+  "subtasks": []
+ },
+ {
+  "id": 168,
+  "key": "US-168",
+  "title": "Comentar y dejar tips en recetas de la comunidad",
+  "epic_id": 5,
+  "epic": "Comunidad y confianza",
+  "epic_code": "E5",
+  "module": "M10",
+  "module_name": "Comunidad y moderación",
+  "phase": 3,
+  "phase_name": "F3 Después",
+  "priority": "Low",
+  "rank": 68,
+  "type": "historia",
+  "labels": [
+   "comunidad"
+  ],
+  "ref": "HU-68",
+  "subarea": "Comunidad",
+  "rol": "usuario",
+  "quiero": "comentar y dejar tips en recetas de otros usuarios",
+  "para": "enriquecer la experiencia colectiva",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado una receta publicada en el feed comunitario",
+     "Cuando otro usuario escribe un comentario",
+     "Entonces el comentario aparece ordenado cronológicamente en menos de 3 segundos, con un botón \"Reportar\" visible en cada comentario."
+    ]
+   }
+  ],
+  "deps": [
+   167
+  ],
+  "backend": "`recipe_comments` (≤1000 caracteres, `hidden_at`); trigger de consentimiento.",
+  "screens": "Receta (comentarios)",
+  "notes": "",
+  "tests": "tests/50",
+  "subtasks": []
+ },
+ {
+  "id": 169,
+  "key": "US-169",
+  "title": "Moderar contenido publicado por usuarios",
+  "epic_id": 5,
+  "epic": "Comunidad y confianza",
+  "epic_code": "E5",
+  "module": "M10",
+  "module_name": "Comunidad y moderación",
+  "phase": 3,
+  "phase_name": "F3 Después",
+  "priority": "Low",
+  "rank": 69,
+  "type": "historia",
+  "labels": [
+   "comunidad"
+  ],
+  "ref": "HU-69",
+  "subarea": "Comunidad",
+  "rol": "administrador de la plataforma",
+  "quiero": "moderar el contenido publicado por usuarios",
+  "para": "evitar spam o consejos nutricionales peligrosos",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que un comentario recibe 3 reportes de usuarios distintos",
+     "Cuando se alcanza ese umbral",
+     "Entonces el comentario se oculta automáticamente del feed público y queda en cola de revisión manual dentro de las siguientes 24 horas."
+    ]
+   }
+  ],
+  "deps": [
+   167
+  ],
+  "backend": "`content_reports` (reporte a comentario O receta, único por reportante) y ocultamiento automático con 3 reportantes distintos; rol `moderator`.",
+  "screens": "Back-office (Studio en el MVP)",
+  "notes": "Panel propio de moderación = trabajo futuro.",
+  "tests": "tests/50",
+  "subtasks": []
+ },
+ {
+  "id": 170,
+  "key": "US-170",
+  "title": "Activar modo batch cooking",
+  "epic_id": 1,
+  "epic": "Perfil y personalización",
+  "epic_code": "E1",
+  "module": "M02",
+  "module_name": "Perfil y preferencias",
+  "phase": 3,
+  "phase_name": "F3 Después",
+  "priority": "Low",
+  "rank": 70,
+  "type": "historia",
+  "labels": [
+   "personalizacion"
+  ],
+  "ref": "HU-70",
+  "subarea": "Personalización",
+  "rol": "usuario que cocina para varios días",
+  "quiero": "activar el modo 'batch cooking'",
+  "para": "recibir recetas que rindan varias porciones y se conserven bien",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que activo el modo \"Batch cooking\"",
+     "Cuando se genera una receta de almuerzo o cena",
+     "Entonces solo se sugieren recetas etiquetadas con rendimiento ≥4 porciones y con indicación de conservación (refrigerador o congelador) visible en el detalle."
+    ]
+   }
+  ],
+  "deps": [],
+  "backend": "`profiles.batch_cooking`; regla en `eligible_recipes` (almuerzo/cena solo si `base_servings>=4` y `keeps_days` definido).",
+  "screens": "Personalización",
+  "notes": "Apto-batch se DERIVA; no existe columna.",
+  "tests": "tests/30 (batch cooking)",
+  "subtasks": []
+ },
+ {
+  "id": 171,
+  "key": "US-171",
+  "title": "Definir nivel de picante preferido",
+  "epic_id": 1,
+  "epic": "Perfil y personalización",
+  "epic_code": "E1",
+  "module": "M02",
+  "module_name": "Perfil y preferencias",
+  "phase": 3,
+  "phase_name": "F3 Después",
+  "priority": "Low",
+  "rank": 71,
+  "type": "historia",
+  "labels": [
+   "personalizacion"
+  ],
+  "ref": "HU-71",
+  "subarea": "Personalización",
+  "rol": "usuario",
+  "quiero": "indicar mi nivel de picante preferido",
+  "para": "que las recetas se ajusten a mi tolerancia",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que fijo el nivel de picante en \"Ninguno\"",
+     "Cuando se genera cualquier receta",
+     "Entonces se excluyen recetas con ingredientes marcados como picantes (ají, chile, pimienta de cayena), salvo que yo los agregue manualmente como opcional."
+    ]
+   }
+  ],
+  "deps": [],
+  "backend": "`profiles.spice_tolerance` (0-3); vista `recipe_max_heat` (máximo de ingredientes no opcionales).",
+  "screens": "Personalización",
+  "notes": "El picante opcional no excluye la receta.",
+  "tests": "tests/30 (picante)",
+  "subtasks": []
+ },
+ {
+  "id": 172,
+  "key": "US-172",
+  "title": "Ofrecer «versión rápida» de una receta",
+  "epic_id": 2,
+  "epic": "Planificación inteligente de comidas",
+  "epic_code": "E2",
+  "module": "M03",
+  "module_name": "Catálogo de recetas e ingredientes",
+  "phase": 3,
+  "phase_name": "F3 Después",
+  "priority": "Low",
+  "rank": 72,
+  "type": "historia",
+  "labels": [
+   "recetas"
+  ],
+  "ref": "HU-72",
+  "subarea": "Recetas",
+  "rol": "usuario con poco tiempo",
+  "quiero": "pedir una 'versión rápida' de una receta",
+  "para": "reducir el tiempo de preparación",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que una receta tiene un tiempo estimado de 40 minutos",
+     "Cuando toco \"Versión rápida\"",
+     "Entonces se muestra una variante con tiempo estimado ≤25 minutos, señalando explícitamente qué pasos se combinaron o qué atajo se usó (ej. \"salsa de tomate en lata en vez de tomates frescos\")."
+    ]
+   }
+  ],
+  "deps": [],
+  "backend": "BRECHA: el esquema no tiene variantes de receta. Opciones: tabla nueva `recipe_variants` o generación asistida validada por el trigger del plan.",
+  "screens": "Receta (botón «versión rápida»)",
+  "notes": "Requiere diseño previo (spike). No empezar sin decisión del PO.",
+  "tests": "",
+  "subtasks": []
+ },
+ {
+  "id": 173,
+  "key": "US-173",
+  "title": "Respuestas rápidas en el chat del asistente",
+  "epic_id": 2,
+  "epic": "Planificación inteligente de comidas",
+  "epic_code": "E2",
+  "module": "M05",
+  "module_name": "Asistente IA",
+  "phase": 3,
+  "phase_name": "F3 Después",
+  "priority": "Low",
+  "rank": 73,
+  "type": "historia",
+  "labels": [
+   "asistente-ia"
+  ],
+  "ref": "HU-73",
+  "subarea": "Asistente IA",
+  "rol": "usuario",
+  "quiero": "usar respuestas rápidas predefinidas en el chat",
+  "para": "no tener que escribir siempre mi pedido",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que abro el asistente por primera vez en el día",
+     "Cuando se carga la pantalla",
+     "Entonces se muestran exactamente 3 chips de pedidos frecuentes basados en mi historial de uso (ej. si suelo pedir \"menos calorías\", ese chip aparece primero)."
+    ]
+   }
+  ],
+  "deps": [],
+  "backend": "Sin backend: chips de respuesta rápida predefinidos en la app que envían un mensaje al asistente.",
+  "screens": "Asistente",
+  "notes": "",
+  "tests": "",
+  "subtasks": []
+ }
+]

@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  database:
+    name: Base de datos (migraciones + pruebas SQL)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Supabase local
+        working-directory: backend
+        run: npx --yes supabase start -x imgproxy,vector,logflare,realtime,studio,storage-api,edge-runtime
+      - name: Pruebas
+        run: bash backend/supabase/tests/run_local.sh
+
+  app:
+    name: App (tipos, lint, pruebas)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm test -- --ci
