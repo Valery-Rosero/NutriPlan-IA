@@ -25,3 +25,4 @@ Estado: **Aceptada** = ya implementada o decidida con el usuario; **Propuesta** 
 | [019](ADR-019.md) | Límite de intentos de login con Supabase + CAPTCHA | Aceptada |
 | [020](ADR-020.md) | Recetas versátiles: base + grupos intercambiables resueltos con la despensa | Aceptada |
 | [021](ADR-021.md) | Revisión nutricional asistida por IA durante el piloto | Aceptada (piloto) |
+| [022](ADR-022.md) | Arquitectura de la app: features por capas, puertos y adaptadores | Aceptada |

@@ -14,6 +14,15 @@ Fecha: 13 de octubre de 2026. Complementa a `plan.md` (fases y orden del backlog
 - [ ] Aplicar las migraciones a staging (`npx supabase db push` en `backend/`, o el workflow cuando exista el secreto `SUPABASE_ACCESS_TOKEN`).
 - [ ] SMTP de Resend en el panel de staging (requiere dominio verificado en Resend).
 
+## Estado del Sprint 1 (13-oct-2026)
+- [x] Arquitectura de la app por capas con puertos y adaptadores (ADR-022).
+- [x] US-104 Registro e inicio de sesión: contraseña ≥ 8 con mayúscula, minúscula y número; verificación de correo con reenvío; recuperación de contraseña; enlaces de correo con PKCE; correo ya registrado; freno de 5 intentos (ADR-019).
+- [x] US-113 Casillas no premarcadas (18+, términos, política), aviso de privacidad visible, ids vigentes leídos al registrar; re-aceptación de versiones nuevas.
+- [x] US-114 Aviso de salud aceptado antes de usar la app y pie fijo en Plan y Perfil.
+- [x] US-105 Verificación documentada (`docs/02-arquitectura/verificacion-us105.md`); queda pendiente el plan con backups.
+- [x] 64 pruebas de la app (dominio, adaptador, pantalla de registro con dobles) + prueba de humo contra Supabase Auth real.
+- [ ] Prueba manual en el teléfono contra staging (requiere SMTP de Resend con dominio verificado).
+
 **Cambio de enfoque (ADR-020):** el producto se centra en familias que no saben qué cocinar con lo que tienen. La pantalla principal es "¿Qué cocino con lo que tengo?" (`cook_with_what_i_have`); el plan semanal se arma con las mismas recetas versátiles.
 
 ## 1. Diagnóstico de la especificación
