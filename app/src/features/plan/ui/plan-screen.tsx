@@ -10,13 +10,14 @@ import { useConfirmPlan, useCurrentPlan, useGeneratePlan, useSkipMeal } from '@/
 import { groupByDay, type MealPlan, type PlannedMeal } from '@/features/plan/domain/plan';
 import { BudgetCard } from '@/features/plan/ui/budget-card';
 import { Spacing } from '@/shared/theme/colors';
-import { AppText, Banner, Button, Card, EmptyState, ErrorState, LoadingState, Screen, TextLink } from '@/shared/ui';
+import { AppText, Banner, Button, Card, EmptyState, ErrorState, LoadingState, Screen, TabHeader, TextLink } from '@/shared/ui';
 
 const WEEK = { days: 7, slots: ['breakfast', 'lunch', 'dinner'] as const };
 
 /** US-117 (plan semanal), US-139 (solo hoy), US-129 (cambiar), US-155 (motivo), US-127/132 (presupuesto). */
 export function PlanScreen() {
   const { t } = useTranslation();
+  const router = useRouter();
   const plan = useCurrentPlan();
   const generate = useGeneratePlan();
 
@@ -25,7 +26,12 @@ export function PlanScreen() {
 
   return (
     <Screen scroll>
-      <AppText variant="title">{t('plan.title')}</AppText>
+      <TabHeader
+        title={t('plan.title')}
+        actionIcon="person-circle-outline"
+        actionLabel={t('profile.title')}
+        onAction={() => router.push('/profile')}
+      />
       {generate.error && <Banner tone="danger" message={t(errorKey(generate.error))} />}
       {plan.isPending ? (
         <LoadingState />

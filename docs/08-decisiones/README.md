@@ -27,3 +27,4 @@ Estado: **Aceptada** = ya implementada o decidida con el usuario; **Propuesta** 
 | [021](ADR-021.md) | Revisión nutricional asistida por IA durante el piloto | Aceptada (piloto) |
 | [022](ADR-022.md) | Arquitectura de la app: features por capas, puertos y adaptadores | Aceptada |
 | [023](ADR-023.md) | El generador de planes vive en SQL, no en una Edge Function | Aceptada |
+| [024](ADR-024.md) | Flujo centrado en la cocina: Hoy · Mi cocina · Mi semana | Aceptada |

@@ -98,6 +98,9 @@ run('recorrido completo contra Supabase real', () => {
     const [cerdo] = await pantry.search('cerdo');
     const g = units.find((u) => u.code === 'g')!;
     await pantry.add({ ingredientId: cerdo.id, quantity: 600, unitId: g.id, expiresOn: todayIso() });
+    const quick = await pantry.findByNames(['Arroz blanco', 'Huevo']);
+    expect(quick.map((i) => i.name).sort()).toEqual(['Arroz blanco', 'Huevo']);
+    expect(quick.every((i) => (i.shelfLifeDays ?? 0) > 0)).toBe(true);
     const items = await pantry.list();
     expect(items.find((i) => i.name === 'Papa')?.grams).toBe(1000);
     expect(items.find((i) => i.name === 'Cerdo')?.grams).toBe(600);

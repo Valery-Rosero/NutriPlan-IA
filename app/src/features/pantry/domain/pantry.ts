@@ -6,6 +6,8 @@ export type IngredientOption = { id: string; name: string; countUnits: Unit[] };
 
 export type NewPantryItem = { ingredientId: string; quantity: number; unitId: number; expiresOn: string | null };
 
+export type IngredientRef = { id: string; name: string; shelfLifeDays: number | null };
+
 /** Puerto de la despensa. Falla con AppError. */
 export interface PantryRepository {
   list(): Promise<PantryItem[]>;
@@ -13,6 +15,8 @@ export interface PantryRepository {
   add(item: NewPantryItem): Promise<void>;
   remove(id: string): Promise<void>;
   search(query: string): Promise<IngredientOption[]>;
+  /** Ingredientes del catálogo por nombre exacto (agregado rápido). */
+  findByNames(names: string[]): Promise<IngredientRef[]>;
   listUnits(): Promise<Unit[]>;
 }
 

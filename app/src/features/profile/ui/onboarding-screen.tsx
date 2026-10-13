@@ -4,11 +4,12 @@ import { useTranslation } from 'react-i18next';
 import { errorKey } from '@/core/errors/app-error';
 import { useUpdateProfile } from '@/features/profile/application/profile-queries';
 import { initialOnboarding, onboardingReducer, stepNumber, ONBOARDING_STEPS } from '@/features/profile/domain/onboarding';
+import { QuickAdd } from '@/features/pantry/ui/quick-add';
 import { BudgetForm } from '@/features/profile/ui/budget-form';
 import { HouseholdForm } from '@/features/profile/ui/household-form';
 import { RestrictionsForm } from '@/features/profile/ui/restrictions-form';
 import { SensitiveStep } from '@/features/profile/ui/sensitive-step';
-import { AppText, Banner, LoadingState, Screen, TextLink } from '@/shared/ui';
+import { AppText, Banner, Button, LoadingState, Screen, TextLink } from '@/shared/ui';
 
 /**
  * Onboarding (US-106 a US-109). Cada paso se guarda al continuar, así que se puede retomar.
@@ -53,7 +54,14 @@ export function OnboardingScreen() {
         <RestrictionsForm submitLabel={next} onSaved={() => dispatch({ type: 'restrictions_saved' })} />
       )}
       {state.step === 'budget' && (
-        <BudgetForm submitLabel={t('onboarding.finish')} onSaved={() => dispatch({ type: 'budget_saved' })} />
+        <BudgetForm submitLabel={next} onSaved={() => dispatch({ type: 'budget_saved' })} />
+      )}
+      {state.step === 'kitchen' && (
+        <>
+          <AppText>{t('onboarding.kitchenIntro')}</AppText>
+          <QuickAdd />
+          <Button label={t('onboarding.finish')} onPress={() => dispatch({ type: 'kitchen_done' })} />
+        </>
       )}
 
       {state.step !== 'household' && <TextLink label={t('common.back')} onPress={() => dispatch({ type: 'back' })} />}

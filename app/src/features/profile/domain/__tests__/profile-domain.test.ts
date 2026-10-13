@@ -28,7 +28,9 @@ describe('onboarding (máquina de estados)', () => {
       { type: 'restrictions_saved' },
       { type: 'budget_saved' },
     ]);
-    expect(state.step).toBe('done');
+    expect(state.step).toBe('kitchen');
+    expect(onboardingReducer(state, { type: 'kitchen_done' }).step).toBe('done');
+    expect(onboardingReducer(state, { type: 'back' }).step).toBe('budget');
   });
 });
 

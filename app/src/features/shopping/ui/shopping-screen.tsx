@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { errorKey } from '@/core/errors/app-error';
@@ -20,7 +20,7 @@ import { Spacing } from '@/shared/theme/colors';
 import { AppText, Banner, Button, Card, Checkbox, EmptyState, ErrorState, LoadingState, Screen, TextField, TextLink } from '@/shared/ui';
 
 /** US-124 (desde el plan), US-125 (resta la despensa), US-126 (marcar, quitar, agregar), US-135 (secciones). */
-export function ShoppingScreen() {
+export function ShoppingScreen({ embedded }: { embedded?: boolean }) {
   const { t } = useTranslation();
   const router = useRouter();
   const online = useIsOnline();
@@ -35,7 +35,7 @@ export function ShoppingScreen() {
       return <ErrorState message={t(errorKey(plan.error ?? list.error))} onRetry={() => void list.refetch()} />;
     }
     if (!planId) {
-      return <EmptyState message={t('shopping.noPlan')} action={<Button label={t('shopping.goToPlan')} onPress={() => router.navigate('/plan')} />} />;
+      return <EmptyState message={t('shopping.noPlan')} action={<Button label={t('shopping.goToPlan')} onPress={() => router.navigate('/week')} />} />;
     }
     if (!list.data) {
       return (
@@ -48,12 +48,18 @@ export function ShoppingScreen() {
     return <ListView planId={planId} listId={list.data.id} items={list.data.items} onRefresh={() => generate.mutate(planId)} refreshing={generate.isPending} />;
   };
 
-  return (
-    <Screen scroll>
-      <AppText variant="title">{t('shopping.title')}</AppText>
+  const content = (
+    <>
       {!online && <Banner tone="warning" message={t('common.offline')} />}
       {generate.error && <Banner tone="danger" message={t(errorKey(generate.error))} />}
       {body()}
+    </>
+  );
+  if (embedded) return <ScrollView contentContainerStyle={styles.embedded}>{content}</ScrollView>;
+  return (
+    <Screen scroll>
+      <AppText variant="title">{t('shopping.title')}</AppText>
+      {content}
     </Screen>
   );
 }
@@ -126,4 +132,5 @@ function amount(item: ShoppingItem, t: (k: string, o?: Record<string, unknown>) 
 
 const styles = StyleSheet.create({
   item: { gap: 0, paddingVertical: Spacing.xs },
+  embedded: { gap: Spacing.md, paddingBottom: Spacing.lg },
 });

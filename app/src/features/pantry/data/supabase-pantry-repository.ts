@@ -59,6 +59,12 @@ export class SupabasePantryRepository implements PantryRepository {
     }));
   }
 
+  async findByNames(names: string[]) {
+    const { data, error } = await this.client.from('ingredients').select('id, name, shelf_life_days').in('name', names);
+    if (error) throw toAppError(error);
+    return data.map((i) => ({ id: i.id, name: i.name, shelfLifeDays: i.shelf_life_days }));
+  }
+
   async listUnits() {
     const { data, error } = await this.client.from('units').select('id, code, name, dimension');
     if (error) throw toAppError(error);
