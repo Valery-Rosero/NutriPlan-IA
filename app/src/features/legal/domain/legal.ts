@@ -16,6 +16,8 @@ export interface LegalRepository {
   /** Tipos de documento que la persona tiene aceptados y vigentes (sin revocar). */
   getAcceptedKinds(): Promise<LegalDocKind[]>;
   accept(documentIds: number[]): Promise<void>;
+  /** Revoca una autorización revocable; la base borra los datos que dependían de ella (R4). */
+  revoke(kind: 'sensitive_data_authorization' | 'community_sharing'): Promise<void>;
   /** Texto del documento: el publicado si existe, si no el borrador incluido en la app. */
   getText(document: LegalDocument): Promise<string>;
 }

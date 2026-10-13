@@ -63,6 +63,11 @@ export class SupabaseLegalRepository implements LegalRepository {
     }
   }
 
+  async revoke(kind: 'sensitive_data_authorization' | 'community_sharing') {
+    const { error } = await this.client.rpc('revoke_consent', { p_kind: kind });
+    if (error) throw toAppError(error);
+  }
+
   async getText(document: LegalDocument) {
     if (document.contentUrl) return this.fetchText(document.contentUrl);
     const draft = this.drafts[document.kind];

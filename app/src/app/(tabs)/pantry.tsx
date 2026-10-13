@@ -1,13 +1,1 @@
-import { useTranslation } from 'react-i18next';
-
-import { AppText, EmptyState, Screen } from '@/shared/ui';
-
-export default function PantryScreen() {
-  const { t } = useTranslation();
-  return (
-    <Screen>
-      <AppText variant="title">{t('pantry.title')}</AppText>
-      <EmptyState message={t('common.comingSoon')} />
-    </Screen>
-  );
-}
+export { PantryScreen as default } from '@/features/pantry/ui/pantry-screen';

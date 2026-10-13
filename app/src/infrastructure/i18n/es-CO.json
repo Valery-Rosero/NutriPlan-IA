@@ -9,7 +9,12 @@
     "read": "Leer",
     "showPassword": "Mostrar contraseña",
     "hidePassword": "Ocultar contraseña",
-    "offline": "Sin conexión: estás viendo la última información guardada."
+    "offline": "Sin conexión: estás viendo la última información guardada.",
+    "decrease": "Disminuir",
+    "increase": "Aumentar",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "edit": "Editar"
   },
   "validation": {
     "required": "Este campo es obligatorio.",
@@ -19,7 +24,9 @@
     "passwordUpper": "Incluye al menos una letra mayúscula.",
     "passwordDigit": "Incluye al menos un número.",
     "passwordsMatch": "Las contraseñas no coinciden.",
-    "mustAccept": "Debes marcar esta casilla para continuar."
+    "mustAccept": "Debes marcar esta casilla para continuar.",
+    "householdSize": "Entre 1 y 12 personas.",
+    "budgetAmount": "Escribe un monto mayor que cero o déjalo vacío."
   },
   "auth": {
     "welcome": {
@@ -110,15 +117,102 @@
     "missing_one": "Falta {{count}} ingrediente",
     "missing_other": "Faltan {{count}} ingredientes",
     "usesExpiring": "Usa algo que está por vencer",
-    "minutes": "{{count}} min"
+    "minutes": "{{count}} min",
+    "noAllergies": "No has declarado alergias, así que no podemos filtrarlas.",
+    "declareAllergies": "Declarar alergias"
   },
-  "plan": { "title": "Plan de la semana" },
-  "shopping": { "title": "Lista de compras" },
-  "pantry": { "title": "Despensa" },
+  "plan": {
+    "title": "Plan de la semana"
+  },
+  "shopping": {
+    "title": "Lista de compras"
+  },
+  "pantry": {
+    "title": "Despensa",
+    "add": "Agregar a la despensa",
+    "empty": "Tu despensa está vacía. Agrega lo que tienes en casa y te diremos qué puedes cocinar.",
+    "remove": "Quitar",
+    "removeTitle": "¿Quitar {{name}} de la despensa?",
+    "noExpiry": "Sin fecha de vencimiento",
+    "expired": "Vencido: no lo usaremos en recetas",
+    "expiresIn_one": "Vence en {{count}} día",
+    "expiresIn_other": "Vence en {{count}} días",
+    "search": "¿Qué tienes?",
+    "searchPlaceholder": "Ej.: papa, huevo, arroz",
+    "noResults": "No encontramos ese ingrediente.",
+    "quantity": "Cantidad",
+    "unit": "Unidad",
+    "expiry": "¿Cuándo vence?",
+    "expiryOptions": {
+      "none": "No sé / no vence",
+      "days3": "En 3 días",
+      "week1": "En 1 semana",
+      "week2": "En 2 semanas",
+      "month1": "En 1 mes"
+    },
+    "save": "Guardar en la despensa",
+    "change": "Elegir otro ingrediente"
+  },
   "profile": {
     "title": "Perfil",
     "signOut": "Cerrar sesión",
-    "documents": "Documentos legales"
+    "documents": "Documentos legales",
+    "none": "Ninguna",
+    "household": {
+      "title": "¿Dónde y para cuántos cocinas?",
+      "region": "Ciudad (la usamos para estimar precios):",
+      "size": "Personas que comen en casa",
+      "sizeHint": "Las recetas se calculan para este número de porciones."
+    },
+    "sensitive": {
+      "title": "Autorización de datos sensibles",
+      "why": "Para que nunca te sugiramos algo que no puedes comer, necesitamos guardar tus alergias y tu dieta. La ley colombiana los considera datos sensibles, así que te pedimos una autorización aparte.",
+      "optional": "Es opcional: puedes usar NutriPlan sin darla, pero no podremos filtrar alergias ni dietas. Puedes revocarla cuando quieras.",
+      "read": "Leer la autorización completa",
+      "accept": "Autorizo el tratamiento de mis datos sensibles",
+      "decline": "Ahora no",
+      "already": "Ya autorizaste el tratamiento de tus datos sensibles."
+    },
+    "restrictions": {
+      "allergiesTitle": "Alergias",
+      "allergiesHint": "Marca todo lo que no se puede comer en tu cocina. Nunca te sugeriremos recetas con esos ingredientes.",
+      "dietTitle": "Dieta",
+      "dietHint": "Si no sigues ninguna, déjalo sin marcar.",
+      "safety": "Filtramos con la información que declaras. Aun así, lee siempre las etiquetas: puede haber trazas o ingredientes ocultos.",
+      "needsAuthorization": "Para guardar alergias y dietas primero necesitamos tu autorización de datos sensibles."
+    },
+    "budget": {
+      "title": "¿Cuánto quieres gastar en comida?",
+      "hint": "Es opcional. Te avisaremos si un plan se pasa del presupuesto.",
+      "week": "Por semana",
+      "month": "Por mes",
+      "amount": "Monto en pesos",
+      "skip": "No usar presupuesto"
+    },
+    "privacy": {
+      "granted": "Autorizaste el tratamiento de tus alergias, dietas y datos de salud.",
+      "notGranted": "No has autorizado el tratamiento de datos sensibles: no filtramos alergias ni dietas.",
+      "revoke": "Revocar la autorización",
+      "revokeTitle": "¿Revocar la autorización?",
+      "revokeWarning": "Borraremos tus alergias, dietas y datos de salud. Desde ese momento tus sugerencias y planes NO filtrarán alergias. ¿Quieres continuar?",
+      "revokeConfirm": "Sí, revocar y borrar"
+    },
+    "sections": {
+      "household": "Mi hogar",
+      "restrictions": "Alergias y dietas",
+      "budget": "Presupuesto",
+      "privacy": "Privacidad"
+    },
+    "summary": {
+      "household_one": "{{count}} persona · {{region}}",
+      "household_other": "{{count}} personas · {{region}}",
+      "allergies": "Alergias",
+      "diets": "Dietas",
+      "budget_week": "{{amount}} por semana",
+      "budget_month": "{{amount}} por mes",
+      "noBudget": "Sin presupuesto",
+      "privacy": "Autorización de datos sensibles"
+    }
   },
   "health": {
     "disclaimer": "NutriPlan no reemplaza el consejo de un médico o nutricionista.",
@@ -156,5 +250,18 @@
     "signup_failed": "No pudimos crear la cuenta. Revisa que aceptaste los documentos y que eres mayor de edad.",
     "network": "Sin conexión. Inténtalo de nuevo.",
     "unknown": "Algo salió mal. Inténtalo de nuevo."
+  },
+  "onboarding": {
+    "progress": "Paso {{step}} de {{total}}",
+    "titles": {
+      "household": "Tu hogar",
+      "sensitive": "Alergias y dietas",
+      "restrictions": "¿Qué debemos evitar?",
+      "budget": "Tu presupuesto",
+      "done": "¡Listo!"
+    },
+    "finish": "Terminar",
+    "later": "Completar después",
+    "laterHint": "Puedes terminar tu perfil desde la pestaña Perfil."
   }
 }

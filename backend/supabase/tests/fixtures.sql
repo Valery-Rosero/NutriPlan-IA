@@ -1,5 +1,5 @@
 -- =====================================================================
--- seed.sql — SOLO DESARROLLO / PRUEBAS.
+-- tests/fixtures.sql — DATOS DE PRUEBA para las pruebas SQL (no es el catálogo real; ver catalog/).
 -- Datos ILUSTRATIVOS: los valores nutricionales son aproximados y los precios
 -- (COP/kg) están inventados. NO usar en producción. Antes de lanzar hay que
 -- cargar datos verificados (p. ej. tabla de composición de alimentos del ICBF)
