@@ -6,7 +6,7 @@ jest.mock('react-native-safe-area-context', () => require('react-native-safe-are
 
 // Router simulado: las pruebas verifican a dónde se navega sin montar Expo Router.
 jest.mock('expo-router', () => {
-  const router = { push: jest.fn(), replace: jest.fn(), back: jest.fn(), navigate: jest.fn(), setParams: jest.fn() };
+  const router = { push: jest.fn(), replace: jest.fn(), back: jest.fn(), navigate: jest.fn(), setParams: jest.fn(), canGoBack: jest.fn(() => false) };
   return {
     useRouter: () => router,
     useLocalSearchParams: jest.fn(() => ({})),

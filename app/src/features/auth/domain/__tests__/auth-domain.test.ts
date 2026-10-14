@@ -1,5 +1,5 @@
 import { createLoginThrottle } from '@/features/auth/domain/login-throttle';
-import { passwordSchema, signUpFormSchema } from '@/features/auth/domain/schemas';
+import { passwordChecks, passwordSchema, signUpFormSchema } from '@/features/auth/domain/schemas';
 
 const issues = (value: string) => passwordSchema.safeParse(value).error?.issues.map((i) => i.message) ?? [];
 
@@ -15,6 +15,16 @@ describe('contraseña (US-104)', () => {
     ['ArepaRica', 'validation.passwordDigit'],
   ])('rechaza %s con %s', (password, expected) => {
     expect(issues(password)).toContain(expected);
+  });
+
+  it('las reglas en vivo marcan lo mismo que valida el esquema', () => {
+    const met = (value: string) => passwordChecks(value).filter((r) => r.ok).map((r) => r.key);
+    expect(met('')).toEqual([]);
+    expect(met('arepa')).toEqual(['lower']);
+    expect(met('Arepa2026')).toEqual(['length', 'lower', 'upper', 'digit']);
+    for (const value of ['', 'Ab1', 'arepa2026', 'AREPA2026', 'ArepaRica', 'Arepa2026']) {
+      expect(passwordChecks(value).every((r) => r.ok)).toBe(passwordSchema.safeParse(value).success);
+    }
   });
 });
 

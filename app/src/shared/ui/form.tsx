@@ -1,5 +1,5 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import type { ReactNode } from 'react';
+import type { ComponentProps, ReactNode } from 'react';
 import { useState } from 'react';
 import { useController, type Control, type FieldPath, type FieldValues } from 'react-hook-form';
 import { Pressable, StyleSheet, Text, TextInput, View, type TextInputProps } from 'react-native';
@@ -16,10 +16,12 @@ type FieldProps = Omit<TextInputProps, 'value' | 'onChangeText'> & {
   /** Clave i18n del error (los esquemas Zod devuelven claves, no textos). */
   error?: string;
   secure?: boolean;
+  /** Ícono decorativo a la izquierda (correo, candado…). */
+  icon?: ComponentProps<typeof Ionicons>['name'];
 };
 
 /** Campo de texto con etiqueta visible y error asociado y anunciado por el lector de pantalla. */
-export function TextField({ label, error, secure, style, ...input }: FieldProps) {
+export function TextField({ label, error, secure, icon, style, ...input }: FieldProps) {
   const { t } = useTranslation();
   const c = useTheme();
   const [hidden, setHidden] = useState(true);
@@ -28,12 +30,17 @@ export function TextField({ label, error, secure, style, ...input }: FieldProps)
     <View style={styles.field}>
       <Text style={[styles.label, { color: c.text }]}>{label}</Text>
       <View style={[styles.inputRow, { borderColor: message ? c.danger : c.border, backgroundColor: c.surface }]}>
+        {icon && (
+          <View style={styles.leading} importantForAccessibility="no-hide-descendants" accessibilityElementsHidden>
+            <Ionicons name={icon} size={20} color={c.textSecondary} />
+          </View>
+        )}
         <TextInput
           accessibilityLabel={label}
           accessibilityHint={message}
           placeholderTextColor={c.textSecondary}
           secureTextEntry={secure && hidden}
-          style={[styles.input, { color: c.text }, style]}
+          style={[styles.input, icon && styles.inputWithIcon, { color: c.text }, style]}
           {...input}
         />
         {secure && (
@@ -120,6 +127,8 @@ const styles = StyleSheet.create({
   label: Typography.label,
   inputRow: { flexDirection: 'row', alignItems: 'center', borderWidth: 1.5, borderRadius: Radius.md },
   input: { flex: 1, minHeight: MinTouch + 4, paddingHorizontal: Spacing.md, fontSize: 16 },
+  leading: { paddingLeft: Spacing.md },
+  inputWithIcon: { paddingLeft: Spacing.sm },
   eye: { minWidth: MinTouch, minHeight: MinTouch, alignItems: 'center', justifyContent: 'center' },
   error: Typography.caption,
   checkRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, minHeight: MinTouch },
