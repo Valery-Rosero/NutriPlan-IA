@@ -10,7 +10,11 @@ describe('RatingForm (US-128)', () => {
     await render(<RatingForm plannedMealId="pm1" onRated={onRated} />, { wrapper: withServices(fakeServices({ recipes })) });
 
     expect(screen.getByRole('button', { name: 'Enviar calificación' })).toBeDisabled();
+    // Se explica por qué está deshabilitado, no solo se deshabilita.
+    expect(screen.getByText('Toca una estrella para calificar (1 a 5).')).toBeOnTheScreen();
     await fireEvent.press(screen.getByRole('radio', { name: '4 estrellas' }));
+    expect(screen.getByText('4 de 5 · Muy rica')).toBeOnTheScreen();
+    expect(screen.getByRole('button', { name: 'Enviar calificación' })).toBeEnabled();
     await fireEvent.press(screen.getByRole('checkbox', { name: 'Muy salado' }));
     await fireEvent.press(screen.getByRole('button', { name: 'Enviar calificación' }));
 

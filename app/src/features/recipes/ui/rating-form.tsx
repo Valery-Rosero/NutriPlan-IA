@@ -35,10 +35,14 @@ export function RatingForm({ plannedMealId, onRated }: { plannedMealId: string; 
             accessibilityState={{ selected: stars === n }}
             onPress={() => setStars(n)}
             style={styles.star}>
-            <Ionicons name={n <= stars ? 'star' : 'star-outline'} size={32} color={n <= stars ? c.warning : c.textSecondary} />
+            <Ionicons name={n <= stars ? 'star' : 'star-outline'} size={36} color={c.warning} />
           </Pressable>
         ))}
       </View>
+      {/* Sin estrellas el botón no se habilita: se dice qué falta, no solo se deshabilita. */}
+      <AppText variant="label" accessibilityLiveRegion="polite">
+        {stars ? t('recipe.rating.chosen', { count: stars, word: t(`recipe.rating.words.${stars}`) }) : t('recipe.rating.pickStars')}
+      </AppText>
       <ChipGroup>
         {RATING_TAGS.map((tag) => (
           <Chip key={tag} multiple label={t(`recipe.rating.tags.${tag}`)} selected={tags.includes(tag)} onPress={() => toggleTag(tag)} />
@@ -50,6 +54,7 @@ export function RatingForm({ plannedMealId, onRated }: { plannedMealId: string; 
         label={t('recipe.rating.send')}
         icon="send-outline"
         disabled={stars === 0}
+        hint={stars === 0 ? t('recipe.rating.pickStars') : undefined}
         loading={rate.isPending}
         onPress={() => rate.mutate({ plannedMealId, rating: stars, tags, comment }, { onSuccess: onRated })}
       />
