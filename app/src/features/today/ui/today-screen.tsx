@@ -3,9 +3,10 @@ import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { errorKey } from '@/core/errors/app-error';
-import { formatDay } from '@/core/format';
+import { capitalize, formatDay } from '@/core/format';
 import { useCookingSuggestions } from '@/features/cooking/application/use-suggestions';
-import { momentOfDay, type MealSlot } from '@/features/cooking/domain/cooking';
+import { momentOfDay } from '@/features/cooking/domain/cooking';
+import { SLOT_ICON } from '@/features/cooking/ui/slot-icon';
 import { SuggestionCard } from '@/features/cooking/ui/suggestion-card';
 import { HealthDisclaimerNote } from '@/features/legal/ui/health-disclaimer-note';
 import { usePantry } from '@/features/pantry/application/pantry-queries';
@@ -33,17 +34,9 @@ import {
   Screen,
   SectionHeader,
   TextLink,
-  type IconName,
 } from '@/shared/ui';
 
 const WEEK = { days: 7, slots: ['breakfast', 'lunch', 'dinner'] as const };
-
-const SLOT_ICON: Record<MealSlot, IconName> = {
-  breakfast: 'cafe-outline',
-  lunch: 'restaurant-outline',
-  snack: 'nutrition-outline',
-  dinner: 'moon-outline',
-};
 
 /**
  * Hoy (ADR-024): responde "¿qué cocino?" con lo que hay en la cocina. Orden de lectura:
@@ -208,8 +201,6 @@ export function TodayScreen() {
     </Screen>
   );
 }
-
-const capitalize = (text: string) => text.charAt(0).toUpperCase() + text.slice(1);
 
 const styles = StyleSheet.create({
   block: { gap: Spacing.xs },
