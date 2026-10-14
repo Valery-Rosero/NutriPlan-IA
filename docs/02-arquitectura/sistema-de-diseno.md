@@ -25,8 +25,17 @@ Código en `app/src/shared/theme/` (tokens) y `app/src/shared/ui/` (componentes)
 | `SectionHeader` | Título de sección con acción opcional |
 | `Chip` / `Stepper` / `TextField` / `Checkbox` | Formularios y selección |
 | `EmptyState` / `ErrorState` / `LoadingState` | Estados obligatorios de cada pantalla, con ícono |
+| `BrandHeader` | Encabezado de marca (Space Cadet + serif Tan) que abre cada pestaña, la receta y el onboarding; `action` a la derecha y `back` a la izquierda |
+| `IconButton` | Botón de solo ícono de 44 pt con etiqueta para el lector (perfil, quitar, volver) |
+| `FormSection` | Tarjeta de una sola decisión: ícono, pregunta, ayuda y controles |
+| `StepProgress` | Avance por pasos accesible (onboarding) |
+| `ListGroup` / `ListRow` | Ajustes agrupados: fila completa tocable con ícono, resumen y flecha; `danger` para salir o eliminar |
+| `TextField` `icon` | Ícono a la izquierda del campo (correo, candado, búsqueda) |
+| `Checkbox` `strikeWhenChecked` | Tacha lo marcado (lista de mercado) |
 
 ## Reglas
 1. Nada de colores, tamaños o radios sueltos en las pantallas: siempre tokens.
 2. El significado nunca va solo en el color: también en texto o ícono.
 3. Todo lo tocable mide ≥ 44 pt y tiene `accessibilityRole` y etiqueta.
+4. Un enlace o botón con ícono anuncia solo su texto (`accessibilityLabel` explícito), nunca el glifo del ícono.
+5. Cada pantalla abre con `BrandHeader` (o `AuthScaffold` en el acceso): una sola pieza de marca por pantalla.

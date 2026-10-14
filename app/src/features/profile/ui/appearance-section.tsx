@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { loadThemePreference, useThemePreference, type ThemePreference } from '@/shared/theme/theme-preference';
-import { AppText, Card, Chip, ChipGroup } from '@/shared/ui';
+import { FormSection, SegmentedControl } from '@/shared/ui';
 
 const OPTIONS: ThemePreference[] = ['system', 'light', 'dark'];
 
@@ -20,13 +20,13 @@ export function AppearanceSection() {
   }, [setPreference]);
 
   return (
-    <Card>
-      <AppText variant="subtitle">{t('profile.appearance.title')}</AppText>
-      <ChipGroup>
-        {OPTIONS.map((option) => (
-          <Chip key={option} label={t(`profile.appearance.${option}`)} selected={preference === option} onPress={() => choose(option)} />
-        ))}
-      </ChipGroup>
-    </Card>
+    <FormSection icon="contrast-outline" title={t('profile.appearance.title')} hint={t('profile.appearance.hint')}>
+      <SegmentedControl
+        label={t('profile.appearance.title')}
+        value={preference}
+        onChange={choose}
+        options={OPTIONS.map((option) => ({ value: option, label: t(`profile.appearance.${option}`) }))}
+      />
+    </FormSection>
   );
 }

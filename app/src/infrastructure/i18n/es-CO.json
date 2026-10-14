@@ -248,7 +248,6 @@
   "profile": {
     "title": "Perfil",
     "signOut": "Cerrar sesión",
-    "documents": "Documentos legales",
     "none": "Ninguna",
     "household": {
       "title": "¿Para cuántas personas cocinas?",
@@ -289,7 +288,9 @@
       "revoke": "Revocar la autorización",
       "revokeTitle": "¿Revocar la autorización?",
       "revokeWarning": "Borraremos tus alergias, dietas y datos de salud. Desde ese momento tus sugerencias y planes NO filtrarán alergias. ¿Quieres continuar?",
-      "revokeConfirm": "Sí, revocar y borrar"
+      "revokeConfirm": "Sí, revocar y borrar",
+      "on": "Activa",
+      "off": "Desactivada"
     },
     "sections": {
       "household": "Mi hogar",
@@ -305,13 +306,28 @@
       "budget_week": "{{amount}} por semana",
       "budget_month": "{{amount}} por mes",
       "noBudget": "Sin presupuesto",
-      "privacy": "Autorización de datos sensibles"
+      "privacyGranted": "Autorizaste el uso de alergias y dietas",
+      "privacyNotGranted": "Sin autorización: no filtramos alergias"
     },
     "appearance": {
       "title": "Apariencia",
       "system": "Como el teléfono",
       "light": "Claro",
-      "dark": "Oscuro"
+      "dark": "Oscuro",
+      "hint": "Elige cómo se ve NutriPlan en este teléfono."
+    },
+    "signOutTitle": "¿Cerrar sesión en este teléfono?",
+    "version": "NutriPlan · versión {{version}}",
+    "hero": {
+      "people_one": "Cocinas para {{count}}",
+      "people_other": "Cocinas para {{count}}",
+      "protected": "Alergias filtradas",
+      "noAllergies": "Sin alergias declaradas"
+    },
+    "groups": {
+      "kitchen": "Tu cocina",
+      "privacy": "Privacidad y documentos",
+      "account": "Cuenta"
     }
   },
   "health": {
@@ -493,7 +509,9 @@
     "deleteWhat": "Borraremos tu cuenta y todos tus datos: perfil, alergias y dietas, despensa, planes, listas, calificaciones y consentimientos. No se puede deshacer.",
     "deleteRecipes": "Si publicaste recetas en la comunidad, quedarán sin tu nombre.",
     "typeToConfirm": "Para confirmar, escribe {{word}}",
-    "deleteButton": "Eliminar mi cuenta para siempre"
+    "deleteButton": "Eliminar mi cuenta para siempre",
+    "exportHint": "Un archivo con todo lo que guardamos de ti",
+    "deleteHeadline": "Esto no se puede deshacer"
   },
   "today": {
     "title": "Hoy",
