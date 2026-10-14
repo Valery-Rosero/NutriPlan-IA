@@ -5,7 +5,7 @@ import { errorKey } from '@/core/errors/app-error';
 import { formatCOP } from '@/core/format';
 import { useProfile, useUpdateProfile } from '@/features/profile/application/profile-queries';
 import { budgetSchema, parseCop, type BudgetPeriod } from '@/features/profile/domain/profile';
-import { AppText, Banner, Button, Chip, ChipGroup, LoadingState, TextField } from '@/shared/ui';
+import { Banner, Button, FormSection, LoadingState, Pill, SegmentedControl, TextField } from '@/shared/ui';
 
 /** US-108: presupuesto opcional semanal o mensual, en pesos sin decimales. */
 export function BudgetForm({ submitLabel, onSaved }: { submitLabel: string; onSaved: () => void }) {
@@ -24,24 +24,33 @@ export function BudgetForm({ submitLabel, onSaved }: { submitLabel: string; onSa
 
   return (
     <>
-      <AppText variant="subtitle">{t('profile.budget.title')}</AppText>
-      <AppText secondary>{t('profile.budget.hint')}</AppText>
-      <ChipGroup>
-        <Chip label={t('profile.budget.week')} selected={selectedPeriod === 'week'} onPress={() => setPeriod('week')} />
-        <Chip label={t('profile.budget.month')} selected={selectedPeriod === 'month'} onPress={() => setPeriod('month')} />
-      </ChipGroup>
-      <TextField
-        label={t('profile.budget.amount')}
-        value={text}
-        onChangeText={setAmountText}
-        keyboardType="number-pad"
-        placeholder="150000"
-        error={parsed.success ? undefined : parsed.error.issues[0]?.message}
-      />
-      {amount !== null && <AppText secondary>{formatCOP(amount)}</AppText>}
+      <FormSection icon="wallet-outline" title={t('profile.budget.title')} hint={t('profile.budget.hint')}>
+        <SegmentedControl
+          label={t('profile.budget.periodLabel')}
+          value={selectedPeriod}
+          onChange={setPeriod}
+          options={[
+            { value: 'week', label: t('profile.budget.week') },
+            { value: 'month', label: t('profile.budget.month') },
+          ]}
+        />
+        <TextField
+          label={t('profile.budget.amount')}
+          icon="cash-outline"
+          value={text}
+          onChangeText={setAmountText}
+          keyboardType="number-pad"
+          placeholder="150000"
+          error={parsed.success ? undefined : parsed.error.issues[0]?.message}
+        />
+        {amount !== null && (
+          <Pill label={t(`profile.summary.budget_${selectedPeriod}`, { amount: formatCOP(amount) })} tone="primary" icon="checkmark" />
+        )}
+      </FormSection>
       {update.error && <Banner tone="danger" message={t(errorKey(update.error))} />}
       <Button
         label={amount === null ? t('profile.budget.skip') : submitLabel}
+        variant={amount === null ? 'secondary' : 'primary'}
         loading={update.isPending}
         disabled={!parsed.success}
         onPress={() => parsed.success && update.mutate(parsed.data, { onSuccess: onSaved })}

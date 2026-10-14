@@ -9,17 +9,24 @@ import { AppText, Card, type IconName } from '@/shared/ui/primitives';
  * Encabezado de pestaña en el bloque de marca (Space Cadet + serif Tan): la misma pieza abre
  * Hoy, Mi cocina y Mi semana, para que las tres se lean como una sola app.
  */
-export function BrandHeader({ eyebrow, caption, title, subtitle, action, children }: {
+export function BrandHeader({ eyebrow, caption, title, subtitle, action, back, children }: {
   eyebrow?: string;
   caption?: string;
   title: string;
   subtitle?: string;
   action?: { icon: IconName; label: string; onPress: () => void };
+  /** Volver dentro de un flujo (p. ej. el paso anterior del onboarding). */
+  back?: { label: string; onPress: () => void };
   children?: ReactNode;
 }) {
   return (
     <Card variant="brand" style={styles.hero}>
       <View style={styles.top}>
+        {back && (
+          <View style={styles.back}>
+            <IconButton icon="arrow-back" label={back.label} onPress={back.onPress} tone="onBrand" size={24} />
+          </View>
+        )}
         <View style={styles.flex}>
           {eyebrow && <AppText variant="label" tone="onBrandMuted">{eyebrow}</AppText>}
           {caption && <AppText variant="caption" tone="onBrandMuted">{caption}</AppText>}
@@ -37,4 +44,5 @@ const styles = StyleSheet.create({
   hero: { padding: Spacing.lg, gap: Spacing.sm },
   top: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
   flex: { flex: 1 },
+  back: { marginLeft: -Spacing.sm },
 });

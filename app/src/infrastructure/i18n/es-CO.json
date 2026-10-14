@@ -254,7 +254,8 @@
       "title": "¿Para cuántas personas cocinas?",
       "region": "Ciudad (la usamos para estimar precios):",
       "size": "Personas que comen en casa",
-      "sizeHint": "Si cocinas solo para ti (por ejemplo, si eres estudiante), deja 1. Las recetas se calculan para este número de porciones."
+      "sizeHint": "Si cocinas solo para ti (por ejemplo, si eres estudiante), deja 1. Las recetas se calculan para este número de porciones.",
+      "cityTitle": "Tu ciudad"
     },
     "sensitive": {
       "title": "Autorización de datos sensibles",
@@ -279,7 +280,8 @@
       "week": "Por semana",
       "month": "Por mes",
       "amount": "Monto en pesos",
-      "skip": "No usar presupuesto"
+      "skip": "No usar presupuesto",
+      "periodLabel": "Periodo del presupuesto"
     },
     "privacy": {
       "granted": "Autorizaste el tratamiento de tus alergias, dietas y datos de salud.",
@@ -369,7 +371,14 @@
     "finish": "Listo, ver qué cocino",
     "later": "Completar después",
     "laterHint": "Puedes terminar tu perfil desde la pestaña Perfil.",
-    "kitchenIntro": "Las recetas se adaptan a lo que tienes. Marca lo que hay hoy en tu cocina (puedes cambiarlo cuando quieras)."
+    "subtitles": {
+      "household": "Con esto calculamos las porciones y los precios para tu casa.",
+      "sensitive": "Para que nunca te sugiramos algo que no puedes comer.",
+      "restrictions": "Nunca te sugeriremos recetas con lo que marques aquí.",
+      "budget": "Es opcional: te avisamos si un plan se pasa de lo que quieres gastar.",
+      "kitchen": "Las recetas se adaptan a lo que tienes. Marca lo que hay hoy; puedes cambiarlo cuando quieras.",
+      "done": ""
+    }
   },
   "recipe": {
     "meta": "{{minutes}} min",
