@@ -441,6 +441,15 @@
         "took_longer": "Tardó más de lo esperado",
         "bad_taste": "No me gustó el sabor",
         "hard_ingredients": "Ingredientes difíciles de conseguir"
+      },
+      "pickStars": "Toca una estrella para calificar (1 a 5).",
+      "chosen": "{{count}} de 5 · {{word}}",
+      "words": {
+        "1": "No me gustó",
+        "2": "Regular",
+        "3": "Bien",
+        "4": "Muy rica",
+        "5": "¡Excelente!"
       }
     },
     "chooseHint": "Elegimos primero lo que ya tienes; cámbialo si prefieres otra cosa.",
