@@ -1,6 +1,5 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { errorKey } from '@/core/errors/app-error';
@@ -18,11 +17,11 @@ import { useRestrictions } from '@/features/profile/application/profile-queries'
 import { useShoppingList } from '@/features/shopping/application/shopping-queries';
 import { progress } from '@/features/shopping/domain/shopping';
 import { greetingFor } from '@/features/today/domain/greeting';
-import { MinTouch, Spacing } from '@/shared/theme/colors';
-import { useTheme } from '@/shared/theme/use-theme';
+import { Spacing } from '@/shared/theme/colors';
 import {
   AppText,
   Banner,
+  BrandHeader,
   Button,
   Card,
   EmptyState,
@@ -53,7 +52,6 @@ const SLOT_ICON: Record<MealSlot, IconName> = {
 export function TodayScreen() {
   const { t } = useTranslation();
   const router = useRouter();
-  const c = useTheme();
   const today = todayIso();
   const hour = new Date().getHours();
   const moment = momentOfDay(hour);
@@ -77,24 +75,13 @@ export function TodayScreen() {
   return (
     <Screen scroll>
       {/* La pregunta del momento, en el bloque de marca */}
-      <Card variant="brand" style={styles.hero}>
-        <View style={styles.heroTop}>
-          <View style={styles.flex}>
-            <AppText variant="label" tone="onBrandMuted">{t(`today.greeting.${greetingFor(hour)}`)}</AppText>
-            <AppText variant="caption" tone="onBrandMuted">{formatDay(today)}</AppText>
-          </View>
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={t('profile.title')}
-            hitSlop={8}
-            onPress={() => router.push('/profile')}
-            style={({ pressed }) => [styles.profile, pressed && styles.pressed]}>
-            <Ionicons name="person-circle-outline" size={32} color={c.onBrand} />
-          </Pressable>
-        </View>
-        <AppText variant="title" tone="onBrand">{t('today.suggestionsTitle', { moment: t(`slots.${moment}`) })}</AppText>
-        <AppText tone="onBrandMuted">{t('today.heroHint')}</AppText>
-      </Card>
+      <BrandHeader
+        eyebrow={t(`today.greeting.${greetingFor(hour)}`)}
+        caption={formatDay(today)}
+        title={t('today.suggestionsTitle', { moment: t(`slots.${moment}`) })}
+        subtitle={t('today.heroHint')}
+        action={{ icon: 'person-circle-outline', label: t('profile.title'), onPress: () => router.push('/profile') }}
+      />
 
       {restrictions.data?.allergenIds.length === 0 && (
         <View style={styles.block}>
@@ -225,10 +212,6 @@ export function TodayScreen() {
 const capitalize = (text: string) => text.charAt(0).toUpperCase() + text.slice(1);
 
 const styles = StyleSheet.create({
-  hero: { padding: Spacing.lg, gap: Spacing.sm },
-  heroTop: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
-  profile: { minWidth: MinTouch, minHeight: MinTouch, alignItems: 'flex-end', justifyContent: 'center' },
-  pressed: { opacity: 0.6 },
   block: { gap: Spacing.xs },
   row: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md },
   flex: { flex: 1 },

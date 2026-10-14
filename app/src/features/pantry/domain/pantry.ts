@@ -61,3 +61,16 @@ export function sortPantry(items: PantryItem[]): PantryItem[] {
     return a.expiresOn.localeCompare(b.expiresOn);
   });
 }
+
+export type PantryGroupKey = 'expired' | 'soon' | 'rest';
+export type PantryGroup = { key: PantryGroupKey; data: PantryItem[] };
+
+/** Agrupa la cocina por urgencia (vencido, úsalo primero, el resto) conservando el orden; omite grupos vacíos. */
+export function groupByUrgency(items: PantryItem[], today: string): PantryGroup[] {
+  const groups: Record<PantryGroupKey, PantryItem[]> = { expired: [], soon: [], rest: [] };
+  for (const item of items) {
+    const status = expiryStatus(item.expiresOn, today);
+    groups[status === 'expired' ? 'expired' : status === 'soon' ? 'soon' : 'rest'].push(item);
+  }
+  return (['expired', 'soon', 'rest'] as const).filter((key) => groups[key].length).map((key) => ({ key, data: groups[key] }));
+}

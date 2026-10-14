@@ -63,8 +63,10 @@ export function TextField({ label, error, secure, icon, style, ...input }: Field
 }
 
 /** Casilla accesible. Nunca arranca marcada si representa un consentimiento. */
-export function Checkbox({ checked, onChange, label, error, children }: {
+export function Checkbox({ checked, onChange, label, error, strikeWhenChecked, children }: {
   checked: boolean;
+  /** Tacha el texto al marcar (lista de mercado: lo comprado se aparta visualmente). */
+  strikeWhenChecked?: boolean;
   onChange: (checked: boolean) => void;
   label: string;
   error?: string;
@@ -85,7 +87,14 @@ export function Checkbox({ checked, onChange, label, error, children }: {
         <View style={[styles.box, { borderColor: message ? c.danger : c.primary, backgroundColor: checked ? c.primary : 'transparent' }]}>
           {checked && <Ionicons name="checkmark" size={18} color={c.onPrimary} />}
         </View>
-        <Text style={[styles.checkLabel, { color: c.text }]}>{label}</Text>
+        <Text
+          style={[
+            styles.checkLabel,
+            { color: c.text },
+            strikeWhenChecked && checked && { color: c.textSecondary, textDecorationLine: 'line-through' },
+          ]}>
+          {label}
+        </Text>
       </Pressable>
       {children}
       {message && <Text style={[styles.error, { color: c.danger }]}>{message}</Text>}
