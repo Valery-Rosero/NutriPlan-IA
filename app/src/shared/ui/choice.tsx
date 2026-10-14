@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { MinTouch, Spacing } from '@/shared/theme/colors';
+import { Radius, Typography } from '@/shared/theme/tokens';
 import { useTheme } from '@/shared/theme/use-theme';
 
 /** Opción seleccionable. `multiple` = casilla; si no, botón de opción única. */
@@ -74,16 +75,16 @@ const styles = StyleSheet.create({
   chip: {
     minHeight: MinTouch,
     paddingHorizontal: Spacing.md,
-    borderRadius: 22,
+    borderRadius: Radius.pill,
     borderWidth: 1.5,
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.xs,
   },
-  chipLabel: { fontSize: 16 },
+  chipLabel: { ...Typography.label, fontSize: 15 },
   stepper: { gap: Spacing.xs },
-  stepLabel: { fontSize: 16, fontWeight: '600' },
+  stepLabel: Typography.subtitle,
   stepRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md },
-  stepButton: { width: MinTouch, height: MinTouch, borderRadius: 22, borderWidth: 2, alignItems: 'center', justifyContent: 'center' },
-  stepValue: { fontSize: 24, fontWeight: '700', minWidth: 40, textAlign: 'center' },
+  stepButton: { width: MinTouch, height: MinTouch, borderRadius: Radius.pill, borderWidth: 2, alignItems: 'center', justifyContent: 'center' },
+  stepValue: { ...Typography.title, minWidth: 40, textAlign: 'center' },
 });
