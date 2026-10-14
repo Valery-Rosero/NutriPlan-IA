@@ -33,6 +33,11 @@ export interface ProfileRepository {
   listAllergens(): Promise<CatalogOption[]>;
   /** Solo dietas que se derivan de los ingredientes (las "curadas" requieren etiquetas de nutricionista). */
   listDiets(): Promise<CatalogOption[]>;
+  /** US-138: solo cocinas con recetas publicadas (elegir una sin recetas no cambiaría nada). */
+  listCuisines(): Promise<CatalogOption[]>;
+  getCuisines(): Promise<number[]>;
+  /** Reemplaza el conjunto completo en una transacción (RPC set_my_cuisines). */
+  setCuisines(cuisineIds: number[]): Promise<void>;
 }
 
 // ---- Formularios (mensajes = claves i18n) ----

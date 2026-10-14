@@ -57,6 +57,13 @@ export function fakeProfile(overrides: Partial<ProfileRepository> = {}): jest.Mo
     listRegions: jest.fn(async () => [{ id: 3, code: 'CO-NAR-PASTO', name: 'Pasto' }]),
     listAllergens: jest.fn(async () => [{ id: 5, code: 'egg', name: 'Huevo' }, { id: 6, code: 'milk', name: 'Leche' }]),
     listDiets: jest.fn(async () => [{ id: 2, code: 'vegan', name: 'Vegano' }]),
+    listCuisines: jest.fn(async () => [
+      { id: 4, code: 'andean', name: 'Andina' },
+      { id: 6, code: 'colombian', name: 'Colombiana' },
+      { id: 5, code: 'italian', name: 'Italiana' },
+    ]),
+    getCuisines: jest.fn(async () => []),
+    setCuisines: jest.fn(async () => {}),
     ...overrides,
   } as jest.Mocked<ProfileRepository>;
 }

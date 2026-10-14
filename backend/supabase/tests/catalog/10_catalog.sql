@@ -9,6 +9,8 @@ declare
   r record;
 begin
   perform tt.ok((select count(*) from public.recipes where status = 'published') >= 16, 'el catálogo publica al menos 16 recetas');
+  perform tt.ok((select count(distinct cuisine_id) from public.recipes where status = 'published') >= 5,
+                'US-138: el catálogo tiene variedad de cocinas (no todo es colombiana)');
   perform tt.ok(not exists (select 1 from public.ingredients where allergens_reviewed_at is null),
                 'todos los ingredientes del catálogo tienen los alérgenos revisados');
   perform tt.ok(not exists (select 1 from public.recipe_nutrition where kcal_per_serving is null or ingredients_missing_nutrition > 0),
