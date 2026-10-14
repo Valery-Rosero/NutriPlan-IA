@@ -16,8 +16,10 @@ import { useProfile } from '@/features/profile/application/profile-queries';
 import { registerShoppingMutations } from '@/features/shopping/application/shopping-queries';
 import { persister, queryClient, shouldPersistQuery } from '@/infrastructure/query-client';
 import { Colors, type ThemeColors } from '@/shared/theme/colors';
+import { restoreThemePreference } from '@/shared/theme/theme-preference';
 
 SplashScreen.preventAutoHideAsync();
+void restoreThemePreference(); // claro / oscuro / sistema, según lo que eligió la persona
 
 // Tema de navegación con la paleta de marca (fondos de pantalla y transiciones sin destellos blancos o negros).
 const navigationThemes = {

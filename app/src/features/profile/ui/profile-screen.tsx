@@ -5,6 +5,7 @@ import { formatCOP } from '@/core/format';
 import { useSignOut } from '@/features/auth/application/use-auth';
 import { legalHref } from '@/features/legal/ui/legal-href';
 import { HealthDisclaimerNote } from '@/features/legal/ui/health-disclaimer-note';
+import { AppearanceSection } from '@/features/profile/ui/appearance-section';
 import { useProfile, useProfileOptions, useRestrictions } from '@/features/profile/application/profile-queries';
 import type { ProfileSection } from '@/features/profile/ui/edit-profile-screen';
 import { AppText, Button, Card, Screen, TextLink } from '@/shared/ui';
@@ -40,6 +41,7 @@ export function ProfileScreen() {
         onEdit={() => edit('restrictions')}
       />
       <Section title={t('profile.sections.budget')} body={budget} onEdit={() => edit('budget')} />
+      <AppearanceSection />
       <Section title={t('profile.sections.privacy')} body={t('profile.summary.privacy')} onEdit={() => edit('privacy')} />
 
       <AppText variant="subtitle">{t('profile.documents')}</AppText>
