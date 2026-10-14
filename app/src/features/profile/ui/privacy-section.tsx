@@ -9,7 +9,7 @@ import {
   useRevokeSensitiveAuthorization,
   useSensitiveAuthorization,
 } from '@/features/profile/application/profile-queries';
-import { AppText, Banner, Button, LoadingState, TextLink } from '@/shared/ui';
+import { Banner, Button, FormSection, ListGroup, ListRow, LoadingState, Pill } from '@/shared/ui';
 
 /** Autorización de datos sensibles: se puede dar y revocar en cualquier momento (ADR-011). */
 export function PrivacySection({ onDone }: { onDone: () => void }) {
@@ -32,19 +32,35 @@ export function PrivacySection({ onDone }: { onDone: () => void }) {
   const error = grant.error ?? revoke.error ?? exportData.error;
   return (
     <>
-      <AppText variant="subtitle">{t('profile.sensitive.title')}</AppText>
-      <AppText>{status.data ? t('profile.privacy.granted') : t('profile.privacy.notGranted')}</AppText>
-      {error && <Banner tone="danger" message={t(errorKey(error))} />}
-      {status.data ? (
-        <Button label={t('profile.privacy.revoke')} variant="secondary" loading={revoke.isPending} onPress={confirmRevoke} />
-      ) : (
-        <Button label={t('profile.sensitive.accept')} loading={grant.isPending} onPress={() => grant.mutate(undefined, { onSuccess: onDone })} />
-      )}
+      <FormSection
+        icon="shield-checkmark-outline"
+        tone={status.data ? 'primary' : 'warning'}
+        title={t('profile.sensitive.title')}
+        hint={status.data ? t('profile.privacy.granted') : t('profile.privacy.notGranted')}>
+        <Pill
+          label={status.data ? t('profile.privacy.on') : t('profile.privacy.off')}
+          tone={status.data ? 'primary' : 'warning'}
+          icon={status.data ? 'checkmark-circle-outline' : 'alert-circle-outline'}
+        />
+        {status.data ? (
+          <Button label={t('profile.privacy.revoke')} variant="secondary" size="sm" loading={revoke.isPending} onPress={confirmRevoke} />
+        ) : (
+          <Button
+            label={t('profile.sensitive.accept')}
+            icon="shield-checkmark-outline"
+            loading={grant.isPending}
+            onPress={() => grant.mutate(undefined, { onSuccess: onDone })}
+          />
+        )}
+      </FormSection>
 
-      <AppText variant="subtitle">{t('account.rightsTitle')}</AppText>
-      <AppText secondary>{t('account.rightsBody')}</AppText>
-      <Button label={t('account.export')} variant="secondary" loading={exportData.isPending} onPress={() => exportData.mutate()} />
-      <TextLink label={t('account.deleteTitle')} onPress={() => router.push('/account/delete')} />
+      {error && <Banner tone="danger" message={t(errorKey(error))} />}
+
+      <ListGroup title={t('account.rightsTitle')}>
+        <ListRow icon="download-outline" title={t('account.export')} subtitle={t('account.exportHint')} onPress={() => exportData.mutate()} />
+        <ListRow icon="trash-outline" title={t('account.deleteTitle')} danger onPress={() => router.push('/account/delete')} />
+      </ListGroup>
+      {exportData.isPending && <LoadingState />}
     </>
   );
 }
