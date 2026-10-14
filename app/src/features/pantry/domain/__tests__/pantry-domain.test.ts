@@ -1,4 +1,4 @@
-import { addDays, expiryStatus, sortPantry, unitsFor, type PantryItem, type Unit } from '@/features/pantry/domain/pantry';
+import { addDays, expiryStatus, groupByUrgency, sortPantry, unitsFor, type PantryItem, type Unit } from '@/features/pantry/domain/pantry';
 
 const units: Unit[] = [
   { id: 1, code: 'g', name: 'gramo', dimension: 'mass' },
@@ -34,5 +34,22 @@ describe('unidades ofrecidas', () => {
   it('ofrece las contables del ingrediente y masa (g, libra, kg), nunca volumen', () => {
     const offered = unitsFor({ id: 'papa', name: 'Papa', countUnits: [units[3]] }, units).map((u) => u.code);
     expect(offered).toEqual(['unit', 'g', 'lb', 'kg']);
+  });
+});
+
+describe('cocina agrupada por urgencia', () => {
+  const item = (name: string, expiresOn: string | null): PantryItem => ({ id: name, ingredientId: name, name, grams: 100, expiresOn });
+
+  it('separa lo vencido, lo que vence pronto y el resto, sin grupos vacíos', () => {
+    const groups = groupByUrgency(
+      [item('Leche', '2026-10-10'), item('Espinaca', '2026-10-14'), item('Arroz', null), item('Papa', '2026-10-30')],
+      '2026-10-13',
+    );
+    expect(groups.map((g) => [g.key, g.data.map((i) => i.name)])).toEqual([
+      ['expired', ['Leche']],
+      ['soon', ['Espinaca']],
+      ['rest', ['Arroz', 'Papa']],
+    ]);
+    expect(groupByUrgency([item('Arroz', null)], '2026-10-13').map((g) => g.key)).toEqual(['rest']);
   });
 });

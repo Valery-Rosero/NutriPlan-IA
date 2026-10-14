@@ -206,11 +206,12 @@
     "moveToPantry_one": "Pasar {{count}} comprado a la despensa",
     "moveToPantry_other": "Pasar {{count}} comprados a la despensa",
     "moved_one": "Listo: {{count}} producto quedó en tu despensa.",
-    "moved_other": "Listo: {{count}} productos quedaron en tu despensa."
+    "moved_other": "Listo: {{count}} productos quedaron en tu despensa.",
+    "removeLabel": "Quitar {{name}} de la lista"
   },
   "pantry": {
     "title": "Despensa",
-    "add": "Agregar a la despensa",
+    "add": "Agregar ingrediente",
     "empty": "Tu despensa está vacía. Agrega lo que tienes en casa y te diremos qué puedes cocinar.",
     "remove": "Quitar",
     "removeTitle": "¿Quitar {{name}} de la despensa?",
@@ -232,7 +233,13 @@
       "month1": "En 1 mes"
     },
     "save": "Guardar en la despensa",
-    "change": "Elegir otro ingrediente"
+    "change": "Elegir otro ingrediente",
+    "removeLabel": "Quitar {{name}}",
+    "groups": {
+      "expired": "Vencido: revísalo",
+      "soon": "Úsalo primero",
+      "rest": "En tu cocina"
+    }
   },
   "profile": {
     "title": "Perfil",
@@ -505,6 +512,11 @@
     "list": "Lista de mercado",
     "quickHint": "Toca lo que tengas; luego puedes ajustar cantidades.",
     "quickShow": "Agregar lo típico con un toque",
-    "quickHide": "Ocultar lo típico"
+    "quickHide": "Ocultar lo típico",
+    "subtitle": "Lo que tienes y lo que te falta, en un solo lugar.",
+    "count_one": "{{count}} ingrediente",
+    "count_other": "{{count}} ingredientes",
+    "expiring_one": "{{count}} vence pronto",
+    "expiring_other": "{{count}} vencen pronto"
   }
 }

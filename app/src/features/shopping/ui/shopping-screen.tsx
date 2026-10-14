@@ -17,7 +17,21 @@ import {
 import { pendingToPantry, progress, toSections, type ShoppingItem } from '@/features/shopping/domain/shopping';
 import { useIsOnline } from '@/shared/hooks/use-is-online';
 import { Spacing } from '@/shared/theme/colors';
-import { AppText, Banner, Button, Card, Checkbox, EmptyState, ErrorState, LoadingState, Screen, TextField, TextLink } from '@/shared/ui';
+import {
+  AppText,
+  Banner,
+  Button,
+  Card,
+  Checkbox,
+  EmptyState,
+  ErrorState,
+  IconBadge,
+  IconButton,
+  LoadingState,
+  ProgressBar,
+  Screen,
+  TextField,
+} from '@/shared/ui';
 
 /** US-124 (desde el plan), US-125 (resta la despensa), US-126 (marcar, quitar, agregar), US-135 (secciones). */
 export function ShoppingScreen({ embedded }: { embedded?: boolean }) {
@@ -35,11 +49,12 @@ export function ShoppingScreen({ embedded }: { embedded?: boolean }) {
       return <ErrorState message={t(errorKey(plan.error ?? list.error))} onRetry={() => void list.refetch()} />;
     }
     if (!planId) {
-      return <EmptyState message={t('shopping.noPlan')} action={<Button label={t('shopping.goToPlan')} onPress={() => router.navigate('/week')} />} />;
+      return <EmptyState icon="calendar-outline" message={t('shopping.noPlan')} action={<Button label={t('shopping.goToPlan')} onPress={() => router.navigate('/week')} />} />;
     }
     if (!list.data) {
       return (
         <EmptyState
+          icon="cart-outline"
           message={t('shopping.noList')}
           action={<Button label={t('shopping.build')} loading={generate.isPending} onPress={() => generate.mutate(planId)} />}
         />
@@ -79,48 +94,85 @@ function ListView({ planId, listId, items, onRefresh, refreshing }: {
   const [newItem, setNewItem] = useState('');
   const { done, total } = progress(items);
   const toPantry = pendingToPantry(items);
+  const submitNew = () => {
+    if (newItem.trim()) add.mutate({ listId, name: newItem }, { onSuccess: () => setNewItem('') });
+  };
 
   return (
     <>
-      <AppText secondary accessibilityLiveRegion="polite">{t('shopping.progress', { done, total })}</AppText>
-      <Button label={t('shopping.refresh')} variant="secondary" loading={refreshing} onPress={onRefresh} />
-
-      {toSections(items).map((section) => (
-        <Card key={section.key}>
-          <AppText variant="subtitle">
-            {section.kind === 'have' ? t('shopping.haveSection') : (section.title ?? t('shopping.otherSection'))}
+      <Card variant="primary">
+        <View style={styles.progressRow}>
+          <IconBadge name="cart-outline" tone="accent" />
+          <AppText variant="subtitle" style={styles.flex} accessibilityLiveRegion="polite">
+            {t('shopping.progress', { done, total })}
           </AppText>
-          {section.data.map((item) =>
-            section.kind === 'have' ? (
-              <AppText key={item.id} secondary>{`${item.name} · ${t('shopping.youHave', { amount: formatGrams(item.pantryGrams) })}`}</AppText>
-            ) : (
-              <View key={item.id} style={styles.item}>
-                <Checkbox
-                  checked={item.checked}
-                  onChange={(checked) => toggle.mutate({ planId, itemId: item.id, checked })}
-                  label={item.toBuyGrams ? `${item.name} · ${amount(item, t)}` : item.name}
-                />
-                <TextLink label={t('shopping.remove')} hint={item.name} onPress={() => remove.mutate(item.id)} />
-              </View>
-            ),
-          )}
-        </Card>
-      ))}
+          <IconButton icon="refresh" label={t('shopping.refresh')} tone="primary" disabled={refreshing} onPress={onRefresh} />
+        </View>
+        <ProgressBar value={total ? done / total : 0} label={t('shopping.progress', { done, total })} />
+        {move.isSuccess && <Banner tone="success" message={t('shopping.moved', { count: move.data })} />}
+        {toPantry > 0 && (
+          <Button
+            label={t('shopping.moveToPantry', { count: toPantry })}
+            icon="basket-outline"
+            size="sm"
+            loading={move.isPending}
+            onPress={() => move.mutate(listId)}
+          />
+        )}
+      </Card>
 
-      <TextField label={t('shopping.addLabel')} value={newItem} onChangeText={setNewItem} placeholder={t('shopping.addPlaceholder')} />
-      <Button
-        label={t('shopping.add')}
-        variant="secondary"
-        disabled={newItem.trim().length === 0}
-        loading={add.isPending}
-        onPress={() => add.mutate({ listId, name: newItem }, { onSuccess: () => setNewItem('') })}
-      />
+      {toSections(items).map((section) =>
+        section.kind === 'have' ? (
+          <Card key={section.key} variant="filled">
+            <View style={styles.sectionHead}>
+              <IconBadge name="checkmark-done-outline" size={32} />
+              <AppText variant="subtitle" style={styles.flex}>{t('shopping.haveSection')}</AppText>
+            </View>
+            {section.data.map((item) => (
+              <AppText key={item.id} secondary>{`${item.name} · ${t('shopping.youHave', { amount: formatGrams(item.pantryGrams) })}`}</AppText>
+            ))}
+          </Card>
+        ) : (
+          <Card key={section.key}>
+            <AppText variant="heading">{section.title ?? t('shopping.otherSection')}</AppText>
+            {section.data.map((item) => (
+              <View key={item.id} style={styles.item}>
+                <View style={styles.flex}>
+                  <Checkbox
+                    checked={item.checked}
+                    strikeWhenChecked
+                    onChange={(checked) => toggle.mutate({ planId, itemId: item.id, checked })}
+                    label={item.toBuyGrams ? `${item.name} · ${amount(item, t)}` : item.name}
+                  />
+                </View>
+                <IconButton icon="close" label={t('shopping.removeLabel', { name: item.name })} onPress={() => remove.mutate(item.id)} />
+              </View>
+            ))}
+          </Card>
+        ),
+      )}
+
+      <Card variant="outlined">
+        <TextField
+          label={t('shopping.addLabel')}
+          icon="add-circle-outline"
+          value={newItem}
+          onChangeText={setNewItem}
+          placeholder={t('shopping.addPlaceholder')}
+          returnKeyType="done"
+          onSubmitEditing={submitNew}
+        />
+        <Button
+          label={t('shopping.add')}
+          variant="secondary"
+          size="sm"
+          disabled={newItem.trim().length === 0}
+          loading={add.isPending}
+          onPress={submitNew}
+        />
+      </Card>
 
       {(move.error ?? remove.error ?? add.error) && <Banner tone="danger" message={t(errorKey(move.error ?? remove.error ?? add.error))} />}
-      {move.isSuccess && <Banner tone="success" message={t('shopping.moved', { count: move.data })} />}
-      {toPantry > 0 && (
-        <Button label={t('shopping.moveToPantry', { count: toPantry })} loading={move.isPending} onPress={() => move.mutate(listId)} />
-      )}
     </>
   );
 }
@@ -131,6 +183,9 @@ function amount(item: ShoppingItem, t: (k: string, o?: Record<string, unknown>) 
 }
 
 const styles = StyleSheet.create({
-  item: { gap: 0, paddingVertical: Spacing.xs },
+  item: { flexDirection: 'row', alignItems: 'center', gap: Spacing.xs },
+  flex: { flex: 1 },
+  progressRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md },
+  sectionHead: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
   embedded: { gap: Spacing.md, paddingBottom: Spacing.lg },
 });
