@@ -25,6 +25,10 @@ export const Colors = {
     border: Brand.tan,
     divider: '#E6DACA',
     track: '#E6DACA', // fondo de barras de progreso
+    // bloques de marca (como la paleta: Space Cadet con letras Tan)
+    brand: Brand.spaceCadet,
+    onBrand: Brand.tan,
+    onBrandMuted: '#B4C2D3', // slate gray aclarado: legible sobre Space Cadet
     // marca
     primary: Brand.coffee,
     onPrimary: '#FAF6EF',
@@ -51,6 +55,9 @@ export const Colors = {
     border: '#3A4B66',
     divider: '#2C3A52',
     track: '#2F3D55',
+    brand: Brand.spaceCadet,
+    onBrand: Brand.tan,
+    onBrandMuted: '#B4C2D3',
     primary: Brand.tan,
     onPrimary: '#2E1F15', // coffee muy oscuro
     primaryContainer: '#4A3A2C',

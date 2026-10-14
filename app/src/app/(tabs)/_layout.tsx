@@ -21,9 +21,11 @@ export default function TabsLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: c.primary,
-        tabBarInactiveTintColor: c.textSecondary,
-        tabBarStyle: { backgroundColor: c.surface, borderTopColor: c.border },
+        // Barra en Space Cadet con la pestaña activa en Tan, como la paleta de marca.
+        tabBarActiveTintColor: c.onBrand,
+        tabBarInactiveTintColor: c.onBrandMuted,
+        tabBarStyle: { backgroundColor: c.brand, borderTopWidth: 0 },
+        tabBarLabelStyle: { fontSize: 12, fontWeight: '600' },
       }}>
       {TABS.map((tab) => (
         <Tabs.Screen

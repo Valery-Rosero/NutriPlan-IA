@@ -25,6 +25,8 @@ const PAIRS: [Key, Key][] = [
   ['onDangerContainer', 'dangerContainer'],
   ['onWarningContainer', 'warningContainer'],
   ['primary', 'card'],
+  ['onBrand', 'brand'],
+  ['onBrandMuted', 'brand'],
 ];
 
 describe.each(['light', 'dark'] as const)('paleta %s', (mode) => {
