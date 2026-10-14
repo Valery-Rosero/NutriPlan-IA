@@ -147,7 +147,8 @@
     "noAllergies": "No has declarado alergias, así que no podemos filtrarlas.",
     "declareAllergies": "Declarar alergias",
     "missingList": "Te falta: {{list}}",
-    "haveAll": "Tienes todo lo necesario"
+    "haveAll": "Tienes todo lo necesario",
+    "haveAllShort": "Lo tienes todo"
   },
   "plan": {
     "title": "Mi semana",
@@ -487,7 +488,16 @@
     "toBuy_one": "Falta comprar {{count}} cosa.",
     "toBuy_other": "Faltan comprar {{count}} cosas.",
     "openWeek": "Ver mi semana",
-    "openList": "Ver lista de mercado"
+    "openList": "Ver lista de mercado",
+    "greeting": {
+      "morning": "Buenos días",
+      "afternoon": "Buenas tardes",
+      "evening": "Buenas noches"
+    },
+    "heroHint": "Te proponemos recetas con lo que ya tienes en tu cocina.",
+    "ideasTitle": "Ideas con lo que tienes",
+    "statusTitle": "Tu cocina y tu semana",
+    "weekProgress": "Avance de la semana"
   },
   "kitchen": {
     "title": "Mi cocina",
