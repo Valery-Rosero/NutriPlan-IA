@@ -14,8 +14,18 @@ function contrast(a: string, b: string) {
   return (hi + 0.05) / (lo + 0.05);
 }
 
-const TEXT: (keyof ThemeColors)[] = ['text', 'textSecondary', 'primary', 'accent', 'danger', 'warning'];
-const BACKGROUNDS: (keyof ThemeColors)[] = ['background', 'surface'];
+type Key = keyof ThemeColors;
+const TEXT: Key[] = ['text', 'textSecondary', 'primary', 'accent', 'danger', 'warning'];
+const BACKGROUNDS: Key[] = ['background', 'surface', 'card'];
+/** Cada contenedor de color con el texto que va encima. */
+const PAIRS: [Key, Key][] = [
+  ['onPrimary', 'primary'],
+  ['onPrimaryContainer', 'primaryContainer'],
+  ['onAccentContainer', 'accentContainer'],
+  ['onDangerContainer', 'dangerContainer'],
+  ['onWarningContainer', 'warningContainer'],
+  ['primary', 'card'],
+];
 
 describe.each(['light', 'dark'] as const)('paleta %s', (mode) => {
   const c = Colors[mode];
@@ -27,7 +37,11 @@ describe.each(['light', 'dark'] as const)('paleta %s', (mode) => {
     },
   );
 
-  it('el texto de los botones cumple AA sobre primary', () => {
-    expect(contrast(c.onPrimary, c.primary)).toBeGreaterThanOrEqual(4.5);
+  it.each(PAIRS)('%s sobre %s cumple AA (≥ 4.5:1)', (fg, bg) => {
+    expect(contrast(c[fg], c[bg])).toBeGreaterThanOrEqual(4.5);
+  });
+
+  it('los bordes se distinguen del fondo (≥ 1.3:1, decorativos)', () => {
+    expect(contrast(c.border, c.background)).toBeGreaterThanOrEqual(1.3);
   });
 });

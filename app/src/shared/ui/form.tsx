@@ -6,6 +6,7 @@ import { Pressable, StyleSheet, Text, TextInput, View, type TextInputProps } fro
 import { useTranslation } from 'react-i18next';
 
 import { MinTouch, Spacing } from '@/shared/theme/colors';
+import { Radius, Typography } from '@/shared/theme/tokens';
 import { useTheme } from '@/shared/theme/use-theme';
 
 type FieldProps = Omit<TextInputProps, 'value' | 'onChangeText'> & {
@@ -116,12 +117,12 @@ export function FormCheckbox<T extends FieldValues>({ control, name, label, chil
 
 const styles = StyleSheet.create({
   field: { gap: Spacing.xs },
-  label: { fontSize: 16, fontWeight: '600' },
-  inputRow: { flexDirection: 'row', alignItems: 'center', borderWidth: 1.5, borderRadius: 12 },
+  label: Typography.label,
+  inputRow: { flexDirection: 'row', alignItems: 'center', borderWidth: 1.5, borderRadius: Radius.md },
   input: { flex: 1, minHeight: MinTouch + 4, paddingHorizontal: Spacing.md, fontSize: 16 },
   eye: { minWidth: MinTouch, minHeight: MinTouch, alignItems: 'center', justifyContent: 'center' },
-  error: { fontSize: 14, lineHeight: 20 },
+  error: Typography.caption,
   checkRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, minHeight: MinTouch },
-  box: { width: 26, height: 26, borderRadius: 6, borderWidth: 2, alignItems: 'center', justifyContent: 'center' },
-  checkLabel: { flex: 1, fontSize: 16, lineHeight: 22 },
+  box: { width: 26, height: 26, borderRadius: Radius.sm - 2, borderWidth: 2, alignItems: 'center', justifyContent: 'center' },
+  checkLabel: { ...Typography.body, flex: 1 },
 });

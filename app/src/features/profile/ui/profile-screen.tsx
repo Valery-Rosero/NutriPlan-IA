@@ -48,6 +48,7 @@ export function ProfileScreen() {
       <TextLink label={t('legal.kinds.privacy_policy')} onPress={() => router.push(legalHref('privacy_policy'))} />
       <TextLink label={t('legal.kinds.terms')} onPress={() => router.push(legalHref('terms'))} />
       <Button label={t('profile.signOut')} variant="secondary" loading={signOut.isPending} onPress={() => signOut.mutate()} />
+      {__DEV__ && <TextLink label="Sistema de diseño (desarrollo)" onPress={() => router.push('/design-system')} />}
       <HealthDisclaimerNote />
     </Screen>
   );

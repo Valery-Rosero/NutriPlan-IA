@@ -4,7 +4,8 @@ import { useTranslation } from 'react-i18next';
 
 import { Spacing } from '@/shared/theme/colors';
 import { useTheme } from '@/shared/theme/use-theme';
-import { AppText, Button } from '@/shared/ui/primitives';
+import { IconBadge } from '@/shared/ui/display';
+import { AppText, Button, type IconName } from '@/shared/ui/primitives';
 
 // Estados obligatorios de cada pantalla (docs/01-producto/pantallas.md).
 export function LoadingState() {
@@ -17,9 +18,11 @@ export function LoadingState() {
   );
 }
 
-export function EmptyState({ message, action }: { message: string; action?: ReactNode }) {
+/** Vacío con ícono, mensaje y, si aplica, la acción que lo resuelve. */
+export function EmptyState({ message, action, icon = 'leaf-outline' }: { message: string; action?: ReactNode; icon?: IconName }) {
   return (
     <View style={styles.center}>
+      <IconBadge name={icon} tone="primary" size={56} />
       <AppText secondary style={styles.text}>{message}</AppText>
       {action}
     </View>
@@ -28,11 +31,11 @@ export function EmptyState({ message, action }: { message: string; action?: Reac
 
 export function ErrorState({ message, onRetry }: { message: string; onRetry?: () => void }) {
   const { t } = useTranslation();
-  const c = useTheme();
   return (
     <View style={styles.center} accessibilityLiveRegion="assertive">
-      <AppText style={[styles.text, { color: c.danger }]}>{message}</AppText>
-      {onRetry && <Button label={t('common.retry')} variant="secondary" onPress={onRetry} />}
+      <IconBadge name="cloud-offline-outline" tone="danger" size={56} />
+      <AppText tone="danger" style={styles.text}>{message}</AppText>
+      {onRetry && <Button label={t('common.retry')} variant="secondary" size="sm" icon="refresh" onPress={onRetry} />}
     </View>
   );
 }

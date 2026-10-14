@@ -1,39 +1,69 @@
-import type { ReactNode } from 'react';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import type { ComponentProps, ReactNode } from 'react';
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
   Pressable,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
   View,
+  type StyleProp,
   type TextProps,
+  type ViewStyle,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { MinTouch, Spacing } from '@/shared/theme/colors';
+import { MinTouch, Spacing, type ThemeColors } from '@/shared/theme/colors';
+import { elevation, Radius, Typography, type TypographyVariant } from '@/shared/theme/tokens';
 import { useTheme } from '@/shared/theme/use-theme';
 
-type Variant = 'title' | 'subtitle' | 'body' | 'caption';
+export type IconName = ComponentProps<typeof Ionicons>['name'];
 
-export function AppText({ variant = 'body', secondary, style, ...rest }: TextProps & { variant?: Variant; secondary?: boolean }) {
+// ---------------------------------------------------------------- Texto
+type TextTone = 'default' | 'secondary' | 'primary' | 'danger' | 'warning' | 'onPrimary';
+
+const toneColor = (c: ThemeColors, tone: TextTone) =>
+  ({ default: c.text, secondary: c.textSecondary, primary: c.primary, danger: c.danger, warning: c.warning, onPrimary: c.onPrimary })[tone];
+
+/** Texto con la escala tipográfica. `secondary` se conserva por compatibilidad (= tone "secondary"). */
+export function AppText({ variant = 'body', tone = 'default', secondary, style, ...rest }: TextProps & {
+  variant?: TypographyVariant;
+  tone?: TextTone;
+  secondary?: boolean;
+}) {
   const c = useTheme();
+  const isHeader = variant === 'display' || variant === 'title' || variant === 'heading';
   return (
     <Text
-      accessibilityRole={variant === 'title' ? 'header' : undefined}
-      style={[styles[variant], { color: secondary ? c.textSecondary : c.text }, style]}
+      accessibilityRole={isHeader ? 'header' : undefined}
+      style={[Typography[variant], { color: toneColor(c, secondary ? 'secondary' : tone) }, style]}
       {...rest}
     />
   );
 }
 
-/** Pantalla base. `scroll` para formularios: se desplaza y respeta el teclado. */
-export function Screen({ children, scroll }: { children: ReactNode; scroll?: boolean }) {
+// ---------------------------------------------------------------- Pantalla
+/** Pantalla base. `scroll` para contenido largo y formularios; `onRefresh` activa deslizar para actualizar. */
+export function Screen({ children, scroll, refreshing, onRefresh }: {
+  children: ReactNode;
+  scroll?: boolean;
+  refreshing?: boolean;
+  onRefresh?: () => void;
+}) {
   const c = useTheme();
   const body = scroll ? (
     <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps="handled"
+        refreshControl={
+          onRefresh ? (
+            <RefreshControl refreshing={!!refreshing} onRefresh={onRefresh} tintColor={c.primary} colors={[c.primary]} />
+          ) : undefined
+        }>
         {children}
       </ScrollView>
     </KeyboardAvoidingView>
@@ -47,17 +77,29 @@ export function Screen({ children, scroll }: { children: ReactNode; scroll?: boo
   );
 }
 
-export function Button({ label, onPress, variant = 'primary', disabled, loading, hint }: {
+// ---------------------------------------------------------------- Botones
+type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
+
+/** Botón de 48 pt (≥ 44 pt). `icon` opcional a la izquierda; `size="sm"` para acciones dentro de tarjetas. */
+export function Button({ label, onPress, variant = 'primary', size = 'md', icon, disabled, loading, hint }: {
   label: string;
   onPress?: () => void;
-  variant?: 'primary' | 'secondary';
+  variant?: ButtonVariant;
+  size?: 'md' | 'sm';
+  icon?: IconName;
   disabled?: boolean;
   loading?: boolean;
   hint?: string;
 }) {
   const c = useTheme();
-  const primary = variant === 'primary';
   const inactive = disabled || loading;
+  const palette = {
+    primary: { bg: c.primary, fg: c.onPrimary, border: c.primary },
+    secondary: { bg: 'transparent', fg: c.primary, border: c.primary },
+    ghost: { bg: 'transparent', fg: c.primary, border: 'transparent' },
+    danger: { bg: c.dangerContainer, fg: c.onDangerContainer, border: c.dangerContainer },
+  }[variant];
+
   return (
     <Pressable
       accessibilityRole="button"
@@ -68,53 +110,75 @@ export function Button({ label, onPress, variant = 'primary', disabled, loading,
       onPress={onPress}
       style={({ pressed }) => [
         styles.button,
-        {
-          backgroundColor: primary ? c.primary : 'transparent',
-          borderColor: c.primary,
-          opacity: disabled ? 0.5 : pressed ? 0.8 : 1,
-        },
+        size === 'sm' && styles.buttonSm,
+        { backgroundColor: palette.bg, borderColor: palette.border, opacity: disabled ? 0.5 : pressed ? 0.85 : 1 },
+        pressed && styles.pressed,
       ]}>
       {loading ? (
-        <ActivityIndicator color={primary ? c.onPrimary : c.primary} />
+        <ActivityIndicator color={palette.fg} />
       ) : (
-        <Text style={[styles.buttonLabel, { color: primary ? c.onPrimary : c.primary }]}>{label}</Text>
+        <View style={styles.buttonRow}>
+          {icon && <Ionicons name={icon} size={size === 'sm' ? 18 : 20} color={palette.fg} />}
+          <Text style={[Typography.label, size === 'md' && styles.buttonLabelMd, { color: palette.fg }]}>{label}</Text>
+        </View>
       )}
     </Pressable>
   );
 }
 
 /** Enlace de texto con área táctil de 44 pt. */
-export function TextLink({ label, onPress, hint }: { label: string; onPress: () => void; hint?: string }) {
+export function TextLink({ label, onPress, hint, icon }: { label: string; onPress: () => void; hint?: string; icon?: IconName }) {
   const c = useTheme();
   return (
     <Pressable accessibilityRole="link" accessibilityHint={hint} onPress={onPress} hitSlop={8} style={styles.link}>
-      <Text style={[styles.linkLabel, { color: c.accent }]}>{label}</Text>
+      <View style={styles.buttonRow}>
+        <Text style={[Typography.label, styles.linkLabel, { color: c.accent }]}>{label}</Text>
+        {icon && <Ionicons name={icon} size={16} color={c.accent} />}
+      </View>
     </Pressable>
   );
 }
 
-export function Card({ children, accessibilityLabel }: { children: ReactNode; accessibilityLabel?: string }) {
+// ---------------------------------------------------------------- Tarjetas
+type CardVariant = 'elevated' | 'outlined' | 'filled' | 'primary';
+
+/** Contenedor. `elevated` (por defecto) para lo importante; `filled` para agrupar; `primary` para destacar. */
+export function Card({ children, accessibilityLabel, variant = 'elevated', style }: {
+  children: ReactNode;
+  accessibilityLabel?: string;
+  variant?: CardVariant;
+  style?: StyleProp<ViewStyle>;
+}) {
   const c = useTheme();
+  const look: Record<CardVariant, ViewStyle> = {
+    elevated: { backgroundColor: c.card, borderColor: c.divider, ...elevation(1, c.shadow) },
+    outlined: { backgroundColor: 'transparent', borderColor: c.border },
+    filled: { backgroundColor: c.surface, borderColor: 'transparent' },
+    primary: { backgroundColor: c.primaryContainer, borderColor: 'transparent' },
+  };
   return (
-    <View
-      accessible={!!accessibilityLabel}
-      accessibilityLabel={accessibilityLabel}
-      style={[styles.card, { backgroundColor: c.surface, borderColor: c.border }]}>
+    <View accessible={!!accessibilityLabel} accessibilityLabel={accessibilityLabel} style={[styles.card, look[variant], style]}>
       {children}
     </View>
   );
 }
 
-/** Aviso destacado. El tono también va en el texto, no solo en el color (accesibilidad). */
-export function Banner({ message, tone = 'info' }: { message: string; tone?: 'info' | 'warning' | 'danger' | 'success' }) {
+// ---------------------------------------------------------------- Avisos
+type BannerTone = 'info' | 'warning' | 'danger' | 'success';
+
+/** Aviso destacado con ícono. El tono también va en el ícono y el texto, no solo en el color (accesibilidad). */
+export function Banner({ message, tone = 'info' }: { message: string; tone?: BannerTone }) {
   const c = useTheme();
-  const color = tone === 'danger' ? c.danger : tone === 'warning' ? c.warning : tone === 'success' ? c.primary : c.accent;
+  const look = {
+    info: { bg: c.accentContainer, fg: c.onAccentContainer, icon: 'information-circle' as IconName },
+    success: { bg: c.primaryContainer, fg: c.onPrimaryContainer, icon: 'checkmark-circle' as IconName },
+    warning: { bg: c.warningContainer, fg: c.onWarningContainer, icon: 'alert-circle' as IconName },
+    danger: { bg: c.dangerContainer, fg: c.onDangerContainer, icon: 'close-circle' as IconName },
+  }[tone];
   return (
-    <View
-      accessibilityRole="alert"
-      accessibilityLiveRegion="polite"
-      style={[styles.banner, { borderColor: color, backgroundColor: c.surface }]}>
-      <Text style={[styles.body, { color }]}>{message}</Text>
+    <View accessibilityRole="alert" accessibilityLiveRegion="polite" style={[styles.banner, { backgroundColor: look.bg }]}>
+      <Ionicons name={look.icon} size={20} color={look.fg} />
+      <Text style={[Typography.body, styles.bannerText, { color: look.fg }]}>{message}</Text>
     </View>
   );
 }
@@ -122,22 +186,22 @@ export function Banner({ message, tone = 'info' }: { message: string; tone?: 'in
 export const styles = StyleSheet.create({
   flex: { flex: 1 },
   content: { paddingHorizontal: Spacing.md, paddingTop: Spacing.md, gap: Spacing.md },
-  scrollContent: { flexGrow: 1, padding: Spacing.md, gap: Spacing.md },
-  title: { fontSize: 28, lineHeight: 34, fontWeight: '700' },
-  subtitle: { fontSize: 20, lineHeight: 26, fontWeight: '600' },
-  body: { fontSize: 16, lineHeight: 24 },
-  caption: { fontSize: 14, lineHeight: 20 },
+  scrollContent: { flexGrow: 1, padding: Spacing.md, gap: Spacing.md, paddingBottom: Spacing.xl },
   button: {
-    minHeight: MinTouch,
-    borderRadius: 12,
-    borderWidth: 2,
+    minHeight: 48,
+    borderRadius: Radius.md,
+    borderWidth: 1.5,
     paddingHorizontal: Spacing.lg,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  buttonLabel: { fontSize: 16, fontWeight: '600' },
+  buttonSm: { minHeight: MinTouch, paddingHorizontal: Spacing.md, alignSelf: 'flex-start' },
+  buttonRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
+  buttonLabelMd: { fontSize: 16 },
+  pressed: { transform: [{ scale: 0.98 }] },
   link: { minHeight: MinTouch, justifyContent: 'center', alignSelf: 'flex-start' },
-  linkLabel: { fontSize: 16, fontWeight: '600', textDecorationLine: 'underline' },
-  card: { borderRadius: 12, borderWidth: 1, padding: Spacing.md, gap: Spacing.xs },
-  banner: { borderLeftWidth: 4, borderRadius: 8, padding: Spacing.md },
+  linkLabel: { fontSize: 15, textDecorationLine: 'underline' },
+  card: { borderRadius: Radius.lg, borderWidth: 1, padding: Spacing.md, gap: Spacing.sm },
+  banner: { flexDirection: 'row', alignItems: 'flex-start', gap: Spacing.sm, borderRadius: Radius.md, padding: Spacing.md },
+  bannerText: { flex: 1 },
 });
