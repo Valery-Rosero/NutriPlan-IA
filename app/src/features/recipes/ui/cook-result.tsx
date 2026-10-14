@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { errorKey } from '@/core/errors/app-error';
@@ -6,7 +7,8 @@ import { formatGrams } from '@/core/format';
 import { useUndoCook } from '@/features/recipes/application/recipe-queries';
 import type { CookResult } from '@/features/recipes/domain/recipe';
 import { RatingForm } from '@/features/recipes/ui/rating-form';
-import { AppText, Banner, Button, Card } from '@/shared/ui';
+import { Spacing } from '@/shared/theme/colors';
+import { AppText, Banner, Button, Card, Divider, IconBadge } from '@/shared/ui';
 
 const UNDO_SECONDS = 10;
 
@@ -24,9 +26,14 @@ export function CookResultPanel({ result, onUndone }: { result: CookResult; onUn
   }, [seconds]);
 
   return (
-    <Card>
-      <AppText variant="subtitle">{t('recipe.cooked.title')}</AppText>
-      <AppText secondary>{t('recipe.cooked.body')}</AppText>
+    <Card variant="primary">
+      <View style={styles.row}>
+        <IconBadge name="checkmark-done" tone="accent" size={48} />
+        <View style={styles.flex}>
+          <AppText variant="heading" accessibilityLiveRegion="polite">{t('recipe.cooked.title')}</AppText>
+          <AppText variant="caption" secondary>{t('recipe.cooked.body')}</AppText>
+        </View>
+      </View>
       {result.shortfall.length > 0 && (
         <>
           <AppText>{t('recipe.cooked.shortfall')}</AppText>
@@ -41,11 +48,19 @@ export function CookResultPanel({ result, onUndone }: { result: CookResult; onUn
         <Button
           label={t('recipe.cooked.undo', { seconds })}
           variant="secondary"
+          icon="arrow-undo-outline"
+          size="sm"
           loading={undo.isPending}
           onPress={() => undo.mutate(result.plannedMealId, { onSuccess: onUndone })}
         />
       )}
+      <Divider />
       <RatingForm plannedMealId={result.plannedMealId} onRated={() => setRated(true)} />
     </Card>
   );
 }
+
+const styles = StyleSheet.create({
+  row: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md },
+  flex: { flex: 1 },
+});

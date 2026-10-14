@@ -387,7 +387,6 @@
     "contains": "Contiene: {{list}}",
     "nutrition": "Nutrición por porción",
     "kcal": "{{value}} kcal",
-    "macros": "Proteína {{protein}} g · Carbohidratos {{carbs}} g · Grasa {{fat}} g",
     "micros": "Fibra {{fiber}} g · Azúcares {{sugar}} g · Sodio {{sodium}} mg",
     "nutritionA11y": "Nutrición por porción: {{kcal}} kilocalorías y {{protein}} gramos de proteína",
     "nutritionNote": "Valores aproximados calculados con datos de referencia (USDA). No son una indicación médica.",
@@ -418,7 +417,14 @@
         "bad_taste": "No me gustó el sabor",
         "hard_ingredients": "Ingredientes difíciles de conseguir"
       }
-    }
+    },
+    "chooseHint": "Elegimos primero lo que ya tienes; cámbialo si prefieres otra cosa.",
+    "haveCount": "Tienes {{have}} de {{total}} ingredientes",
+    "energy": "Energía",
+    "protein": "Proteína",
+    "carbs": "Carbohidratos",
+    "fat": "Grasa",
+    "stepA11y": "Paso {{n}}: {{text}}"
   },
   "units": {
     "kg": "kg",

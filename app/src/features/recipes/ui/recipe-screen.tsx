@@ -1,3 +1,4 @@
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
@@ -19,12 +20,30 @@ import {
 import { CookResultPanel } from '@/features/recipes/ui/cook-result';
 import { formatQuantity } from '@/features/recipes/ui/format-quantity';
 import { Spacing } from '@/shared/theme/colors';
+import { Radius } from '@/shared/theme/tokens';
 import { useTheme } from '@/shared/theme/use-theme';
-import { AppText, Banner, Button, Card, Chip, ChipGroup, ErrorState, LoadingState, Screen, Stepper } from '@/shared/ui';
+import {
+  AppText,
+  Banner,
+  BrandHeader,
+  Button,
+  Card,
+  Chip,
+  ChipGroup,
+  ErrorState,
+  IconBadge,
+  LoadingState,
+  Pill,
+  ProgressBar,
+  Screen,
+  SectionHeader,
+  Stepper,
+} from '@/shared/ui';
 
 /** US-118 (escalar), US-115 (nutrición por porción), ADR-020 (opciones con lo que hay), US-123 (cocinar). */
 export function RecipeScreen() {
   const { t } = useTranslation();
+  const c = useTheme();
   // mealId: se abrió desde el plan; cocinar marca ESA comida (con sus porciones).
   const { id, mealId, servings: plannedServings } = useLocalSearchParams<{ id: string; mealId?: string; servings?: string }>();
   const recipe = useRecipe(id);
@@ -57,15 +76,23 @@ export function RecipeScreen() {
     <>
       <Stack.Screen options={{ headerShown: true, title: '' }} />
       <Screen scroll>
-        <AppText variant="title">{recipe.data.title}</AppText>
-        {recipe.data.description && <AppText secondary>{recipe.data.description}</AppText>}
-        <AppText variant="caption" secondary>
-          {t('recipe.meta', { minutes: recipe.data.totalMinutes })}
-          {recipe.data.keepsDays ? ` · ${t('recipe.keeps', { count: recipe.data.keepsDays })}` : ''}
-        </AppText>
+        <BrandHeader title={recipe.data.title} subtitle={recipe.data.description ?? undefined}>
+          <View style={styles.pills}>
+            <Pill label={t('recipe.meta', { minutes: recipe.data.totalMinutes })} icon="time-outline" />
+            {recipe.data.keepsDays ? <Pill label={t('recipe.keeps', { count: recipe.data.keepsDays })} icon="snow-outline" /> : null}
+          </View>
+        </BrandHeader>
 
-        {!mealId && <Stepper label={t('recipe.servings')} value={currentServings} min={1} max={12} onChange={setServings} />}
-        {mealId && <AppText secondary>{t('recipe.plannedServings', { count: currentServings })}</AppText>}
+        <Card variant="filled" style={styles.row}>
+          <IconBadge name="people-outline" />
+          <View style={styles.flex}>
+            {mealId ? (
+              <AppText>{t('recipe.plannedServings', { count: currentServings })}</AppText>
+            ) : (
+              <Stepper label={t('recipe.servings')} value={currentServings} min={1} max={12} onChange={setServings} />
+            )}
+          </View>
+        </Card>
 
         <FlexGroups detail={recipe.data} choices={currentChoices ?? []} onChange={setChoices} />
 
@@ -77,16 +104,29 @@ export function RecipeScreen() {
           <LoadingState />
         )}
 
-        <AppText variant="subtitle">{t('recipe.steps')}</AppText>
-        {recipe.data.steps.map((step, i) => (
-          <AppText key={i}>{`${i + 1}. ${step}`}</AppText>
-        ))}
+        <SectionHeader title={t('recipe.steps')} />
+        <Card>
+          {recipe.data.steps.map((step, i) => (
+            <View key={i} style={styles.step} accessible accessibilityLabel={t('recipe.stepA11y', { n: i + 1, text: step })}>
+              <View style={[styles.stepNumber, { backgroundColor: c.brand }]}>
+                <AppText variant="label" tone="onBrand">{String(i + 1)}</AppText>
+              </View>
+              <AppText style={styles.flex}>{step}</AppText>
+            </View>
+          ))}
+        </Card>
 
         {cook.error && <Banner tone="danger" message={t(errorKey(cook.error))} />}
         {result ? (
           <CookResultPanel result={result} onUndone={() => setResult(null)} />
         ) : (
-          <Button label={t(mealId ? 'recipe.cookPlanned' : 'recipe.cookNow')} hint={t('recipe.cookNowHint')} loading={cook.isPending} onPress={onCook} />
+          <Button
+            label={t(mealId ? 'recipe.cookPlanned' : 'recipe.cookNow')}
+            icon="flame-outline"
+            hint={t('recipe.cookNowHint')}
+            loading={cook.isPending}
+            onPress={onCook}
+          />
         )}
         <HealthDisclaimerNote />
       </Screen>
@@ -98,13 +138,18 @@ function FlexGroups({ detail, choices, onChange }: { detail: RecipeDetail; choic
   const { t } = useTranslation();
   if (detail.groups.length === 0) return null;
   return (
-    <>
-      <AppText variant="subtitle">{t('recipe.chooseTitle')}</AppText>
+    <Card variant="primary">
+      <View style={styles.row}>
+        <IconBadge name="swap-horizontal" tone="accent" />
+        <View style={styles.flex}>
+          <AppText variant="heading">{t('recipe.chooseTitle')}</AppText>
+          <AppText variant="caption" secondary>{t('recipe.chooseHint')}</AppText>
+        </View>
+      </View>
       {detail.groups.map((group) => (
         <View key={group.key} style={styles.group}>
-          <AppText>{group.label}</AppText>
-          <AppText variant="caption" secondary>
-            {group.max > 1 ? t('recipe.chooseUpTo', { count: group.max }) : t('recipe.chooseOne')}
+          <AppText variant="label">
+            {`${group.label} · ${group.max > 1 ? t('recipe.chooseUpTo', { count: group.max }) : t('recipe.chooseOne')}`}
           </AppText>
           <ChipGroup>
             {group.options.map((o) => (
@@ -119,7 +164,7 @@ function FlexGroups({ detail, choices, onChange }: { detail: RecipeDetail; choic
           </ChipGroup>
         </View>
       ))}
-    </>
+    </Card>
   );
 }
 
@@ -127,42 +172,78 @@ function PreviewSections({ preview }: { preview: RecipePreview }) {
   const { t } = useTranslation();
   const c = useTheme();
   const n = preview.per_serving;
+  const have = preview.lines.filter((l) => l.in_pantry).length;
+  const haveLabel = t('recipe.haveCount', { have, total: preview.lines.length });
   return (
     <>
-      <AppText variant="subtitle">{t('recipe.ingredients')}</AppText>
-      {preview.lines.map((line) => (
-        <View key={`${line.ingredient_id}-${line.group_key ?? 'base'}`} style={styles.line}>
-          <AppText style={styles.lineName}>
-            {`${line.ingredient_name}${line.is_optional ? ` (${t('recipe.optional')})` : ''}`}
-          </AppText>
-          <AppText secondary>{formatQuantity(line.quantity, line.unit_code, t)}</AppText>
-          <AppText variant="caption" style={{ color: line.in_pantry ? c.primary : c.textSecondary }}>
-            {line.in_pantry ? t('recipe.atHome') : t('recipe.toBuy')}
-          </AppText>
-        </View>
-      ))}
+      <SectionHeader title={t('recipe.ingredients')} />
+      <Card>
+        <ProgressBar value={preview.lines.length ? have / preview.lines.length : 0} label={haveLabel} />
+        <AppText variant="caption" secondary>{haveLabel}</AppText>
+        {preview.lines.map((line) => {
+          const amount = formatQuantity(line.quantity, line.unit_code, t);
+          const status = line.in_pantry ? t('recipe.atHome') : t('recipe.toBuy');
+          return (
+            <View
+              key={`${line.ingredient_id}-${line.group_key ?? 'base'}`}
+              style={styles.line}
+              accessible
+              accessibilityLabel={`${line.ingredient_name}, ${amount}. ${status}.`}>
+              <Ionicons name={line.in_pantry ? 'checkmark-circle' : 'cart-outline'} size={20} color={line.in_pantry ? c.primary : c.textSecondary} />
+              <View style={styles.flex}>
+                <AppText>{`${line.ingredient_name}${line.is_optional ? ` (${t('recipe.optional')})` : ''}`}</AppText>
+                <AppText variant="caption" style={{ color: line.in_pantry ? c.primary : c.textSecondary }}>{status}</AppText>
+              </View>
+              <AppText variant="label" secondary>{amount}</AppText>
+            </View>
+          );
+        })}
+      </Card>
 
       {preview.allergens.length > 0 && (
         <Banner tone="warning" message={t('recipe.contains', { list: preview.allergens.map((a) => t(`allergens.${a}`)).join(', ') })} />
       )}
 
       {n && (
-        <Card accessibilityLabel={t('recipe.nutritionA11y', { kcal: n.kcal, protein: n.protein_g })}>
-          <AppText variant="subtitle">{t('recipe.nutrition')}</AppText>
-          <AppText>{t('recipe.kcal', { value: Math.round(n.kcal) })}</AppText>
-          <AppText secondary>
-            {t('recipe.macros', { protein: Math.round(n.protein_g), carbs: Math.round(n.carbs_g), fat: Math.round(n.fat_g) })}
-          </AppText>
-          <AppText secondary>{t('recipe.micros', { fiber: Math.round(n.fiber_g), sugar: Math.round(n.sugar_g), sodium: Math.round(n.sodium_mg) })}</AppText>
-          <AppText variant="caption" secondary>{t('recipe.nutritionNote')}</AppText>
-        </Card>
+        <>
+          <SectionHeader title={t('recipe.nutrition')} />
+          <Card>
+            <View style={styles.tiles} accessible accessibilityLabel={t('recipe.nutritionA11y', { kcal: Math.round(n.kcal), protein: Math.round(n.protein_g) })}>
+              <NutrientTile value={t('recipe.kcal', { value: Math.round(n.kcal) })} label={t('recipe.energy')} highlight />
+              <NutrientTile value={`${Math.round(n.protein_g)} g`} label={t('recipe.protein')} />
+              <NutrientTile value={`${Math.round(n.carbs_g)} g`} label={t('recipe.carbs')} />
+              <NutrientTile value={`${Math.round(n.fat_g)} g`} label={t('recipe.fat')} />
+            </View>
+            <AppText variant="caption" secondary>
+              {t('recipe.micros', { fiber: Math.round(n.fiber_g), sugar: Math.round(n.sugar_g), sodium: Math.round(n.sodium_mg) })}
+            </AppText>
+            <AppText variant="caption" secondary>{t('recipe.nutritionNote')}</AppText>
+          </Card>
+        </>
       )}
     </>
   );
 }
 
+function NutrientTile({ value, label, highlight }: { value: string; label: string; highlight?: boolean }) {
+  const c = useTheme();
+  const fg = highlight ? { color: c.onPrimaryContainer } : undefined;
+  return (
+    <View style={[styles.tile, { backgroundColor: highlight ? c.primaryContainer : c.surface }]}>
+      <AppText variant="subtitle" style={fg}>{value}</AppText>
+      <AppText variant="caption" secondary={!highlight} style={fg}>{label}</AppText>
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
-  group: { gap: Spacing.xs },
-  line: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, flexWrap: 'wrap' },
-  lineName: { flex: 1, minWidth: 140 },
+  pills: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm, marginTop: Spacing.xs },
+  row: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md },
+  flex: { flex: 1 },
+  group: { gap: Spacing.sm },
+  line: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md, paddingVertical: Spacing.xs },
+  tiles: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm },
+  tile: { flexGrow: 1, flexBasis: '45%', padding: Spacing.md, borderRadius: Radius.md, gap: Spacing.xxs },
+  step: { flexDirection: 'row', alignItems: 'flex-start', gap: Spacing.md, paddingVertical: Spacing.xs },
+  stepNumber: { width: 28, height: 28, borderRadius: Radius.pill, alignItems: 'center', justifyContent: 'center' },
 });
