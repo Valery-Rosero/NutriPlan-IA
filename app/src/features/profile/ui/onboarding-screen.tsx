@@ -9,7 +9,7 @@ import { BudgetForm } from '@/features/profile/ui/budget-form';
 import { HouseholdForm } from '@/features/profile/ui/household-form';
 import { RestrictionsForm } from '@/features/profile/ui/restrictions-form';
 import { SensitiveStep } from '@/features/profile/ui/sensitive-step';
-import { AppText, Banner, Button, LoadingState, Screen, TextLink } from '@/shared/ui';
+import { Banner, BrandHeader, Button, Card, LoadingState, Screen, StepProgress, TextLink } from '@/shared/ui';
 
 /**
  * Onboarding (US-106 a US-109). Cada paso se guarda al continuar, así que se puede retomar.
@@ -38,13 +38,17 @@ export function OnboardingScreen() {
 
   const later = () => finish.mutate({ onboardingCompleted: true });
   const next = t('common.continue');
+  const progress = t('onboarding.progress', { step: stepNumber(state.step), total: ONBOARDING_STEPS.length });
 
   return (
     <Screen scroll>
-      <AppText variant="caption" secondary>
-        {t('onboarding.progress', { step: stepNumber(state.step), total: ONBOARDING_STEPS.length })}
-      </AppText>
-      <AppText variant="title">{t(`onboarding.titles.${state.step}`)}</AppText>
+      <BrandHeader
+        eyebrow={progress}
+        title={t(`onboarding.titles.${state.step}`)}
+        subtitle={t(`onboarding.subtitles.${state.step}`)}
+        back={state.step !== 'household' ? { label: t('common.back'), onPress: () => dispatch({ type: 'back' }) } : undefined}>
+        <StepProgress step={stepNumber(state.step)} total={ONBOARDING_STEPS.length} label={progress} />
+      </BrandHeader>
 
       {state.step === 'household' && <HouseholdForm submitLabel={next} onSaved={() => dispatch({ type: 'household_saved' })} />}
       {state.step === 'sensitive' && (
@@ -58,13 +62,13 @@ export function OnboardingScreen() {
       )}
       {state.step === 'kitchen' && (
         <>
-          <AppText>{t('onboarding.kitchenIntro')}</AppText>
-          <QuickAdd />
-          <Button label={t('onboarding.finish')} onPress={() => dispatch({ type: 'kitchen_done' })} />
+          <Card variant="primary">
+            <QuickAdd />
+          </Card>
+          <Button label={t('onboarding.finish')} icon="restaurant-outline" onPress={() => dispatch({ type: 'kitchen_done' })} />
         </>
       )}
 
-      {state.step !== 'household' && <TextLink label={t('common.back')} onPress={() => dispatch({ type: 'back' })} />}
       <TextLink label={t('onboarding.later')} hint={t('onboarding.laterHint')} onPress={later} />
     </Screen>
   );

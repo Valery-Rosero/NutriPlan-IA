@@ -7,3 +7,5 @@ export { Chip, ChipGroup, Stepper } from './choice';
 export { TabHeader } from './tab-header';
 export { BrandHeader } from './brand-header';
 export { IconButton } from './icon-button';
+export { FormSection } from './form-section';
+export { StepProgress } from './step-progress';

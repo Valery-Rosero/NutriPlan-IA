@@ -7,7 +7,7 @@ import { useSession } from '@/features/auth/application/session';
 import { useSignOut } from '@/features/auth/application/use-auth';
 import { useAcceptConsents, useRequiredConsents } from '@/features/legal/application/legal-queries';
 import { legalHref } from '@/features/legal/ui/legal-href';
-import { AppText, Banner, Button, Checkbox, ErrorState, LoadingState, Screen, TextLink } from '@/shared/ui';
+import { Banner, BrandHeader, Button, Card, Checkbox, ErrorState, LoadingState, Screen, TextLink } from '@/shared/ui';
 
 /**
  * Puerta de entrada: documentos que faltan por aceptar (versiones nuevas de privacidad/términos
@@ -39,31 +39,33 @@ export function ConsentsScreen() {
 
   return (
     <Screen scroll>
-      <AppText variant="title">{t('legal.consents.title')}</AppText>
-      <AppText secondary>{t('legal.consents.body')}</AppText>
+      <BrandHeader title={t('legal.consents.title')} subtitle={t('legal.consents.body')} />
       {documents.some((d) => d.version > 1) && <Banner tone="info" message={t('legal.consents.updated')} />}
 
-      {documents.map((doc) => {
-        const name = t(`legal.kinds.${doc.kind}`);
-        return (
-          <Checkbox
-            key={doc.id}
-            checked={checked.has(doc.id)}
-            onChange={() => toggle(doc.id)}
-            label={t('legal.acceptDoc', { name })}>
-            <TextLink label={`${t('common.read')}: ${name}`} onPress={() => router.push(legalHref(doc.kind))} />
-          </Checkbox>
-        );
-      })}
+      <Card>
+        {documents.map((doc) => {
+          const name = t(`legal.kinds.${doc.kind}`);
+          return (
+            <Checkbox
+              key={doc.id}
+              checked={checked.has(doc.id)}
+              onChange={() => toggle(doc.id)}
+              label={t('legal.acceptDoc', { name })}>
+              <TextLink label={`${t('common.read')}: ${name}`} icon="document-text-outline" onPress={() => router.push(legalHref(doc.kind))} />
+            </Checkbox>
+          );
+        })}
+      </Card>
 
       {accept.error && <Banner tone="danger" message={t(errorKey(accept.error))} />}
       <Button
         label={t('legal.consents.accept')}
+        icon="checkmark"
         disabled={!allChecked}
         loading={accept.isPending}
         onPress={() => accept.mutate(documents.map((d) => d.id))}
       />
-      <TextLink label={t('legal.consents.signOut')} onPress={() => signOut.mutate()} />
+      <TextLink label={t('legal.consents.signOut')} icon="log-out-outline" onPress={() => signOut.mutate()} />
     </Screen>
   );
 }

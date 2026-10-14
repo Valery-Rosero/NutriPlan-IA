@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import { errorKey } from '@/core/errors/app-error';
 import { useProfileOptions, useRestrictions, useSetRestrictions } from '@/features/profile/application/profile-queries';
-import { AppText, Banner, Button, Chip, ChipGroup, ErrorState, LoadingState } from '@/shared/ui';
+import { Banner, Button, Chip, ChipGroup, ErrorState, FormSection, LoadingState } from '@/shared/ui';
 
 const toggle = (list: number[], id: number) => (list.includes(id) ? list.filter((x) => x !== id) : [...list, id]);
 
@@ -26,23 +26,37 @@ export function RestrictionsForm({ submitLabel, onSaved }: { submitLabel: string
 
   return (
     <>
-      <AppText variant="subtitle">{t('profile.restrictions.allergiesTitle')}</AppText>
-      <AppText secondary>{t('profile.restrictions.allergiesHint')}</AppText>
-      <ChipGroup>
-        {allergens.data.map((a) => (
-          <Chip key={a.id} multiple label={a.name} selected={selectedAllergens.includes(a.id)}
-            onPress={() => setAllergenIds(toggle(selectedAllergens, a.id))} />
-        ))}
-      </ChipGroup>
+      <FormSection
+        icon="alert-circle-outline"
+        tone="warning"
+        title={t('profile.restrictions.allergiesTitle')}
+        hint={t('profile.restrictions.allergiesHint')}>
+        <ChipGroup>
+          {allergens.data.map((a) => (
+            <Chip
+              key={a.id}
+              multiple
+              label={a.name}
+              selected={selectedAllergens.includes(a.id)}
+              onPress={() => setAllergenIds(toggle(selectedAllergens, a.id))}
+            />
+          ))}
+        </ChipGroup>
+      </FormSection>
 
-      <AppText variant="subtitle">{t('profile.restrictions.dietTitle')}</AppText>
-      <AppText secondary>{t('profile.restrictions.dietHint')}</AppText>
-      <ChipGroup>
-        {diets.data.map((d) => (
-          <Chip key={d.id} multiple label={d.name} selected={selectedDiets.includes(d.id)}
-            onPress={() => setDietIds(toggle(selectedDiets, d.id))} />
-        ))}
-      </ChipGroup>
+      <FormSection icon="leaf-outline" title={t('profile.restrictions.dietTitle')} hint={t('profile.restrictions.dietHint')}>
+        <ChipGroup>
+          {diets.data.map((d) => (
+            <Chip
+              key={d.id}
+              multiple
+              label={d.name}
+              selected={selectedDiets.includes(d.id)}
+              onPress={() => setDietIds(toggle(selectedDiets, d.id))}
+            />
+          ))}
+        </ChipGroup>
+      </FormSection>
 
       <Banner tone="info" message={t('profile.restrictions.safety')} />
       {save.error && <Banner tone="danger" message={t(errorKey(save.error))} />}
