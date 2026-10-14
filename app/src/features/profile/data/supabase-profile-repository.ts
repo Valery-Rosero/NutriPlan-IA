@@ -23,7 +23,7 @@ export class SupabaseProfileRepository implements ProfileRepository {
   async getProfile() {
     const { data, error } = await this.client
       .from('profiles')
-      .select('id, region_id, household_size, budget_amount, budget_period, onboarding_completed_at')
+      .select('id, region_id, household_size, budget_amount, budget_period, max_cook_minutes, onboarding_completed_at')
       .single();
     if (error) throw toAppError(error);
     return {
@@ -32,6 +32,7 @@ export class SupabaseProfileRepository implements ProfileRepository {
       householdSize: data.household_size,
       budgetAmount: data.budget_amount,
       budgetPeriod: data.budget_period,
+      maxCookMinutes: data.max_cook_minutes,
       onboardingCompletedAt: data.onboarding_completed_at,
     };
   }
@@ -42,6 +43,7 @@ export class SupabaseProfileRepository implements ProfileRepository {
     if (patch.householdSize !== undefined) update.household_size = patch.householdSize;
     if (patch.budgetAmount !== undefined) update.budget_amount = patch.budgetAmount;
     if (patch.budgetPeriod !== undefined) update.budget_period = patch.budgetPeriod;
+    if (patch.maxCookMinutes !== undefined) update.max_cook_minutes = patch.maxCookMinutes;
     if (patch.onboardingCompleted) update.onboarding_completed_at = new Date().toISOString();
     const { error } = await this.client.from('profiles').update(update).eq('id', await this.userId());
     if (error) throw toAppError(error);

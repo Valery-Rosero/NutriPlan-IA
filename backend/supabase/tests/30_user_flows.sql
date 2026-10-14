@@ -27,6 +27,16 @@ begin
                             where total_minutes > 10), 'el filtro de minutos máximos se respeta');
   perform tt.reset();
 
+  -- US-137: el tope guardado en el perfil se aplica sin pasarlo (sugerencias de Hoy, plan y alternativas)
+  update public.profiles set max_cook_minutes = 10 where id = b;
+  perform tt.login(b);
+  perform tt.ok(not exists (select 1 from public.eligible_recipes() where total_minutes > 10),
+                'US-137: el tiempo máximo del perfil filtra las recetas elegibles');
+  perform tt.ok(not exists (select 1 from public.cook_with_what_i_have() s where s.total_minutes > 10),
+                'US-137: las sugerencias con lo que tengo respetan el tiempo máximo');
+  perform tt.reset();
+  update public.profiles set max_cook_minutes = null where id = b;
+
   -- picante: tolerancia 0 sigue permitiendo el pollo (el ají es opcional)
   update public.profiles set spice_tolerance = 0 where id = c;
   perform tt.login(c);

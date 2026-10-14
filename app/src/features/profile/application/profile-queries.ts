@@ -4,6 +4,7 @@ import { AppError } from '@/core/errors/app-error';
 import { useServices } from '@/di/services';
 import { cookingKeys } from '@/features/cooking/application/use-suggestions';
 import { legalKeys, useCurrentDocuments } from '@/features/legal/application/legal-queries';
+import { planKeys } from '@/features/plan/application/plan-queries';
 import type { ProfilePatch, Restrictions } from '@/features/profile/domain/profile';
 
 export const profileKeys = {
@@ -24,7 +25,14 @@ export function useUpdateProfile() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (patch: ProfilePatch) => profile.updateProfile(patch),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: profileKeys.me() }),
+    onSuccess: (_, patch) => {
+      void queryClient.invalidateQueries({ queryKey: profileKeys.me() });
+      // El tiempo máximo cambia qué recetas son elegibles (US-137): sugerencias y alternativas se recalculan.
+      if (patch.maxCookMinutes !== undefined) {
+        void queryClient.invalidateQueries({ queryKey: cookingKeys.all });
+        void queryClient.invalidateQueries({ queryKey: [...planKeys.all, 'alternatives'] });
+      }
+    },
   });
 }
 

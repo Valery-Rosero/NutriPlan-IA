@@ -2,7 +2,7 @@ import { useRouter } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { errorKey } from '@/core/errors/app-error';
+import { errorKey, toAppError } from '@/core/errors/app-error';
 import { capitalize, formatDay } from '@/core/format';
 import { SLOT_ICON } from '@/features/cooking/ui/slot-icon';
 import { HealthDisclaimerNote } from '@/features/legal/ui/health-disclaimer-note';
@@ -10,6 +10,7 @@ import { todayIso } from '@/features/pantry/domain/pantry';
 import { useConfirmPlan, useCurrentPlan, useGeneratePlan, useSkipMeal } from '@/features/plan/application/plan-queries';
 import { groupByDay, type MealPlan, type PlannedMeal } from '@/features/plan/domain/plan';
 import { BudgetCard } from '@/features/plan/ui/budget-card';
+import { CookTimeNotice } from '@/features/profile/ui/cook-time-notice';
 import { Spacing } from '@/shared/theme/colors';
 import {
   AppText,
@@ -51,6 +52,7 @@ export function PlanScreen() {
         {data && <WeekSummary plan={data} />}
       </BrandHeader>
       {generate.error && <Banner tone="danger" message={t(errorKey(generate.error))} />}
+      {generate.error && toAppError(generate.error).code === 'no_eligible_recipes' && <CookTimeNotice />}
       {plan.isPending ? (
         <LoadingState />
       ) : plan.isError ? (

@@ -1,5 +1,5 @@
 import { initialOnboarding, onboardingReducer, type OnboardingEvent } from '@/features/profile/domain/onboarding';
-import { budgetSchema, parseCop } from '@/features/profile/domain/profile';
+import { budgetSchema, nextCookTime, parseCop } from '@/features/profile/domain/profile';
 
 const run = (authorized: boolean, events: OnboardingEvent[]) => events.reduce(onboardingReducer, initialOnboarding(authorized));
 
@@ -44,5 +44,14 @@ describe('presupuesto (US-108)', () => {
     expect(budgetSchema.parse({ amount: 150000, period: 'week' })).toEqual({ budgetAmount: 150000, budgetPeriod: 'week' });
     expect(budgetSchema.parse({ amount: null, period: 'month' })).toEqual({ budgetAmount: null, budgetPeriod: null });
     expect(budgetSchema.safeParse({ amount: 0, period: 'week' }).success).toBe(false);
+  });
+});
+
+describe('tiempo máximo de cocina (US-137)', () => {
+  it('propone el siguiente límite y, después del mayor, quitarlo', () => {
+    expect(nextCookTime(15)).toBe(20);
+    expect(nextCookTime(20)).toBe(30);
+    expect(nextCookTime(25)).toBe(30);
+    expect(nextCookTime(60)).toBeNull();
   });
 });
