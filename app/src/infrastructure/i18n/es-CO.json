@@ -264,6 +264,12 @@
       "budget_month": "{{amount}} por mes",
       "noBudget": "Sin presupuesto",
       "privacy": "Autorización de datos sensibles"
+    },
+    "appearance": {
+      "title": "Apariencia",
+      "system": "Como el teléfono",
+      "light": "Claro",
+      "dark": "Oscuro"
     }
   },
   "health": {
