@@ -11,7 +11,8 @@ export const profileKeys = {
   all: ['profile'] as const,
   me: () => [...profileKeys.all, 'me'] as const,
   restrictions: () => [...profileKeys.all, 'restrictions'] as const,
-  options: (kind: 'regions' | 'allergens' | 'diets') => [...profileKeys.all, 'options', kind] as const,
+  cuisines: () => [...profileKeys.all, 'cuisines'] as const,
+  options: (kind: 'regions' | 'allergens' | 'diets' | 'cuisines') => [...profileKeys.all, 'options', kind] as const,
   sensitive: () => [...profileKeys.all, 'sensitive'] as const,
 };
 
@@ -61,6 +62,28 @@ export function useProfileOptions() {
   const allergens = useQuery({ queryKey: profileKeys.options('allergens'), queryFn: () => profile.listAllergens(), ...opts });
   const diets = useQuery({ queryKey: profileKeys.options('diets'), queryFn: () => profile.listDiets(), ...opts });
   return { regions, allergens, diets };
+}
+
+/** US-138: catálogo de cocinas (con recetas) y las favoritas de la persona. */
+export function useCuisines() {
+  const { profile } = useServices();
+  const options = useQuery({
+    queryKey: profileKeys.options('cuisines'),
+    queryFn: () => profile.listCuisines(),
+    staleTime: 60 * 60_000,
+  });
+  const mine = useQuery({ queryKey: profileKeys.cuisines(), queryFn: () => profile.getCuisines() });
+  return { options, mine };
+}
+
+/** Preferencia blanda: cambia el próximo plan que se genere (no el actual). */
+export function useSetCuisines() {
+  const { profile } = useServices();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (cuisineIds: number[]) => profile.setCuisines(cuisineIds),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: profileKeys.cuisines() }),
+  });
 }
 
 /** ¿Tiene vigente la autorización de datos sensibles (ADR-011)? */

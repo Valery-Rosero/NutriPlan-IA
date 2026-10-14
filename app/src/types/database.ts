@@ -1985,6 +1985,9 @@ isOneToOne: false
 "set_meal_choices":
 { Args: { "p_group_key": number,"p_ingredient_ids": (string)[],"p_planned_meal_id": string }; Returns: undefined
                            },
+"set_my_cuisines":
+{ Args: { "p_cuisine_ids": (number)[] }; Returns: undefined
+                           },
 "set_my_restrictions":
 { Args: { "p_allergen_ids": (number)[],"p_diet_ids": (number)[] }; Returns: undefined
                            },

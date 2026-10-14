@@ -7,7 +7,13 @@ import { formatCOP } from '@/core/format';
 import { useSession } from '@/features/auth/application/session';
 import { useSignOut } from '@/features/auth/application/use-auth';
 import { legalHref } from '@/features/legal/ui/legal-href';
-import { useProfile, useProfileOptions, useRestrictions, useSensitiveAuthorization } from '@/features/profile/application/profile-queries';
+import {
+  useCuisines,
+  useProfile,
+  useProfileOptions,
+  useRestrictions,
+  useSensitiveAuthorization,
+} from '@/features/profile/application/profile-queries';
 import { AppearanceSection } from '@/features/profile/ui/appearance-section';
 import type { ProfileSection } from '@/features/profile/ui/edit-profile-screen';
 import { Spacing } from '@/shared/theme/colors';
@@ -26,6 +32,7 @@ export function ProfileScreen() {
   const restrictions = useRestrictions();
   const sensitive = useSensitiveAuthorization();
   const { regions, allergens, diets } = useProfileOptions();
+  const cuisines = useCuisines();
   const edit = (section: ProfileSection) => router.push({ pathname: '/profile/[section]', params: { section } });
 
   const p = profile.data;
@@ -37,9 +44,13 @@ export function ProfileScreen() {
   const budget = p?.budgetAmount
     ? t(`profile.summary.budget_${p.budgetPeriod ?? 'week'}`, { amount: formatCOP(p.budgetAmount) })
     : t('profile.summary.noBudget');
-  const preferences = p?.maxCookMinutes
-    ? t('profile.summary.maxTime', { minutes: p.maxCookMinutes })
-    : t('profile.summary.noMaxTime');
+  const favoriteCount = cuisines.mine.data?.length ?? 0;
+  const preferences = [
+    p?.maxCookMinutes ? t('profile.summary.maxTime', { minutes: p.maxCookMinutes }) : t('profile.summary.noMaxTime'),
+    favoriteCount > 0 ? t('profile.summary.cuisines', { count: favoriteCount }) : null,
+  ]
+    .filter(Boolean)
+    .join(' · ');
   const restrictionsSummary = `${t('profile.summary.allergies')}: ${names(restrictions.data?.allergenIds, allergens.data)} · ${t('profile.summary.diets')}: ${names(restrictions.data?.dietIds, diets.data)}`;
   const noAllergies = restrictions.data?.allergenIds.length === 0;
 

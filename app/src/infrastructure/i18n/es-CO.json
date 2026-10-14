@@ -310,7 +310,9 @@
       "privacyGranted": "Autorizaste el uso de alergias y dietas",
       "privacyNotGranted": "Sin autorización: no filtramos alergias",
       "maxTime": "Recetas de hasta {{minutes}} min",
-      "noMaxTime": "Sin límite de tiempo"
+      "noMaxTime": "Sin límite de tiempo",
+      "cuisines_one": "{{count}} cocina favorita",
+      "cuisines_other": "{{count}} cocinas favoritas"
     },
     "appearance": {
       "title": "Apariencia",
@@ -336,7 +338,9 @@
       "timeTitle": "¿Cuánto tiempo tienes para cocinar?",
       "timeHint": "Solo te sugerimos recetas que quepan en ese tiempo, en Hoy y en tu plan.",
       "noLimit": "Sin límite",
-      "upTo": "Hasta {{minutes}} min"
+      "upTo": "Hasta {{minutes}} min",
+      "cuisinesTitle": "Cocinas favoritas",
+      "cuisinesHint": "Las pondremos más seguido en tu plan, sin dejar de usar lo que tienes. No excluyen ninguna receta."
     }
   },
   "health": {

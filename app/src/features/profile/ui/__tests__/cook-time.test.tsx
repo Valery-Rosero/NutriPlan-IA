@@ -4,7 +4,7 @@ import { CookTimeNotice } from '@/features/profile/ui/cook-time-notice';
 import { PreferencesForm } from '@/features/profile/ui/preferences-form';
 import { fakeProfile, fakeServices, PROFILE, withServices } from '@/test/fakes';
 
-describe('tiempo máximo de cocina (US-137)', () => {
+describe('Tiempo y gustos (US-137, US-138)', () => {
   it('se elige y se guarda en el perfil', async () => {
     const profile = fakeProfile();
     const onSaved = jest.fn();
@@ -16,6 +16,17 @@ describe('tiempo máximo de cocina (US-137)', () => {
 
     expect(profile.updateProfile).toHaveBeenCalledWith({ maxCookMinutes: 20 });
     expect(onSaved).toHaveBeenCalled();
+  });
+
+  it('US-138: las cocinas favoritas parten de lo guardado y se guardan juntas', async () => {
+    const profile = fakeProfile({ getCuisines: jest.fn(async () => [4]) });
+    await render(<PreferencesForm submitLabel="Guardar" onSaved={jest.fn()} />, { wrapper: withServices(fakeServices({ profile })) });
+
+    expect(await screen.findByRole('checkbox', { name: 'Andina' })).toBeChecked();
+    await fireEvent.press(screen.getByRole('checkbox', { name: 'Italiana' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Guardar' }));
+
+    expect(profile.setCuisines).toHaveBeenCalledWith([4, 5]);
   });
 
   it('sin recetas que quepan, propone ampliar el límite en vez de una lista vacía', async () => {

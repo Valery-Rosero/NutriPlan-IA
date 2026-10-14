@@ -34,7 +34,7 @@ begin
 
   insert into public.recipes (id, title, description, cuisine_id, base_servings, prep_minutes, cook_minutes,
                               difficulty, keeps_days, storage_notes)
-  values (v_id, r ->> 'title', r ->> 'description', (select id from public.cuisines where code = 'colombian'),
+  values (v_id, r ->> 'title', r ->> 'description', (select id from public.cuisines where code = coalesce(r ->> 'cuisine', 'colombian')),
           (r ->> 'servings')::smallint, (r ->> 'prep')::smallint, (r ->> 'cook')::smallint,
           coalesce((r ->> 'difficulty')::smallint, 1), (r ->> 'keeps')::smallint,
           case when r ? 'keeps' then 'Refrigerado en recipiente cerrado.' end);
@@ -104,7 +104,7 @@ select pg_temp.load_recipe(x) from jsonb_array_elements($catalog$[
             "Sirve con el acompañante caliente."]
 },
 {
-  "id": "6f1c0000-0000-4000-8000-000000000003",
+  "id": "6f1c0000-0000-4000-8000-000000000003", "cuisine": "asian",
   "title": "Arroz salteado con lo que tengas",
   "description": "Un arroz completo con la proteína y las verduras que haya en casa.",
   "slots": ["lunch", "dinner"], "servings": 4, "prep": 15, "cook": 25, "keeps": 3,
@@ -121,7 +121,7 @@ select pg_temp.load_recipe(x) from jsonb_array_elements($catalog$[
             "Mezcla todo con el arroz, rectifica la sal y sirve."]
 },
 {
-  "id": "6f1c0000-0000-4000-8000-000000000004",
+  "id": "6f1c0000-0000-4000-8000-000000000004", "cuisine": "andean",
   "title": "Sopa de verduras del día",
   "description": "Sopa casera con las verduras que haya, y proteína si tienes.",
   "slots": ["lunch", "dinner"], "servings": 6, "prep": 15, "cook": 35, "keeps": 3,
@@ -155,7 +155,7 @@ select pg_temp.load_recipe(x) from jsonb_array_elements($catalog$[
             "Sirve con el acompañante que tengas."]
 },
 {
-  "id": "6f1c0000-0000-4000-8000-000000000006",
+  "id": "6f1c0000-0000-4000-8000-000000000006", "cuisine": "mediterranean",
   "title": "Tortilla de papa con lo que sobre",
   "description": "Tortilla gruesa de huevo y papa para aprovechar lo que quedó en la nevera.",
   "slots": ["breakfast", "lunch", "dinner"], "servings": 4, "prep": 10, "cook": 25,
@@ -218,7 +218,7 @@ select pg_temp.load_recipe(x) from jsonb_array_elements($catalog$[
             "Sirve con lo que tengas para acompañar."]
 },
 {
-  "id": "6f1c0000-0000-4000-8000-000000000010",
+  "id": "6f1c0000-0000-4000-8000-000000000010", "cuisine": "italian",
   "title": "Pasta con lo que hay en la nevera",
   "description": "Pasta en salsa de tomate casera con la proteína y verduras disponibles.",
   "slots": ["lunch", "dinner"], "servings": 4, "prep": 10, "cook": 20, "keeps": 2,
@@ -234,7 +234,7 @@ select pg_temp.load_recipe(x) from jsonb_array_elements($catalog$[
             "Mezcla con la pasta escurrida y sirve."]
 },
 {
-  "id": "6f1c0000-0000-4000-8000-000000000011",
+  "id": "6f1c0000-0000-4000-8000-000000000011", "cuisine": "andean",
   "title": "Changua",
   "description": "Caldo de leche con huevo y cebolla larga, para mañanas frías.",
   "slots": ["breakfast"], "servings": 4, "prep": 5, "cook": 15,
@@ -248,7 +248,7 @@ select pg_temp.load_recipe(x) from jsonb_array_elements($catalog$[
             "Sirve con cilantro picado y el pan o la arepa en trozos."]
 },
 {
-  "id": "6f1c0000-0000-4000-8000-000000000012",
+  "id": "6f1c0000-0000-4000-8000-000000000012", "cuisine": "international",
   "title": "Ensalada fresca con lo que haya",
   "description": "Ensalada con limón y las verduras disponibles; con proteína se vuelve plato fuerte.",
   "slots": ["lunch", "dinner", "snack"], "servings": 4, "prep": 15, "cook": 0,
@@ -262,7 +262,7 @@ select pg_temp.load_recipe(x) from jsonb_array_elements($catalog$[
             "Mezcla todo con el jugo de limón, el aceite y la sal justo antes de servir."]
 },
 {
-  "id": "6f1c0000-0000-4000-8000-000000000013",
+  "id": "6f1c0000-0000-4000-8000-000000000013", "cuisine": "international",
   "title": "Avena con fruta",
   "description": "Avena caliente en leche o agua con la fruta que haya.",
   "slots": ["breakfast", "snack"], "servings": 4, "prep": 2, "cook": 10,
@@ -292,7 +292,7 @@ select pg_temp.load_recipe(x) from jsonb_array_elements($catalog$[
             "Sirve los patacones con el hogao y lo que elegiste encima."]
 },
 {
-  "id": "6f1c0000-0000-4000-8000-000000000015",
+  "id": "6f1c0000-0000-4000-8000-000000000015", "cuisine": "andean",
   "title": "Crema de ahuyama",
   "description": "Crema suave de ahuyama; cremosa con leche o queso si hay.",
   "slots": ["lunch", "dinner"], "servings": 4, "prep": 10, "cook": 25, "keeps": 3,
@@ -308,7 +308,7 @@ select pg_temp.load_recipe(x) from jsonb_array_elements($catalog$[
             "Sirve caliente con el acompañante."]
 },
 {
-  "id": "6f1c0000-0000-4000-8000-000000000016",
+  "id": "6f1c0000-0000-4000-8000-000000000016", "cuisine": "international",
   "title": "Batido de fruta",
   "description": "Batido con la fruta que esté madura, en leche o en agua.",
   "slots": ["breakfast", "snack"], "servings": 2, "prep": 5, "cook": 0,

@@ -83,4 +83,26 @@ export class SupabaseProfileRepository implements ProfileRepository {
     if (error) throw toAppError(error);
     return data;
   }
+
+  async listCuisines() {
+    // !inner: solo cocinas con al menos una receta visible (RLS deja ver las publicadas).
+    const { data, error } = await this.client
+      .from('cuisines')
+      .select('id, code, name, recipes!inner(id)')
+      .eq('recipes.status', 'published')
+      .order('name');
+    if (error) throw toAppError(error);
+    return data.map(({ id, code, name }) => ({ id, code, name }));
+  }
+
+  async getCuisines() {
+    const { data, error } = await this.client.from('user_cuisines').select('cuisine_id');
+    if (error) throw toAppError(error);
+    return data.map((c) => c.cuisine_id);
+  }
+
+  async setCuisines(cuisineIds: number[]) {
+    const { error } = await this.client.rpc('set_my_cuisines', { p_cuisine_ids: cuisineIds });
+    if (error) throw toAppError(error);
+  }
 }
