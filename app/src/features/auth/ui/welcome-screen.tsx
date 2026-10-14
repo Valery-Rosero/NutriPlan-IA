@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useCurrentDocuments } from '@/features/legal/application/legal-queries';
 import { Spacing } from '@/shared/theme/colors';
-import { AppText, Banner, Button, Screen } from '@/shared/ui';
+import { AppText, Banner, Button, Card, Screen } from '@/shared/ui';
 
 export function WelcomeScreen() {
   const { t } = useTranslation();
@@ -15,8 +15,11 @@ export function WelcomeScreen() {
   return (
     <Screen>
       <View style={styles.hero}>
-        <AppText variant="title">{t('auth.welcome.title')}</AppText>
-        <AppText secondary>{t('auth.welcome.subtitle')}</AppText>
+        <Card variant="brand" style={styles.brand}>
+          <AppText variant="label" tone="onBrandMuted">{t('common.appName').toUpperCase()}</AppText>
+          <AppText variant="display" tone="onBrand">{t('auth.welcome.title')}</AppText>
+          <AppText tone="onBrandMuted">{t('auth.welcome.subtitle')}</AppText>
+        </Card>
       </View>
       <View style={styles.actions}>
         {legal.isError && <Banner tone="danger" message={t('auth.welcome.notConnected')} />}
@@ -29,6 +32,7 @@ export function WelcomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  hero: { flex: 1, justifyContent: 'center', gap: Spacing.md },
+  hero: { flex: 1, justifyContent: 'center' },
+  brand: { padding: Spacing.lg, gap: Spacing.md },
   actions: { gap: Spacing.sm, paddingBottom: Spacing.lg },
 });

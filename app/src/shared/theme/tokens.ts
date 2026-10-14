@@ -1,13 +1,16 @@
 import { Platform, type TextStyle, type ViewStyle } from 'react-native';
 
+/** Títulos en serif, como la paleta de marca. Se carga en app/_layout.tsx; si falla, se usa la del sistema. */
+export const DisplayFont = 'DMSerifDisplay_400Regular';
+
 /**
  * Escala tipográfica. Los tamaños crecen con el ajuste de fuente del teléfono (accesibilidad):
  * nunca se desactiva allowFontScaling.
  */
 export const Typography = {
-  display: { fontSize: 32, lineHeight: 38, fontWeight: '800', letterSpacing: -0.5 },
-  title: { fontSize: 26, lineHeight: 32, fontWeight: '700', letterSpacing: -0.3 },
-  heading: { fontSize: 20, lineHeight: 26, fontWeight: '700' },
+  display: { fontFamily: DisplayFont, fontSize: 34, lineHeight: 40, fontWeight: '400' },
+  title: { fontFamily: DisplayFont, fontSize: 28, lineHeight: 34, fontWeight: '400' },
+  heading: { fontFamily: DisplayFont, fontSize: 21, lineHeight: 27, fontWeight: '400' },
   subtitle: { fontSize: 17, lineHeight: 24, fontWeight: '600' },
   body: { fontSize: 16, lineHeight: 24, fontWeight: '400' },
   label: { fontSize: 14, lineHeight: 20, fontWeight: '600', letterSpacing: 0.2 },

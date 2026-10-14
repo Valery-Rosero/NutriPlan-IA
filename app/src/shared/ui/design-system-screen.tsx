@@ -78,6 +78,11 @@ export function DesignSystemScreen() {
             ]}
           />
         </Card>
+        <Card variant="brand">
+          <AppText variant="label" tone="onBrandMuted">MARCA</AppText>
+          <AppText variant="title" tone="onBrand">Space Cadet con Tan</AppText>
+          <AppText tone="onBrandMuted">Bloque de marca, como la paleta.</AppText>
+        </Card>
         <Card variant="filled">
           <AppText>Rellena</AppText>
         </Card>

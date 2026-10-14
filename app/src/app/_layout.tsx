@@ -2,6 +2,7 @@
 import '@/infrastructure/polyfills/web-crypto';
 import '@/infrastructure/i18n';
 
+import { DMSerifDisplay_400Regular, useFonts } from '@expo-google-fonts/dm-serif-display';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -17,6 +18,8 @@ import { registerShoppingMutations } from '@/features/shopping/application/shopp
 import { persister, queryClient, shouldPersistQuery } from '@/infrastructure/query-client';
 import { Colors, type ThemeColors } from '@/shared/theme/colors';
 import { restoreThemePreference } from '@/shared/theme/theme-preference';
+import { DisplayFont } from '@/shared/theme/tokens';
+import { useTheme } from '@/shared/theme/use-theme';
 
 SplashScreen.preventAutoHideAsync();
 void restoreThemePreference(); // claro / oscuro / sistema, según lo que eligió la persona
@@ -60,13 +63,16 @@ export default function RootLayout() {
  */
 function RootNavigator() {
   const { session, loading } = useSession();
+  const c = useTheme();
+  // Tipografía de títulos (serif de la marca). Si no carga, se sigue con la del sistema.
+  const [fontsLoaded, fontError] = useFonts({ DMSerifDisplay_400Regular });
   const consents = useRequiredConsents(session?.userId);
   const mustConsent = !!session && (consents.isError || (consents.data?.length ?? 0) > 0);
   const consentsOk = !!session && consents.isSuccess && !mustConsent;
   const profile = useProfile(consentsOk);
   const mustOnboard = consentsOk && profile.isSuccess && profile.data.onboardingCompletedAt === null;
   const inApp = consentsOk && profile.isSuccess && !mustOnboard;
-  const ready = !loading && (!session || mustConsent || (consentsOk && !profile.isPending) || profile.isError);
+  const ready = (fontsLoaded || !!fontError) && !loading && (!session || mustConsent || (consentsOk && !profile.isPending) || profile.isError);
 
   useEffect(() => {
     if (ready) void SplashScreen.hideAsync();
@@ -75,7 +81,15 @@ function RootNavigator() {
   if (!ready) return null;
 
   return (
-    <Stack screenOptions={{ headerShown: false }}>
+    <Stack
+      screenOptions={{
+        headerShown: false,
+        // Encabezados de pantallas internas en Space Cadet con título Tan (paleta de marca).
+        headerStyle: { backgroundColor: c.brand },
+        headerTintColor: c.onBrand,
+        headerTitleStyle: { fontFamily: DisplayFont, fontSize: 20 },
+        headerShadowVisible: false,
+      }}>
       <Stack.Protected guard={inApp || (consentsOk && profile.isError)}>
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="profile/index" options={{ headerShown: true, title: '' }} />

@@ -23,10 +23,13 @@ import { useTheme } from '@/shared/theme/use-theme';
 export type IconName = ComponentProps<typeof Ionicons>['name'];
 
 // ---------------------------------------------------------------- Texto
-type TextTone = 'default' | 'secondary' | 'primary' | 'danger' | 'warning' | 'onPrimary';
+type TextTone = 'default' | 'secondary' | 'primary' | 'danger' | 'warning' | 'onPrimary' | 'onBrand' | 'onBrandMuted';
 
 const toneColor = (c: ThemeColors, tone: TextTone) =>
-  ({ default: c.text, secondary: c.textSecondary, primary: c.primary, danger: c.danger, warning: c.warning, onPrimary: c.onPrimary })[tone];
+  ({
+    default: c.text, secondary: c.textSecondary, primary: c.primary, danger: c.danger, warning: c.warning,
+    onPrimary: c.onPrimary, onBrand: c.onBrand, onBrandMuted: c.onBrandMuted,
+  })[tone];
 
 /** Texto con la escala tipográfica. `secondary` se conserva por compatibilidad (= tone "secondary"). */
 export function AppText({ variant = 'body', tone = 'default', secondary, style, ...rest }: TextProps & {
@@ -140,9 +143,9 @@ export function TextLink({ label, onPress, hint, icon }: { label: string; onPres
 }
 
 // ---------------------------------------------------------------- Tarjetas
-type CardVariant = 'elevated' | 'outlined' | 'filled' | 'primary';
+type CardVariant = 'elevated' | 'outlined' | 'filled' | 'primary' | 'brand';
 
-/** Contenedor. `elevated` (por defecto) para lo importante; `filled` para agrupar; `primary` para destacar. */
+/** Contenedor. `elevated` (por defecto); `filled` agrupa; `primary` destaca; `brand` = bloque Space Cadet con texto Tan. */
 export function Card({ children, accessibilityLabel, variant = 'elevated', style }: {
   children: ReactNode;
   accessibilityLabel?: string;
@@ -155,6 +158,7 @@ export function Card({ children, accessibilityLabel, variant = 'elevated', style
     outlined: { backgroundColor: 'transparent', borderColor: c.border },
     filled: { backgroundColor: c.surface, borderColor: 'transparent' },
     primary: { backgroundColor: c.primaryContainer, borderColor: 'transparent' },
+    brand: { backgroundColor: c.brand, borderColor: 'transparent', ...elevation(2, c.shadow) },
   };
   return (
     <View accessible={!!accessibilityLabel} accessibilityLabel={accessibilityLabel} style={[styles.card, look[variant], style]}>

@@ -5,7 +5,8 @@ Código en `app/src/shared/theme/` (tokens) y `app/src/shared/ui/` (componentes)
 ## Tokens
 - **Color semántico** (`colors.ts`): los componentes piden un rol, nunca un hex. Superficies `background`, `card`, `surface`; marca `primary`/`accent`; estados `danger`/`warning`. Cada `*Container` tiene su `on*Container`. Modo claro y oscuro con las mismas claves.
 - **Contraste**: `__tests__/contrast.test.ts` exige AA (≥ 4.5:1) en 50 combinaciones de texto y fondo en ambos modos. Un color nuevo no entra sin pasarla.
-- **Tipografía** (`tokens.ts`): `display 32 · title 26 · heading 20 · subtitle 17 · body 16 · label 14 · caption 13`. Crece con el tamaño de letra del teléfono.
+- **Tipografía** (`tokens.ts`): títulos en serif **DM Serif Display** (como la paleta de marca): `display 34 · title 28 · heading 21`; texto en la del sistema: `subtitle 17 · body 16 · label 14 · caption 13`. Crece con el tamaño de letra del teléfono.
+- **Bloques de marca**: `brand` (Space Cadet) con `onBrand` (Tan) y `onBrandMuted` (Slate Gray aclarado), en la barra de pestañas, los encabezados y `Card variant="brand"`.
 - **Radios**: `sm 8 · md 12 · lg 16 · xl 24 · pill`. **Espaciado**: múltiplos de 4 (`xxs 2` … `xxl 48`). **Sombras**: `elevation(1 | 2, color)`.
 - **Tema**: Perfil › Apariencia (como el teléfono / claro / oscuro), aplicado con `Appearance.setColorScheme`.
 
