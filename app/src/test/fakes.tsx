@@ -45,7 +45,7 @@ export function fakeLegal(overrides: Partial<LegalRepository> = {}): jest.Mocked
 }
 
 export const PROFILE: Profile = {
-  id: 'u1', regionId: 3, householdSize: 4, budgetAmount: null, budgetPeriod: null, onboardingCompletedAt: '2026-10-13T00:00:00Z',
+  id: 'u1', regionId: 3, householdSize: 4, budgetAmount: null, budgetPeriod: null, maxCookMinutes: null, onboardingCompletedAt: '2026-10-13T00:00:00Z',
 };
 
 export function fakeProfile(overrides: Partial<ProfileRepository> = {}): jest.Mocked<ProfileRepository> {

@@ -296,7 +296,8 @@
       "household": "Mi hogar",
       "restrictions": "Alergias y dietas",
       "budget": "Presupuesto",
-      "privacy": "Privacidad"
+      "privacy": "Privacidad",
+      "preferences": "Tiempo y gustos"
     },
     "summary": {
       "household_one": "{{count}} persona · {{region}}",
@@ -307,7 +308,9 @@
       "budget_month": "{{amount}} por mes",
       "noBudget": "Sin presupuesto",
       "privacyGranted": "Autorizaste el uso de alergias y dietas",
-      "privacyNotGranted": "Sin autorización: no filtramos alergias"
+      "privacyNotGranted": "Sin autorización: no filtramos alergias",
+      "maxTime": "Recetas de hasta {{minutes}} min",
+      "noMaxTime": "Sin límite de tiempo"
     },
     "appearance": {
       "title": "Apariencia",
@@ -328,6 +331,12 @@
       "kitchen": "Tu cocina",
       "privacy": "Privacidad y documentos",
       "account": "Cuenta"
+    },
+    "preferences": {
+      "timeTitle": "¿Cuánto tiempo tienes para cocinar?",
+      "timeHint": "Solo te sugerimos recetas que quepan en ese tiempo, en Hoy y en tu plan.",
+      "noLimit": "Sin límite",
+      "upTo": "Hasta {{minutes}} min"
     }
   },
   "health": {
@@ -564,5 +573,11 @@
     "count_other": "{{count}} ingredientes",
     "expiring_one": "{{count}} vence pronto",
     "expiring_other": "{{count}} vencen pronto"
+  },
+  "cookTime": {
+    "noneFound": "No encontramos recetas de {{minutes}} min o menos con tus restricciones actuales. ¿Probamos con {{next}}?",
+    "noneFoundNoNext": "No encontramos recetas de {{minutes}} min o menos con tus restricciones actuales. ¿Quitamos el límite de tiempo?",
+    "tryWith": "Probar con {{minutes}} min",
+    "removeLimit": "Quitar el límite de tiempo"
   }
 }

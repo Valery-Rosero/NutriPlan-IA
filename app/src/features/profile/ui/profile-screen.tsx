@@ -37,6 +37,9 @@ export function ProfileScreen() {
   const budget = p?.budgetAmount
     ? t(`profile.summary.budget_${p.budgetPeriod ?? 'week'}`, { amount: formatCOP(p.budgetAmount) })
     : t('profile.summary.noBudget');
+  const preferences = p?.maxCookMinutes
+    ? t('profile.summary.maxTime', { minutes: p.maxCookMinutes })
+    : t('profile.summary.noMaxTime');
   const restrictionsSummary = `${t('profile.summary.allergies')}: ${names(restrictions.data?.allergenIds, allergens.data)} · ${t('profile.summary.diets')}: ${names(restrictions.data?.dietIds, diets.data)}`;
   const noAllergies = restrictions.data?.allergenIds.length === 0;
 
@@ -85,6 +88,7 @@ export function ProfileScreen() {
           onPress={() => edit('restrictions')}
         />
         <ListRow icon="wallet-outline" title={t('profile.sections.budget')} subtitle={budget} onPress={() => edit('budget')} />
+        <ListRow icon="time-outline" title={t('profile.sections.preferences')} subtitle={preferences} onPress={() => edit('preferences')} />
       </ListGroup>
 
       <AppearanceSection />

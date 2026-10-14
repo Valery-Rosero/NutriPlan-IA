@@ -2,7 +2,7 @@ import { useRouter } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { errorKey } from '@/core/errors/app-error';
+import { errorKey, toAppError } from '@/core/errors/app-error';
 import { capitalize, formatDay } from '@/core/format';
 import { useCookingSuggestions } from '@/features/cooking/application/use-suggestions';
 import { momentOfDay } from '@/features/cooking/domain/cooking';
@@ -15,6 +15,7 @@ import { QuickAdd } from '@/features/pantry/ui/quick-add';
 import { useCurrentPlan, useGeneratePlan } from '@/features/plan/application/plan-queries';
 import { SLOT_ORDER } from '@/features/plan/domain/plan';
 import { useRestrictions } from '@/features/profile/application/profile-queries';
+import { CookTimeNotice } from '@/features/profile/ui/cook-time-notice';
 import { useShoppingList } from '@/features/shopping/application/shopping-queries';
 import { progress } from '@/features/shopping/domain/shopping';
 import { greetingFor } from '@/features/today/domain/greeting';
@@ -136,7 +137,10 @@ export function TodayScreen() {
       ) : suggestions.isError ? (
         <ErrorState message={t(errorKey(suggestions.error))} onRetry={() => void suggestions.refetch()} />
       ) : suggestions.data.length === 0 ? (
-        <EmptyState message={t('cook.empty')} icon="restaurant-outline" />
+        <>
+          <EmptyState message={t('cook.empty')} icon="restaurant-outline" />
+          <CookTimeNotice />
+        </>
       ) : (
         suggestions.data.slice(0, 4).map((s) => <SuggestionCard key={s.recipeId} suggestion={s} />)
       )}
@@ -185,6 +189,7 @@ export function TodayScreen() {
           <>
             <AppText secondary>{t('today.weekPitch')}</AppText>
             {generate.error && <Banner tone="danger" message={t(errorKey(generate.error))} />}
+            {generate.error && toAppError(generate.error).code === 'no_eligible_recipes' && <CookTimeNotice />}
             <Button
               label={t('today.organizeWeek')}
               icon="sparkles-outline"

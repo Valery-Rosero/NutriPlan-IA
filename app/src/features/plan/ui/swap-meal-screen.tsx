@@ -7,6 +7,7 @@ import { errorKey } from '@/core/errors/app-error';
 import type { MealSlot } from '@/features/cooking/domain/cooking';
 import { SLOT_ICON } from '@/features/cooking/ui/slot-icon';
 import { useAlternatives, useSwapMeal } from '@/features/plan/application/plan-queries';
+import { CookTimeNotice } from '@/features/profile/ui/cook-time-notice';
 import { Spacing } from '@/shared/theme/colors';
 import { useTheme } from '@/shared/theme/use-theme';
 import { AppText, Banner, Card, EmptyState, ErrorState, IconBadge, LoadingState, Pill, Screen } from '@/shared/ui';
@@ -34,7 +35,10 @@ export function SwapMealScreen() {
         ) : alternatives.isError ? (
           <ErrorState message={t(errorKey(alternatives.error))} onRetry={() => void alternatives.refetch()} />
         ) : alternatives.data.length === 0 ? (
-          <EmptyState icon="restaurant-outline" message={t('plan.noAlternatives')} />
+          <>
+            <EmptyState icon="restaurant-outline" message={t('plan.noAlternatives')} />
+            <CookTimeNotice />
+          </>
         ) : (
           alternatives.data.map((r) => (
             <Pressable
