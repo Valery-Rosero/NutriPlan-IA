@@ -133,7 +133,7 @@ export function Button({ label, onPress, variant = 'primary', size = 'md', icon,
 export function TextLink({ label, onPress, hint, icon }: { label: string; onPress: () => void; hint?: string; icon?: IconName }) {
   const c = useTheme();
   return (
-    <Pressable accessibilityRole="link" accessibilityHint={hint} onPress={onPress} hitSlop={8} style={styles.link}>
+    <Pressable accessibilityRole="link" accessibilityLabel={label} accessibilityHint={hint} onPress={onPress} hitSlop={8} style={styles.link}>
       <View style={styles.buttonRow}>
         <Text style={[Typography.label, styles.linkLabel, { color: c.accent }]}>{label}</Text>
         {icon && <Ionicons name={icon} size={16} color={c.accent} />}

@@ -160,9 +160,9 @@
     "range": "Del {{start}} al {{end}}",
     "today": "Hoy",
     "status": {
-      "draft": "borrador",
-      "confirmed": "confirmado",
-      "archived": "archivado"
+      "draft": "Borrador",
+      "confirmed": "Confirmado",
+      "archived": "Archivado"
     },
     "mealStatus": {
       "planned": "pendiente",
@@ -184,7 +184,11 @@
       "missing_other": "Falta el precio de {{count}} ingredientes: el costo real será mayor.",
       "source": "Precios mayoristas de referencia de Pasto (Fuente: DANE – SIPSA). Son estimados, no precios de tienda.",
       "setRegion": "Elegir mi ciudad"
-    }
+    },
+    "pitch": "Desayunos, almuerzos y cenas con lo que tienes, sin repetir y sin salirte del presupuesto.",
+    "cookedCount": "{{done}} de {{total}} comidas cocinadas",
+    "draftTitle": "Revisa tu plan",
+    "draftHint": "Cambia lo que no te guste y confírmalo para que la lista de mercado quede lista."
   },
   "shopping": {
     "title": "Lista de compras",

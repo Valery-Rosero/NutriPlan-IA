@@ -20,3 +20,8 @@ export function formatDay(iso: string) {
     timeZone: 'UTC',
   });
 }
+
+/** Primera letra en mayúscula ("almuerzo" → "Almuerzo"), para etiquetas que vienen en minúscula. */
+export function capitalize(text: string) {
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
