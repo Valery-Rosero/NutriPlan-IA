@@ -25,7 +25,7 @@ export function RatingForm({ plannedMealId, onRated }: { plannedMealId: string; 
 
   return (
     <>
-      <AppText variant="subtitle">{t('recipe.rating.title')}</AppText>
+      <AppText variant="heading">{t('recipe.rating.title')}</AppText>
       <View style={styles.stars} accessibilityRole="radiogroup">
         {[1, 2, 3, 4, 5].map((n) => (
           <Pressable
@@ -35,7 +35,7 @@ export function RatingForm({ plannedMealId, onRated }: { plannedMealId: string; 
             accessibilityState={{ selected: stars === n }}
             onPress={() => setStars(n)}
             style={styles.star}>
-            <Ionicons name={n <= stars ? 'star' : 'star-outline'} size={32} color={c.primary} />
+            <Ionicons name={n <= stars ? 'star' : 'star-outline'} size={32} color={n <= stars ? c.warning : c.textSecondary} />
           </Pressable>
         ))}
       </View>
@@ -48,6 +48,7 @@ export function RatingForm({ plannedMealId, onRated }: { plannedMealId: string; 
       {rate.error && <Banner tone="danger" message={t(errorKey(rate.error))} />}
       <Button
         label={t('recipe.rating.send')}
+        icon="send-outline"
         disabled={stars === 0}
         loading={rate.isPending}
         onPress={() => rate.mutate({ plannedMealId, rating: stars, tags, comment }, { onSuccess: onRated })}
