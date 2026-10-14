@@ -12,6 +12,18 @@ export const passwordSchema = z
   .regex(/[A-Z]/, { error: 'validation.passwordUpper' })
   .regex(/\d/, { error: 'validation.passwordDigit' });
 
+/** Reglas de la contraseña, para mostrarlas en vivo mientras se escribe (mismas que passwordSchema). */
+export const PASSWORD_RULES = [
+  { key: 'length', test: (v: string) => v.length >= 8 },
+  { key: 'lower', test: (v: string) => /[a-z]/.test(v) },
+  { key: 'upper', test: (v: string) => /[A-Z]/.test(v) },
+  { key: 'digit', test: (v: string) => /\d/.test(v) },
+] as const;
+
+export function passwordChecks(value: string) {
+  return PASSWORD_RULES.map((rule) => ({ key: rule.key, ok: rule.test(value) }));
+}
+
 const mustAccept = z.boolean().refine((v) => v, { error: 'validation.mustAccept' });
 
 /** Las casillas nunca vienen marcadas: el formulario arranca en false (checklist legal). */

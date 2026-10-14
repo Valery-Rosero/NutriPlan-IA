@@ -31,16 +31,29 @@
   "auth": {
     "welcome": {
       "title": "¿Qué cocino hoy?",
-      "subtitle": "Para familias y estudiantes: te decimos qué cocinar con lo que ya tienes, organizamos tu semana y armamos la lista de mercado con lo que falta. Sin riesgos para quien tiene alergias.",
+      "subtitle": "Para familias y estudiantes: te decimos qué cocinar con lo que ya tienes, sin riesgos para quien tiene alergias.",
       "createAccount": "Crear cuenta",
       "signIn": "Ya tengo cuenta",
-      "notConnected": "No pudimos conectar con el servidor. Revisa tu conexión."
+      "notConnected": "No pudimos conectar con el servidor. Revisa tu conexión.",
+      "benefits": {
+        "cook": {
+          "title": "Cocina con lo que tienes",
+          "body": "Recetas que se adaptan a lo que hay en tu cocina."
+        },
+        "week": {
+          "title": "Organiza tu semana",
+          "body": "Un plan de comidas a tu medida, en un toque."
+        },
+        "list": {
+          "title": "Tu lista de mercado lista",
+          "body": "Solo lo que te falta para cocinar la semana."
+        }
+      }
     },
     "signUp": {
       "title": "Crea tu cuenta",
       "email": "Correo electrónico",
       "password": "Contraseña",
-      "passwordHint": "Mínimo 8 caracteres, con mayúscula, minúscula y número.",
       "isAdult": "Soy mayor de 18 años.",
       "acceptTerms": "Acepto los Términos y Condiciones.",
       "acceptPrivacy": "Acepto la Política de Tratamiento de Datos Personales y autorizo la transferencia internacional a los proveedores indicados.",
@@ -48,23 +61,28 @@
       "readPrivacy": "Leer la Política de Tratamiento de Datos",
       "submit": "Crear cuenta",
       "haveAccount": "¿Ya tienes cuenta? Inicia sesión",
-      "emailTakenAction": "Iniciar sesión con este correo"
+      "emailTakenAction": "Iniciar sesión con este correo",
+      "subtitle": "Toma un minuto. Luego te preguntamos qué hay en tu cocina.",
+      "legalTitle": "Antes de continuar"
     },
     "signIn": {
-      "title": "Inicia sesión",
+      "title": "Hola de nuevo",
       "submit": "Iniciar sesión",
       "forgot": "¿Olvidaste tu contraseña?",
-      "noAccount": "¿No tienes cuenta? Regístrate",
-      "resend": "Reenviar el correo de confirmación"
+      "resend": "Reenviar el correo de confirmación",
+      "subtitle": "Entra para ver qué puedes cocinar hoy.",
+      "newHere": "¿Aún no tienes cuenta?",
+      "createAccount": "Crear una cuenta"
     },
     "verify": {
       "title": "Revisa tu correo",
-      "body": "Te enviamos un enlace a {{email}}. Ábrelo desde este teléfono para activar tu cuenta.",
       "spam": "¿No llega? Revisa la carpeta de spam o promociones.",
       "resend": "Reenviar correo",
       "resendIn": "Reenviar en {{seconds}} s",
       "resent": "Listo, te enviamos un correo nuevo.",
-      "toSignIn": "Ya confirmé, iniciar sesión"
+      "toSignIn": "Ya confirmé, iniciar sesión",
+      "lead": "Te enviamos un enlace para activar tu cuenta a este correo:",
+      "open": "Ábrelo desde este teléfono y vuelve aquí para iniciar sesión."
     },
     "forgot": {
       "title": "Recupera tu contraseña",
@@ -77,12 +95,22 @@
       "password": "Contraseña nueva",
       "confirm": "Repite la contraseña",
       "submit": "Guardar contraseña",
-      "verifying": "Verificando el enlace…"
+      "verifying": "Verificando el enlace…",
+      "expiredTitle": "El enlace venció",
+      "requestNew": "Pedir un enlace nuevo"
     },
     "callback": {
       "verifying": "Activando tu cuenta…",
       "expired": "El enlace venció o se abrió en otro dispositivo. Si ya confirmaste tu correo, inicia sesión; si no, pide uno nuevo.",
       "toSignIn": "Ir a iniciar sesión"
+    },
+    "rules": {
+      "length": "Al menos 8 caracteres",
+      "lower": "Una letra minúscula",
+      "upper": "Una letra mayúscula",
+      "digit": "Un número",
+      "met": "Cumple",
+      "pending": "Falta"
     }
   },
   "legal": {
