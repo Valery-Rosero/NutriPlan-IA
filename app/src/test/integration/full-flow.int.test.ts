@@ -18,6 +18,7 @@ import { SupabaseProfileRepository } from '@/features/profile/data/supabase-prof
 import { SupabaseRecipeRepository } from '@/features/recipes/data/supabase-recipe-repository';
 import { initialChoices } from '@/features/recipes/domain/recipe';
 import { SupabaseShoppingRepository } from '@/features/shopping/data/supabase-shopping-repository';
+import { SupabaseSupportRepository } from '@/features/support/data/supabase-support-repository';
 import type { Database } from '@/types/database';
 
 const URL = process.env.SUPABASE_URL ?? 'http://127.0.0.1:54321';
@@ -41,6 +42,7 @@ const recipes = new SupabaseRecipeRepository(client);
 const plans = new SupabasePlanRepository(client);
 const shopping = new SupabaseShoppingRepository(client);
 const account = new SupabaseAccountRepository(client);
+const support = new SupabaseSupportRepository(client, () => ({ appVersion: '1.0.0', deviceModel: 'Prueba' }));
 
 const run = KEY ? describe : describe.skip;
 
@@ -164,9 +166,24 @@ run('recorrido completo contra Supabase real', () => {
     expect((await shopping.forPlan(planId))!.items.some((i) => i.name === 'Bolsas')).toBe(false);
   });
 
-  it('10. exportar mis datos', async () => {
+  it('10. reportar un problema con captura (US-151): la captura queda en la carpeta propia', async () => {
+    // PNG de 1×1 como data URI: fetch lo lee igual que un archivo local del teléfono.
+    const png = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
+    await support.send({ category: 'bug', message: 'La lista no carga', screenshot: { uri: png, mimeType: 'image/png' } });
+    const { data: tickets } = await client.from('support_tickets').select('message, app_version, device_model, screenshot_path');
+    const userId = (await client.auth.getSession()).data.session!.user.id;
+    expect(tickets).toEqual([
+      expect.objectContaining({ message: 'La lista no carga', app_version: '1.0.0', device_model: 'Prueba' }),
+    ]);
+    expect(tickets![0].screenshot_path).toMatch(new RegExp(`^${userId}/\\d+\\.png$`));
+    const { data: files } = await client.storage.from('support-screenshots').list(userId);
+    expect(files).toHaveLength(1);
+  });
+
+  it('11. exportar mis datos', async () => {
     const json = JSON.parse(await account.exportData());
     expect(json.allergens).toHaveLength(1);
     expect(json.meal_plans.length).toBeGreaterThan(0);
+    expect(json.support_tickets).toHaveLength(1);
   });
 });

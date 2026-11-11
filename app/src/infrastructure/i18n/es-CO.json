@@ -26,7 +26,8 @@
     "passwordsMatch": "Las contraseñas no coinciden.",
     "mustAccept": "Debes marcar esta casilla para continuar.",
     "householdSize": "Entre 1 y 12 personas.",
-    "budgetAmount": "Escribe un monto mayor que cero o déjalo vacío."
+    "budgetAmount": "Escribe un monto mayor que cero o déjalo vacío.",
+    "messageLength": "Máximo 500 caracteres."
   },
   "auth": {
     "welcome": {
@@ -625,5 +626,26 @@
       "swapFaster": "Algo más rápido",
       "swapPantry": "Algo con lo que tengo"
     }
+  },
+  "support": {
+    "title": "Ayuda y sugerencias",
+    "rowHint": "Cuéntanos un problema o una idea",
+    "heading": "¿Qué nos quieres contar?",
+    "hint": "Lo lee el equipo de NutriPlan para mejorar la app.",
+    "categoryLabel": "Tipo de mensaje",
+    "bug": "Un problema",
+    "suggestion": "Una sugerencia",
+    "messageBug": "¿Qué pasó? ¿En qué pantalla?",
+    "messageSuggestion": "¿Qué te gustaría que hiciera NutriPlan?",
+    "counter": "{{count}} / {{max}}",
+    "screenshotTitle": "Captura de pantalla (opcional)",
+    "screenshotHint": "Ayuda a entender el problema. Revisa que no muestre nada que no quieras compartir.",
+    "attach": "Adjuntar una captura",
+    "screenshotAttached": "Captura adjunta",
+    "removeScreenshot": "Quitar la captura",
+    "privacy": "Solo enviamos tu mensaje, la versión de la app y el modelo del teléfono. Nada de tu perfil ni de tu salud.",
+    "send": "Enviar",
+    "sentBug": "Gracias por avisarnos. Lo revisaremos para arreglarlo.",
+    "sentSuggestion": "Gracias por tu idea. La tendremos en cuenta."
   }
 }

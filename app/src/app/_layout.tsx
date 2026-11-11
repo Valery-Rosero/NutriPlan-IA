@@ -100,6 +100,7 @@ function RootNavigator() {
         <Stack.Screen name="account/delete" />
         <Stack.Screen name="design-system" />
         <Stack.Screen name="assistant" />
+        <Stack.Screen name="help" />
       </Stack.Protected>
       <Stack.Protected guard={mustConsent}>
         <Stack.Screen name="consents" />

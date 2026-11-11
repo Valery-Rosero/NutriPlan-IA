@@ -11,6 +11,7 @@ import type { PlanRepository } from '@/features/plan/domain/plan';
 import type { ProfileRepository } from '@/features/profile/domain/profile';
 import type { RecipeRepository } from '@/features/recipes/domain/recipe';
 import type { ShoppingRepository } from '@/features/shopping/domain/shopping';
+import type { SupportRepository } from '@/features/support/domain/support';
 
 /**
  * Contenedor de dependencias (inyección por contexto). Las features dependen de los puertos;
@@ -27,6 +28,7 @@ export type Services = {
   shopping: ShoppingRepository;
   account: AccountRepository;
   assistant: AssistantRepository;
+  support: SupportRepository;
   loginThrottle: LoginThrottle;
 };
 

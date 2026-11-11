@@ -184,6 +184,7 @@ export function fakeServices(overrides: Partial<Services> = {}): Services {
     shopping: fakeShopping(),
     account: { exportData: jest.fn(async () => '{}'), deleteAccount: jest.fn(async () => {}) },
     assistant: fakeAssistant(),
+    support: { send: jest.fn(async () => {}) },
     loginThrottle: createLoginThrottle(),
     ...overrides,
   };

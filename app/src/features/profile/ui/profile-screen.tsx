@@ -123,6 +123,7 @@ export function ProfileScreen() {
       </ListGroup>
 
       <ListGroup title={t('profile.groups.account')}>
+        <ListRow icon="chatbubbles-outline" title={t('support.title')} subtitle={t('support.rowHint')} onPress={() => router.push('/help')} />
         <ListRow icon="log-out-outline" title={t('profile.signOut')} danger onPress={confirmSignOut} />
         {__DEV__ ? (
           <ListRow icon="color-palette-outline" tone="neutral" title="Sistema de diseño (desarrollo)" onPress={() => router.push('/design-system')} />
