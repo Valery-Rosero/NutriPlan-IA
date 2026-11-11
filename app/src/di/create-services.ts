@@ -15,6 +15,7 @@ import { SupabasePlanRepository } from '@/features/plan/data/supabase-plan-repos
 import { SupabaseProfileRepository } from '@/features/profile/data/supabase-profile-repository';
 import { SupabaseRecipeRepository } from '@/features/recipes/data/supabase-recipe-repository';
 import { SupabaseShoppingRepository } from '@/features/shopping/data/supabase-shopping-repository';
+import { SupabaseSpendingRepository } from '@/features/spending/data/supabase-spending-repository';
 import { SupabaseSupportRepository } from '@/features/support/data/supabase-support-repository';
 import { supabase } from '@/infrastructure/supabase/client';
 
@@ -31,6 +32,7 @@ export function createServices(): Services {
     shopping: new SupabaseShoppingRepository(supabase),
     account: new SupabaseAccountRepository(supabase),
     assistant: new SupabaseAssistantRepository(supabase),
+    spending: new SupabaseSpendingRepository(supabase),
     // Solo versión y modelo (US-151): nada de salud ni de perfil.
     support: new SupabaseSupportRepository(supabase, () => ({
       appVersion: Constants.expoConfig?.version ?? null,

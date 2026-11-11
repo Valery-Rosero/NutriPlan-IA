@@ -10,6 +10,7 @@ import { todayIso } from '@/features/pantry/domain/pantry';
 import { useConfirmPlan, useCurrentPlan, useGeneratePlan, useSkipMeal } from '@/features/plan/application/plan-queries';
 import { groupByDay, type MealPlan, type PlannedMeal } from '@/features/plan/domain/plan';
 import { BudgetCard } from '@/features/plan/ui/budget-card';
+import { MonthlySpendCard } from '@/features/spending/ui/monthly-spend-card';
 import { CookTimeNotice } from '@/features/profile/ui/cook-time-notice';
 import { Spacing } from '@/shared/theme/colors';
 import {
@@ -119,6 +120,7 @@ function PlanView({ plan, onRegenerate, regenerating }: { plan: MealPlan; onRege
       )}
 
       <BudgetCard planId={plan.id} />
+      <MonthlySpendCard />
 
       {groupByDay(plan.meals).map((day) => {
         const isToday = day.date === today;

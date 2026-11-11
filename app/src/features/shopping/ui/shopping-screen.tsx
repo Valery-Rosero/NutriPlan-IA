@@ -18,6 +18,9 @@ import { useSubstitutes } from '@/features/recipes/application/recipe-queries';
 import { substitutesByIngredient } from '@/features/recipes/domain/recipe';
 import { pendingToPantry, progress, toSections, type ShoppingItem } from '@/features/shopping/domain/shopping';
 import { ShoppingRow } from '@/features/shopping/ui/shopping-row';
+import { parseCop } from '@/features/profile/domain/profile';
+import { useRecordPurchase } from '@/features/spending/application/use-spending';
+import { MonthlySpendCard } from '@/features/spending/ui/monthly-spend-card';
 import { useIsOnline } from '@/shared/hooks/use-is-online';
 import { Spacing } from '@/shared/theme/colors';
 import {
@@ -99,12 +102,23 @@ function ListView({ planId, listId, items, onRefresh, refreshing }: {
   // US-147: sustitutos de lo que aún falta comprar del plan (una sola consulta para toda la lista).
   const swappable = items.filter((i) => i.source === 'plan' && !i.checked && i.ingredientId && (i.toBuyGrams ?? 0) > 0);
   const substitutes = substitutesByIngredient(useSubstitutes(swappable.map((i) => i.ingredientId!)).data ?? []);
+  const record = useRecordPurchase();
+  const [paid, setPaid] = useState('');
+  const moveAndRecord = () =>
+    move.mutate(listId, {
+      onSuccess: () => {
+        const total = parseCop(paid);
+        if (total) record.mutate({ total, listId });
+        setPaid('');
+      },
+    });
   const submitNew = () => {
     if (newItem.trim()) add.mutate({ listId, name: newItem }, { onSuccess: () => setNewItem('') });
   };
 
   return (
     <>
+      <MonthlySpendCard />
       <Card variant="primary">
         <View style={styles.progressRow}>
           <IconBadge name="cart-outline" tone="accent" />
@@ -116,14 +130,27 @@ function ListView({ planId, listId, items, onRefresh, refreshing }: {
         <ProgressBar value={total ? done / total : 0} label={t('shopping.progress', { done, total })} />
         {move.isSuccess && <Banner tone="success" message={t('shopping.moved', { count: move.data })} />}
         {toPantry > 0 && (
-          <Button
-            label={t('shopping.moveToPantry', { count: toPantry })}
-            icon="basket-outline"
-            size="sm"
-            loading={move.isPending}
-            onPress={() => move.mutate(listId)}
-          />
+          <>
+            {/* US-141: lo pagado de verdad alimenta el gasto del mes. Es opcional: no frena pasar a la despensa. */}
+            <TextField
+              label={t('spending.paidLabel')}
+              icon="cash-outline"
+              value={paid}
+              onChangeText={setPaid}
+              keyboardType="number-pad"
+              placeholder="45000"
+            />
+            <Button
+              label={t('shopping.moveToPantry', { count: toPantry })}
+              icon="basket-outline"
+              size="sm"
+              loading={move.isPending || record.isPending}
+              onPress={moveAndRecord}
+            />
+          </>
         )}
+        {record.isSuccess && <Banner tone="success" message={t('spending.recorded')} />}
+        {record.error && <Banner tone="danger" message={t(errorKey(record.error))} />}
       </Card>
 
       {toSections(items).map((section) =>

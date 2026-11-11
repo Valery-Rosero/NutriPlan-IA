@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react-native';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 import { useRouter } from 'expo-router';
 
 import { PlanScreen } from '@/features/plan/ui/plan-screen';
@@ -37,5 +37,25 @@ describe('PlanScreen (US-117, US-129, US-132, US-155)', () => {
     await render(<PlanScreen />, { wrapper: withServices(fakeServices({ plans })) });
     await fireEvent.press(await screen.findByRole('button', { name: 'Confirmar plan' }));
     expect(plans.confirm).toHaveBeenCalledWith('plan1');
+  });
+
+  it('US-152: si se pasa del presupuesto, "Ajustar automáticamente" propone cambios con el ahorro exacto', async () => {
+    const plans = fakePlans();
+    await render(<PlanScreen />, { wrapper: withServices(fakeServices({ plans })) });
+
+    await fireEvent.press(await screen.findByRole('button', { name: 'Ajustar automáticamente' }));
+    expect(await screen.findByText('Cambiar Arroz salteado con lo que tengas por Crema de ahuyama')).toBeOnTheScreen();
+    expect(screen.getByText('Ahorras $ 5.000')).toBeOnTheScreen();
+    expect(screen.getByText('Ahorras $ 5.100')).toBeOnTheScreen();
+
+    await fireEvent.press(screen.getAllByRole('button', { name: 'Aceptar' })[0]);
+    await waitFor(() => expect(plans.swap).toHaveBeenCalledWith('m1', 'r9', 'r1', 'budget_friendly'));
+    // al aceptar se recalcula el total
+    await waitFor(() => expect(plans.budget.mock.calls.length).toBeGreaterThan(1));
+  });
+
+  it('US-141: muestra el gasto del mes frente al presupuesto', async () => {
+    await render(<PlanScreen />, { wrapper: withServices(fakeServices()) });
+    expect(await screen.findByText('64 % — $ 38.200 de $ 60.000')).toBeOnTheScreen();
   });
 });

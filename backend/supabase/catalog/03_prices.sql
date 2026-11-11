@@ -50,3 +50,28 @@ join public.ingredients i on i.name = v.ingredient
 join public.regions r on r.code = 'CO-NAR-PASTO'
 join public.price_sources s on s.name = 'DANE – SIPSA, precios mayoristas'
 on conflict (ingredient_id, region_id, source_id, observed_on) do nothing;
+
+-- Referencia NACIONAL (región CO) para lo que El Potrerillo no publica: procesados, presas de pollo, granos.
+-- Tomados de los informes de Bogotá del 04-nov-2026 (Corabastos, Plaza España y Frigorífico Ble).
+-- Para Pasto se muestran como ESTIMADOS: private.ingredient_price sube de Pasto → Nariño → Colombia y marca
+-- is_estimated cuando el precio no es del mercado local. Mismo cálculo: (mín + máx) / 2 / kilos de la presentación.
+insert into public.ingredient_prices (ingredient_id, region_id, price_per_kg, source_id, observed_on)
+select i.id, r.id, v.price, s.id, v.observed_on
+from (values
+  ('Carne de res molida',  23500, date '2026-11-04'),   -- Frigorífico Ble, molida de murillo, kg $23.000–24.000
+  ('Pechuga de pollo',     20000, date '2026-11-04'),   -- Frigorífico Ble, kg $19.500–20.500
+  ('Muslo de pollo',       15750, date '2026-11-04'),   -- Frigorífico Ble, muslos sin rabadilla, kg $15.500–16.000
+  ('Fríjol rojo seco',     14729, date '2026-11-04'),   -- Plaza España, fríjol cargamanto rojo, arroba 12,5 kg $178.225–190.000
+  ('Lentejas secas',        3880, date '2026-11-04'),   -- Plaza España, lenteja importada, arroba 12,5 kg $47.000–50.000
+  ('Queso campesino',      19000, date '2026-11-04'),   -- Plaza España, kg $17.000–21.000
+  ('Avena en hojuelas',     9571, date '2026-11-04'),   -- Plaza España, bolsa 54 × 180 g (9,72 kg) $89.870–96.200
+  ('Pasta seca',            8200, date '2026-11-04'),   -- Plaza España, bolsa 24 × 250 g (6 kg) $46.400–52.000
+  ('Sardinas en lata',     17531, date '2026-11-04'),   -- Plaza España, caja 24 × 425 g (10,2 kg) $172.640–185.000
+  ('Aguacate',              8750, date '2026-11-04'),   -- Corabastos, promedio choquette 6.000, hass 9.750, papelillo 10.500
+  ('Banano',                2175, date '2026-11-04'),   -- Corabastos, banano urabá, caja 20 kg $42.000–45.000
+  ('Ahuyama',               4000, date '2026-11-04')    -- Corabastos, kg $4.000
+) v(ingredient, price, observed_on)
+join public.ingredients i on i.name = v.ingredient
+join public.regions r on r.code = 'CO'
+join public.price_sources s on s.name = 'DANE – SIPSA, precios mayoristas'
+on conflict (ingredient_id, region_id, source_id, observed_on) do nothing;

@@ -11,6 +11,7 @@ import type { PlanRepository } from '@/features/plan/domain/plan';
 import type { ProfileRepository } from '@/features/profile/domain/profile';
 import type { RecipeRepository } from '@/features/recipes/domain/recipe';
 import type { ShoppingRepository } from '@/features/shopping/domain/shopping';
+import type { SpendingRepository } from '@/features/spending/domain/spending';
 import type { SupportRepository } from '@/features/support/domain/support';
 
 /**
@@ -29,6 +30,7 @@ export type Services = {
   account: AccountRepository;
   assistant: AssistantRepository;
   support: SupportRepository;
+  spending: SpendingRepository;
   loginThrottle: LoginThrottle;
 };
 

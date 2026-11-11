@@ -137,6 +137,18 @@ export function fakePlans(overrides: Partial<PlanRepository> = {}): jest.Mocked<
     budget: jest.fn(async () => ({ estimatedCost: 160000, budgetLimit: 150000, overBy: 10000, missingPrices: 12 })),
     alternatives: jest.fn(async () => [{ id: 'r3', title: 'Lentejas guisadas con lo que haya', totalMinutes: 50 }]),
     swap: jest.fn(async () => {}),
+    savings: jest.fn(async () => [
+      {
+        plannedMealId: 'm1', date: '2026-11-12', slot: 'lunch' as const,
+        currentRecipeId: 'r1', currentTitle: 'Arroz salteado con lo que tengas', currentCost: 6500,
+        alternativeRecipeId: 'r9', alternativeTitle: 'Crema de ahuyama', alternativeCost: 1500, saving: 5000,
+      },
+      {
+        plannedMealId: 'm2', date: '2026-11-13', slot: 'dinner' as const,
+        currentRecipeId: 'r2', currentTitle: 'Sudado de lo que haya', currentCost: 6400,
+        alternativeRecipeId: 'r8', alternativeTitle: 'Ensalada fresca con lo que haya', alternativeCost: 1300, saving: 5100,
+      },
+    ]),
     skip: jest.fn(async () => {}),
     confirm: jest.fn(async () => {}),
     ...overrides,
@@ -185,6 +197,10 @@ export function fakeServices(overrides: Partial<Services> = {}): Services {
     account: { exportData: jest.fn(async () => '{}'), deleteAccount: jest.fn(async () => {}) },
     assistant: fakeAssistant(),
     support: { send: jest.fn(async () => {}) },
+    spending: {
+      monthly: jest.fn(async () => ({ monthStart: '2026-11-01', spent: 38200, purchases: 2, monthlyBudget: 60000, percent: 64 })),
+      recordPurchase: jest.fn(async () => {}),
+    },
     loginThrottle: createLoginThrottle(),
     ...overrides,
   };

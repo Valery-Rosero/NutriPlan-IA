@@ -3,13 +3,14 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useServices } from '@/di/services';
 import type { MealSlot } from '@/features/cooking/domain/cooking';
 import { todayIso } from '@/features/pantry/domain/pantry';
-import type { GeneratePlanInput } from '@/features/plan/domain/plan';
+import type { GeneratePlanInput, SavingSuggestion } from '@/features/plan/domain/plan';
 
 export const planKeys = {
   all: ['plan'] as const,
   current: (today: string) => [...planKeys.all, 'current', today] as const,
   budget: (planId: string) => [...planKeys.all, 'budget', planId] as const,
   alternatives: (slot: MealSlot, exclude: string) => [...planKeys.all, 'alternatives', slot, exclude] as const,
+  savings: (planId: string) => [...planKeys.all, 'savings', planId] as const,
 };
 
 /** El plan vigente: se guarda en disco para consultarlo sin conexión (ADR-014). */
@@ -49,6 +50,20 @@ export function useGeneratePlan() {
       void queryClient.invalidateQueries({ queryKey: ['shopping'] });
     },
   });
+}
+
+/** US-152: se piden solo cuando la persona toca "Ajustar automáticamente". */
+export function useSavings(planId: string, enabled: boolean) {
+  const { plans } = useServices();
+  return useQuery({ queryKey: planKeys.savings(planId), queryFn: () => plans.savings(planId), enabled });
+}
+
+/** Aceptar un ahorro es un cambio normal (lo valida la base); recalcula el total y las demás sugerencias. */
+export function useAcceptSaving() {
+  const { plans } = useServices();
+  return usePlanMutation((s: SavingSuggestion) =>
+    plans.swap(s.plannedMealId, s.alternativeRecipeId, s.currentRecipeId, 'budget_friendly'),
+  );
 }
 
 export function useSwapMeal() {

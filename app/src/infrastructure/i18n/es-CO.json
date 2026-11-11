@@ -189,7 +189,16 @@
     "pitch": "Desayunos, almuerzos y cenas con lo que tienes, sin repetir y sin salirte del presupuesto.",
     "cookedCount": "{{done}} de {{total}} comidas cocinadas",
     "draftTitle": "Revisa tu plan",
-    "draftHint": "Cambia lo que no te guste y confírmalo para que la lista de mercado quede lista."
+    "draftHint": "Cambia lo que no te guste y confírmalo para que la lista de mercado quede lista.",
+    "savings": {
+      "open": "Ajustar automáticamente",
+      "title": "Cambios que te ahorran plata",
+      "change": "Cambiar {{from}} por {{to}}",
+      "saves": "Ahorras {{amount}}",
+      "accept": "Aceptar",
+      "none": "No encontramos cambios que ahorren con los precios que tenemos. Prueba quitando alguna comida.",
+      "note": "Solo comparamos recetas con todos sus precios conocidos, y respetan tus alergias y dietas."
+    }
   },
   "shopping": {
     "title": "Lista de compras",
@@ -398,7 +407,8 @@
     "already_applied": "Esa sugerencia ya se aplicó.",
     "no_suggestion": "Ese mensaje no trae una receta para aplicar.",
     "message_not_found": "No encontramos ese mensaje.",
-    "invalid_input": "Escribe un mensaje de hasta 1000 caracteres."
+    "invalid_input": "Escribe un mensaje de hasta 1000 caracteres.",
+    "invalid_amount": "Escribe cuánto pagaste, en pesos."
   },
   "onboarding": {
     "progress": "Paso {{step}} de {{total}}",
@@ -647,5 +657,16 @@
     "send": "Enviar",
     "sentBug": "Gracias por avisarnos. Lo revisaremos para arreglarlo.",
     "sentSuggestion": "Gracias por tu idea. La tendremos en cuenta."
+  },
+  "spending": {
+    "title": "Gasto de este mes",
+    "summary": "{{percent}} % — {{spent}} de {{budget}}",
+    "over": "Ya pasaste tu presupuesto del mes.",
+    "noPurchases": "Aún no registras compras este mes. Anota cuánto pagaste al pasar lo comprado a tu cocina.",
+    "purchases_one": "{{count}} compra registrada este mes",
+    "purchases_other": "{{count}} compras registradas este mes",
+    "setBudget": "Fijar un presupuesto",
+    "paidLabel": "¿Cuánto pagaste? (opcional)",
+    "recorded": "Listo, sumamos la compra a tu gasto del mes."
   }
 }

@@ -2,7 +2,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 
 import { AppError, toAppError } from '@/core/errors/app-error';
 import type { MealSlot } from '@/features/cooking/domain/cooking';
-import type { GeneratePlanInput, MealPlan, PlanRepository } from '@/features/plan/domain/plan';
+import type { GeneratePlanInput, MealPlan, PlanRepository, SwapReason } from '@/features/plan/domain/plan';
 import type { Database } from '@/types/database';
 
 export class SupabasePlanRepository implements PlanRepository {
@@ -66,11 +66,28 @@ export class SupabasePlanRepository implements PlanRepository {
       .sort((a, b) => a.title.localeCompare(b.title, 'es'));
   }
 
-  async swap(mealId: string, recipeId: string, previousRecipeId: string) {
+  async savings(planId: string) {
+    const { data, error } = await this.client.rpc('plan_savings', { p_plan_id: planId });
+    if (error) throw toAppError(error);
+    return data.map((r) => ({
+      plannedMealId: r.planned_meal_id,
+      date: r.meal_date,
+      slot: r.slot,
+      currentRecipeId: r.current_recipe_id,
+      currentTitle: r.current_title,
+      currentCost: Number(r.current_cost),
+      alternativeRecipeId: r.alternative_recipe_id,
+      alternativeTitle: r.alternative_title,
+      alternativeCost: Number(r.alternative_cost),
+      saving: Number(r.saving),
+    }));
+  }
+
+  async swap(mealId: string, recipeId: string, previousRecipeId: string, reason: SwapReason = 'user_request') {
     // El trigger planned_meals_validate vuelve a comprobar alergias, dieta y momento del día (US-129).
     const { error } = await this.client
       .from('planned_meals')
-      .update({ recipe_id: recipeId, replaced_recipe_id: previousRecipeId, reason_code: 'user_request', reason_ingredient_id: null })
+      .update({ recipe_id: recipeId, replaced_recipe_id: previousRecipeId, reason_code: reason, reason_ingredient_id: null })
       .eq('id', mealId)
       .eq('status', 'planned');
     if (error) throw toAppError(error);

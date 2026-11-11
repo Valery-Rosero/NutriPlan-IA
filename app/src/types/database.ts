@@ -1944,12 +1944,22 @@ isOneToOne: false
 "mark_meal_cooked":
 { Args: { "p_planned_meal_id": string }; Returns: Json
                            },
+"monthly_spend":
+{ Args: { "p_month"?: string }; Returns: {
+              "month_start": string,"monthly_budget": number,"percent": number,"purchases": number,"spent": number
+            }[]
+                           },
 "move_checked_to_pantry":
 { Args: { "p_list_id": string }; Returns: number
                            },
 "plan_budget_status":
 { Args: { "p_plan_id": string }; Returns: {
               "budget_limit": number,"currency_code": string,"estimated_cost": number,"estimated_prices": number,"missing_prices": number,"over_by": number
+            }[]
+                           },
+"plan_savings":
+{ Args: { "p_limit"?: number,"p_plan_id": string }; Returns: {
+              "alternative_cost": number,"alternative_recipe_id": string,"alternative_title": string,"current_cost": number,"current_recipe_id": string,"current_title": string,"meal_date": string,"planned_meal_id": string,"saving": number,"slot": Database["public"]['Enums']["meal_slot"]
             }[]
                            },
 "preview_recipe":
@@ -1977,6 +1987,9 @@ isOneToOne: false
 { Args: { "p_within_days"?: number }; Returns: {
               "days_left": number,"expires_on": string,"ingredient_id": string,"ingredient_name": string,"pantry_item_id": string,"recipe_id": string,"recipe_title": string
             }[]
+                           },
+"record_purchase":
+{ Args: { "p_list_id"?: string,"p_store"?: string,"p_total": number }; Returns: string
                            },
 "revoke_consent":
 { Args: { "p_kind": Database["public"]['Enums']["legal_doc_kind"] }; Returns: Json

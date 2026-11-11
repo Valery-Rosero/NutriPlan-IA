@@ -33,6 +33,26 @@ export type BudgetStatus = {
 
 export type RecipeSummary = { id: string; title: string; totalMinutes: number };
 
+/**
+ * US-152: cambiar una comida por otra receta elegible más barata. Los dos costos y el ahorro vienen
+ * redondeados de la base y cuadran exacto (ahorro = actual − alternativa).
+ */
+export type SavingSuggestion = {
+  plannedMealId: string;
+  date: string;
+  slot: MealSlot;
+  currentRecipeId: string;
+  currentTitle: string;
+  currentCost: number;
+  alternativeRecipeId: string;
+  alternativeTitle: string;
+  alternativeCost: number;
+  saving: number;
+};
+
+/** Por qué cambió una comida: la pidió la persona o fue para ahorrar. */
+export type SwapReason = 'user_request' | 'budget_friendly';
+
 export type GeneratePlanInput = { start: string; days: number; slots: MealSlot[] };
 
 /** Puerto del plan semanal. Falla con AppError. */
@@ -44,7 +64,9 @@ export interface PlanRepository {
   budget(planId: string): Promise<BudgetStatus>;
   /** Recetas elegibles para ese momento del día (las mismas reglas de seguridad). */
   alternatives(slot: MealSlot, excludeRecipeId: string): Promise<RecipeSummary[]>;
-  swap(mealId: string, recipeId: string, previousRecipeId: string): Promise<void>;
+  swap(mealId: string, recipeId: string, previousRecipeId: string, reason?: SwapReason): Promise<void>;
+  /** US-152: reemplazos más baratos para las comidas pendientes (sugiere, no aplica). */
+  savings(planId: string): Promise<SavingSuggestion[]>;
   skip(mealId: string): Promise<void>;
   confirm(planId: string): Promise<void>;
 }

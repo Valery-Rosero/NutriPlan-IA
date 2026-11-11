@@ -18,6 +18,7 @@ import { SupabaseProfileRepository } from '@/features/profile/data/supabase-prof
 import { SupabaseRecipeRepository } from '@/features/recipes/data/supabase-recipe-repository';
 import { initialChoices } from '@/features/recipes/domain/recipe';
 import { SupabaseShoppingRepository } from '@/features/shopping/data/supabase-shopping-repository';
+import { SupabaseSpendingRepository } from '@/features/spending/data/supabase-spending-repository';
 import { SupabaseSupportRepository } from '@/features/support/data/supabase-support-repository';
 import type { Database } from '@/types/database';
 
@@ -42,6 +43,7 @@ const recipes = new SupabaseRecipeRepository(client);
 const plans = new SupabasePlanRepository(client);
 const shopping = new SupabaseShoppingRepository(client);
 const account = new SupabaseAccountRepository(client);
+const spending = new SupabaseSpendingRepository(client);
 const support = new SupabaseSupportRepository(client, () => ({ appVersion: '1.0.0', deviceModel: 'Prueba' }));
 
 const run = KEY ? describe : describe.skip;
@@ -164,6 +166,17 @@ run('recorrido completo contra Supabase real', () => {
     const manual = withManual.items.find((i) => i.name === 'Bolsas')!;
     await shopping.remove(manual.id);
     expect((await shopping.forPlan(planId))!.items.some((i) => i.name === 'Bolsas')).toBe(false);
+
+    // US-141: lo pagado suma al gasto del mes
+    await spending.recordPurchase(45000, listId);
+    const month = await spending.monthly();
+    expect(month).toMatchObject({ spent: 45000, purchases: 1 });
+
+    // US-152: los reemplazos sugeridos ahorran y cuadran exacto
+    for (const s of await plans.savings(planId)) {
+      expect(s.saving).toBe(s.currentCost - s.alternativeCost);
+      expect(s.saving).toBeGreaterThanOrEqual(500);
+    }
   });
 
   it('10. reportar un problema con captura (US-151): la captura queda en la carpeta propia', async () => {
