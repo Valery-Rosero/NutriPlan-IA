@@ -12,6 +12,8 @@ export type ShoppingItem = {
   checked: boolean;
   source: 'plan' | 'manual';
   movedToPantry: boolean;
+  /** US-147: si es un sustituto, el nombre de lo que reemplaza ("en lugar de pechuga"). */
+  replacesName: string | null;
 };
 
 export type ShoppingList = { id: string; items: ShoppingItem[] };
@@ -26,6 +28,9 @@ export interface ShoppingRepository {
   remove(itemId: string): Promise<void>;
   /** Suma a la despensa lo marcado como comprado. Devuelve cuántos ítems pasaron. */
   moveCheckedToPantry(listId: string): Promise<number>;
+  /** US-147: comprar el sustituto en lugar del ingrediente del plan; se recuerda al actualizar la lista. */
+  substitute(itemId: string, substituteId: string): Promise<void>;
+  undoSubstitution(itemId: string): Promise<void>;
 }
 
 export type ShoppingSection = { key: string; title: string | null; kind: 'buy' | 'have'; data: ShoppingItem[] };

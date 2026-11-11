@@ -211,7 +211,13 @@
     "moveToPantry_other": "Pasar {{count}} comprados a la despensa",
     "moved_one": "Listo: {{count}} producto quedó en tu despensa.",
     "moved_other": "Listo: {{count}} productos quedaron en tu despensa.",
-    "removeLabel": "Quitar {{name}} de la lista"
+    "removeLabel": "Quitar {{name}} de la lista",
+    "substitute": {
+      "open": "Ver con qué reemplazar {{name}}",
+      "hint": "En lugar de {{name}} puedes comprar:",
+      "insteadOf": "En lugar de {{name}}",
+      "undo": "Deshacer"
+    }
   },
   "pantry": {
     "title": "Despensa",
@@ -385,7 +391,8 @@
     "meal_not_cooked": "Primero marca la comida como cocinada.",
     "email_not_authorized": "Por ahora no podemos enviar correos a esa dirección. Estamos terminando de configurar el envío de correos; inténtalo más tarde.",
     "email_invalid": "Ese correo no parece válido. Revísalo.",
-    "email_send_failed": "No pudimos enviarte el correo de confirmación. Inténtalo de nuevo en unos minutos."
+    "email_send_failed": "No pudimos enviarte el correo de confirmación. Inténtalo de nuevo en unos minutos.",
+    "not_substitutable": "Ese cambio no aplica: solo se reemplaza lo del plan que aún no compraste, y por algo que puedas comer."
   },
   "onboarding": {
     "progress": "Paso {{step}} de {{total}}",
@@ -471,7 +478,11 @@
     "protein": "Proteína",
     "carbs": "Carbohidratos",
     "fat": "Grasa",
-    "stepA11y": "Paso {{n}}: {{text}}"
+    "stepA11y": "Paso {{n}}: {{text}}",
+    "substitutes": {
+      "label": "Puedes usar:",
+      "have": "lo tienes"
+    }
   },
   "units": {
     "kg": "kg",

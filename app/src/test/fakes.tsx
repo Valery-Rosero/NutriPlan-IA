@@ -111,6 +111,12 @@ export function fakeRecipes(overrides: Partial<RecipeRepository> = {}): jest.Moc
     cookPlanned: jest.fn(async () => ({ plannedMealId: 'pm1', shortfall: [] })),
     undoCook: jest.fn(async () => {}),
     rate: jest.fn(async () => {}),
+    substitutes: jest.fn(async (ids: string[]) =>
+      [
+        { ingredientId: 'arroz', substituteId: 'papa', name: 'Papa', ratio: 1, note: null, inPantry: true },
+        { ingredientId: 'tomate', substituteId: 'pimenton', name: 'Pimentón', ratio: 1, note: 'Más dulce', inPantry: false },
+      ].filter((s) => ids.includes(s.ingredientId)),
+    ),
     ...overrides,
   } as jest.Mocked<RecipeRepository>;
 }
@@ -138,7 +144,7 @@ export function fakePlans(overrides: Partial<PlanRepository> = {}): jest.Mocked<
 
 const item = (over: Partial<ShoppingList['items'][number]>): ShoppingList['items'][number] => ({
   id: 'i', ingredientId: 'x', name: 'x', categoryName: 'Verdulería y frutas', categoryPosition: 1, toBuyGrams: 100, pantryGrams: 0,
-  approxUnits: null, checked: false, source: 'plan', movedToPantry: false, ...over,
+  approxUnits: null, checked: false, source: 'plan', movedToPantry: false, replacesName: null, ...over,
 });
 
 export const SHOPPING: ShoppingList = {
@@ -159,6 +165,8 @@ export function fakeShopping(overrides: Partial<ShoppingRepository> = {}): jest.
     addManual: jest.fn(async () => {}),
     remove: jest.fn(async () => {}),
     moveCheckedToPantry: jest.fn(async () => 1),
+    substitute: jest.fn(async () => {}),
+    undoSubstitution: jest.fn(async () => {}),
     ...overrides,
   } as jest.Mocked<ShoppingRepository>;
 }

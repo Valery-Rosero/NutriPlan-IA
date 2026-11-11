@@ -7,15 +7,17 @@ import { useTranslation } from 'react-i18next';
 import { errorKey } from '@/core/errors/app-error';
 import { HealthDisclaimerNote } from '@/features/legal/ui/health-disclaimer-note';
 import { useProfile } from '@/features/profile/application/profile-queries';
-import { useCookNow, useCookPlanned, useRecipe, useRecipePreview } from '@/features/recipes/application/recipe-queries';
+import { useCookNow, useCookPlanned, useRecipe, useRecipePreview, useSubstitutes } from '@/features/recipes/application/recipe-queries';
 import {
   initialChoices,
   slotForNow,
+  substitutesByIngredient,
   toggleChoice,
   type Choice,
   type CookResult,
   type RecipeDetail,
   type RecipePreview,
+  type Substitute,
 } from '@/features/recipes/domain/recipe';
 import { CookResultPanel } from '@/features/recipes/ui/cook-result';
 import { formatQuantity } from '@/features/recipes/ui/format-quantity';
@@ -173,6 +175,9 @@ function PreviewSections({ preview }: { preview: RecipePreview }) {
   const c = useTheme();
   const n = preview.per_serving;
   const have = preview.lines.filter((l) => l.in_pantry).length;
+  // US-147: para lo que falta, qué se puede usar en su lugar (seguro para la persona; lo filtra la base).
+  const missingIds = preview.lines.filter((l) => !l.in_pantry).map((l) => l.ingredient_id);
+  const substitutes = substitutesByIngredient(useSubstitutes(missingIds).data ?? []);
   const haveLabel = t('recipe.haveCount', { have, total: preview.lines.length });
   return (
     <>
@@ -184,17 +189,18 @@ function PreviewSections({ preview }: { preview: RecipePreview }) {
           const amount = formatQuantity(line.quantity, line.unit_code, t);
           const status = line.in_pantry ? t('recipe.atHome') : t('recipe.toBuy');
           return (
-            <View
-              key={`${line.ingredient_id}-${line.group_key ?? 'base'}`}
-              style={styles.line}
-              accessible
-              accessibilityLabel={`${line.ingredient_name}, ${amount}. ${status}.`}>
+            <View key={`${line.ingredient_id}-${line.group_key ?? 'base'}`}>
+              <View style={styles.line} accessible accessibilityLabel={`${line.ingredient_name}, ${amount}. ${status}.`}>
               <Ionicons name={line.in_pantry ? 'checkmark-circle' : 'cart-outline'} size={20} color={line.in_pantry ? c.primary : c.textSecondary} />
               <View style={styles.flex}>
                 <AppText>{`${line.ingredient_name}${line.is_optional ? ` (${t('recipe.optional')})` : ''}`}</AppText>
                 <AppText variant="caption" style={{ color: line.in_pantry ? c.primary : c.textSecondary }}>{status}</AppText>
               </View>
               <AppText variant="label" secondary>{amount}</AppText>
+              </View>
+              {!line.in_pantry && substitutes.has(line.ingredient_id) && (
+                <SubstituteHint options={substitutes.get(line.ingredient_id)!} />
+              )}
             </View>
           );
         })}
@@ -225,6 +231,23 @@ function PreviewSections({ preview }: { preview: RecipePreview }) {
   );
 }
 
+/** "Puedes usar: Papa (la tienes), Yuca". Lo que ya está en la cocina va primero y resaltado. */
+function SubstituteHint({ options }: { options: Substitute[] }) {
+  const { t } = useTranslation();
+  const c = useTheme();
+  const text = options.map((o) => (o.inPantry ? `${o.name} (${t('recipe.substitutes.have')})` : o.name)).join(', ');
+  const note = options.find((o) => o.note)?.note;
+  return (
+    <View style={styles.substitute} accessible accessibilityLabel={`${t('recipe.substitutes.label')} ${text}. ${note ?? ''}`}>
+      <Ionicons name="swap-horizontal" size={16} color={options[0].inPantry ? c.primary : c.textSecondary} />
+      <View style={styles.flex}>
+        <AppText variant="caption" tone={options[0].inPantry ? 'primary' : 'default'}>{`${t('recipe.substitutes.label')} ${text}`}</AppText>
+        {note && <AppText variant="caption" secondary>{note}</AppText>}
+      </View>
+    </View>
+  );
+}
+
 function NutrientTile({ value, label, highlight }: { value: string; label: string; highlight?: boolean }) {
   const c = useTheme();
   const fg = highlight ? { color: c.onPrimaryContainer } : undefined;
@@ -242,6 +265,7 @@ const styles = StyleSheet.create({
   flex: { flex: 1 },
   group: { gap: Spacing.sm },
   line: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md, paddingVertical: Spacing.xs },
+  substitute: { flexDirection: 'row', alignItems: 'flex-start', gap: Spacing.xs, marginLeft: 20 + Spacing.md, marginBottom: Spacing.xs },
   tiles: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm },
   tile: { flexGrow: 1, flexBasis: '45%', padding: Spacing.md, borderRadius: Radius.md, gap: Spacing.xxs },
   step: { flexDirection: 'row', alignItems: 'flex-start', gap: Spacing.md, paddingVertical: Spacing.xs },

@@ -48,4 +48,28 @@ describe('ShoppingScreen (US-124, US-125, US-126, US-135)', () => {
     await fireEvent.press(screen.getByRole('button', { name: 'Agregar a la lista' }));
     expect(shopping.addManual).toHaveBeenCalledWith('list1', 'Café');
   });
+
+  it('US-147: reemplaza un ítem por su sustituto con un toque', async () => {
+    const shopping = fakeShopping();
+    await render(<ShoppingScreen />, { wrapper: withServices(fakeServices({ shopping })) });
+
+    await fireEvent.press(await screen.findByRole('button', { name: 'Ver con qué reemplazar Tomate' }));
+    expect(screen.getByText('En lugar de Tomate puedes comprar:')).toBeOnTheScreen();
+    await fireEvent.press(screen.getByRole('radio', { name: 'Pimentón' }));
+    await waitFor(() => expect(shopping.substitute).toHaveBeenCalledWith('i1', 'pimenton'));
+  });
+
+  it('US-147: lo sustituido dice a quién reemplaza y se puede deshacer', async () => {
+    const shopping = fakeShopping({
+      forPlan: jest.fn(async () => ({
+        ...SHOPPING,
+        items: SHOPPING.items.map((i) => (i.id === 'i2' ? { ...i, name: 'Muslo de pollo', replacesName: 'Pechuga de pollo' } : i)),
+      })),
+    });
+    await render(<ShoppingScreen />, { wrapper: withServices(fakeServices({ shopping })) });
+
+    expect(await screen.findByText('En lugar de Pechuga de pollo')).toBeOnTheScreen();
+    await fireEvent.press(screen.getByRole('link', { name: 'Deshacer' }));
+    await waitFor(() => expect(shopping.undoSubstitution).toHaveBeenCalledWith('i2'));
+  });
 });

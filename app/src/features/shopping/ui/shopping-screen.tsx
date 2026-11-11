@@ -14,7 +14,10 @@ import {
   useShoppingList,
   useToggleItem,
 } from '@/features/shopping/application/shopping-queries';
+import { useSubstitutes } from '@/features/recipes/application/recipe-queries';
+import { substitutesByIngredient } from '@/features/recipes/domain/recipe';
 import { pendingToPantry, progress, toSections, type ShoppingItem } from '@/features/shopping/domain/shopping';
+import { ShoppingRow } from '@/features/shopping/ui/shopping-row';
 import { useIsOnline } from '@/shared/hooks/use-is-online';
 import { Spacing } from '@/shared/theme/colors';
 import {
@@ -22,7 +25,6 @@ import {
   Banner,
   Button,
   Card,
-  Checkbox,
   EmptyState,
   ErrorState,
   IconBadge,
@@ -94,6 +96,9 @@ function ListView({ planId, listId, items, onRefresh, refreshing }: {
   const [newItem, setNewItem] = useState('');
   const { done, total } = progress(items);
   const toPantry = pendingToPantry(items);
+  // US-147: sustitutos de lo que aún falta comprar del plan (una sola consulta para toda la lista).
+  const swappable = items.filter((i) => i.source === 'plan' && !i.checked && i.ingredientId && (i.toBuyGrams ?? 0) > 0);
+  const substitutes = substitutesByIngredient(useSubstitutes(swappable.map((i) => i.ingredientId!)).data ?? []);
   const submitNew = () => {
     if (newItem.trim()) add.mutate({ listId, name: newItem }, { onSuccess: () => setNewItem('') });
   };
@@ -136,17 +141,15 @@ function ListView({ planId, listId, items, onRefresh, refreshing }: {
           <Card key={section.key}>
             <AppText variant="heading">{section.title ?? t('shopping.otherSection')}</AppText>
             {section.data.map((item) => (
-              <View key={item.id} style={styles.item}>
-                <View style={styles.flex}>
-                  <Checkbox
-                    checked={item.checked}
-                    strikeWhenChecked
-                    onChange={(checked) => toggle.mutate({ planId, itemId: item.id, checked })}
-                    label={item.toBuyGrams ? `${item.name} · ${amount(item, t)}` : item.name}
-                  />
-                </View>
-                <IconButton icon="close" label={t('shopping.removeLabel', { name: item.name })} onPress={() => remove.mutate(item.id)} />
-              </View>
+              <ShoppingRow
+                key={item.id}
+                item={item}
+                planId={planId}
+                label={item.toBuyGrams ? `${item.name} · ${amount(item, t)}` : item.name}
+                substitutes={item.ingredientId ? substitutes.get(item.ingredientId) : undefined}
+                onToggle={(checked) => toggle.mutate({ planId, itemId: item.id, checked })}
+                onRemove={() => remove.mutate(item.id)}
+              />
             ))}
           </Card>
         ),
@@ -183,7 +186,6 @@ function amount(item: ShoppingItem, t: (k: string, o?: Record<string, unknown>) 
 }
 
 const styles = StyleSheet.create({
-  item: { flexDirection: 'row', alignItems: 'center', gap: Spacing.xs },
   flex: { flex: 1 },
   progressRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md },
   sectionHead: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },

@@ -47,6 +47,26 @@ export type RecipePreview = z.infer<typeof previewSchema>;
 
 export type CookResult = { plannedMealId: string; shortfall: MissingIngredient[] };
 
+/**
+ * US-147: sustituto de un ingrediente, ya filtrado por las alergias y dietas de quien consulta
+ * (lo decide la base). `ratio`: gramos del sustituto por gramo del original.
+ */
+export type Substitute = {
+  ingredientId: string;
+  substituteId: string;
+  name: string;
+  ratio: number;
+  note: string | null;
+  inPantry: boolean;
+};
+
+/** Agrupa por ingrediente original, con lo que ya hay en la cocina primero (así lo ordena la base). */
+export function substitutesByIngredient(list: Substitute[]): Map<string, Substitute[]> {
+  const map = new Map<string, Substitute[]>();
+  for (const s of list) map.set(s.ingredientId, [...(map.get(s.ingredientId) ?? []), s]);
+  return map;
+}
+
 /** Puerto de recetas. Falla con AppError. */
 export interface RecipeRepository {
   getDetail(id: string): Promise<RecipeDetail>;
@@ -58,6 +78,8 @@ export interface RecipeRepository {
   undoCook(plannedMealId: string): Promise<void>;
   /** US-128: calificar lo cocinado (1–5) con etiquetas; una vez por comida. */
   rate(plannedMealId: string, rating: number, tags: RatingTag[], comment: string): Promise<void>;
+  /** US-147: sustitutos de varios ingredientes en una sola llamada. */
+  substitutes(ingredientIds: string[]): Promise<Substitute[]>;
 }
 
 /** Etiquetas de calificación (tabla rating_tags); los textos están en i18n. */

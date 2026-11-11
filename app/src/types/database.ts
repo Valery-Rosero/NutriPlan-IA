@@ -1397,6 +1397,38 @@ isOneToOne: false
       referencedColumns: ["category_id"]
     }
                   ]
+                },"shopping_list_substitutions": {
+                  Row: {
+                    "created_at": string,"ingredient_id": string,"list_id": string,"ratio": number,"substitute_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"ingredient_id": string,"list_id": string,"ratio": number,"substitute_id": string
+                  }
+                  Update: {
+                    "created_at"?: string,"ingredient_id"?: string,"list_id"?: string,"ratio"?: number,"substitute_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "shopping_list_substitutions_ingredient_id_fkey"
+      columns: ["ingredient_id"]
+isOneToOne: false
+      referencedRelation: "ingredients"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "shopping_list_substitutions_list_id_fkey"
+      columns: ["list_id"]
+isOneToOne: false
+      referencedRelation: "shopping_lists"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "shopping_list_substitutions_substitute_id_fkey"
+      columns: ["substitute_id"]
+isOneToOne: false
+      referencedRelation: "ingredients"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"shopping_lists": {
                   Row: {
                     "created_at": string,"id": string,"name": string,"plan_id": string | null,"status": Database["public"]['Enums']["list_status"],"updated_at": string,"user_id": string
@@ -1682,7 +1714,7 @@ isOneToOne: false
           Views: {
             "my_monthly_spend": {
                   Row: {
-                    "month": string | null,"purchases": number | null,"spent": number | null,"user_id": string | null
+                    "month": string | null,"purchases": number | null,"spent": number | null,"user_id": string
                   }
                   ComputedFields: never
                   Relationships: [
@@ -1696,7 +1728,7 @@ isOneToOne: false
                   ]
                 },"my_pending_consents": {
                   Row: {
-                    "document_id": number | null,"kind": Database["public"]['Enums']["legal_doc_kind"] | null,"version": number | null
+                    "document_id": number,"kind": Database["public"]['Enums']["legal_doc_kind"],"version": number
                   }
                   ComputedFields: never
                   Insert: {
@@ -1710,7 +1742,7 @@ isOneToOne: false
                   ]
                 },"my_plan_conflicts": {
                   Row: {
-                    "conflict": string | null,"meal_date": string | null,"plan_id": string | null,"planned_meal_id": string | null,"recipe_id": string | null,"slot": Database["public"]['Enums']["meal_slot"] | null
+                    "conflict": string | null,"meal_date": string,"plan_id": string,"planned_meal_id": string,"recipe_id": string,"slot": Database["public"]['Enums']["meal_slot"]
                   }
                   ComputedFields: never
                   Relationships: [
@@ -1742,7 +1774,7 @@ isOneToOne: false
                   ]
                 },"my_shopping_items": {
                   Row: {
-                    "approx_units": number | null,"category_id": number | null,"category_name": string | null,"category_position": number | null,"id": string | null,"ingredient_id": string | null,"is_checked": boolean | null,"list_id": string | null,"moved_to_pantry_at": string | null,"name": string | null,"needed_g": number | null,"pantry_g": number | null,"source": Database["public"]['Enums']["shopping_item_source"] | null,"to_buy_g": number | null
+                    "approx_units": number | null,"category_id": number | null,"category_name": string | null,"category_position": number | null,"id": string,"ingredient_id": string | null,"is_checked": boolean,"list_id": string,"moved_to_pantry_at": string | null,"name": string | null,"needed_g": number | null,"pantry_g": number,"replaces_name": string | null,"source": Database["public"]['Enums']["shopping_item_source"],"to_buy_g": number | null
                   }
                   ComputedFields: never
                   Relationships: [
@@ -1770,7 +1802,7 @@ isOneToOne: false
                   ]
                 },"recipe_diets": {
                   Row: {
-                    "diet_id": number | null,"recipe_id": string | null
+                    "diet_id": number,"recipe_id": string
                   }
                   ComputedFields: never
                   Relationships: [
@@ -1778,7 +1810,7 @@ isOneToOne: false
                   ]
                 },"recipe_max_heat": {
                   Row: {
-                    "heat_level": number | null,"recipe_id": string | null
+                    "heat_level": number | null,"recipe_id": string
                   }
                   ComputedFields: never
                   Relationships: [
@@ -1804,7 +1836,7 @@ isOneToOne: false
                   ]
                 },"recipe_nutrition": {
                   Row: {
-                    "carbs_g_per_serving": number | null,"fat_g_per_serving": number | null,"fiber_g_per_serving": number | null,"ingredients_missing_nutrition": number | null,"kcal_per_serving": number | null,"protein_g_per_serving": number | null,"recipe_id": string | null,"sodium_mg_per_serving": number | null,"sugar_g_per_serving": number | null
+                    "carbs_g_per_serving": number | null,"fat_g_per_serving": number | null,"fiber_g_per_serving": number | null,"ingredients_missing_nutrition": number | null,"kcal_per_serving": number | null,"protein_g_per_serving": number | null,"recipe_id": string,"sodium_mg_per_serving": number | null,"sugar_g_per_serving": number | null
                   }
                   ComputedFields: never
                   Relationships: [
@@ -1812,7 +1844,7 @@ isOneToOne: false
                   ]
                 },"recipe_rating_stats": {
                   Row: {
-                    "avg_rating": number | null,"ratings_count": number | null,"recipe_id": string | null
+                    "avg_rating": number | null,"ratings_count": number | null,"recipe_id": string
                   }
                   ComputedFields: never
                   Relationships: [
@@ -1991,13 +2023,24 @@ isOneToOne: false
 "set_my_restrictions":
 { Args: { "p_allergen_ids": (number)[],"p_diet_ids": (number)[] }; Returns: undefined
                            },
+"substitute_shopping_item":
+{ Args: { "p_item_id": string,"p_substitute_id": string }; Returns: undefined
+                           },
 "suggest_substitutes":
 { Args: { "p_ingredient_id": string }; Returns: {
               "note": string,"ratio": number,"substitute_id": string,"substitute_name": string
             }[]
                            },
+"suggest_substitutes_for":
+{ Args: { "p_ingredient_ids": (string)[] }; Returns: {
+              "in_pantry": boolean,"ingredient_id": string,"note": string,"ratio": number,"substitute_id": string,"substitute_name": string
+            }[]
+                           },
 "undo_meal_cooked":
 { Args: { "p_planned_meal_id": string,"p_window"?: string }; Returns: undefined
+                           },
+"undo_shopping_substitution":
+{ Args: { "p_item_id": string }; Returns: undefined
                            }
           }
           Enums: {

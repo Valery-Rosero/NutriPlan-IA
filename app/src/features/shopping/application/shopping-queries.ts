@@ -36,6 +36,26 @@ export function registerShoppingMutations(queryClient: QueryClient, services: Se
   });
 }
 
+/** US-147: reemplazar un ítem del plan por su sustituto (o deshacerlo); la base rehace la lista. */
+export function useSubstituteItem() {
+  const { shopping } = useServices();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ itemId, substituteId }: { planId: string; itemId: string; substituteId: string }) =>
+      shopping.substitute(itemId, substituteId),
+    onSuccess: (_data, { planId }) => queryClient.invalidateQueries({ queryKey: shoppingKeys.list(planId) }),
+  });
+}
+
+export function useUndoSubstitution() {
+  const { shopping } = useServices();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ itemId }: { planId: string; itemId: string }) => shopping.undoSubstitution(itemId),
+    onSuccess: (_data, { planId }) => queryClient.invalidateQueries({ queryKey: shoppingKeys.list(planId) }),
+  });
+}
+
 export function useToggleItem() {
   const { shopping } = useServices();
   const queryClient = useQueryClient();

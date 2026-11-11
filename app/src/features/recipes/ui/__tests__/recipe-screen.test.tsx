@@ -43,4 +43,13 @@ describe('RecipeScreen (US-115, US-118, US-123, ADR-020)', () => {
     await fireEvent.press(screen.getByRole('button', { name: /Deshacer/ }));
     expect(recipes.undoCook).toHaveBeenCalledWith('pm1');
   });
+
+  it('US-147: para lo que falta, sugiere con qué reemplazarlo y marca lo que ya tienes', async () => {
+    const recipes = fakeRecipes();
+    await render(<RecipeScreen />, { wrapper: withServices(fakeServices({ recipes })) });
+
+    expect(await screen.findByText('Puedes usar: Papa (lo tienes)')).toBeOnTheScreen();
+    // solo se consultan los ingredientes que faltan (el cerdo ya está en la cocina)
+    expect(recipes.substitutes).toHaveBeenCalledWith(['arroz']);
+  });
 });

@@ -32,6 +32,7 @@ export class SupabaseShoppingRepository implements ShoppingRepository {
         checked: !!r.is_checked,
         source: r.source ?? 'manual',
         movedToPantry: r.moved_to_pantry_at !== null,
+        replacesName: r.replaces_name,
       })),
     };
   }
@@ -57,6 +58,16 @@ export class SupabaseShoppingRepository implements ShoppingRepository {
 
   async remove(itemId: string) {
     const { error } = await this.client.from('shopping_list_items').delete().eq('id', itemId);
+    if (error) throw toAppError(error);
+  }
+
+  async substitute(itemId: string, substituteId: string) {
+    const { error } = await this.client.rpc('substitute_shopping_item', { p_item_id: itemId, p_substitute_id: substituteId });
+    if (error) throw toAppError(error);
+  }
+
+  async undoSubstitution(itemId: string) {
+    const { error } = await this.client.rpc('undo_shopping_substitution', { p_item_id: itemId });
     if (error) throw toAppError(error);
   }
 

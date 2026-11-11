@@ -80,6 +80,20 @@ export class SupabaseRecipeRepository implements RecipeRepository {
     if (error) throw toAppError(error);
   }
 
+  async substitutes(ingredientIds: string[]) {
+    if (ingredientIds.length === 0) return [];
+    const { data, error } = await this.client.rpc('suggest_substitutes_for', { p_ingredient_ids: ingredientIds });
+    if (error) throw toAppError(error);
+    return data.map((r) => ({
+      ingredientId: r.ingredient_id,
+      substituteId: r.substitute_id,
+      name: r.substitute_name,
+      ratio: r.ratio,
+      note: r.note,
+      inPantry: r.in_pantry,
+    }));
+  }
+
   async undoCook(plannedMealId: string) {
     const { error } = await this.client.rpc('undo_meal_cooked', { p_planned_meal_id: plannedMealId });
     if (error) throw toAppError(error);

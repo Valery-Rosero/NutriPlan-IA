@@ -10,6 +10,7 @@ import type { Choice, RatingTag } from '@/features/recipes/domain/recipe';
 export const recipeKeys = {
   all: ['recipes'] as const,
   detail: (id: string) => [...recipeKeys.all, 'detail', id] as const,
+  substitutes: (ingredientIds: string[]) => [...recipeKeys.all, 'substitutes', [...ingredientIds].sort().join(',')] as const,
   preview: (id: string, servings: number, choices: Choice[]) =>
     [...recipeKeys.all, 'preview', id, servings, choices.map((c) => `${c.groupKey}:${c.ingredientId}`).sort().join(',')] as const,
 };
@@ -26,6 +27,17 @@ export function useRecipePreview(id: string, servings: number, choices: Choice[]
     queryFn: () => recipes.preview(id, servings, choices ?? []),
     enabled: choices !== null,
     placeholderData: keepPreviousData, // al cambiar porciones u opciones no parpadea
+  });
+}
+
+/** US-147: sustitutos de lo que falta (filtrados por alergias y dietas en la base). */
+export function useSubstitutes(ingredientIds: string[]) {
+  const { recipes } = useServices();
+  return useQuery({
+    queryKey: recipeKeys.substitutes(ingredientIds),
+    queryFn: () => recipes.substitutes(ingredientIds),
+    enabled: ingredientIds.length > 0,
+    staleTime: 5 * 60_000,
   });
 }
 
