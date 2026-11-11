@@ -49,12 +49,14 @@ Deno.serve(async (req) => {
 
     // Comida destino (si viene): debe ser de la persona y seguir pendiente.
     let target: Target = null;
+    let currentRecipeId: string | null = null;
     if (planned_meal_id) {
       const { data: meal } = await user
-        .from('planned_meals').select('id, slot, status, recipes(title)')
+        .from('planned_meals').select('id, slot, status, recipe_id, recipes!recipe_id(title)') // dos FK a recipes: se indica cuál
         .eq('id', planned_meal_id).maybeSingle();
       if (!meal || meal.status !== 'planned') return fail(404, 'meal_not_found');
       target = { planned_meal_id: meal.id, slot: meal.slot, current_title: (meal.recipes as { title: string } | null)?.title ?? '' };
+      currentRecipeId = meal.recipe_id;
     }
     const slot = target?.slot ?? slotForNow();
 
@@ -79,7 +81,8 @@ Deno.serve(async (req) => {
     // Candidatas seguras para la persona (eligible_recipes adentro).
     const { data: rows, error: candError } = await user.rpc('cook_with_what_i_have', { p_slot: slot, p_limit: 12 });
     if (candError) throw candError;
-    const candidates = (rows ?? []) as Candidate[];
+    // Al cambiar una comida, la receta actual no es opción: "cámbiala" nunca devuelve la misma.
+    const candidates = ((rows ?? []) as Candidate[]).filter((c) => c.recipe_id !== currentRecipeId);
 
     // El modelo elige; si falla, respaldo determinista.
     const turns: LlmTurn[] = [

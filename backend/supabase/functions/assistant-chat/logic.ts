@@ -53,6 +53,7 @@ export function systemPrompt(slot: string, candidates: Candidate[], target: Targ
   return [
     'Eres el asistente de cocina de NutriPlan, una app para familias y estudiantes de Pasto, Colombia.',
     'Hablas en español de Colombia, cálido y breve (máximo 3 frases). Tuteas.',
+    'No sabes el género de la persona: no uses apodos ni palabras con género (nada de "mijo", "mija", "amigo", "amiga").',
     `Momento del día: ${SLOT_NAMES[slot] ?? slot}.`,
     target ? `La persona quiere cambiar su ${SLOT_NAMES[target.slot] ?? target.slot}: hoy tiene "${target.current_title}".` : '',
     'Solo puedes recomendar recetas de esta lista de candidatas (ya son seguras para la persona). Usa el id EXACTO:',

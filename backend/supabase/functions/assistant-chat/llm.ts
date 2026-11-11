@@ -5,10 +5,15 @@ export type LlmTurn = { role: 'user' | 'assistant'; text: string };
 export type LlmAnswer = { raw: unknown; inputTokens: number | null; outputTokens: number | null; model: string };
 
 /**
- * Alias oficial que apunta siempre al Flash estable más reciente: Google retira versiones fijas
- * (gemini-2.5-flash se retiró en 2026) y un nombre fijo dejaría al asistente sin modelo.
+ * Alias oficial que apunta siempre al Flash-Lite estable más reciente. Alias y no versión fija: Google
+ * retira versiones (la familia 2.5 ya no se ofrece a cuentas nuevas). Flash-Lite y no Flash: elegir entre
+ * ~12 candidatas y escribir 2–3 frases no necesita más, responde en ~2 s, y en pruebas (nov. 2026) el
+ * Flash completo no respondía en la capa gratuita.
  */
-export const DEFAULT_MODEL = 'gemini-flash-latest';
+export const DEFAULT_MODEL = 'gemini-flash-lite-latest';
+
+/** Errores pasajeros de Google (saturación, límite por minuto): vale la pena un segundo intento. */
+const TRANSIENT = new Set([429, 500, 503]);
 
 const RESPONSE_SCHEMA = {
   type: 'OBJECT',
@@ -21,13 +26,23 @@ const RESPONSE_SCHEMA = {
 };
 
 class ModelNotFound extends Error {}
+class Transient extends Error {}
 
 export async function askGemini(system: string, turns: LlmTurn[], timeoutMs = 8000): Promise<LlmAnswer> {
   const key = Deno.env.get('GEMINI_API_KEY');
   if (!key) throw new Error('llm_not_configured');
   const configured = Deno.env.get('GEMINI_MODEL')?.trim() || DEFAULT_MODEL;
+  const deadline = Date.now() + timeoutMs;
   try {
-    return await call(key, configured, system, turns, timeoutMs);
+    try {
+      return await call(key, configured, system, turns, deadline - Date.now());
+    } catch (e) {
+      // Un reintento ante errores pasajeros, solo si queda al menos la mitad del tiempo.
+      if (e instanceof Transient && deadline - Date.now() > timeoutMs / 2) {
+        return await call(key, configured, system, turns, deadline - Date.now());
+      }
+      throw e;
+    }
   } catch (e) {
     // Si el modelo fijado en GEMINI_MODEL ya no existe, se sigue con el alias en vez de quedar sin asistente.
     if (e instanceof ModelNotFound && configured !== DEFAULT_MODEL) {
@@ -58,6 +73,7 @@ async function call(key: string, model: string, system: string, turns: LlmTurn[]
       }),
     });
     if (res.status === 404) throw new ModelNotFound(model);
+    if (TRANSIENT.has(res.status)) throw new Transient(`llm_http_${res.status}`);
     if (!res.ok) throw new Error(`llm_http_${res.status}`);
     const body = await res.json();
     const text: string | undefined = body?.candidates?.[0]?.content?.parts?.[0]?.text;
