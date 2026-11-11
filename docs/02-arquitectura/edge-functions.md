@@ -12,6 +12,7 @@ Todas: Deno + TypeScript, validan entrada/salida con Zod, exigen `Authorization:
 **No funcional:** p95 < 20 s; límite de cuota diaria; idempotencia por `(user, start_date)` en borrador.
 
 ## 2. `assistant-chat`  (POST)
+> **Construida** (ADR-025): Gemini con `responseSchema`; candidatas desde `cook_with_what_i_have` con el JWT (sin datos de salud en el prompt); respaldo determinista si el modelo falla; cuota 30/día. Lógica pura en `logic.ts`, probada con `npm run test:functions` (app/).
 **Entrada:** `{ conversation_id?: uuid, message: string(≤1000), context?: { planned_meal_id? } }`
 **Pasos:** crear/continuar `assistant_conversations`; guardar mensaje `user`; construir contexto mínimo (restricciones codificadas, plan actual); LLM con herramientas de solo lectura sobre RPC (`search_ingredients`, `suggest_substitutes`, `eligible_recipes`) y salida estructurada `{ reply, suggestion?: { recipe_id, target_planned_meal_id } }`; validar que `recipe_id` ∈ `eligible_recipes`; guardar mensaje `assistant` con `suggested_recipe_id/target_planned_meal_id`; `ai_generations(kind='chat'|'swap')`.
 **Aplicar:** la app llama `rpc('apply_assistant_suggestion', {p_message_id})` (no la función).

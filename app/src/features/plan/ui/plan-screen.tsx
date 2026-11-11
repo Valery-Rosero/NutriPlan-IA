@@ -183,6 +183,14 @@ function MealRow({ meal }: { meal: PlannedMeal }) {
             <TextLink label={t('plan.skip')} icon="play-skip-forward-outline" hint={meal.recipeTitle} onPress={() => skip.mutate(meal.id)} />
           </View>
         )}
+        {pending && (
+          <TextLink
+            label={t('assistant.askForMeal')}
+            icon="sparkles-outline"
+            hint={meal.recipeTitle}
+            onPress={() => router.push({ pathname: '/assistant', params: { mealId: meal.id, mealTitle: meal.recipeTitle } })}
+          />
+        )}
       </View>
     </View>
   );

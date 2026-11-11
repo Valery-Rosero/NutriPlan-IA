@@ -2,6 +2,7 @@ import * as Linking from 'expo-linking';
 
 import type { Services } from '@/di/services';
 import { SupabaseAccountRepository } from '@/features/account/data/supabase-account-repository';
+import { SupabaseAssistantRepository } from '@/features/assistant/data/supabase-assistant-repository';
 import { SupabaseAuthRepository } from '@/features/auth/data/supabase-auth-repository';
 import { createLoginThrottle } from '@/features/auth/domain/login-throttle';
 import { SupabaseCookingRepository } from '@/features/cooking/data/supabase-cooking-repository';
@@ -26,6 +27,7 @@ export function createServices(): Services {
     plans: new SupabasePlanRepository(supabase),
     shopping: new SupabaseShoppingRepository(supabase),
     account: new SupabaseAccountRepository(supabase),
+    assistant: new SupabaseAssistantRepository(supabase),
     loginThrottle: createLoginThrottle(),
   };
 }

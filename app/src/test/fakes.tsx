@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { ReactNode } from 'react';
 
 import { ServicesProvider, type Services } from '@/di/services';
+import type { AssistantRepository } from '@/features/assistant/domain/assistant';
 import type { AuthRepository } from '@/features/auth/domain/auth-repository';
 import { createLoginThrottle } from '@/features/auth/domain/login-throttle';
 import type { LegalDocument, LegalRepository } from '@/features/legal/domain/legal';
@@ -182,9 +183,27 @@ export function fakeServices(overrides: Partial<Services> = {}): Services {
     plans: fakePlans(),
     shopping: fakeShopping(),
     account: { exportData: jest.fn(async () => '{}'), deleteAccount: jest.fn(async () => {}) },
+    assistant: fakeAssistant(),
     loginThrottle: createLoginThrottle(),
     ...overrides,
   };
+}
+
+export function fakeAssistant(overrides: Partial<AssistantRepository> = {}): jest.Mocked<AssistantRepository> {
+  return {
+    send: jest.fn(async ({ plannedMealId }) => ({
+      conversationId: 'c1',
+      messageId: 7,
+      reply: 'Te propongo un sudado con lo que tienes.',
+      fallback: false,
+      suggestion: {
+        recipeId: 'r5', title: 'Sudado de lo que haya', totalMinutes: 40, coverage: 0.8,
+        targetPlannedMealId: plannedMealId ?? null,
+      },
+    })),
+    apply: jest.fn(async () => {}),
+    ...overrides,
+  } as jest.Mocked<AssistantRepository>;
 }
 
 /** Envoltorio de pruebas: caché aislada por prueba y servicios falsos inyectados. */

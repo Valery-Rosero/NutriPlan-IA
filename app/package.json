@@ -63,7 +63,8 @@
     "typecheck": "tsc --noEmit",
     "test": "jest",
     "legal:drafts": "node scripts/generate-legal-drafts.mjs",
-    "test:integration": "jest -c jest.integration.config.js --runInBand"
+    "test:integration": "jest -c jest.integration.config.js --runInBand",
+    "test:functions": "jest -c jest.functions.config.js"
   },
   "private": true,
   "jest": {

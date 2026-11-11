@@ -99,6 +99,7 @@ function RootNavigator() {
         <Stack.Screen name="plan/swap/[mealId]" options={{ presentation: 'modal' }} />
         <Stack.Screen name="account/delete" />
         <Stack.Screen name="design-system" />
+        <Stack.Screen name="assistant" />
       </Stack.Protected>
       <Stack.Protected guard={mustConsent}>
         <Stack.Screen name="consents" />

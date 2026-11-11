@@ -29,6 +29,8 @@ import {
   EmptyState,
   ErrorState,
   IconBadge,
+  ListGroup,
+  ListRow,
   LoadingState,
   Pill,
   ProgressBar,
@@ -87,6 +89,17 @@ export function TodayScreen() {
           />
         </View>
       )}
+
+      {/* Asistente (US-157, US-160): una idea conversada con lo que hay */}
+      <ListGroup>
+        <ListRow
+          icon="sparkles-outline"
+          tone="accent"
+          title={t('assistant.open')}
+          subtitle={t('assistant.openHint')}
+          onPress={() => router.push('/assistant')}
+        />
+      </ListGroup>
 
       {/* Sin cocina las recetas no se pueden adaptar: es lo primero que se pide */}
       {pantry.isSuccess && items.length === 0 && (

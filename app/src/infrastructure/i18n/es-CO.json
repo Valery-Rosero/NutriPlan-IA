@@ -392,7 +392,12 @@
     "email_not_authorized": "Por ahora no podemos enviar correos a esa dirección. Estamos terminando de configurar el envío de correos; inténtalo más tarde.",
     "email_invalid": "Ese correo no parece válido. Revísalo.",
     "email_send_failed": "No pudimos enviarte el correo de confirmación. Inténtalo de nuevo en unos minutos.",
-    "not_substitutable": "Ese cambio no aplica: solo se reemplaza lo del plan que aún no compraste, y por algo que puedas comer."
+    "not_substitutable": "Ese cambio no aplica: solo se reemplaza lo del plan que aún no compraste, y por algo que puedas comer.",
+    "quota_exceeded": "Llegaste al límite de mensajes de hoy con el asistente. Vuelve mañana.",
+    "already_applied": "Esa sugerencia ya se aplicó.",
+    "no_suggestion": "Ese mensaje no trae una receta para aplicar.",
+    "message_not_found": "No encontramos ese mensaje.",
+    "invalid_input": "Escribe un mensaje de hasta 1000 caracteres."
   },
   "onboarding": {
     "progress": "Paso {{step}} de {{total}}",
@@ -594,5 +599,31 @@
     "noneFoundNoNext": "No encontramos recetas de {{minutes}} min o menos con tus restricciones actuales. ¿Quitamos el límite de tiempo?",
     "tryWith": "Probar con {{minutes}} min",
     "removeLimit": "Quitar el límite de tiempo"
+  },
+  "assistant": {
+    "title": "Asistente",
+    "open": "Pregúntale al asistente",
+    "openHint": "¿No sabes qué hacer? Pídele una idea con lo que tienes.",
+    "askForMeal": "Pedir otra al asistente",
+    "intro": "Hola, te ayudo a decidir qué cocinar con lo que tienes.",
+    "introSwap": "¿Por qué cambiamos \"{{title}}\"? Dime qué te provoca o qué no quieres.",
+    "safety": "Solo te propongo recetas que respetan tus alergias y dietas. No doy consejo médico.",
+    "fallback": "Respuesta automática: el asistente inteligente no está disponible ahora.",
+    "thinking": "Pensando…",
+    "placeholder": "Ej.: algo rápido sin lentejas",
+    "inputLabel": "Escribe tu pedido",
+    "send": "Enviar",
+    "apply": "Cambiar en mi plan",
+    "applied": "Listo, cambiamos esa comida en tu plan.",
+    "seeRecipe": "Ver receta",
+    "quick": {
+      "whatNow": "¿Qué cocino ahora?",
+      "breakfast": "¿Qué desayuno hoy?",
+      "pantryOnly": "Algo solo con lo que tengo",
+      "quick": "Algo rápido, de menos de 20 min",
+      "swapAnything": "Cámbiala por otra cosa",
+      "swapFaster": "Algo más rápido",
+      "swapPantry": "Algo con lo que tengo"
+    }
   }
 }

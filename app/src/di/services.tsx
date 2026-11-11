@@ -1,6 +1,7 @@
 import { createContext, useContext, type ReactNode } from 'react';
 
 import type { AccountRepository } from '@/features/account/domain/account';
+import type { AssistantRepository } from '@/features/assistant/domain/assistant';
 import type { AuthRepository } from '@/features/auth/domain/auth-repository';
 import type { LoginThrottle } from '@/features/auth/domain/login-throttle';
 import type { CookingRepository } from '@/features/cooking/domain/cooking';
@@ -25,6 +26,7 @@ export type Services = {
   plans: PlanRepository;
   shopping: ShoppingRepository;
   account: AccountRepository;
+  assistant: AssistantRepository;
   loginThrottle: LoginThrottle;
 };
 

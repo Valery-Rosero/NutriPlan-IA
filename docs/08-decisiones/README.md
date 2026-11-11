@@ -28,3 +28,4 @@ Estado: **Aceptada** = ya implementada o decidida con el usuario; **Propuesta** 
 | [022](ADR-022.md) | Arquitectura de la app: features por capas, puertos y adaptadores | Aceptada |
 | [023](ADR-023.md) | El generador de planes vive en SQL, no en una Edge Function | Aceptada |
 | [024](ADR-024.md) | Flujo centrado en la cocina: Hoy · Mi cocina · Mi semana | Aceptada |
+| [025](ADR-025.md) | Asistente con Gemini, sin datos de salud en el prompt | Aceptada (piloto) |
