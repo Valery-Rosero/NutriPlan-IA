@@ -11,6 +11,7 @@ import { createLoginThrottle } from '@/features/auth/domain/login-throttle';
 import { SupabaseCookingRepository } from '@/features/cooking/data/supabase-cooking-repository';
 import { legalDrafts } from '@/features/legal/data/legal-drafts.generated';
 import { SupabaseLegalRepository } from '@/features/legal/data/supabase-legal-repository';
+import { SupabaseNotificationsRepository } from '@/features/notifications/data/supabase-notifications-repository';
 import { SupabaseNutritionRepository } from '@/features/nutrition/data/supabase-nutrition-repository';
 import { SupabasePantryRepository } from '@/features/pantry/data/supabase-pantry-repository';
 import { SupabasePlanRepository } from '@/features/plan/data/supabase-plan-repository';
@@ -20,6 +21,7 @@ import { SupabaseShoppingRepository } from '@/features/shopping/data/supabase-sh
 import { SupabaseSpendingRepository } from '@/features/spending/data/supabase-spending-repository';
 import { SupabaseSupportRepository } from '@/features/support/data/supabase-support-repository';
 import { anonymousId } from '@/infrastructure/analytics/anonymous-id';
+import { expoPush } from '@/infrastructure/push/expo-push';
 import { supabase } from '@/infrastructure/supabase/client';
 
 /** Raíz de composición: único lugar que conoce las implementaciones concretas. */
@@ -37,6 +39,8 @@ export function createServices(): Services {
     assistant: new SupabaseAssistantRepository(supabase),
     spending: new SupabaseSpendingRepository(supabase),
     nutrition: new SupabaseNutritionRepository(supabase),
+    notifications: new SupabaseNotificationsRepository(supabase),
+    push: expoPush,
     analytics: new SupabaseAnalyticsRepository(supabase, anonymousId, Constants.expoConfig?.version ?? null),
     // Solo versión y modelo (US-151): nada de salud ni de perfil.
     support: new SupabaseSupportRepository(supabase, () => ({

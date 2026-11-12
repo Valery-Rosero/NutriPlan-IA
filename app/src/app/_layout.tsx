@@ -17,6 +17,8 @@ import { useRequiredConsents } from '@/features/legal/application/legal-queries'
 import { useProfile } from '@/features/profile/application/profile-queries';
 import { registerShoppingMutations } from '@/features/shopping/application/shopping-queries';
 import { installGlobalErrorHandler, reportError } from '@/infrastructure/errors/error-reporter';
+import { configureForegroundNotifications } from '@/infrastructure/push/expo-push';
+import { useNotificationTaps } from '@/infrastructure/push/notification-taps';
 import { persister, queryClient, shouldPersistQuery } from '@/infrastructure/query-client';
 import { Colors, type ThemeColors } from '@/shared/theme/colors';
 import { restoreThemePreference } from '@/shared/theme/theme-preference';
@@ -27,6 +29,7 @@ import { CrashState } from '@/shared/ui';
 
 SplashScreen.preventAutoHideAsync();
 installGlobalErrorHandler(); // US-122: errores JS fuera de React también se registran
+configureForegroundNotifications(); // US-148: los avisos también se ven con la app abierta
 void restoreThemePreference(); // claro / oscuro / sistema, según lo que eligió la persona
 
 // Tema de navegación con la paleta de marca (fondos de pantalla y transiciones sin destellos blancos o negros).
@@ -100,6 +103,8 @@ function RootNavigator() {
       onboarded: !!profile.data?.onboardingCompletedAt,
     },
   });
+
+  useNotificationTaps(inApp); // tocar un aviso abre la receta o la semana
 
   useEffect(() => {
     if (ready) void SplashScreen.hideAsync();

@@ -432,3 +432,7 @@ enabled = true
 # US-122: la llama la base (pg_cron + pg_net) con un secreto compartido, no una persona con sesión.
 [functions.error-alert]
 verify_jwt = false
+
+# US-148/149/153: la llama la base (pg_cron + pg_net) con un secreto compartido.
+[functions.send-notifications]
+verify_jwt = false

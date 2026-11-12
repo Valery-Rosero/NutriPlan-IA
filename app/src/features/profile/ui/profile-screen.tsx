@@ -7,6 +7,7 @@ import { formatCOP } from '@/core/format';
 import { useSession } from '@/features/auth/application/session';
 import { useSignOut } from '@/features/auth/application/use-auth';
 import { legalHref } from '@/features/legal/ui/legal-href';
+import { useNotificationPreferences, useUnregisterPush } from '@/features/notifications/application/use-notifications';
 import {
   useCuisines,
   useProfile,
@@ -28,6 +29,8 @@ export function ProfileScreen() {
   const c = useTheme();
   const { session } = useSession();
   const signOut = useSignOut();
+  const notificationPrefs = useNotificationPreferences();
+  const unregisterPush = useUnregisterPush();
   const profile = useProfile();
   const restrictions = useRestrictions();
   const sensitive = useSensitiveAuthorization();
@@ -60,7 +63,7 @@ export function ProfileScreen() {
   const confirmSignOut = () =>
     Alert.alert(t('profile.signOutTitle'), undefined, [
       { text: t('common.cancel'), style: 'cancel' },
-      { text: t('profile.signOut'), style: 'destructive', onPress: () => signOut.mutate() },
+      { text: t('profile.signOut'), style: 'destructive', onPress: () => void unregisterPush().finally(() => signOut.mutate()) },
     ]);
 
   return (
@@ -101,6 +104,12 @@ export function ProfileScreen() {
         />
         <ListRow icon="wallet-outline" title={t('profile.sections.budget')} subtitle={budget} onPress={() => edit('budget')} />
         <ListRow icon="time-outline" title={t('profile.sections.preferences')} subtitle={preferences} onPress={() => edit('preferences')} />
+        <ListRow
+          icon="notifications-outline"
+          title={t('profile.sections.notifications')}
+          subtitle={notificationPrefs.data ? t(`notifications.summary.${notificationPrefs.data.frequency}`) : undefined}
+          onPress={() => edit('notifications')}
+        />
       </ListGroup>
 
       <AppearanceSection />

@@ -316,7 +316,8 @@
       "restrictions": "Alergias y dietas",
       "budget": "Presupuesto",
       "privacy": "Privacidad",
-      "preferences": "Tiempo y gustos"
+      "preferences": "Tiempo y gustos",
+      "notifications": "Notificaciones"
     },
     "summary": {
       "household_one": "{{count}} persona · {{region}}",
@@ -427,7 +428,8 @@
     "no_suggestion": "Ese mensaje no trae una receta para aplicar.",
     "message_not_found": "No encontramos ese mensaje.",
     "invalid_input": "Escribe un mensaje de hasta 1000 caracteres.",
-    "invalid_amount": "Escribe cuánto pagaste, en pesos."
+    "invalid_amount": "Escribe cuánto pagaste, en pesos.",
+    "invalid_push_token": "No pudimos registrar este teléfono. Inténtalo de nuevo."
   },
   "onboarding": {
     "progress": "Paso {{step}} de {{total}}",
@@ -702,5 +704,34 @@
   "crash": {
     "title": "Algo salió mal",
     "body": "Ya le avisamos al equipo para arreglarlo. Puedes intentarlo de nuevo."
+  },
+  "notifications": {
+    "deviceTitle": "Avisos en este teléfono",
+    "deviceHint": "Te pediremos permiso solo cuando lo actives aquí.",
+    "enable": "Activar avisos",
+    "active": "Activos en este teléfono",
+    "denied": "No diste permiso. Puedes activarlo en Ajustes del teléfono › Aplicaciones › NutriPlan › Notificaciones.",
+    "unavailable": "Los avisos funcionan en la app instalada (APK), no en Expo Go.",
+    "frequencyTitle": "¿Cada cuánto?",
+    "frequencyHint": {
+      "daily": "Te recordamos cada comida del plan y lo que está por vencer.",
+      "weekly_summary": "Solo un resumen los domingos. Sin recordatorios diarios.",
+      "none": "No te enviaremos avisos."
+    },
+    "daily": "Diarios",
+    "weekly": "Solo resumen semanal",
+    "none": "Ninguno",
+    "leadTitle": "¿Con cuánto tiempo antes?",
+    "leadHint": "Por ejemplo, la cena de las 8:00 p. m. te llega {{minutes}} min antes.",
+    "leadOption": "{{minutes}} min",
+    "expiryTitle": "Lo que está por vencer",
+    "expiryHint": "Te avisamos 2 días antes, con una receta que lo use.",
+    "expiryLabel": "Avisarme lo que vence pronto",
+    "privacy": "Los avisos solo dicen el nombre de la comida o del ingrediente; nunca datos de salud.",
+    "summary": {
+      "daily": "Recordatorios diarios",
+      "weekly_summary": "Solo resumen semanal",
+      "none": "Sin avisos"
+    }
   }
 }

@@ -202,6 +202,16 @@ export function fakeServices(overrides: Partial<Services> = {}): Services {
       recordPurchase: jest.fn(async () => {}),
     },
     analytics: { track: jest.fn(async () => {}) },
+    notifications: {
+      preferences: jest.fn(async () => ({ frequency: 'daily' as const, leadMinutes: 30, expiryAlerts: true })),
+      savePreferences: jest.fn(async () => {}),
+      registerDevice: jest.fn(async () => {}),
+      unregisterDevice: jest.fn(async () => {}),
+    },
+    push: {
+      register: jest.fn(async () => ({ status: 'granted' as const, token: 'ExponentPushToken[test]' })),
+      isGranted: jest.fn(async () => false),
+    },
     nutrition: {
       day: jest.fn(async () => [
         { plannedMealId: 'b', slot: 'breakfast' as const, title: 'Huevos pericos', status: 'cooked' as const, kcal: 420, proteinG: 21, carbsG: 30, fatG: 22 },

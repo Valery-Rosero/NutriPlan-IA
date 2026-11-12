@@ -2010,6 +2010,9 @@ isOneToOne: false
 "record_purchase":
 { Args: { "p_list_id"?: string,"p_store"?: string,"p_total": number }; Returns: string
                            },
+"register_push_device":
+{ Args: { "p_token": string }; Returns: undefined
+                           },
 "report_app_error":
 { Args: { "p_anonymous_id"?: string,"p_app_version"?: string,"p_device_model"?: string,"p_error_name": string,"p_message": string,"p_screen"?: string,"p_stack"?: string }; Returns: undefined
                            },
@@ -2076,6 +2079,9 @@ isOneToOne: false
                            },
 "undo_shopping_substitution":
 { Args: { "p_item_id": string }; Returns: undefined
+                           },
+"unregister_push_device":
+{ Args: { "p_token": string }; Returns: undefined
                            }
           }
           Enums: {

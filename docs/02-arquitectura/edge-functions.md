@@ -19,6 +19,7 @@ Todas: Deno + TypeScript, validan entrada/salida con Zod, exigen `Authorization:
 **Salida:** `{ conversation_id, message_id, reply, suggestion? }`. **Límites:** historial enviado ≤ 10 mensajes; rechaza temas médicos/diagnóstico con respuesta de aviso.
 
 ## 3. `send-notifications`  (invocada por pg_cron cada 5–15 min)
+> **Construida** (migración 20261112000200). Cambio frente a este contrato: la BASE decide qué y cuándo (`private.schedule_notifications` cada 15 min, `private.due_messages`, probado en SQL) y la función solo entrega por Expo Push con secreto compartido (`PUSH_SECRET`, `private.push_settings`); borra los tokens con `DeviceNotRegistered`. Horas de referencia: desayuno 7:00, almuerzo 12:30, algo 16:00, cena 20:00 (Colombia).
 Selecciona `notifications` con `scheduled_for <= now() AND sent_at IS NULL` respetando `notification_preferences` y consentimientos; envía por Expo Push a `push_devices`; marca `sent_at`; elimina tokens inválidos (`DeviceNotRegistered`). Tipos: `meal_reminder`, `expiry_alert`, `weekly_summary`. Nunca incluye datos sensibles en el texto. Un trigger/cron adicional crea las filas (recordatorios de comidas planificadas, vencimientos ≤3 días, resumen semanal).
 
 ## 4. `delete-account`  (POST, JWT)
