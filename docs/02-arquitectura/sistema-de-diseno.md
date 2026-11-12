@@ -39,3 +39,15 @@ Código en `app/src/shared/theme/` (tokens) y `app/src/shared/ui/` (componentes)
 3. Todo lo tocable mide ≥ 44 pt y tiene `accessibilityRole` y etiqueta.
 4. Un enlace o botón con ícono anuncia solo su texto (`accessibilityLabel` explícito), nunca el glifo del ícono.
 5. Cada pantalla abre con `BrandHeader` (o `AuthScaffold` en el acceso): una sola pieza de marca por pantalla.
+6. El texto crece con la letra del sistema: nada de `allowFontScaling={false}` ni `numberOfLines={1}`; alturas con `minHeight`, no `height`. Solo un adorno puramente decorativo (oculto al lector) puede limitar su escala con `maxFontSizeMultiplier`.
+
+## Verificación de accesibilidad (US-140)
+**Automática** (corre con `npm test` y en CI):
+- `shared/theme/__tests__/contrast.test.ts`: todos los pares de texto y fondo cumplen AA (≥ 4,5:1) en claro y oscuro.
+- `src/test/a11y-static.test.ts`: todo `Pressable`, `Image`, `TextInput` y `Switch` tiene `accessibilityLabel` (o está oculto por ser decorativo); nadie desactiva el texto escalable; ningún texto se corta a una línea.
+
+**Manual en un teléfono Android** (antes de cada entrega):
+1. Ajustes › Accesibilidad › Tamaño de fuente al máximo y Tamaño de visualización grande: recorrer Preferencias (Tiempo y gustos), Mi semana, una receta y la lista de mercado. Nada cortado ni encimado.
+2. TalkBack activado en esas mismas pantallas: cada control se anuncia con su nombre y estado (marcado, seleccionado, deshabilitado), sin leer símbolos de íconos.
+3. Modo oscuro: repetir 1.
+

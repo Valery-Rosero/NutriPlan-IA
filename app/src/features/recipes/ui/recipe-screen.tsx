@@ -269,5 +269,6 @@ const styles = StyleSheet.create({
   tiles: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm },
   tile: { flexGrow: 1, flexBasis: '45%', padding: Spacing.md, borderRadius: Radius.md, gap: Spacing.xxs },
   step: { flexDirection: 'row', alignItems: 'flex-start', gap: Spacing.md, paddingVertical: Spacing.xs },
-  stepNumber: { width: 28, height: 28, borderRadius: Radius.pill, alignItems: 'center', justifyContent: 'center' },
+  // Mínimo 28 y crece con la letra del sistema: "10" cabe al 200 % (US-140).
+  stepNumber: { minWidth: 28, minHeight: 28, paddingHorizontal: Spacing.xs, borderRadius: Radius.pill, alignItems: 'center', justifyContent: 'center' },
 });

@@ -72,11 +72,12 @@ export function ProfileScreen() {
             importantForAccessibility="no-hide-descendants"
             accessibilityElementsHidden
             style={[styles.avatar, { backgroundColor: c.onBrand }]}>
-            <AppText style={[styles.initial, { color: c.brand }]}>{initial}</AppText>
+            {/* Decorativa (oculta al lector) y el correo ya está escrito al lado: se limita su escala para que no desborde. */}
+            <AppText style={[styles.initial, { color: c.brand }]} maxFontSizeMultiplier={1.3}>{initial}</AppText>
           </View>
           <View style={styles.flex}>
             <AppText variant="label" tone="onBrandMuted">{t('profile.title').toUpperCase()}</AppText>
-            <AppText variant="subtitle" tone="onBrand" numberOfLines={1}>{email || t('common.appName')}</AppText>
+            <AppText variant="subtitle" tone="onBrand" numberOfLines={2} ellipsizeMode="middle">{email || t('common.appName')}</AppText>
           </View>
         </View>
         {p && (

@@ -260,7 +260,8 @@
       "expired": "Vencido: revísalo",
       "soon": "Úsalo primero",
       "rest": "En tu cocina"
-    }
+    },
+    "selectHint": "Elegir este ingrediente para agregarlo"
   },
   "profile": {
     "title": "Perfil",

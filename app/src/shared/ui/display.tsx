@@ -81,7 +81,8 @@ export function SegmentedControl<T extends string>({ options, value, onChange, l
             accessibilityState={{ selected }}
             onPress={() => onChange(option.value)}
             style={[styles.segment, selected && { backgroundColor: c.card, borderColor: c.border }]}>
-            <Text numberOfLines={1} style={[Typography.label, { color: selected ? c.primary : c.textSecondary }]}>
+            {/* Sin límite de líneas: con letra grande (200 %) la opción hace salto de línea en vez de cortarse (US-140). */}
+            <Text style={[Typography.label, styles.segmentLabel, { color: selected ? c.primary : c.textSecondary }]}>
               {option.label}
             </Text>
           </Pressable>
@@ -121,6 +122,7 @@ const styles = StyleSheet.create({
   pillText: { fontWeight: '600' },
   badge: { borderRadius: Radius.md, alignItems: 'center', justifyContent: 'center' },
   segmented: { flexDirection: 'row', borderRadius: Radius.md, padding: Spacing.xs, gap: Spacing.xs },
+  segmentLabel: { textAlign: 'center' },
   segment: {
     flex: 1,
     minHeight: MinTouch,

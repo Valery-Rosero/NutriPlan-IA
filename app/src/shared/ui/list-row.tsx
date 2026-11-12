@@ -31,7 +31,8 @@ export function ListRow({ icon, title, subtitle, onPress, tone = 'primary', dang
       <IconBadge name={icon} tone={danger ? 'danger' : tone} size={36} />
       <View style={styles.text}>
         <AppText variant="subtitle" tone={danger ? 'danger' : 'default'}>{title}</AppText>
-        {subtitle && <AppText variant="caption" secondary numberOfLines={2}>{subtitle}</AppText>}
+        {/* Completo, sin cortar: con letra grande se lee entero (US-140). */}
+        {subtitle && <AppText variant="caption" secondary>{subtitle}</AppText>}
       </View>
       {!danger && <Ionicons name={external ? 'open-outline' : 'chevron-forward'} size={20} color={c.textSecondary} />}
     </Pressable>

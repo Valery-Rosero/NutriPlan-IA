@@ -61,6 +61,8 @@ export function AddPantryItemScreen() {
               <Pressable
                 key={ingredient.id}
                 accessibilityRole="button"
+                accessibilityLabel={ingredient.name}
+                accessibilityHint={t('pantry.selectHint')}
                 onPress={() => setSelected(ingredient)}
                 style={({ pressed }) => [
                   styles.result,
