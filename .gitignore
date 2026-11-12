@@ -2,3 +2,8 @@ node_modules/
 .DS_Store
 *.log
 .env
+
+# Firebase: tienen claves de Google. google-services.json llega a EAS como variable de tipo archivo;
+# la clave de la cuenta de servicio (firebase-adminsdk) se sube con 'eas credentials' y nunca entra aquí.
+google-services.json
+*firebase-adminsdk*.json

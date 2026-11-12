@@ -10,13 +10,14 @@ jobs:
     name: Base de datos (migraciones + pruebas SQL)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
       - name: Supabase local
         working-directory: backend
-        run: npx --yes supabase start -x imgproxy,vector,logflare,realtime,studio,storage-api,edge-runtime
+        # storage-api SÍ: la integración sube capturas de los reportes (US-151) al bucket privado.
+        run: npx --yes supabase start -x imgproxy,vector,logflare,realtime,studio,edge-runtime
       - name: Pruebas SQL (reglas y catálogo)
         run: bash backend/supabase/tests/run_local.sh
       - name: Integración app ↔ Supabase (adaptadores reales, recorrido completo)
@@ -32,8 +33,8 @@ jobs:
       run:
         working-directory: app
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
           cache: npm
