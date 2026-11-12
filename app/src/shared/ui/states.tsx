@@ -1,7 +1,9 @@
 import type { ReactNode } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 
+import { useIsOnline } from '@/shared/hooks/use-is-online';
 import { Spacing } from '@/shared/theme/colors';
 import { useTheme } from '@/shared/theme/use-theme';
 import { IconBadge } from '@/shared/ui/display';
@@ -11,6 +13,25 @@ import { AppText, Button, type IconName } from '@/shared/ui/primitives';
 export function LoadingState() {
   const { t } = useTranslation();
   const c = useTheme();
+  const online = useIsOnline();
+  const queryClient = useQueryClient();
+  // US-150: sin red las consultas quedan en pausa; en vez de un spinner eterno se dice qué pasa y se ofrece reintentar.
+  // Al volver la conexión todo se carga solo.
+  if (!online) {
+    return (
+      <View style={styles.center} accessibilityLiveRegion="polite">
+        <IconBadge name="cloud-offline-outline" tone="warning" size={56} />
+        <AppText secondary style={styles.text}>{t('common.waitingConnection')}</AppText>
+        <Button
+          label={t('common.retry')}
+          variant="secondary"
+          size="sm"
+          icon="refresh"
+          onPress={() => void queryClient.refetchQueries({ type: 'active' })}
+        />
+      </View>
+    );
+  }
   return (
     <View style={styles.center} accessibilityLiveRegion="polite">
       <ActivityIndicator color={c.primary} accessibilityLabel={t('common.loading')} />

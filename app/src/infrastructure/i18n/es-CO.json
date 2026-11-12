@@ -14,7 +14,8 @@
     "increase": "Aumentar",
     "cancel": "Cancelar",
     "save": "Guardar",
-    "edit": "Editar"
+    "edit": "Editar",
+    "waitingConnection": "Sin conexión. Esto se cargará solo apenas vuelva internet."
   },
   "validation": {
     "required": "Este campo es obligatorio.",

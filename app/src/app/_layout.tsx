@@ -19,6 +19,8 @@ import { persister, queryClient, shouldPersistQuery } from '@/infrastructure/que
 import { Colors, type ThemeColors } from '@/shared/theme/colors';
 import { restoreThemePreference } from '@/shared/theme/theme-preference';
 import { DisplayFont } from '@/shared/theme/tokens';
+import { computeGates } from '@/core/startup/gates';
+import { useIsOnline } from '@/shared/hooks/use-is-online';
 import { useTheme } from '@/shared/theme/use-theme';
 
 SplashScreen.preventAutoHideAsync();
@@ -66,13 +68,23 @@ function RootNavigator() {
   const c = useTheme();
   // Tipografía de títulos (serif de la marca). Si no carga, se sigue con la del sistema.
   const [fontsLoaded, fontError] = useFonts({ DMSerifDisplay_400Regular });
+  const online = useIsOnline();
   const consents = useRequiredConsents(session?.userId);
-  const mustConsent = !!session && (consents.isError || (consents.data?.length ?? 0) > 0);
-  const consentsOk = !!session && consents.isSuccess && !mustConsent;
+  const consentsOk = !!session && consents.isSuccess && (consents.data?.length ?? 0) === 0;
   const profile = useProfile(consentsOk);
-  const mustOnboard = consentsOk && profile.isSuccess && profile.data.onboardingCompletedAt === null;
-  const inApp = consentsOk && profile.isSuccess && !mustOnboard;
-  const ready = (fontsLoaded || !!fontError) && !loading && (!session || mustConsent || (consentsOk && !profile.isPending) || profile.isError);
+  const { ready, mustConsent, mustOnboard, inApp } = computeGates({
+    hasSession: !!session,
+    sessionLoading: loading,
+    fontsReady: fontsLoaded || !!fontError,
+    online,
+    consents: { pending: consents.isPending, error: consents.isError, success: consents.isSuccess, toAccept: consents.data?.length ?? 0 },
+    profile: {
+      pending: profile.isPending,
+      error: profile.isError,
+      success: profile.isSuccess,
+      onboarded: !!profile.data?.onboardingCompletedAt,
+    },
+  });
 
   useEffect(() => {
     if (ready) void SplashScreen.hideAsync();
@@ -90,7 +102,7 @@ function RootNavigator() {
         headerTitleStyle: { fontFamily: DisplayFont, fontSize: 20 },
         headerShadowVisible: false,
       }}>
-      <Stack.Protected guard={inApp || (consentsOk && profile.isError)}>
+      <Stack.Protected guard={inApp}>
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="profile/index" options={{ headerShown: true, title: '' }} />
         <Stack.Screen name="profile/[section]" />
