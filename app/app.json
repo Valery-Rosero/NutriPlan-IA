@@ -21,7 +21,8 @@
       "blockedPermissions": [
         "android.permission.RECORD_AUDIO",
         "android.permission.SYSTEM_ALERT_WINDOW"
-      ]
+      ],
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "output": "static",
@@ -59,6 +60,13 @@
       "typedRoutes": true,
       "reactCompiler": true
     },
-    "description": "Ideas de comida para tu familia con lo que ya tienes en casa."
+    "description": "Ideas de comida para tu familia con lo que ya tienes en casa.",
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "66249bb2-8ea6-40ee-8edb-ebd10968cb42"
+      }
+    },
+    "owner": "valeroseros-team"
   }
 }
