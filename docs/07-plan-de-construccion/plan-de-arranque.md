@@ -12,7 +12,8 @@ Fecha: 13 de octubre de 2026. Complementa a `plan.md` (fases y orden del backlog
 - [x] App Expo SDK 57: Expo Router con grupos `(auth)` y `(tabs)`, sesión cifrada (SecureStore + AES), TanStack Query con caché sin conexión que solo guarda lo marcado, i18n es-CO, mapeo de errores, logger que redacta datos sensibles, tipos generados. `tsc`, lint, Jest y `expo-doctor` en verde; el bundle de Android compila.
 - [x] CI (`.github/workflows/ci.yml`) y despliegue de migraciones a staging (`deploy-staging.yml`).
 - [ ] Aplicar las migraciones a staging (`npx supabase db push` en `backend/`, o el workflow cuando exista el secreto `SUPABASE_ACCESS_TOKEN`).
-- [ ] SMTP de Resend en el panel de staging (requiere dominio verificado en Resend).
+- [ ] SMTP en el panel de staging: **Gmail con contraseña de aplicación** (sin dominio; ~500 correos/día, suficiente para el piloto). Resend queda solo para las alertas de fallas al correo del equipo (ADR-026), que no requieren dominio.
+- [ ] Plantillas en español (`backend/supabase/templates/`) pegadas en Authentication › Emails › Templates.
 
 ## Estado del Sprint 1 (13-oct-2026)
 - [x] Arquitectura de la app por capas con puertos y adaptadores (ADR-022).
@@ -21,7 +22,7 @@ Fecha: 13 de octubre de 2026. Complementa a `plan.md` (fases y orden del backlog
 - [x] US-114 Aviso de salud aceptado antes de usar la app y pie fijo en Plan y Perfil.
 - [x] US-105 Verificación documentada (`docs/02-arquitectura/verificacion-us105.md`); queda pendiente el plan con backups.
 - [x] 64 pruebas de la app (dominio, adaptador, pantalla de registro con dobles) + prueba de humo contra Supabase Auth real.
-- [ ] Prueba manual en el teléfono contra staging (requiere SMTP de Resend con dominio verificado).
+- [ ] Prueba manual en el teléfono contra staging (requiere el SMTP de Gmail configurado).
 
 ## Estado del Sprint 2 (13-oct-2026)
 - [x] Catálogo real (`backend/supabase/catalog/`): 52 ingredientes con nutrición de referencia USDA y alérgenos revisados, 16 recetas versátiles colombianas con grupos intercambiables. Es el seed del proyecto (`db push --include-seed`); las pruebas usan `tests/fixtures.sql`.
