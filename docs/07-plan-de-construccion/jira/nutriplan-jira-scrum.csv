@@ -1,0 +1,862 @@
+"Issue ID","Issue Type","Summary","Parent","Status","Resolution","Priority","Story Points","Sprint","Fix Version","Component","Labels","Labels","Labels","Labels","Labels","Description"
+"1","Epic","Perfil y personalización","","In Progress","","High","","","","M02 Perfil y preferencias","E1","","","","","Product Goal: que cada familia o estudiante de Pasto deje de improvisar qué cocinar y planifique sus comidas con lo que tiene, respetando su salud, sus gustos y su presupuesto.
+
+Captura y mantiene las preferencias, restricciones y ajustes finos de la persona (dieta, alergias, presupuesto, metas, tiempo de cocina, cocinas favoritas) que alimentan cada recomendación."
+"2","Epic","Planificación inteligente de comidas","","In Progress","","High","","","","M04 Motor de planificación","E2","","","","","Product Goal: que cada familia o estudiante de Pasto deje de improvisar qué cocinar y planifique sus comidas con lo que tiene, respetando su salud, sus gustos y su presupuesto.
+
+Genera, ajusta y explica los planes de comidas: generador por reglas, recetas versátiles, escalado de porciones, asistente con IA y recordatorios."
+"3","Epic","Compras, presupuesto y despensa","","In Progress","","High","","","","M06 Compras y despensa","E3","","","","","Product Goal: que cada familia o estudiante de Pasto deje de improvisar qué cocinar y planifique sus comidas con lo que tiene, respetando su salud, sus gustos y su presupuesto.
+
+Convierte el plan en una lista de compras útil, controla el gasto frente al presupuesto, reduce el desperdicio y prepara integraciones futuras."
+"4","Epic","Nutrición y feedback","","In Progress","","High","","","","M08 Nutrición y feedback","E4","","","","","Product Goal: que cada familia o estudiante de Pasto deje de improvisar qué cocinar y planifique sus comidas con lo que tiene, respetando su salud, sus gustos y su presupuesto.
+
+Información nutricional confiable por receta y por día, y calificaciones que mejoran las próximas recomendaciones."
+"5","Epic","Comunidad y confianza","","In Progress","","High","","","","M01 Cuenta, consentimientos y privacidad","E5","","","","","Product Goal: que cada familia o estudiante de Pasto deje de improvisar qué cocinar y planifique sus comidas con lo que tiene, respetando su salud, sus gustos y su presupuesto.
+
+Protege los datos sensibles (consentimientos, autorización de datos de salud, derechos del titular) y, más adelante, la comunidad con moderación."
+"6","Epic","Fundamentos, calidad y lanzamiento","","In Progress","","High","","","","M11 Plataforma, calidad y lanzamiento","E6","","","","","Product Goal: que cada familia o estudiante de Pasto deje de improvisar qué cocinar y planifique sus comidas con lo que tiene, respetando su salud, sus gustos y su presupuesto.
+
+Despliegue automático, registro de fallas, analítica, accesibilidad, rendimiento, validación con usuarios y publicación en Google Play."
+"101","Story","US-101 · Validar el prototipo con usuarios reales antes de construir","6","To Do","","High","5","Sprint 11","v1.0 MVP","M11 Plataforma, calidad y lanzamiento","sprint-11","F0","enabler","calidad","mvp","*Como* product owner, *quiero* validar el prototipo del onboarding, el plan semanal y la lista de compras con usuarios reales, *para* construir lo que de verdad necesitan y no lo que suponemos.
+
+*Criterios de aceptación*
+# Dado el prototipo navegable actual Cuando se realizan 5 sesiones de prueba con personas que planifican sus comidas (al menos 1 con alergia alimentaria) Entonces al menos 4 de 5 completan las tareas ""declarar mis alergias"", ""cambiar una comida"" y ""generar la lista de compras"" sin ayuda.
+# Caso borde: cada hallazgo de usabilidad se registra como ítem del backlog, con evidencia (nota o grabación), dentro de los 3 días siguientes a la última sesión.
+
+Ficha completa: docs/05-historias-de-usuario (US-101)."
+"1001","Sub-task","Guion de prueba con 3 tareas: alergias, cambiar comida, lista","101","To Do","","","","","","M11 Plataforma, calidad y lanzamiento","","","","","",""
+"1002","Sub-task","Reclutar 5 participantes (al menos 1 con alergia)","101","To Do","","","","","","M11 Plataforma, calidad y lanzamiento","","","","","",""
+"1003","Sub-task","Hacer las 5 sesiones con el APK","101","To Do","","","","","","M11 Plataforma, calidad y lanzamiento","","","","","",""
+"1004","Sub-task","Informe de hallazgos y nuevos ítems del backlog","101","To Do","","","","","","M11 Plataforma, calidad y lanzamiento","","","","","",""
+"102","Story","US-102 · Desplegar versiones nuevas de forma automática y segura","6","Done","Done","High","8","Sprint 0","v1.0 MVP","M11 Plataforma, calidad y lanzamiento","sprint-0","F0","enabler","plataforma","mvp","*Como* usuario, *quiero* que las actualizaciones de la app lleguen sin caídas ni fallas, *para* poder planificar mis comidas cuando lo necesite.
+
+*Criterios de aceptación*
+# Dado un cambio aprobado que se integra a la rama principal Cuando pasan las pruebas automáticas Entonces se despliega a un entorno de pruebas (staging) en máximo 15 minutos sin intervención manual.
+# Caso borde: si las pruebas fallan, el despliegue se detiene y se notifica al equipo; cualquier versión en producción puede revertirse a la anterior en menos de 10 minutos.
+
+Ficha completa: docs/05-historias-de-usuario (US-102)."
+"1005","Sub-task","CI en GitHub Actions: lint, tipos, Jest y pruebas SQL","102","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","","","","","",""
+"1006","Sub-task","Supabase local en CI (con storage-api)","102","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","","","","","",""
+"1007","Sub-task","Despliegue a staging: db push y Edge Functions","102","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","","","","","",""
+"1008","Sub-task","Secretos del despliegue y verificación previa","102","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","","","","","",""
+"103","Story","US-103 · Spike: validar la arquitectura del motor de recomendación","2","Done","Done","High","5","Sprint 4","v1.0 MVP","M04 Motor de planificación","sprint-4","F0","spike","plan-de-comidas","mvp","*Como* equipo de desarrollo, *quiero* validar la arquitectura del motor de recomendación (reglas, ranking y modelo de lenguaje) y su costo por usuario, *para* decidir qué construir antes de comprometer el plan semanal.
+
+*Criterios de aceptación*
+# Dado un timebox de 3 días Cuando termina el spike Entonces existe un documento con la arquitectura recomendada y una prueba de concepto que genera un plan de 7 días respetando 5 perfiles de prueba (incluyendo uno con alergia a frutos secos y uno vegano), junto con el costo estimado por plan generado.
+# Caso borde: si el costo por plan supera el umbral acordado con el Product Owner antes de iniciar, el documento propone al menos 2 alternativas para reducirlo.
+
+Ficha completa: docs/05-historias-de-usuario (US-103)."
+"1009","Sub-task","Comparar motor con LLM vs. reglas (costo y latencia)","103","Done","Done","","","","","M04 Motor de planificación","","","","","",""
+"1010","Sub-task","ADR-018: el plan se arma con reglas","103","Done","Done","","","","","M04 Motor de planificación","","","","","",""
+"1011","Sub-task","ADR-023: el generador vive en SQL","103","Done","Done","","","","","M04 Motor de planificación","","","","","",""
+"104","Story","US-104 · Crear cuenta e iniciar sesión","1","Done","Done","High","8","Sprint 1","v1.0 MVP","M01 Cuenta, consentimientos y privacidad","sprint-1","F0","historia","perfil","mvp","*Como* usuaria nueva, *quiero* crear una cuenta e iniciar sesión con correo y contraseña, *para* conservar mi perfil y mis planes entre dispositivos.
+
+*Criterios de aceptación*
+# Dado que ingreso un correo válido y una contraseña de al menos 8 caracteres con una mayúscula y un número Cuando toco ""Crear cuenta"" Entonces se crea mi cuenta, recibo un correo de verificación y accedo al onboarding.
+# Caso borde: si el correo ya está registrado, se muestra ""Este correo ya tiene una cuenta"" con enlace a ""Iniciar sesión""; tras 5 intentos fallidos de inicio de sesión, la cuenta se bloquea 15 minutos.
+
+*Cómo quedó:* En vez de bloquear 5 intentos por cuenta (Supabase no lo trae), se usan los límites de tasa de Supabase Auth (ADR-019).
+
+Ficha completa: docs/05-historias-de-usuario (US-104)."
+"1012","Sub-task","Pantallas de bienvenida, registro e inicio de sesión","104","Done","Done","","","","","M01 Cuenta, consentimientos y privacidad","","","","","",""
+"1013","Sub-task","Reglas de contraseña con indicador en vivo","104","Done","Done","","","","","M01 Cuenta, consentimientos y privacidad","","","","","",""
+"1014","Sub-task","Verificación de correo con reenvío","104","Done","Done","","","","","M01 Cuenta, consentimientos y privacidad","","","","","",""
+"1015","Sub-task","Recuperar contraseña con enlace PKCE","104","Done","Done","","","","","M01 Cuenta, consentimientos y privacidad","","","","","",""
+"1016","Sub-task","Límites de intentos con Supabase Auth (ADR-019)","104","Done","Done","","","","","M01 Cuenta, consentimientos y privacidad","","","","","",""
+"105","Story","US-105 · Cifrar datos de salud sensibles (reposo y tránsito)","5","Done","Done","High","3","Sprint 1","v1.0 MVP","M01 Cuenta, consentimientos y privacidad","sprint-1","F0","historia","privacidad","mvp","*Como* usuario, *quiero* que mis datos de salud (alergias, peso, condiciones médicas) estén cifrados, *para* proteger mi información sensible.
+
+*Criterios de aceptación*
+# Dado que guardo una condición médica en mi perfil Cuando el dato se transmite del cliente al servidor y se almacena Entonces la transmisión usa TLS 1.2 o superior y el campo se almacena cifrado en la base de datos, verificable en una auditoría de seguridad; ningún log de la aplicación muestra el valor en texto plano.
+
+*Cómo quedó:* Pendiente fuera del alcance de la historia: plan de copias de seguridad para producción.
+
+Ficha completa: docs/05-historias-de-usuario (US-105)."
+"1017","Sub-task","Verificar TLS y cifrado en reposo de Supabase","105","Done","Done","","","","","M01 Cuenta, consentimientos y privacidad","","","","","",""
+"1018","Sub-task","Datos de salud separados en profile_health con RLS","105","Done","Done","","","","","M01 Cuenta, consentimientos y privacidad","","","","","",""
+"1019","Sub-task","Documento de verificación US-105","105","Done","Done","","","","","M01 Cuenta, consentimientos y privacidad","","","","","",""
+"1020","Sub-task","ADR-008: sin cifrado por campo en el MVP","105","Done","Done","","","","","M01 Cuenta, consentimientos y privacidad","","","","","",""
+"106","Story","US-106 · Seleccionar tipo de dieta en el onboarding","1","Done","Done","High","3","Sprint 2","v1.0 MVP","M02 Perfil y preferencias","sprint-2","F1","historia","perfil","mvp","*Como* usuaria nueva, *quiero* indicar mi tipo de dieta (omnívoro, vegetariano, vegano, etc.), *para* que la app filtre recetas compatibles desde el primer uso.
+
+*Criterios de aceptación*
+# Dado que estoy en el paso ""Estilo de alimentación"" Cuando selecciono ""Vegetariano"" y confirmo Entonces mi perfil guarda dieta_tipo=""vegetariano"" y el primer plan generado tiene 0% de recetas con carne o pescado como ingrediente principal.
+# Caso borde: si no selecciono ninguna opción, el botón ""Continuar"" queda deshabilitado y se muestra ""Selecciona una opción para continuar"".
+
+*Depende de:* US-104
+
+Ficha completa: docs/05-historias-de-usuario (US-106)."
+"1021","Sub-task","Catálogo de dietas y sus exclusiones","106","Done","Done","","","","","M02 Perfil y preferencias","","","","","",""
+"1022","Sub-task","Paso de dieta en el onboarding","106","Done","Done","","","","","M02 Perfil y preferencias","","","","","",""
+"1023","Sub-task","RPC set_my_restrictions","106","Done","Done","","","","","M02 Perfil y preferencias","","","","","",""
+"1024","Sub-task","Pruebas de exclusión por dieta","106","Done","Done","","","","","M02 Perfil y preferencias","","","","","",""
+"107","Story","US-107 · Declarar alergias alimentarias como restricción dura","1","Done","Done","High","5","Sprint 2","v1.0 MVP","M02 Perfil y preferencias","sprint-2","F1","historia","perfil","mvp","*Como* usuaria con alergias, *quiero* declarar mis alergias alimentarias, *para* que la app nunca me sugiera recetas que las contengan.
+
+*Criterios de aceptación*
+# Dado que marqué ""Frutos secos"" y ""Mariscos"" como alergias Cuando se genera cualquier plan o resultado de búsqueda Entonces 0 recetas devueltas contienen esos alérgenos en su lista de ingredientes, incluida cualquier sustitución sugerida.
+# Caso borde: si una receta ya guardada en mis favoritos contiene un alérgeno recién declarado, se elimina automáticamente de favoritos y se me notifica el motivo.
+
+*Depende de:* US-104
+
+Ficha completa: docs/05-historias-de-usuario (US-107)."
+"1025","Sub-task","Paso de alergias con autorización de datos sensibles","107","Done","Done","","","","","M02 Perfil y preferencias","","","","","",""
+"1026","Sub-task","Trigger que exige la autorización vigente","107","Done","Done","","","","","M02 Perfil y preferencias","","","","","",""
+"1027","Sub-task","Filtro duro de alérgenos en eligible_recipes","107","Done","Done","","","","","M02 Perfil y preferencias","","","","","",""
+"1028","Sub-task","Prueba de contenido: ninguna receta viola alergias","107","Done","Done","","","","","M02 Perfil y preferencias","","","","","",""
+"108","Story","US-108 · Declarar presupuesto semanal o mensual de comida","1","Done","Done","High","2","Sprint 2","v1.0 MVP","M02 Perfil y preferencias","sprint-2","F1","historia","perfil","mvp","*Como* usuario, *quiero* declarar mi presupuesto semanal o mensual de comida, *para* que los planes generados respeten ese límite.
+
+*Criterios de aceptación*
+# Dado que ingreso $60.000 como presupuesto semanal para 2 personas Cuando guardo el dato Entonces el valor queda reflejado como techo de gasto en la pantalla de plan semanal.
+# Caso borde: el campo rechaza valores no numéricos o menores a $10.000 mostrando ""Ingresa un monto válido"", y no permite avanzar hasta corregirlo.
+
+*Depende de:* US-104
+
+Ficha completa: docs/05-historias-de-usuario (US-108)."
+"1029","Sub-task","Paso de presupuesto por semana o mes en COP","108","Done","Done","","","","","M02 Perfil y preferencias","","","","","",""
+"1030","Sub-task","Validación de montos","108","Done","Done","","","","","M02 Perfil y preferencias","","","","","",""
+"1031","Sub-task","Pruebas del formulario","108","Done","Done","","","","","M02 Perfil y preferencias","","","","","",""
+"109","Story","US-109 · Definir número de porciones habituales","1","Done","Done","High","2","Sprint 2","v1.0 MVP","M02 Perfil y preferencias","sprint-2","F1","historia","perfil","mvp","*Como* usuario, *quiero* indicar cuántas personas o porciones cocino habitualmente, *para* que las cantidades vengan ajustadas desde el inicio.
+
+*Criterios de aceptación*
+# Dado que indiqué ""2 personas"" en el onboarding Cuando se genera cualquier receta nueva Entonces la porción por defecto se muestra en 2 y las cantidades de ingredientes se calculan con el factor porciones/porción_base (ej. base 4 → factor 0.5).
+
+*Depende de:* US-104
+
+Ficha completa: docs/05-historias-de-usuario (US-109)."
+"1032","Sub-task","Paso de hogar: región y número de personas","109","Done","Done","","","","","M02 Perfil y preferencias","","","","","",""
+"1033","Sub-task","Porciones por defecto en recetas y plan","109","Done","Done","","","","","M02 Perfil y preferencias","","","","","",""
+"1034","Sub-task","Pruebas","109","Done","Done","","","","","M02 Perfil y preferencias","","","","","",""
+"110","Story","US-110 · Disponer de un catálogo inicial de recetas variado y compatible con cada dieta","2","Done","Done","High","13","Sprint 2","v1.0 MVP","M03 Catálogo de recetas e ingredientes","sprint-2","F1","historia","recetas","mvp","*Como* usuario, *quiero* encontrar desde el primer día recetas variadas que respeten mi dieta y mis alergias, *para* no encontrarme con resultados vacíos ni repetidos.
+
+*Criterios de aceptación*
+# Dado el catálogo cargado Cuando se ejecuta la validación automática Entonces el 100% de las recetas tiene ingredientes con cantidad y unidad normalizadas, porciones base, tiempo de preparación y al menos una etiqueta de dieta, y ninguna receta con alérgenos mayores carece de su etiqueta de alérgeno.
+# Caso borde: el catálogo incluye al menos 20 recetas aptas por cada dieta soportada (omnívoro, vegetariano, vegano, sin gluten, sin lactosa) para que el filtrado nunca devuelva listas vacías.
+
+Ficha completa: docs/05-historias-de-usuario (US-110)."
+"1035","Sub-task","52 ingredientes con nutrición USDA y alérgenos revisados","110","Done","Done","","","","","M03 Catálogo de recetas e ingredientes","","","","","",""
+"1036","Sub-task","16 recetas colombianas versátiles con grupos intercambiables","110","Done","Done","","","","","M03 Catálogo de recetas e ingredientes","","","","","",""
+"1037","Sub-task","Cargar el catálogo como seed","110","Done","Done","","","","","M03 Catálogo de recetas e ingredientes","","","","","",""
+"1038","Sub-task","Prueba de cobertura por dieta y alergia","110","Done","Done","","","","","M03 Catálogo de recetas e ingredientes","","","","","",""
+"111","Story","US-111 · Calcular la información nutricional de cada receta a partir de sus ingredientes","4","Done","Done","High","8","Sprint 3","v1.0 MVP","M03 Catálogo de recetas e ingredientes","sprint-3","F1","historia","nutricion","mvp","*Como* usuario, *quiero* que la información nutricional de cada receta sea confiable y se calcule a partir de sus ingredientes, *para* tomar decisiones informadas sin dudar de los datos.
+
+*Criterios de aceptación*
+# Dado un ingrediente del catálogo Cuando se consulta su registro nutricional Entonces devuelve los 7 valores por 100 g junto con su fuente.
+# Dado una receta de 4 porciones Cuando se calcula su información nutricional Entonces el total por porción difiere en ≤5% del cálculo manual de referencia en una muestra de 10 recetas de validación.
+# Caso borde: una receta con algún ingrediente sin dato nutricional no puede publicarse en el catálogo.
+
+*Depende de:* US-110
+
+Ficha completa: docs/05-historias-de-usuario (US-111)."
+"1039","Sub-task","Nutrición por 100 g de cada ingrediente","111","Done","Done","","","","","M03 Catálogo de recetas e ingredientes","","","","","",""
+"1040","Sub-task","Vista recipe_nutrition por porción","111","Done","Done","","","","","M03 Catálogo de recetas e ingredientes","","","","","",""
+"1041","Sub-task","Pruebas del cálculo","111","Done","Done","","","","","M03 Catálogo de recetas e ingredientes","","","","","",""
+"112","Story","US-112 · Spike: validar fuentes de precios de alimentos para la región piloto","3","Done","Done","High","5","Sprint 9","v1.0 MVP","M07 Presupuesto y precios","sprint-9","F0","spike","presupuesto","mvp","*Como* equipo de desarrollo, *quiero* validar de dónde obtener precios promedio de alimentos confiables, *para* la región piloto, para saber si la estimación de costos es viable.
+
+*Criterios de aceptación*
+# Dado un timebox de 2 días Cuando termina el spike Entonces se documentan al menos 3 fuentes candidatas con su cobertura de los ingredientes del catálogo inicial, su frecuencia de actualización y sus condiciones de uso.
+# Caso borde: si ninguna fuente cubre al menos el 80% de los ingredientes, se propone un plan de relevamiento propio con esfuerzo estimado.
+
+*Cómo quedó:* Sprint 4: fuente DANE–SIPSA con 3 precios. Sprint 9: 23 precios reales de Pasto (El Potrerillo, nov. 2026) y 12 nacionales de respaldo.
+
+Ficha completa: docs/05-historias-de-usuario (US-112)."
+"1042","Sub-task","Registrar la fuente DANE–SIPSA","112","Done","Done","","","","","M07 Presupuesto y precios","","","","","",""
+"1043","Sub-task","3 precios mayoristas verificados","112","Done","Done","","","","","M07 Presupuesto y precios","","","","","",""
+"1044","Sub-task","23 precios reales de Pasto (El Potrerillo, nov. 2026)","112","Done","Done","","","","","M07 Presupuesto y precios","","","","","",""
+"1045","Sub-task","12 precios nacionales de respaldo","112","Done","Done","","","","","M07 Presupuesto y precios","","","","","",""
+"113","Story","US-113 · Aceptar la política de privacidad y tratamiento de datos al registrarme","5","Done","Done","High","5","Sprint 1","v1.0 MVP","M01 Cuenta, consentimientos y privacidad","sprint-1","F0","historia","privacidad","mvp","*Como* usuario, *quiero* conocer y aceptar de forma explícita cómo se tratan mis datos personales y de salud al crear mi cuenta, *para* decidir con información si los comparto.
+
+*Criterios de aceptación*
+# Dado que estoy creando mi cuenta Cuando llego al paso de registro Entonces veo un enlace a la política de privacidad y una casilla de aceptación sin premarcar; el botón ""Crear cuenta"" permanece deshabilitado hasta marcarla.
+# Caso borde: el sistema guarda la versión de la política aceptada y la fecha y hora de aceptación; si la política cambia, se pide aceptar de nuevo en el siguiente inicio de sesión. La redacción debe validarse con asesoría legal conforme a la Ley 1581 de 2012 de protección de datos personales en Colombia.
+
+*Depende de:* US-104
+
+Ficha completa: docs/05-historias-de-usuario (US-113)."
+"1046","Sub-task","Casillas no premarcadas: 18+, términos y política","113","Done","Done","","","","","M01 Cuenta, consentimientos y privacidad","","","","","",""
+"1047","Sub-task","Aviso de privacidad visible en el registro","113","Done","Done","","","","","M01 Cuenta, consentimientos y privacidad","","","","","",""
+"1048","Sub-task","Consentimientos versionados con hash","113","Done","Done","","","","","M01 Cuenta, consentimientos y privacidad","","","","","",""
+"1049","Sub-task","Re-aceptación de versiones nuevas","113","Done","Done","","","","","M01 Cuenta, consentimientos y privacidad","","","","","",""
+"114","Story","US-114 · Informar que la app no reemplaza el consejo médico o nutricional","4","Done","Done","High","2","Sprint 1","v1.0 MVP","M01 Cuenta, consentimientos y privacidad","sprint-1","F0","historia","nutricion","mvp","*Como* usuario con una condición de salud, *quiero* que la app me aclare que no reemplaza a un profesional, *para* saber cuándo debo consultar a mi médico o nutricionista.
+
+*Criterios de aceptación*
+# Dado que declaro una condición médica (por ejemplo diabetes o hipertensión) en mi perfil Cuando termino ese paso del onboarding Entonces veo un aviso que debo aceptar antes de continuar, con el texto ""Esta app es una herramienta de apoyo y no reemplaza el consejo de un profesional de la salud"".
+# Caso borde: el aviso queda disponible de forma permanente en Configuración > Acerca de y no se vuelve a mostrar en cada inicio de sesión.
+
+Ficha completa: docs/05-historias-de-usuario (US-114)."
+"1050","Sub-task","Aviso de salud antes de usar la app","114","Done","Done","","","","","M01 Cuenta, consentimientos y privacidad","","","","","",""
+"1051","Sub-task","Pie fijo en Mi semana y Perfil","114","Done","Done","","","","","M01 Cuenta, consentimientos y privacidad","","","","","",""
+"115","Story","US-115 · Mostrar calorías y macros por porción en cada receta","4","Done","Done","High","3","Sprint 3","v1.0 MVP","M08 Nutrición y feedback","sprint-3","F1","historia","nutricion","mvp","*Como* usuario, *quiero* ver las calorías y macronutrientes de cada receta por porción, *para* tomar decisiones informadas.
+
+*Criterios de aceptación*
+# Dado cualquier receta del catálogo Cuando abro su detalle Entonces veo kcal, proteína (g), carbohidratos (g) y grasa (g) por porción, visibles sin necesidad de scroll adicional, calculados desde la base de datos nutricional (no estimados manualmente por el equipo de contenido).
+
+*Depende de:* US-111
+
+Ficha completa: docs/05-historias-de-usuario (US-115)."
+"1052","Sub-task","Bloque de nutrición en el detalle de receta","115","Done","Done","","","","","M08 Nutrición y feedback","","","","","",""
+"1053","Sub-task","Nutrición escalada a las porciones","115","Done","Done","","","","","M08 Nutrición y feedback","","","","","",""
+"1054","Sub-task","Pruebas de la pantalla","115","Done","Done","","","","","M08 Nutrición y feedback","","","","","",""
+"116","Story","US-116 · Editar perfil en cualquier momento","1","Done","Done","High","3","Sprint 2","v1.0 MVP","M02 Perfil y preferencias","sprint-2","F1","historia","perfil","mvp","*Como* usuario, *quiero* poder editar mi perfil (dieta, alergias, presupuesto) en cualquier momento, no solo durante el registro, *para* .
+
+*Criterios de aceptación*
+# Dado que tengo un perfil ya creado Cuando entro a ""Mi perfil"" y cambio mi presupuesto de $60.000 a $40.000 Entonces el plan de la semana en curso recalcula el gasto restante contra el nuevo monto sin necesidad de cerrar sesión.
+# Caso borde: si el nuevo presupuesto es menor al gasto ya registrado esa semana, se muestra ""Ya superaste tu nuevo presupuesto"" sin bloquear el guardado del cambio.
+
+*Depende de:* US-106, US-107
+
+Ficha completa: docs/05-historias-de-usuario (US-116)."
+"1055","Sub-task","Perfil como resumen con filas editables","116","Done","Done","","","","","M02 Perfil y preferencias","","","","","",""
+"1056","Sub-task","Reutilizar los formularios del onboarding","116","Done","Done","","","","","M02 Perfil y preferencias","","","","","",""
+"1057","Sub-task","Revocar la autorización con advertencia (R4)","116","Done","Done","","","","","M02 Perfil y preferencias","","","","","",""
+"117","Story","US-117 · Generar plan de comidas semanal automático","2","Done","Done","High","13","Sprint 4","v1.0 MVP","M04 Motor de planificación","sprint-4","F1","historia","plan-de-comidas","mvp","*Como* usuario, *quiero* recibir un plan de comidas semanal generado automáticamente, *para* no tener que decidir qué cocinar cada día.
+
+*Criterios de aceptación*
+# Dado que mi perfil tiene dieta, alergias y presupuesto completos Cuando toco ""Generar plan semanal"" Entonces se generan 21 comidas (7 días x 3 comidas), 0 de ellas viola mis alergias o dieta, el tiempo de generación es ≤5 segundos en el 95% de las mediciones, y el costo total estimado se muestra junto al presupuesto declarado.
+
+*Depende de:* US-110, US-107, US-103
+
+Ficha completa: docs/05-historias-de-usuario (US-117)."
+"1058","Sub-task","RPC generate_plan con reglas en SQL","117","Done","Done","","","","","M04 Motor de planificación","","","","","",""
+"1059","Sub-task","Guardado atómico con save_generated_plan","117","Done","Done","","","","","M04 Motor de planificación","","","","","",""
+"1060","Sub-task","Pantalla Mi semana con el plan","117","Done","Done","","","","","M04 Motor de planificación","","","","","",""
+"1061","Sub-task","Pruebas: elegibilidad, variedad y motivo","117","Done","Done","","","","","M04 Motor de planificación","","","","","",""
+"118","Story","US-118 · Escalar porciones de una receta con recálculo automático","2","Done","Done","High","5","Sprint 3","v1.0 MVP","M03 Catálogo de recetas e ingredientes","sprint-3","F1","historia","recetas","mvp","*Como* usuario, *quiero* cambiar el número de porciones de una receta y que las cantidades de ingredientes se recalculen automáticamente, *para* .
+
+*Criterios de aceptación*
+# Dado que una receta base para 4 porciones lleva 200g de garbanzos Cuando cambio a 6 porciones Entonces la cantidad se recalcula a 300g (factor 1.5) en menos de 200ms, y la información nutricional se multiplica por el mismo factor.
+
+*Depende de:* US-110
+
+Ficha completa: docs/05-historias-de-usuario (US-118)."
+"1062","Sub-task","Selector de porciones de 1 a 12","118","Done","Done","","","","","M03 Catálogo de recetas e ingredientes","","","","","",""
+"1063","Sub-task","RPC preview_recipe: todo se calcula en la base","118","Done","Done","","","","","M03 Catálogo de recetas e ingredientes","","","","","",""
+"1064","Sub-task","Marcado 'lo tienes / te falta'","118","Done","Done","","","","","M03 Catálogo de recetas e ingredientes","","","","","",""
+"119","Story","US-119 · Gestionar ingredientes de la despensa (agregar, editar, eliminar)","3","Done","Done","High","5","Sprint 2","v1.0 MVP","M06 Compras y despensa","sprint-2","F1","historia","compras","mvp","*Como* usuario, *quiero* agregar, editar y eliminar ingredientes de mi despensa con su cantidad y unidad, *para* que la app sepa qué tengo en casa.
+
+*Criterios de aceptación*
+# Dado que estoy en la pantalla Despensa Cuando agrego ""lentejas"" con 500 g Entonces el ítem aparece en mi inventario con cantidad y unidad y queda disponible para el cruce con listas de compras y el ranking de recetas.
+# Caso borde: si agrego un ingrediente que ya existe con unidad compatible, la cantidad se suma (200 g + 300 g = 500 g) en vez de duplicar el ítem; si la unidad es incompatible (g vs unidades), se pide confirmar antes de guardar.
+
+*Depende de:* US-104
+
+Ficha completa: docs/05-historias-de-usuario (US-119)."
+"1065","Sub-task","Pantalla de despensa","119","Done","Done","","","","","M06 Compras y despensa","","","","","",""
+"1066","Sub-task","Agregar con búsqueda sin tildes y unidades (g, kg, lb, unidad)","119","Done","Done","","","","","M06 Compras y despensa","","","","","",""
+"1067","Sub-task","Editar y quitar ítems","119","Done","Done","","","","","M06 Compras y despensa","","","","","",""
+"1068","Sub-task","Pruebas","119","Done","Done","","","","","M06 Compras y despensa","","","","","",""
+"120","Story","US-120 · Estimar costos con precios promedio reales de mi región","3","Done","Done","High","5","Sprint 4","v1.0 MVP","M07 Presupuesto y precios","sprint-4","F1","historia","presupuesto","mvp","*Como* usuario, *quiero* que los costos estimados se basen en precios promedio de mi región y muestren qué tan actualizados están, *para* confiar en el presupuesto que veo.
+
+*Criterios de aceptación*
+# Dado un ingrediente del catálogo y la región del usuario Cuando se consulta su precio Entonces se devuelve precio por unidad base (kg, L o unidad) en COP y la fecha de su última actualización; el 100% de los ingredientes del catálogo inicial tiene precio en la región piloto.
+# Caso borde: si falta el precio regional, se usa el promedio nacional y el resultado se marca como ""estimado"".
+
+*Depende de:* US-112, US-110
+
+Ficha completa: docs/05-historias-de-usuario (US-120)."
+"1069","Sub-task","Precios por región (ingredient_prices)","120","Done","Done","","","","","M07 Presupuesto y precios","","","","","",""
+"1070","Sub-task","RPC recipe_cost con precios faltantes y estimados","120","Done","Done","","","","","M07 Presupuesto y precios","","","","","",""
+"1071","Sub-task","Pruebas de costo","120","Done","Done","","","","","M07 Presupuesto y precios","","","","","",""
+"121","Story","US-121 · Revisar con un nutricionista titulado las recetas y reglas nutricionales","4","In Progress","","High","5","Sprint 11","v1.0 MVP","M03 Catálogo de recetas e ingredientes","sprint-11","F1","historia","nutricion","mvp","*Como* usuario con una condición de salud, *quiero* que las recetas y las reglas nutricionales de la app hayan sido revisadas por un nutricionista titulado, *para* confiar en lo que me recomienda.
+
+*Criterios de aceptación*
+# Dado el catálogo inicial de recetas Cuando el nutricionista termina la revisión Entonces el 100% de las recetas tiene registrados el nombre del revisor y la fecha de revisión, y las recetas rechazadas no se publican.
+# Caso borde: las reglas de sustitución (por ejemplo leche por leche de almendra) y los umbrales de sodio y calorías que usa la app quedan aprobados por escrito antes de usarse en producción.
+
+*Depende de:* US-110
+
+*Cómo quedó:* Hecha la revisión asistida por IA con fuentes USDA (ADR-021), visible en la app. Falta la revisión de una nutricionista titulada.
+
+Ficha completa: docs/05-historias-de-usuario (US-121)."
+"1072","Sub-task","Revisión asistida por IA con fuentes USDA (ADR-021)","121","Done","Done","","","","","M03 Catálogo de recetas e ingredientes","","","","","",""
+"1073","Sub-task","Mostrar en la app el estado de la revisión","121","Done","Done","","","","","M03 Catálogo de recetas e ingredientes","","","","","",""
+"1074","Sub-task","Revisión de recetas y alérgenos con nutricionista titulada","121","To Do","","","","","","M03 Catálogo de recetas e ingredientes","","","","","",""
+"1075","Sub-task","Registrar la revisión en nutritionist_reviews","121","To Do","","","","","","M03 Catálogo de recetas e ingredientes","","","","","",""
+"122","Story","US-122 · Detectar y corregir fallas de la app rápidamente","6","Done","Done","Medium","8","Sprint 10","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-10","F2","enabler","plataforma","agregada-por-po","*Como* usuario, *quiero* que las fallas de la app se detecten y se corrijan rápido, *para* que no me impidan planificar mis comidas.
+
+*Criterios de aceptación*
+# Dado que ocurre un error no controlado en la app o en el servidor Cuando se registra Entonces el equipo recibe una alerta en máximo 5 minutos con el detalle técnico y sin incluir datos de salud del usuario.
+# Caso borde: existe un panel con tasa de errores y disponibilidad semanal, y se dispara una alerta cuando la disponibilidad cae por debajo del 99%.
+
+*Cómo quedó:* Registro de fallas propio en vez de Sentry (ADR-026).
+
+Ficha completa: docs/05-historias-de-usuario (US-122)."
+"1076","Sub-task","Tabla app_errors y RPC report_app_error","122","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","","","","","",""
+"1077","Sub-task","Limpieza de datos en la app y en un trigger","122","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","","","","","",""
+"1078","Sub-task","ErrorBoundary y manejador global de errores","122","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","","","","","",""
+"1079","Sub-task","Alerta por correo cada 5 min (error-alert + Resend)","122","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","","","","","",""
+"1080","Sub-task","ADR-026: registro propio en vez de Sentry","122","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","","","","","",""
+"123","Story","US-123 · Marcar una comida como cocinada","2","Done","Done","High","5","Sprint 3","v1.0 MVP","M04 Motor de planificación","sprint-3","F1","historia","plan-de-comidas","mvp","*Como* usuario, *quiero* marcar una comida del plan como cocinada, *para* llevar el registro de lo que realmente preparé.
+
+*Criterios de aceptación*
+# Dado una comida planificada para hoy Cuando toco ""Marcar como cocinada"" Entonces la comida pasa a estado ""cocinada"" con la hora de registro, se descuentan de la despensa las cantidades de ingredientes usados y se abre el selector de calificación.
+# Caso borde: si la despensa no tiene cantidad suficiente de un ingrediente, se descuenta hasta 0 sin quedar negativa y la acción no se bloquea; puedo deshacer la acción durante 10 segundos.
+
+*Depende de:* US-117, US-119
+
+Ficha completa: docs/05-historias-de-usuario (US-123)."
+"1081","Sub-task","Cocinar desde el plan (cook_planned_meal)","123","Done","Done","","","","","M04 Motor de planificación","","","","","",""
+"1082","Sub-task","Cocinar ahora sin plan (cook_now)","123","Done","Done","","","","","M04 Motor de planificación","","","","","",""
+"1083","Sub-task","Descontar despensa, primero lo que vence","123","Done","Done","","","","","M04 Motor de planificación","","","","","",""
+"1084","Sub-task","Deshacer dentro de 10 s","123","Done","Done","","","","","M04 Motor de planificación","","","","","",""
+"124","Story","US-124 · Generar lista de compras desde el plan semanal","3","Done","Done","High","8","Sprint 5","v1.0 MVP","M06 Compras y despensa","sprint-5","F1","historia","compras","mvp","*Como* usuario, *quiero* generar automáticamente la lista de compras a partir de mi plan semanal, *para* no armarla manualmente.
+
+*Criterios de aceptación*
+# Dado un plan semanal ya generado con 21 comidas Cuando toco ""Generar lista de compras"" Entonces los ingredientes que se repiten en 2 o más recetas aparecen como una sola línea con la suma exacta de cantidades (ej. ""3 tazas de garbanzos"" en vez de 3 líneas separadas).
+
+*Depende de:* US-117
+
+Ficha completa: docs/05-historias-de-usuario (US-124)."
+"1085","Sub-task","RPC generate_shopping_list desde el plan","124","Done","Done","","","","","M06 Compras y despensa","","","","","",""
+"1086","Sub-task","Pantalla de lista de mercado","124","Done","Done","","","","","M06 Compras y despensa","","","","","",""
+"1087","Sub-task","Pruebas","124","Done","Done","","","","","M06 Compras y despensa","","","","","",""
+"125","Story","US-125 · Excluir de la lista los ingredientes ya en despensa","3","Done","Done","High","3","Sprint 5","v1.0 MVP","M06 Compras y despensa","sprint-5","F1","historia","compras","mvp","*Como* usuario, *quiero* que los ingredientes que ya tengo en despensa no aparezcan como pendientes de comprar, *para* .
+
+*Criterios de aceptación*
+# Dado que tengo 200g de lentejas en despensa y el plan requiere 250g en total Cuando se genera la lista de compras Entonces el ítem ""lentejas"" aparece con cantidad neta a comprar = 50g.
+# Caso borde: si la despensa cubre el 100% del requerimiento, el ítem aparece tachado con la nota ""ya tienes esto"" en vez de omitirse silenciosamente.
+
+*Depende de:* US-124, US-119
+
+Ficha completa: docs/05-historias-de-usuario (US-125)."
+"1088","Sub-task","Restar la despensa vigente","125","Done","Done","","","","","M06 Compras y despensa","","","","","",""
+"1089","Sub-task","Los básicos (sal, aceite, agua) no llenan la lista","125","Done","Done","","","","","M06 Compras y despensa","","","","","",""
+"126","Story","US-126 · Marcar, eliminar y agregar ítems manualmente en la lista","3","Done","Done","High","5","Sprint 5","v1.0 MVP","M06 Compras y despensa","sprint-5","F1","historia","compras","mvp","*Como* usuario, *quiero* tachar o eliminar ítems de la lista manualmente, *para* ajustarla a mi realidad.
+
+*Criterios de aceptación*
+# Dado que estoy viendo mi lista de compras Cuando toco el checkbox de un ítem Entonces el ítem se tacha visualmente y se mueve al final de su sección; además puedo agregar un ítem libre mediante un campo de texto que no queda vinculado a ninguna receta.
+
+Ficha completa: docs/05-historias-de-usuario (US-126)."
+"1090","Sub-task","Marcar con actualización optimista","126","Done","Done","","","","","M06 Compras y despensa","","","","","",""
+"1091","Sub-task","Cola sin conexión que se sincroniza (ADR-014)","126","Done","Done","","","","","M06 Compras y despensa","","","","","",""
+"1092","Sub-task","Quitar y agregar ítems manuales","126","Done","Done","","","","","M06 Compras y despensa","","","","","",""
+"1093","Sub-task","Pasar lo comprado a la despensa","126","Done","Done","","","","","M06 Compras y despensa","","","","","",""
+"127","Story","US-127 · Mostrar costo estimado del plan semanal","3","Done","Done","High","3","Sprint 4","v1.0 MVP","M07 Presupuesto y precios","sprint-4","F1","historia","presupuesto","mvp","*Como* usuario, *quiero* ver el costo estimado de mi plan semanal antes de ir a comprar, *para* saber si se ajusta a mi presupuesto.
+
+*Criterios de aceptación*
+# Dado un plan semanal generado Cuando abro el resumen Entonces veo el costo total estimado (suma de precio_promedio x cantidad por ingrediente) desglosado por receta, con la fuente y antigüedad del precio visible (ej. ""precios promedio Nariño, actualizados hace 5 días"").
+
+*Depende de:* US-120, US-117
+
+Ficha completa: docs/05-historias-de-usuario (US-127)."
+"1094","Sub-task","RPC plan_budget_status","127","Done","Done","","","","","M07 Presupuesto y precios","","","","","",""
+"1095","Sub-task","Tarjeta de costo en Mi semana","127","Done","Done","","","","","M07 Presupuesto y precios","","","","","",""
+"128","Story","US-128 · Calificar una receta después de cocinarla","4","Done","Done","High","3","Sprint 6","v1.0 MVP","M08 Nutrición y feedback","sprint-6","F1","historia","feedback","mvp","*Como* usuario, *quiero* calificar una receta después de cocinarla, *para* mejorar mis futuras recomendaciones.
+
+*Criterios de aceptación*
+# Dado que marco una receta como ""cocinada"" Cuando confirmo esa acción Entonces se despliega un selector de 1 a 5 estrellas obligatorio antes de cerrar el modal, y la calificación queda asociada a receta+usuario+fecha en el historial.
+
+*Depende de:* US-123
+
+Ficha completa: docs/05-historias-de-usuario (US-128)."
+"1096","Sub-task","Formulario de estrellas, etiquetas y comentario","128","Done","Done","","","","","M08 Nutrición y feedback","","","","","",""
+"1097","Sub-task","RPC rate_meal (solo después de cocinar)","128","Done","Done","","","","","M08 Nutrición y feedback","","","","","",""
+"1098","Sub-task","Pruebas","128","Done","Done","","","","","M08 Nutrición y feedback","","","","","",""
+"129","Story","US-129 · Cambiar una comida del plan por una alternativa","2","Done","Done","High","5","Sprint 4","v1.0 MVP","M04 Motor de planificación","sprint-4","F1","historia","plan-de-comidas","mvp","*Como* usuario, *quiero* cambiar una comida específica del plan por una alternativa sugerida, sin regenerar todo el plan, *para* .
+
+*Criterios de aceptación*
+# Dado que estoy viendo la cena del jueves en mi plan semanal Cuando toco ""Cambiar"" Entonces se muestran entre 2 y 4 alternativas compatibles con mi perfil; al elegir una, solo esa celda del plan cambia y el resumen de calorías y gasto se recalcula sin refrescar el resto del plan.
+
+*Depende de:* US-117
+
+Ficha completa: docs/05-historias-de-usuario (US-129)."
+"1099","Sub-task","Pantalla Cambiar comida con alternativas elegibles","129","Done","Done","","","","","M04 Motor de planificación","","","","","",""
+"1100","Sub-task","Omitir y confirmar el plan","129","Done","Done","","","","","M04 Motor de planificación","","","","","",""
+"1101","Sub-task","Regenerar archiva lo ya cocinado","129","Done","Done","","","","","M04 Motor de planificación","","","","","",""
+"130","Story","US-130 · Omitir onboarding y completarlo después","1","Done","Done","Medium","2","Sprint 2","v1.1 Mejora y retención","M02 Perfil y preferencias","sprint-2","F2","historia","perfil","","*Como* usuario ocupado, *quiero* poder saltar el onboarding completo y completarlo después, *para* empezar a usar la app de inmediato.
+
+*Criterios de aceptación*
+# Dado que estoy en el paso 1 del onboarding Cuando toco ""Completar después"" Entonces accedo directo al plan semanal con valores por defecto (sin restricciones, presupuesto no definido, 2 porciones) y veo un banner persistente ""Completa tu perfil para mejores recomendaciones"" hasta que lo complete o lo descarte 3 veces.
+
+Ficha completa: docs/05-historias-de-usuario (US-130)."
+"1102","Sub-task","Botón 'Completar después' en el onboarding","130","Done","Done","","","","","M02 Perfil y preferencias","","","","","",""
+"1103","Sub-task","Aviso permanente si no hay alergias declaradas","130","Done","Done","","","","","M02 Perfil y preferencias","","","","","",""
+"131","Story","US-131 · Medir el uso de las funciones clave para priorizar con datos","6","Done","Done","Medium","5","Sprint 9","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-9","F2","enabler","analitica","agregada-por-po","*Como* product owner, *quiero* medir el uso de las funciones clave, *para* decidir qué priorizar en el backlog con datos y no con intuición.
+
+*Criterios de aceptación*
+# Dado que un usuario completa el onboarding, genera un plan, genera una lista de compras o marca una comida como cocinada Cuando ocurre cada acción Entonces se registra un evento anónimo con fecha y tipo de acción.
+# Caso borde: ningún evento incluye alergias, condiciones médicas ni datos personales identificables, y el usuario puede desactivar la analítica desde Configuración.
+
+Ficha completa: docs/05-historias-de-usuario (US-131)."
+"1104","Sub-task","Tabla analytics_events anónima (ADR-015)","131","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","","","","","",""
+"1105","Sub-task","Identificador anónimo en el teléfono","131","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","","","","","",""
+"1106","Sub-task","Interruptor de analítica en Privacidad","131","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","","","","","",""
+"1107","Sub-task","Eventos de las funciones clave","131","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","","","","","",""
+"132","Story","US-132 · Alertar cuando el plan supera el presupuesto","3","Done","Done","High","2","Sprint 4","v1.0 MVP","M07 Presupuesto y precios","sprint-4","F1","historia","presupuesto","mvp","*Como* usuario, *quiero* que la app me avise si mi plan supera el presupuesto declarado, antes de confirmarlo, *para* .
+
+*Criterios de aceptación*
+# Dado un presupuesto semanal de $60.000 y un plan con costo estimado de $68.000 Cuando intento confirmar el plan Entonces aparece una alerta bloqueante ""Tu plan cuesta $8.000 más de tu presupuesto"" con las opciones ""Ajustar automáticamente"" y ""Confirmar de todos modos""; no puedo avanzar sin elegir una.
+
+*Depende de:* US-127, US-108
+
+Ficha completa: docs/05-historias-de-usuario (US-132)."
+"1108","Sub-task","Alertas 'cerca' y 'se pasa' del presupuesto","132","Done","Done","","","","","M07 Presupuesto y precios","","","","","",""
+"1109","Sub-task","Conteo honesto de precios faltantes","132","Done","Done","","","","","M07 Presupuesto y precios","","","","","",""
+"133","Story","US-133 · Exportar o eliminar todos mis datos","5","Done","Done","High","5","Sprint 6","v1.0 MVP","M01 Cuenta, consentimientos y privacidad","sprint-6","F1","historia","privacidad","mvp","*Como* usuario, *quiero* poder exportar o eliminar todos mis datos de la app, *para* tener control sobre mi información.
+
+*Criterios de aceptación*
+# Dado que estoy en configuración de privacidad Cuando toco ""Eliminar mi cuenta y datos"" y confirmo reingresando mi contraseña Entonces todos mis datos personales se eliminan o anonimizan en un plazo máximo de 30 días, con confirmación enviada por correo.
+
+*Depende de:* US-104
+
+Ficha completa: docs/05-historias-de-usuario (US-133)."
+"1110","Sub-task","Exportar mis datos (export_my_data y compartir)","133","Done","Done","","","","","M01 Cuenta, consentimientos y privacidad","","","","","",""
+"1111","Sub-task","Edge Function delete-account","133","Done","Done","","","","","M01 Cuenta, consentimientos y privacidad","","","","","",""
+"1112","Sub-task","Confirmación escribiendo ELIMINAR","133","Done","Done","","","","","M01 Cuenta, consentimientos y privacidad","","","","","",""
+"1113","Sub-task","Prueba de punta a punta en local","133","Done","Done","","","","","M01 Cuenta, consentimientos y privacidad","","","","","",""
+"134","Story","US-134 · Usar calificaciones para ajustar futuras recomendaciones","4","Done","Done","High","3","Sprint 6","v1.0 MVP","M08 Nutrición y feedback","sprint-6","F1","historia","feedback","mvp","*Como* usuario, *quiero* que mis calificaciones afecten las próximas recomendaciones, *para* no volver a ver recetas que no me gustaron.
+
+*Criterios de aceptación*
+# Dado que califiqué ""Sopa de lentejas"" con 1 estrella Cuando se genera mi próximo plan semanal Entonces esa receta específica no vuelve a aparecer durante al menos 60 días, y recetas con ingredientes principales similares bajan su prioridad en el ranking un 20%.
+
+*Depende de:* US-128
+
+Ficha completa: docs/05-historias-de-usuario (US-134)."
+"1114","Sub-task","Lo calificado con 1–2 estrellas no vuelve en 60 días","134","Done","Done","","","","","M08 Nutrición y feedback","","","","","",""
+"1115","Sub-task","Lo calificado con 4–5 sube en el plan (high_rating)","134","Done","Done","","","","","M08 Nutrición y feedback","","","","","",""
+"135","Story","US-135 · Organizar lista de compras por sección del supermercado","3","Done","Done","Medium","3","Sprint 5","v1.1 Mejora y retención","M06 Compras y despensa","sprint-5","F2","historia","compras","","*Como* usuario, *quiero* que la lista esté organizada por sección del supermercado (verdulería, lácteos, despensa), *para* comprar más rápido.
+
+*Criterios de aceptación*
+# Dado una lista de compras con 15 ítems de distintas categorías Cuando se muestra la lista Entonces los ítems se agrupan bajo mínimo 4 encabezados de sección; si arrastro un encabezado a otra posición, el nuevo orden se recuerda en la siguiente lista generada.
+
+*Depende de:* US-124
+
+Ficha completa: docs/05-historias-de-usuario (US-135)."
+"1116","Sub-task","Secciones del supermercado en la lista","135","Done","Done","","","","","M06 Compras y despensa","","","","","",""
+"1117","Sub-task","Lo que ya se tiene va aparte","135","Done","Done","","","","","M06 Compras y despensa","","","","","",""
+"1118","Sub-task","Vista my_shopping_items con unidades aproximadas","135","Done","Done","","","","","M06 Compras y despensa","","","","","",""
+"136","Story","US-136 · Ajustar objetivo de macronutrientes (slider de proteína)","1","Done","Done","Medium","5","Sprint 9","v1.1 Mejora y retención","M02 Perfil y preferencias","sprint-9","F2","historia","personalizacion","","*Como* usuario, *quiero* ajustar mi objetivo de proteína, carbohidratos y grasa, *para* que las recetas sugeridas respeten mis macros.
+
+*Criterios de aceptación*
+# Dado que muevo el slider de proteína de 30% a 40% y lo suelto Cuando el sistema recalcula Entonces la franja de macros se actualiza en menos de 300ms (carbohidratos y grasa se ajustan para sumar 100%) y las recetas sugeridas desde ese momento aportan un mínimo de 35% de calorías provenientes de proteína.
+
+Ficha completa: docs/05-historias-de-usuario (US-136)."
+"1119","Sub-task","Meta de proteína y calorías en Preferencias","136","Done","Done","","","","","M02 Perfil y preferencias","","","","","",""
+"1120","Sub-task","Exigir autorización de datos sensibles (trigger)","136","Done","Done","","","","","M02 Perfil y preferencias","","","","","",""
+"1121","Sub-task","El plan prefiere recetas cerca de la meta (macro_fit)","136","Done","Done","","","","","M02 Perfil y preferencias","","","","","",""
+"137","Story","US-137 · Fijar tiempo máximo de cocina","1","Done","Done","Medium","3","Sprint 7","v1.1 Mejora y retención","M02 Perfil y preferencias","sprint-7","F2","historia","personalizacion","","*Como* usuario con poco tiempo, *quiero* fijar un tiempo máximo de cocción, *para* que solo se me sugieran recetas que respeten ese límite.
+
+*Criterios de aceptación*
+# Dado que fijo 20 minutos como tiempo máximo Cuando se genera el plan semanal o busco una receta Entonces ninguna receta con tiempo_preparación > 20 minutos aparece en los resultados.
+# Caso borde: si no existe ninguna receta compatible con el resto de mis restricciones, se muestra ""No encontramos recetas de 20 min o menos con tus restricciones actuales, ¿probamos con 30?"" en vez de una lista vacía.
+
+Ficha completa: docs/05-historias-de-usuario (US-137)."
+"1122","Sub-task","Tiempo máximo en Preferencias","137","Done","Done","","","","","M02 Perfil y preferencias","","","","","",""
+"1123","Sub-task","Aviso cuando una receta pasa el tiempo","137","Done","Done","","","","","M02 Perfil y preferencias","","","","","",""
+"1124","Sub-task","El plan respeta el tiempo máximo","137","Done","Done","","","","","M02 Perfil y preferencias","","","","","",""
+"138","Story","US-138 · Seleccionar cocinas favoritas","1","Done","Done","Medium","3","Sprint 7","v1.1 Mejora y retención","M02 Perfil y preferencias","sprint-7","F2","historia","personalizacion","","*Como* usuario, *quiero* seleccionar mis cocinas favoritas (mediterránea, asiática, mexicana, etc.), *para* recibir más variedad dentro de mi gusto.
+
+*Criterios de aceptación*
+# Dado que selecciono ""Mediterránea"" y ""Asiática"" como cocinas favoritas Cuando se genera el plan semanal Entonces al menos el 60% de las 21 comidas del plan pertenecen a esas dos categorías, salvo que eso entre en conflicto con la regla de no repetir proteína (épica Motor de planes).
+
+Ficha completa: docs/05-historias-de-usuario (US-138)."
+"1125","Sub-task","Tabla user_cuisines y RPC set_my_cuisines","138","Done","Done","","","","","M02 Perfil y preferencias","","","","","",""
+"1126","Sub-task","Selector de cocinas favoritas","138","Done","Done","","","","","M02 Perfil y preferencias","","","","","",""
+"1127","Sub-task","El plan prefiere las favoritas (cuisine_favorite)","138","Done","Done","","","","","M02 Perfil y preferencias","","","","","",""
+"139","Story","US-139 · Generar plan solo para hoy","2","Done","Done","Medium","2","Sprint 4","v1.1 Mejora y retención","M04 Motor de planificación","sprint-4","F2","historia","plan-de-comidas","","*Como* usuario, *quiero* poder pedir un plan solo, *para* hoy en vez de la semana completa, para decisiones del día a día.
+
+*Criterios de aceptación*
+# Dado que estoy en la pantalla principal Cuando toco ""Plan de hoy"" Entonces se genera una sugerencia de desayuno/almuerzo/cena en menos de 3 segundos, usando como filtro adicional el tiempo disponible que declaré para hoy (si lo indiqué).
+
+Ficha completa: docs/05-historias-de-usuario (US-139)."
+"1128","Sub-task","Opción 'solo hoy' al generar el plan","139","Done","Done","","","","","M04 Motor de planificación","","","","","",""
+"1129","Sub-task","Pruebas","139","Done","Done","","","","","M04 Motor de planificación","","","","","",""
+"140","Story","US-140 · Usar la app con baja visión o lector de pantalla","6","Done","Done","Medium","5","Sprint 9","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-9","F2","enabler","calidad","agregada-por-po","*Como* usuario con baja visión, *quiero* que la app tenga buen contraste, texto escalable y compatibilidad con lector de pantalla, *para* poder planificar mis comidas sin ayuda.
+
+*Criterios de aceptación*
+# Dado cualquiera de las pantallas principales (preferencias, plan semanal, receta y lista de compras) Cuando se revisa con una herramienta de contraste Entonces todos los textos cumplen una relación de contraste mínima de 4.5:1.
+# Dado que aumento el tamaño de fuente del sistema al 200% Cuando abro esas pantallas Entonces no hay texto cortado ni controles superpuestos, y todos los botones e imágenes tienen una etiqueta legible por lector de pantalla.
+
+*Cómo quedó:* Cubierto con prueba estática; falta el checklist manual con TalkBack en el APK (tarea del Sprint 11).
+
+Ficha completa: docs/05-historias-de-usuario (US-140)."
+"1130","Sub-task","Etiquetas de accesibilidad en todos los controles","140","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","","","","","",""
+"1131","Sub-task","Letra al 200 % sin cortes","140","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","","","","","",""
+"1132","Sub-task","Prueba estática de accesibilidad","140","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","","","","","",""
+"1133","Sub-task","Checklist manual documentado","140","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","","","","","",""
+"141","Story","US-141 · Ver gasto acumulado mensual vs. presupuesto","3","Done","Done","Medium","5","Sprint 9","v1.1 Mejora y retención","M07 Presupuesto y precios","sprint-9","F2","historia","presupuesto","","*Como* usuario, *quiero* ver mi gasto acumulado del mes frente a mi presupuesto mensual, *para* tomar decisiones informadas.
+
+*Criterios de aceptación*
+# Dado que registré compras durante el mes Cuando abro la pantalla de despensa y gasto Entonces veo gasto_acumulado/presupuesto_mensual con el porcentaje exacto (ej. ""64% — $38.200 de $60.000""); si supera el 100%, la barra cambia a color de alerta.
+
+Ficha completa: docs/05-historias-de-usuario (US-141)."
+"1134","Sub-task","RPC record_purchase y monthly_spend","141","Done","Done","","","","","M07 Presupuesto y precios","","","","","",""
+"1135","Sub-task","Registrar lo pagado desde la lista","141","Done","Done","","","","","M07 Presupuesto y precios","","","","","",""
+"1136","Sub-task","Tarjeta de gasto del mes","141","Done","Done","","","","","M07 Presupuesto y precios","","","","","",""
+"142","Story","US-142 · Registrar fecha de vencimiento de ingredientes","3","Done","Done","Medium","2","Sprint 2","v1.1 Mejora y retención","M06 Compras y despensa","sprint-2","F2","historia","desperdicio","","*Como* usuario, *quiero* registrar la fecha de vencimiento de los ingredientes de mi despensa, *para* que la app me avise antes de que se echen a perder.
+
+*Criterios de aceptación*
+# Dado que agrego ""cilantro"" a mi despensa Cuando completo el campo opcional de fecha de vencimiento Entonces el ítem aparece en la sección ""por vencer"" ordenado ascendentemente por días restantes.
+# Caso borde: si no indico fecha, el ítem se lista en ""sin fecha"" y no genera alertas.
+
+*Depende de:* US-119
+
+Ficha completa: docs/05-historias-de-usuario (US-142)."
+"1137","Sub-task","Vencimientos rápidos al agregar a la despensa","142","Done","Done","","","","","M06 Compras y despensa","","","","","",""
+"1138","Sub-task","Vida útil por defecto al pasar compras a la despensa","142","Done","Done","","","","","M06 Compras y despensa","","","","","",""
+"143","Story","US-143 · Mostrar micronutrientes clave (sodio, azúcar, fibra)","4","Done","Done","Medium","2","Sprint 3","v1.1 Mejora y retención","M08 Nutrición y feedback","sprint-3","F2","historia","nutricion","","*Como* usuario con una condición médica, *quiero* ver sodio, azúcar y fibra por receta, *para* cuidar mi condición.
+
+*Criterios de aceptación*
+# Dado que declaré hipertensión en mi perfil Cuando abro el detalle nutricional expandido de una receta Entonces veo el contenido de sodio en mg junto con una referencia visual si supera el 30% de la ingesta diaria recomendada.
+
+*Depende de:* US-111
+
+Ficha completa: docs/05-historias-de-usuario (US-143)."
+"1139","Sub-task","Datos de fibra, azúcar y sodio en el catálogo","143","Done","Done","","","","","M08 Nutrición y feedback","","","","","",""
+"1140","Sub-task","Micronutrientes por porción en la receta","143","Done","Done","","","","","M08 Nutrición y feedback","","","","","",""
+"144","Story","US-144 · Dejar comentario corto sobre una receta","4","Done","Done","Medium","2","Sprint 6","v1.1 Mejora y retención","M08 Nutrición y feedback","sprint-6","F2","historia","feedback","","*Como* usuario, *quiero* dejar un comentario corto sobre una receta (ej. 'muy salado'), *para* dar contexto además de la calificación numérica.
+
+*Criterios de aceptación*
+# Dado que califiqué una receta con 2 estrellas Cuando se me pregunta ""¿qué pasó?"" Entonces puedo elegir una etiqueta rápida (""muy salado"", ""tardó más de lo esperado"", ""no me gustó el sabor"") o escribir texto libre de hasta 200 caracteres; el campo es opcional y puedo omitirlo con un toque.
+
+*Cómo quedó:* El comentario es privado y va con la calificación; los comentarios públicos son parte de la comunidad (F3).
+
+Ficha completa: docs/05-historias-de-usuario (US-144)."
+"1141","Sub-task","Etiquetas rápidas ('muy salado', 'tardó más')","144","Done","Done","","","","","M08 Nutrición y feedback","","","","","",""
+"1142","Sub-task","Comentario opcional de hasta 200 caracteres","144","Done","Done","","","","","M08 Nutrición y feedback","","","","","",""
+"145","Story","US-145 · Activar modo «priorizar despensa»","1","Done","Done","Medium","2","Sprint 4","v1.1 Mejora y retención","M02 Perfil y preferencias","sprint-4","F2","historia","personalizacion","","*Como* usuario, *quiero* activar 'priorizar despensa', *para* que el sistema sugiera primero recetas que usan lo que ya tengo en casa.
+
+*Criterios de aceptación*
+# Dado que activo el interruptor ""Priorizar despensa"" y tengo garbanzos y espinaca en mi inventario Cuando se genera el plan del día Entonces las recetas que usan 2 o más ingredientes ya declarados en despensa ocupan las primeras 3 posiciones del ranking, por encima de recetas con igual calificación pero 0 ingredientes en despensa.
+
+*Depende de:* US-119, US-117
+
+*Cómo quedó:* El generador siempre prioriza despensa y vencimientos; no hizo falta un interruptor.
+
+Ficha completa: docs/05-historias-de-usuario (US-145)."
+"1143","Sub-task","El generador prioriza despensa y vencimientos","145","Done","Done","","","","","M02 Perfil y preferencias","","","","","",""
+"1144","Sub-task","Motivos pantry_match y pantry_expiring","145","Done","Done","","","","","M02 Perfil y preferencias","","","","","",""
+"146","Story","US-146 · Evitar repetir proteína principal en días consecutivos","2","Done","Done","Medium","3","Sprint 4","v1.1 Mejora y retención","M04 Motor de planificación","sprint-4","F2","historia","plan-de-comidas","","*Como* usuario, *quiero* que el plan no repita la misma proteína principal más de 2 veces seguidas, *para* tener variedad.
+
+*Criterios de aceptación*
+# Dado que el almuerzo del lunes tiene pollo como proteína principal Cuando se genera el almuerzo del martes Entonces el martes no puede tener pollo como proteína principal; a partir del tercer día consecutivo sin esa proteína, puede volver a aparecer.
+
+*Depende de:* US-117
+
+Ficha completa: docs/05-historias-de-usuario (US-146)."
+"1145","Sub-task","Regla de variedad: sin repetir proteína en días seguidos","146","Done","Done","","","","","M04 Motor de planificación","","","","","",""
+"1146","Sub-task","Pruebas del generador","146","Done","Done","","","","","M04 Motor de planificación","","","","","",""
+"147","Story","US-147 · Sugerir sustitutos de ingredientes según restricciones","2","Done","Done","Medium","5","Sprint 8","v1.1 Mejora y retención","M03 Catálogo de recetas e ingredientes","sprint-8","F2","historia","recetas","","*Como* usuario con alguna intolerancia leve, *quiero* que la app me sugiera sustitutos de un ingrediente que no puedo comer dentro de una receta que me gusta, *para* .
+
+*Criterios de aceptación*
+# Dado que tengo intolerancia a la lactosa declarada y veo una receta con ""leche"" en sus ingredientes Cuando abro el detalle Entonces aparece un ícono de sustitución junto a ""leche"" que ofrece ""leche de almendra"" o ""leche sin lactosa"" validada contra mi restricción, con un toque para reemplazarla también en la lista de compras.
+
+*Depende de:* US-110
+
+Ficha completa: docs/05-historias-de-usuario (US-147)."
+"1147","Sub-task","Tabla de sustituciones con proporción","147","Done","Done","","","","","M03 Catálogo de recetas e ingredientes","","","","","",""
+"1148","Sub-task","RPC suggest_substitutes_for y substitute_shopping_item","147","Done","Done","","","","","M03 Catálogo de recetas e ingredientes","","","","","",""
+"1149","Sub-task","Deshacer la sustitución","147","Done","Done","","","","","M03 Catálogo de recetas e ingredientes","","","","","",""
+"1150","Sub-task","Sustitutos en la lista de mercado","147","Done","Done","","","","","M03 Catálogo de recetas e ingredientes","","","","","",""
+"148","Story","US-148 · Recordatorio de la próxima comida","2","Done","Done","Medium","8","Sprint 10","v1.1 Mejora y retención","M09 Notificaciones","sprint-10","F2","historia","notificaciones","","*Como* usuario, *quiero* recibir un recordatorio de cuál es mi próxima comida, *para* no olvidarme del plan del día.
+
+*Criterios de aceptación*
+# Dado que tengo notificaciones activadas y una cena planificada a las 20:00 Cuando llegan las 19:30 (30 min configurable antes) Entonces recibo una notificación push ""Tu cena de hoy: [nombre receta]"".
+# Caso borde: si ya marqué esa comida como cocinada antes de las 19:30, la notificación no se envía.
+
+*Depende de:* US-117, US-123
+
+Ficha completa: docs/05-historias-de-usuario (US-148)."
+"1151","Sub-task","Preferencias y dispositivos (push_devices)","148","Done","Done","","","","","M09 Notificaciones","","","","","",""
+"1152","Sub-task","Programar avisos con pg_cron","148","Done","Done","","","","","M09 Notificaciones","","","","","",""
+"1153","Sub-task","Edge Function send-notifications con Expo Push","148","Done","Done","","","","","M09 Notificaciones","","","","","",""
+"1154","Sub-task","Permiso en contexto; tocar el aviso abre la receta","148","Done","Done","","","","","M09 Notificaciones","","","","","",""
+"1155","Sub-task","Firebase (FCM v1) en EAS","148","Done","Done","","","","","M09 Notificaciones","","","","","",""
+"149","Story","US-149 · Configurar frecuencia de notificaciones","2","Done","Done","Medium","3","Sprint 10","v1.1 Mejora y retención","M09 Notificaciones","sprint-10","F2","historia","notificaciones","","*Como* usuario, *quiero* poder desactivar o ajustar la frecuencia de las notificaciones, *para* que no se sientan invasivas.
+
+*Criterios de aceptación*
+# Dado que estoy en configuración de notificaciones Cuando selecciono ""Solo resumen semanal"" Entonces dejo de recibir recordatorios diarios de comida y en su lugar recibo un único resumen los domingos, aplicado desde la próxima notificación programada.
+
+Ficha completa: docs/05-historias-de-usuario (US-149)."
+"1156","Sub-task","Frecuencia: diarios, solo resumen semanal o ninguno","149","Done","Done","","","","","M09 Notificaciones","","","","","",""
+"1157","Sub-task","Minutos de anticipación","149","Done","Done","","","","","M09 Notificaciones","","","","","",""
+"150","Story","US-150 · Abrir y navegar la app con rapidez","6","Done","Done","Medium","5","Sprint 10","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-10","F2","enabler","calidad","agregada-por-po","*Como* usuario, *quiero* que la app abra y responda rápido incluso con conexión limitada, *para* no perder tiempo al planificar mis comidas.
+
+*Criterios de aceptación*
+# Dado un teléfono de gama media con conexión 4G Cuando abro la app Entonces la pantalla principal es utilizable en máximo 3 segundos en el 95% de las mediciones.
+# Caso borde: si la conexión falla durante la carga, se muestra un mensaje claro con la opción de reintentar, nunca una pantalla en blanco.
+
+Ficha completa: docs/05-historias-de-usuario (US-150)."
+"1158","Sub-task","Medir y reducir el tiempo de arranque","150","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","","","","","",""
+"1159","Sub-task","Abrir sin conexión con la caché (computeGates)","150","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","","","","","",""
+"1160","Sub-task","Carga con reintento cuando no hay red","150","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","","","","","",""
+"151","Story","US-151 · Reportar un problema o enviar sugerencias desde la app","4","Done","Done","Medium","5","Sprint 8","v1.1 Mejora y retención","M08 Nutrición y feedback","sprint-8","F2","historia","feedback","agregada-por-po","*Como* usuario, *quiero* reportar un problema o enviar una sugerencia desde la app, *para* que el equipo mejore el producto.
+
+*Criterios de aceptación*
+# Dado que estoy en cualquier pantalla Cuando abro Configuración > Ayuda y envío un mensaje de hasta 500 caracteres con una captura opcional Entonces recibo una confirmación y el equipo lo recibe con la versión de la app y el modelo del dispositivo.
+# Caso borde: el envío no incluye datos de salud ni de perfil, salvo que yo los escriba en el mensaje.
+
+Ficha completa: docs/05-historias-de-usuario (US-151)."
+"1161","Sub-task","Tabla support_tickets","151","Done","Done","","","","","M08 Nutrición y feedback","","","","","",""
+"1162","Sub-task","Pantalla de Ayuda con tipo y descripción","151","Done","Done","","","","","M08 Nutrición y feedback","","","","","",""
+"1163","Sub-task","Captura opcional en bucket privado","151","Done","Done","","","","","M08 Nutrición y feedback","","","","","",""
+"152","Story","US-152 · Sugerir reemplazos para ajustar el plan al presupuesto","3","Done","Done","Medium","5","Sprint 9","v1.1 Mejora y retención","M07 Presupuesto y precios","sprint-9","F2","historia","presupuesto","","*Como* usuario que excede su presupuesto, *quiero* recibir sugerencias automáticas de reemplazo (ej. proteína más económica), *para* ajustarme sin rehacer todo el plan.
+
+*Criterios de aceptación*
+# Dado que mi plan excede el presupuesto en $8.000 Cuando toco ""Ajustar automáticamente"" Entonces el sistema propone al menos 2 sustituciones concretas con el ahorro exacto (ej. ""cambiar salmón por atún enlatado: ahorras $6.500"") y recalcula el nuevo total en tiempo real al aceptar cada una.
+
+*Depende de:* US-132
+
+Ficha completa: docs/05-historias-de-usuario (US-152)."
+"1164","Sub-task","RPC plan_savings: una sugerencia por alternativa, sin días seguidos","152","Done","Done","","","","","M07 Presupuesto y precios","","","","","",""
+"1165","Sub-task","Panel de ahorro en Mi semana","152","Done","Done","","","","","M07 Presupuesto y precios","","","","","",""
+"1166","Sub-task","Aplicar el reemplazo","152","Done","Done","","","","","M07 Presupuesto y precios","","","","","",""
+"153","Story","US-153 · Notificar ingredientes por vencer con recetas sugeridas","3","Done","Done","Medium","5","Sprint 10","v1.1 Mejora y retención","M06 Compras y despensa","sprint-10","F2","historia","desperdicio","","*Como* usuario, *quiero* recibir una notificación cuando un ingrediente esté por vencer, junto con recetas que lo usan, *para* .
+
+*Criterios de aceptación*
+# Dado un ingrediente que vence en 2 días Cuando el sistema ejecuta su revisión diaria programada Entonces se envía una notificación push con al menos 1 receta real del catálogo que use ese ingrediente como principal, nunca una sugerencia genérica de ""cocina algo con esto"".
+
+*Depende de:* US-142, US-148
+
+Ficha completa: docs/05-historias-de-usuario (US-153)."
+"1167","Sub-task","Detectar lo que vence en 2 días","153","Done","Done","","","","","M06 Compras y despensa","","","","","",""
+"1168","Sub-task","Aviso con una receta que lo use","153","Done","Done","","","","","M06 Compras y despensa","","","","","",""
+"1169","Sub-task","Resumen semanal de los domingos","153","Done","Done","","","","","M06 Compras y despensa","","","","","",""
+"154","Story","US-154 · Solicitar consentimiento explícito para funciones de comunidad","5","To Do","","Medium","3","","v2.0 Comunidad e integraciones","M10 Comunidad y moderación","F3","historia","privacidad","","","*Como* usuario, *quiero* dar consentimiento explícito antes de que mis datos se usen, *para* funciones de comunidad, para decidir qué comparto.
+
+*Criterios de aceptación*
+# Dado que nunca he usado funciones de comunidad Cuando intento publicar una receta o comentario por primera vez Entonces se muestra un modal de consentimiento explícito explicando qué se hará público; sin aceptar, la acción de publicar queda bloqueada.
+
+Ficha completa: docs/05-historias-de-usuario (US-154)."
+"1170","Sub-task","Documento de consentimiento de comunidad","154","To Do","","","","","","M10 Comunidad y moderación","","","","","",""
+"1171","Sub-task","Pantalla para aceptar o revocar","154","To Do","","","","","","M10 Comunidad y moderación","","","","","",""
+"1172","Sub-task","Bloquear publicar sin consentimiento","154","To Do","","","","","","M10 Comunidad y moderación","","","","","",""
+"155","Story","US-155 · Mostrar motivo de cada receta sugerida","2","Done","Done","Medium","3","Sprint 4","v1.1 Mejora y retención","M04 Motor de planificación","sprint-4","F2","historia","plan-de-comidas","","*Como* usuario, *quiero* ver por qué se me sugirió cada receta, *para* confiar más en las recomendaciones.
+
+*Criterios de aceptación*
+# Dado que una receta fue sugerida porque usa un ingrediente de mi despensa próximo a vencer Cuando abro su detalle Entonces veo una etiqueta con el motivo específico (ej. ""Sugerida porque tu cilantro vence en 2 días""), nunca un texto genérico como ""Recomendado para ti"".
+
+*Depende de:* US-117
+
+Ficha completa: docs/05-historias-de-usuario (US-155)."
+"1173","Sub-task","reason_code asignado por reglas, nunca por el LLM","155","Done","Done","","","","","M04 Motor de planificación","","","","","",""
+"1174","Sub-task","Mostrar el motivo en cada comida","155","Done","Done","","","","","M04 Motor de planificación","","","","","",""
+"156","Story","US-156 · Manejar ingredientes no lineales al escalar porciones","2","Done","Done","Medium","3","Sprint 3","v1.1 Mejora y retención","M03 Catálogo de recetas e ingredientes","sprint-3","F2","historia","recetas","","*Como* usuario, *quiero* que cantidades no lineales (especias, tiempos de horno) no escalen de forma absurda al cambiar porciones, *para* .
+
+*Criterios de aceptación*
+# Dado que una receta marca ""1 cucharadita de sal"" como ingrediente no lineal Cuando escalo de 4 a 12 porciones (factor 3) Entonces la sal NO se multiplica linealmente a 3 cucharaditas, sino que se ajusta según la regla definida, dentro de un rango validado por un nutricionista.
+
+Ficha completa: docs/05-historias-de-usuario (US-156)."
+"1175","Sub-task","Exponente de escalado por ingrediente (sal, especias, aceite)","156","Done","Done","","","","","M03 Catálogo de recetas e ingredientes","","","","","",""
+"1176","Sub-task","Fórmula base × (porciones/base)^exponente en preview_recipe","156","Done","Done","","","","","M03 Catálogo de recetas e ingredientes","","","","","",""
+"157","Story","US-157 · Cambiar una comida mediante el asistente conversacional","2","Done","Done","Medium","8","Sprint 8","v1.1 Mejora y retención","M05 Asistente IA","sprint-8","F2","historia","asistente-ia","","*Como* usuario, *quiero* pedirle al asistente en lenguaje natural que me cambie una comida del día, *para* ajustar el plan sin navegar menús.
+
+*Criterios de aceptación*
+# Dado que escribo ""cámbiame la cena, no quiero lentejas"" Cuando envío el mensaje Entonces el asistente responde en menos de 2 segundos con una alternativa que NO contiene lentejas y un botón ""Aplicar"" que reemplaza la cena sin salir del chat.
+
+*Depende de:* US-129
+
+*Cómo quedó:* Gemini Flash-Lite con salida estructurada y sin datos de salud en el prompt (ADR-025).
+
+Ficha completa: docs/05-historias-de-usuario (US-157)."
+"1177","Sub-task","Edge Function assistant-chat con Gemini y responseSchema","157","Done","Done","","","","","M05 Asistente IA","","","","","",""
+"1178","Sub-task","Candidatas seguras desde cook_with_what_i_have","157","Done","Done","","","","","M05 Asistente IA","","","","","",""
+"1179","Sub-task","Respaldo determinista y cuota de 30 por día","157","Done","Done","","","","","M05 Asistente IA","","","","","",""
+"1180","Sub-task","Pantalla del asistente y aplicar la sugerencia","157","Done","Done","","","","","M05 Asistente IA","","","","","",""
+"1181","Sub-task","ADR-025: Gemini Flash-Lite sin datos de salud","157","Done","Done","","","","","M05 Asistente IA","","","","","",""
+"158","Story","US-158 · Descargar la app desde la tienda oficial de mi teléfono","6","In Progress","","High","5","Sprint 11","v1.0 MVP","M11 Plataforma, calidad y lanzamiento","sprint-11","F1","enabler","lanzamiento","mvp","*Como* usuario, *quiero* descargar NutriPlan AI desde la tienda oficial de mi teléfono, *para* instalarla de forma segura y recibir actualizaciones.
+
+*Criterios de aceptación*
+# Dado la versión 1.0 aprobada en la Sprint Review Cuando se envía a Google Play y App Store Entonces la ficha cumple los requisitos de cada tienda (descripción, capturas, clasificación de contenido y URL de la política de privacidad) y la versión queda aprobada y publicada.
+# Caso borde: si una tienda rechaza la versión, el motivo se registra como ítem del backlog con prioridad alta y se corrige antes de reenviar.
+
+*Depende de:* US-113, US-102
+
+*Cómo quedó:* Listos los perfiles de EAS y el APK en compilación; faltan la cuenta y la prueba cerrada en Google Play.
+
+Ficha completa: docs/05-historias-de-usuario (US-158)."
+"1182","Sub-task","Perfiles de EAS (APK y paquete de tienda)","158","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","","","","","",""
+"1183","Sub-task","Permisos mínimos y guía de publicación","158","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","","","","","",""
+"1184","Sub-task","Compilar y probar el APK de staging","158","In Progress","","","","","","M11 Plataforma, calidad y lanzamiento","","","","","",""
+"1185","Sub-task","Cuenta de Google Play y ficha de la tienda","158","To Do","","","","","","M11 Plataforma, calidad y lanzamiento","","","","","",""
+"1186","Sub-task","Prueba cerrada en Google Play","158","To Do","","","","","","M11 Plataforma, calidad y lanzamiento","","","","","",""
+"159","Story","US-159 · Resumen nutricional diario vs. objetivos","4","Done","Done","Medium","5","Sprint 9","v1.1 Mejora y retención","M08 Nutrición y feedback","sprint-9","F2","historia","nutricion","","*Como* usuario, *quiero* ver un resumen nutricional diario comparado contra mis objetivos, *para* saber si voy bien encaminado.
+
+*Criterios de aceptación*
+# Dado que marqué como cocinadas 2 de las 3 comidas de hoy Cuando abro ""Mi día"" Entonces veo el total acumulado de kcal y macros de esas 2 comidas comparado contra mi objetivo diario, con la comida faltante mostrada como ""pendiente"" y no contabilizada como 0.
+
+*Depende de:* US-123, US-115
+
+Ficha completa: docs/05-historias-de-usuario (US-159)."
+"1187","Sub-task","RPC daily_nutrition","159","Done","Done","","","","","M08 Nutrición y feedback","","","","","",""
+"1188","Sub-task","Tarjeta Mi día en Hoy","159","Done","Done","","","","","M08 Nutrición y feedback","","","","","",""
+"1189","Sub-task","Pruebas","159","Done","Done","","","","","M08 Nutrición y feedback","","","","","",""
+"160","Story","US-160 · Armar comida solo con ingredientes de la despensa (asistente)","2","Done","Done","Medium","3","Sprint 8","v1.1 Mejora y retención","M05 Asistente IA","sprint-8","F2","historia","asistente-ia","","*Como* usuario, *quiero* poder pedirle al asistente que arme mi próxima comida solo con lo que tengo en la despensa, *para* .
+
+*Criterios de aceptación*
+# Dado que escribo ""arma algo solo con lo que tengo"" Cuando el asistente procesa el pedido Entonces la receta devuelta usa el 100% de sus ingredientes principales desde mi despensa declarada, sin agregar ítems que requieran compra.
+# Caso borde: si no es posible, responde explícitamente ""no tengo una receta completa solo con tu despensa, te falta X"" en vez de forzar una sugerencia incompleta.
+
+*Depende de:* US-119, US-157
+
+Ficha completa: docs/05-historias-de-usuario (US-160)."
+"1190","Sub-task","Modo 'solo con lo que tengo' (pantry_only)","160","Done","Done","","","","","M05 Asistente IA","","","","","",""
+"1191","Sub-task","Decir qué falta si no alcanza","160","Done","Done","","","","","M05 Asistente IA","","","","","",""
+"161","Story","US-161 · Compartir lista de compras con otra persona","3","To Do","","Low","13","","v2.0 Comunidad e integraciones","M06 Compras y despensa","F3","historia","compras","","","*Como* usuario, *quiero* compartir mi lista de compras con otra persona de mi hogar, *para* dividir la compra.
+
+*Criterios de aceptación*
+# Dado que tengo una lista de compras generada Cuando toco ""Compartir"" y la otra persona abre el enlace Entonces si esa persona marca un ítem como comprado, el cambio se refleja en mi app en menos de 5 segundos.
+
+*Depende de:* US-124
+
+Ficha completa: docs/05-historias-de-usuario (US-161)."
+"1192","Sub-task","ADR y migración de hogares y miembros con RLS","161","To Do","","","","","","M06 Compras y despensa","","","","","",""
+"1193","Sub-task","Invitar a otra persona y compartir la lista","161","To Do","","","","","","M06 Compras y despensa","","","","","",""
+"1194","Sub-task","Pruebas de RLS por hogar","161","To Do","","","","","","M06 Compras y despensa","","","","","",""
+"162","Story","US-162 · Sugerir recetas de aprovechamiento de sobras","3","To Do","","Low","8","","v2.0 Comunidad e integraciones","M06 Compras y despensa","F3","historia","desperdicio","","","*Como* usuario, *quiero* que sobras de una receta (ej. medio pimiento) generen sugerencias de aprovechamiento, *para* el día siguiente.
+
+*Criterios de aceptación*
+# Dado que marco ""sobró medio pimiento"" al finalizar una receta Cuando se genera el plan del día siguiente Entonces al menos una receta sugerida incluye pimiento entre sus ingredientes principales.
+
+Ficha completa: docs/05-historias-de-usuario (US-162)."
+"1195","Sub-task","ADR y modelo de porciones sobrantes","162","To Do","","","","","","M06 Compras y despensa","","","","","",""
+"1196","Sub-task","Sugerir recetas con las sobras","162","To Do","","","","","","M06 Compras y despensa","","","","","",""
+"1197","Sub-task","Pruebas","162","To Do","","","","","","M06 Compras y despensa","","","","","",""
+"163","Story","US-163 · Reconocer ingredientes desde una foto","3","To Do","","Low","13","","v2.0 Comunidad e integraciones","M12 Integraciones futuras","F3","historia","foto-y-ocr","","","*Como* usuario, *quiero* tomar una foto de mi despensa o refrigerador, *para* que la app identifique automáticamente los ingredientes disponibles.
+
+*Criterios de aceptación*
+# Dado que tomo una foto de mi refrigerador Cuando la app procesa la imagen Entonces identifica correctamente al menos el 70% de los ítems presentes sobre una lista de prueba de 20 alimentos comunes, y me permite corregir o eliminar cualquier ítem mal identificado antes de guardar.
+
+*Depende de:* US-119
+
+Ficha completa: docs/05-historias-de-usuario (US-163)."
+"1198","Sub-task","Spike: modelo de visión y costo","163","To Do","","","","","","M12 Integraciones futuras","","","","","",""
+"1199","Sub-task","Reconocer ingredientes desde la cámara","163","To Do","","","","","","M12 Integraciones futuras","","","","","",""
+"1200","Sub-task","Confirmar antes de agregar a la despensa","163","To Do","","","","","","M12 Integraciones futuras","","","","","",""
+"164","Story","US-164 · Escanear recibo de compra con OCR","3","To Do","","Low","13","","v2.0 Comunidad e integraciones","M12 Integraciones futuras","F3","historia","foto-y-ocr","","","*Como* usuario, *quiero* escanear el recibo de mi compra, *para* actualizar mi despensa y mi gasto real automáticamente.
+
+*Criterios de aceptación*
+# Dado que subo la foto de un recibo de supermercado estándar Cuando se procesa con OCR Entonces se extraen correctamente ítem, cantidad y precio del 80% de las líneas en una muestra de prueba de 20 recibos; las líneas no reconocidas quedan marcadas para revisión manual, nunca se descartan silenciosamente.
+
+*Depende de:* US-119, US-141
+
+Ficha completa: docs/05-historias-de-usuario (US-164)."
+"1201","Sub-task","Spike: OCR de recibos de Pasto","164","To Do","","","","","","M12 Integraciones futuras","","","","","",""
+"1202","Sub-task","Leer el recibo y registrar el gasto","164","To Do","","","","","","M12 Integraciones futuras","","","","","",""
+"1203","Sub-task","Confirmar ítems antes de guardar","164","To Do","","","","","","M12 Integraciones futuras","","","","","",""
+"165","Story","US-165 · Mostrar precios actualizados según supermercado elegido","3","To Do","","Low","8","","v2.0 Comunidad e integraciones","M12 Integraciones futuras","F3","historia","supermercados","","","*Como* usuario, *quiero* ver el precio actualizado de los ingredientes de mi lista según el supermercado que elijo, *para* presupuestar con precisión.
+
+*Criterios de aceptación*
+# Dado que selecciono ""Supermercado X"" como mi tienda habitual Cuando genero mi lista de compras Entonces cada ítem muestra el precio obtenido vía API de esa tienda con antigüedad ≤24 horas.
+# Caso borde: si la API falla, se usa el precio promedio histórico y se indica ""precio estimado, no en tiempo real"".
+
+*Depende de:* US-120
+
+Ficha completa: docs/05-historias-de-usuario (US-165)."
+"1204","Sub-task","ADR y migración de precios por tienda","165","To Do","","","","","","M12 Integraciones futuras","","","","","",""
+"1205","Sub-task","Elegir supermercado en el perfil","165","To Do","","","","","","M12 Integraciones futuras","","","","","",""
+"1206","Sub-task","Pruebas de costo por tienda","165","To Do","","","","","","M12 Integraciones futuras","","","","","",""
+"166","Story","US-166 · Enviar lista de compras como pedido al supermercado","3","To Do","","Low","13","","v2.0 Comunidad e integraciones","M12 Integraciones futuras","F3","historia","supermercados","","","*Como* usuario, *quiero* hacer el pedido de mi lista de compras directamente desde la app, *para* no tener que reingresarla en otra plataforma.
+
+*Criterios de aceptación*
+# Dado que tengo una lista de compras completa y un supermercado conectado Cuando toco ""Pedir ahora"" Entonces los ítems se agregan al carrito externo vía su API y veo una pantalla de confirmación con el total antes de que se procese cualquier pago, sin cobros automáticos sin confirmación explícita.
+
+*Depende de:* US-165, US-124
+
+Ficha completa: docs/05-historias-de-usuario (US-166)."
+"1207","Sub-task","Spike: integraciones con supermercados","166","To Do","","","","","","M12 Integraciones futuras","","","","","",""
+"1208","Sub-task","Enviar la lista como pedido","166","To Do","","","","","","M12 Integraciones futuras","","","","","",""
+"1209","Sub-task","Pruebas","166","To Do","","","","","","M12 Integraciones futuras","","","","","",""
+"167","Story","US-167 · Publicar receta propia o adaptación","5","To Do","","Low","8","","v2.0 Comunidad e integraciones","M10 Comunidad y moderación","F3","historia","comunidad","","","*Como* usuario, *quiero* publicar una receta propia o una adaptación, *para* compartirla con otros usuarios.
+
+*Criterios de aceptación*
+# Dado que completo nombre, ingredientes y pasos de una receta propia Cuando toco ""Publicar"" Entonces la receta pasa a estado ""en revisión"" si contiene palabras clave sensibles (ej. términos médicos), o se publica de inmediato en el feed comunitario si no las contiene.
+
+*Depende de:* US-104, US-154
+
+Ficha completa: docs/05-historias-de-usuario (US-167)."
+"1210","Sub-task","Migración de recetas de la comunidad con RLS","167","To Do","","","","","","M10 Comunidad y moderación","","","","","",""
+"1211","Sub-task","Pantalla para publicar una receta o adaptación","167","To Do","","","","","","M10 Comunidad y moderación","","","","","",""
+"1212","Sub-task","Validar alérgenos antes de publicar","167","To Do","","","","","","M10 Comunidad y moderación","","","","","",""
+"168","Story","US-168 · Comentar y dejar tips en recetas de la comunidad","5","To Do","","Low","5","","v2.0 Comunidad e integraciones","M10 Comunidad y moderación","F3","historia","comunidad","","","*Como* usuario, *quiero* comentar y dejar tips en recetas de otros usuarios, *para* enriquecer la experiencia colectiva.
+
+*Criterios de aceptación*
+# Dado una receta publicada en el feed comunitario Cuando otro usuario escribe un comentario Entonces el comentario aparece ordenado cronológicamente en menos de 3 segundos, con un botón ""Reportar"" visible en cada comentario.
+
+*Depende de:* US-167
+
+Ficha completa: docs/05-historias-de-usuario (US-168)."
+"1213","Sub-task","Comentarios y tips públicos","168","To Do","","","","","","M10 Comunidad y moderación","","","","","",""
+"1214","Sub-task","Reportar contenido","168","To Do","","","","","","M10 Comunidad y moderación","","","","","",""
+"1215","Sub-task","Pruebas","168","To Do","","","","","","M10 Comunidad y moderación","","","","","",""
+"169","Story","US-169 · Moderar contenido publicado por usuarios","5","To Do","","Low","8","","v2.0 Comunidad e integraciones","M10 Comunidad y moderación","F3","historia","comunidad","","","*Como* administrador de la plataforma, *quiero* moderar el contenido publicado por usuarios, *para* evitar spam o consejos nutricionales peligrosos.
+
+*Criterios de aceptación*
+# Dado que un comentario recibe 3 reportes de usuarios distintos Cuando se alcanza ese umbral Entonces el comentario se oculta automáticamente del feed público y queda en cola de revisión manual dentro de las siguientes 24 horas.
+
+*Depende de:* US-167
+
+Ficha completa: docs/05-historias-de-usuario (US-169)."
+"1216","Sub-task","Rol moderator y cola de reportes","169","To Do","","","","","","M10 Comunidad y moderación","","","","","",""
+"1217","Sub-task","Acciones de moderación en Supabase Studio","169","To Do","","","","","","M10 Comunidad y moderación","","","","","",""
+"1218","Sub-task","Pruebas de permisos","169","To Do","","","","","","M10 Comunidad y moderación","","","","","",""
+"170","Story","US-170 · Activar modo batch cooking","1","To Do","","Low","5","","v2.0 Comunidad e integraciones","M02 Perfil y preferencias","F3","historia","personalizacion","","","*Como* usuario que cocina para varios días, *quiero* activar el modo 'batch cooking', *para* recibir recetas que rindan varias porciones y se conserven bien.
+
+*Criterios de aceptación*
+# Dado que activo el modo ""Batch cooking"" Cuando se genera una receta de almuerzo o cena Entonces solo se sugieren recetas etiquetadas con rendimiento ≥4 porciones y con indicación de conservación (refrigerador o congelador) visible en el detalle.
+
+Ficha completa: docs/05-historias-de-usuario (US-170)."
+"1219","Sub-task","Recetas aptas para batch cooking","170","To Do","","","","","","M02 Perfil y preferencias","","","","","",""
+"1220","Sub-task","Modo batch en el plan","170","To Do","","","","","","M02 Perfil y preferencias","","","","","",""
+"1221","Sub-task","Pruebas","170","To Do","","","","","","M02 Perfil y preferencias","","","","","",""
+"171","Story","US-171 · Definir nivel de picante preferido","1","To Do","","Low","2","","v2.0 Comunidad e integraciones","M02 Perfil y preferencias","F3","historia","personalizacion","","","*Como* usuario, *quiero* indicar mi nivel de picante preferido, *para* que las recetas se ajusten a mi tolerancia.
+
+*Criterios de aceptación*
+# Dado que fijo el nivel de picante en ""Ninguno"" Cuando se genera cualquier receta Entonces se excluyen recetas con ingredientes marcados como picantes (ají, chile, pimienta de cayena), salvo que yo los agregue manualmente como opcional.
+
+Ficha completa: docs/05-historias-de-usuario (US-171)."
+"1222","Sub-task","Nivel de picante en Preferencias","171","To Do","","","","","","M02 Perfil y preferencias","","","","","",""
+"1223","Sub-task","Filtrar por recipe_max_heat","171","To Do","","","","","","M02 Perfil y preferencias","","","","","",""
+"172","Story","US-172 · Ofrecer «versión rápida» de una receta","2","To Do","","Low","5","","v2.0 Comunidad e integraciones","M03 Catálogo de recetas e ingredientes","F3","historia","recetas","","","*Como* usuario con poco tiempo, *quiero* pedir una 'versión rápida' de una receta, *para* reducir el tiempo de preparación.
+
+*Criterios de aceptación*
+# Dado que una receta tiene un tiempo estimado de 40 minutos Cuando toco ""Versión rápida"" Entonces se muestra una variante con tiempo estimado ≤25 minutos, señalando explícitamente qué pasos se combinaron o qué atajo se usó (ej. ""salsa de tomate en lata en vez de tomates frescos"").
+
+Ficha completa: docs/05-historias-de-usuario (US-172)."
+"1224","Sub-task","ADR y tabla recipe_variants","172","To Do","","","","","","M03 Catálogo de recetas e ingredientes","","","","","",""
+"1225","Sub-task","Mostrar la versión rápida en la receta","172","To Do","","","","","","M03 Catálogo de recetas e ingredientes","","","","","",""
+"173","Story","US-173 · Respuestas rápidas en el chat del asistente","2","Done","Done","Low","2","Sprint 8","v2.0 Comunidad e integraciones","M05 Asistente IA","sprint-8","F3","historia","asistente-ia","","*Como* usuario, *quiero* usar respuestas rápidas predefinidas en el chat, *para* no tener que escribir siempre mi pedido.
+
+*Criterios de aceptación*
+# Dado que abro el asistente por primera vez en el día Cuando se carga la pantalla Entonces se muestran exactamente 3 chips de pedidos frecuentes basados en mi historial de uso (ej. si suelo pedir ""menos calorías"", ese chip aparece primero).
+
+Ficha completa: docs/05-historias-de-usuario (US-173)."
+"1226","Sub-task","Respuestas rápidas sugeridas en el chat","173","Done","Done","","","","","M05 Asistente IA","","","","","",""
+"201","Task","Monorepo app/backend/docs, AGENTS.md y unificar la copia de Supabase","6","Done","Done","Medium","3","Sprint 0","v1.0 MVP","M11 Plataforma, calidad y lanzamiento","sprint-0","tecnica","","","","Una sola fuente para el backend (C4)."
+"202","Task","Migración de refuerzo (hardening R1–R9) y runner de pruebas SQL","5","Done","Done","Medium","5","Sprint 0","v1.0 MVP","M01 Cuenta, consentimientos y privacidad","sprint-0","tecnica","","","","Dietas como filtro duro, guardado atómico del plan y runner multiplataforma run_local.sh."
+"203","Task","Recetas versátiles: base + grupos intercambiables (ADR-020)","2","Done","Done","Medium","8","Sprint 0","v1.0 MVP","M03 Catálogo de recetas e ingredientes","sprint-0","tecnica","","","","Las opciones de cada grupo se resuelven con la despensa y nunca con un ingrediente prohibido."
+"204","Task","Arquitectura de la app por capas con puertos y adaptadores (ADR-022)","6","Done","Done","Medium","5","Sprint 1","v1.0 MVP","M11 Plataforma, calidad y lanzamiento","sprint-1","tecnica","","","","domain / data / application / ui por feature e inyección de servicios."
+"205","Task","Prueba de integración del recorrido completo contra Supabase real","6","Done","Done","Medium","5","Sprint 6","v1.0 MVP","M11 Plataforma, calidad y lanzamiento","sprint-6","tecnica","","","","Registro → onboarding → plan → compras → cocinar, en CI."
+"206","Task","Flujo centrado en la cocina: Hoy · Mi cocina · Mi semana (ADR-024)","2","Done","Done","Medium","5","Sprint 7","v1.1 Mejora y retención","M04 Motor de planificación","sprint-7","tecnica","","","","La pregunta principal es '¿qué cocino con lo que tengo?'."
+"207","Task","Rediseño visual de la app","6","Done","Done","Medium","13","Sprint 7","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-7","tecnica","","","","Sistema de diseño con la paleta de marca, modo oscuro y componentes compartidos; luego cada pantalla."
+"1227","Sub-task","Sistema de diseño: tokens, tipografía y componentes","207","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","","","","","",""
+"1228","Sub-task","Selector de tema: como el teléfono, claro u oscuro","207","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","","","","","",""
+"1229","Sub-task","Pantallas de acceso","207","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","","","","","",""
+"1230","Sub-task","Hoy","207","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","","","","","",""
+"1231","Sub-task","Mi cocina","207","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","","","","","",""
+"1232","Sub-task","Mi semana","207","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","","","","","",""
+"1233","Sub-task","Detalle de receta","207","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","","","","","",""
+"1234","Sub-task","Onboarding y consentimientos","207","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","","","","","",""
+"1235","Sub-task","Perfil, privacidad y eliminar cuenta","207","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","","","","","",""
+"208","Task","Correos de la cuenta en español con SMTP de Gmail","5","Done","Done","Medium","3","Sprint 10","v1.1 Mejora y retención","M01 Cuenta, consentimientos y privacidad","sprint-10","tecnica","","","","Plantillas con la marca para confirmar, recuperar y cambiar correo; sin comprar dominio."
+"209","Task","Vincular el proyecto a EAS y Firebase (FCM) para el APK","6","Done","Done","Medium","3","Sprint 10","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-10","tecnica","","","","projectId de EAS, llave FCM v1 en eas credentials."
+"210","Task","Desplegar todo a staging","6","Done","Done","Medium","5","Sprint 10","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-10","tecnica","","","","Migraciones, catálogo con precios, Edge Functions, secretos, alertas y avisos."
+"211","Task","Sacar google-services.json del repositorio público","5","Done","Done","Medium","2","Sprint 10","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-10","tecnica","","","","Ignorado por Git y guardado como variable secreta de tipo archivo en EAS (GOOGLE_SERVICES_JSON)."
+"212","Task","Poner la documentación al día con F2","6","Done","Done","Medium","3","Sprint 10","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-10","tecnica","","","","Modelo de datos regenerado, RPC, arquitectura, seguridad, pantallas y limitaciones."
+"220","Task","Compilar el APK de staging con EAS","6","In Progress","","Medium","2","Sprint 11","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-11","tecnica","","","","npx eas-cli build -p android --profile preview"
+"221","Task","Probar el APK en un teléfono real","6","To Do","","Medium","3","Sprint 11","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-11","tecnica","","","","Arranque < 3 s, avisos, recorrido completo y checklist de accesibilidad."
+"1236","Sub-task","Arranque en menos de 3 s (US-150)","221","To Do","","","","","","M11 Plataforma, calidad y lanzamiento","","","","","",""
+"1237","Sub-task","Activar avisos y recibir uno (US-148)","221","To Do","","","","","","M11 Plataforma, calidad y lanzamiento","","","","","",""
+"1238","Sub-task","Recorrido completo de punta a punta","221","To Do","","","","","","M11 Plataforma, calidad y lanzamiento","","","","","",""
+"1239","Sub-task","Letra al 200 % y TalkBack (US-140)","221","To Do","","","","","","M11 Plataforma, calidad y lanzamiento","","","","","",""
+"222","Task","Completar los textos legales y pedir revisión de un abogado","5","To Do","","Medium","5","Sprint 11","v1.1 Mejora y retención","M01 Cuenta, consentimientos y privacidad","sprint-11","tecnica","","","","Llenar los marcadores de los 6 borradores y nombrar a los encargados de datos."
+"223","Task","Pasar Gemini a plan de pago con tope de gasto y rotar su clave","6","To Do","","Medium","2","Sprint 11","v1.1 Mejora y retención","M05 Asistente IA","sprint-11","tecnica","","","","El plan gratuito puede usar los datos para mejorar sus modelos."
+"224","Task","Configurar producción","6","To Do","","Medium","5","Sprint 11","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-11","tecnica","","","","Migraciones, funciones, secretos, SMTP y plantillas en el proyecto de producción."
+"225","Task","Monitor de disponibilidad (UptimeRobot)","6","To Do","","Medium","1","Sprint 11","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-11","tecnica","","","","Aviso si Supabase o las funciones dejan de responder."
+"226","Task","Renovar el token de acceso de Supabase del despliegue","6","To Do","","Medium","1","","v2.0 Comunidad e integraciones","M11 Plataforma, calidad y lanzamiento","tecnica","","","","","Vence cada 90 días; actualizar el secreto SUPABASE_ACCESS_TOKEN en GitHub."
+"227","Task","Evaluación de impacto de privacidad y contratos con proveedores","5","To Do","","Medium","5","","v2.0 Comunidad e integraciones","M01 Cuenta, consentimientos y privacidad","tecnica","","","","","Circular SIC 002/2024 (IA + salud); Supabase, Google, Expo y Resend."
+"228","Task","Pedir permiso escrito al ICBF para la tabla TCAC","4","To Do","","Medium","2","","v2.0 Comunidad e integraciones","M03 Catálogo de recetas e ingredientes","tecnica","","","","","Mientras tanto se usa USDA (CC0)."
+"301","Bug","Los enlaces de correo fallaban: PKCE sin SHA-256 en React Native","1","Done","Done","High","","Sprint 7","v1.1 Mejora y retención","M01 Cuenta, consentimientos y privacidad","sprint-7","bug","","","","Verificar el correo y recuperar la contraseña no abrían la sesión."
+"302","Bug","El botón de enviar la calificación no se habilitaba y no decía por qué","4","Done","Done","High","","Sprint 7","v1.1 Mejora y retención","M08 Nutrición y feedback","sprint-7","bug","","","","Ahora explica qué falta para poder enviar."
+"303","Bug","El asistente se quedaba esperando con el modelo Flash del plan gratuito","2","Done","Done","High","","Sprint 8","v1.1 Mejora y retención","M05 Asistente IA","sprint-8","bug","","","","Se usa el alias gemini-flash-lite-latest (~2 s), que además no se retira."
+"304","Bug","Los reemplazos para ahorrar proponían la misma receta varias veces","3","Done","Done","High","","Sprint 9","v1.1 Mejora y retención","M07 Presupuesto y precios","sprint-9","bug","","","","Una sugerencia por alternativa y nunca en días seguidos; redondeo corregido."
+"305","Bug","Sin conexión la app se quedaba en la pantalla de carga","6","Done","Done","High","","Sprint 10","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-10","bug","","","","Las puertas de arranque ahora entran con la caché (computeGates)."
+"306","Bug","La CI fallaba desde el reporte de problemas","6","Done","Done","High","","Sprint 10","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-10","bug","","","","El servicio de almacenamiento estaba excluido del Supabase local de CI."
+"307","Bug","El despliegue a staging nunca terminaba","6","Done","Done","High","","Sprint 10","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-10","bug","","","","Faltaban secretos y la CLI v3 necesita --remote y --yes."
