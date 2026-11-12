@@ -52,18 +52,26 @@ export function useEnablePush() {
   });
 }
 
-/** Al cerrar sesión, este teléfono deja de recibir los avisos de esa cuenta. Nunca bloquea el cierre. */
+const UNREGISTER_TIMEOUT_MS = 4000;
+
+/**
+ * Al cerrar sesión, este teléfono deja de recibir los avisos de esa cuenta. Nunca bloquea el cierre:
+ * con mala señal la petición puede quedarse esperando, así que se abandona a los 4 s.
+ */
 export function useUnregisterPush() {
   const { notifications } = useServices();
   return async () => {
     try {
       const token = await AsyncStorage.getItem(TOKEN_KEY);
       if (token) {
-        await notifications.unregisterDevice(token);
+        await Promise.race([
+          notifications.unregisterDevice(token),
+          new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), UNREGISTER_TIMEOUT_MS)),
+        ]);
         await AsyncStorage.removeItem(TOKEN_KEY);
       }
     } catch {
-      // sin conexión: la base lo limpiará cuando Expo informe que el token ya no sirve
+      // sin conexión o lento: la base lo limpiará cuando Expo informe que el token ya no sirve
     }
   };
 }

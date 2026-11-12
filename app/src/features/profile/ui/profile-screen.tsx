@@ -3,6 +3,7 @@ import { useRouter } from 'expo-router';
 import { Alert, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
+import { errorKey } from '@/core/errors/app-error';
 import { formatCOP } from '@/core/format';
 import { useSession } from '@/features/auth/application/session';
 import { useSignOut } from '@/features/auth/application/use-auth';
@@ -63,7 +64,14 @@ export function ProfileScreen() {
   const confirmSignOut = () =>
     Alert.alert(t('profile.signOutTitle'), undefined, [
       { text: t('common.cancel'), style: 'cancel' },
-      { text: t('profile.signOut'), style: 'destructive', onPress: () => void unregisterPush().finally(() => signOut.mutate()) },
+      {
+        text: t('profile.signOut'),
+        style: 'destructive',
+        onPress: () =>
+          void unregisterPush().finally(() =>
+            signOut.mutate(undefined, { onError: (e) => Alert.alert(t('profile.signOutFailed'), t(errorKey(e))) }),
+          ),
+      },
     ]);
 
   return (

@@ -1,6 +1,6 @@
 # Reglas de la Comunidad y licencia de contenido — NutriPlan AI
 
-> BORRADOR para revisión de un abogado. Se acepta aparte, la primera vez que se comenta o se comparte una receta. Versión 1
+> Versión 1 · Vigente desde el 13 de noviembre de 2026.
 
 ## Lo que esperamos
 - Comparte solo recetas propias o que tengas derecho a compartir, citando la fuente cuando corresponda.

@@ -28,6 +28,27 @@ describe('ShoppingScreen (US-124, US-125, US-126, US-135)', () => {
     expect(shopping.moveCheckedToPantry).toHaveBeenCalledWith('list1');
   });
 
+  it('lo que ya pasó a la despensa sale de la lista', async () => {
+    const shopping = fakeShopping({
+      forPlan: jest.fn(async () => ({ ...SHOPPING, items: SHOPPING.items.map((i) => (i.id === 'i1' ? { ...i, checked: true, movedToPantry: true } : i)) })),
+    });
+    await render(<ShoppingScreen />, { wrapper: withServices(fakeServices({ shopping })) });
+    expect(await screen.findByText('0 de 2 comprados')).toBeOnTheScreen();
+    expect(screen.getByText('1 producto ya pasó a tu despensa.')).toBeOnTheScreen();
+    expect(screen.queryByRole('checkbox', { name: 'Tomate · 3 unidades (≈ 360 g)' })).not.toBeOnTheScreen();
+  });
+
+  it('cuando todo se compró y pasó a la despensa, la compra se da por terminada', async () => {
+    const shopping = fakeShopping({
+      forPlan: jest.fn(async () => ({ ...SHOPPING, items: SHOPPING.items.map((i) => ({ ...i, checked: true, movedToPantry: true })) })),
+    });
+    await render(<ShoppingScreen />, { wrapper: withServices(fakeServices({ shopping })) });
+    expect(await screen.findByText('¡Compraste todo!')).toBeOnTheScreen();
+    expect(screen.queryByRole('checkbox')).not.toBeOnTheScreen();
+    await fireEvent.press(screen.getByRole('button', { name: 'Revisar si falta algo' }));
+    expect(shopping.generate).toHaveBeenCalledWith('plan1');
+  });
+
   it('sin lista la arma desde el plan; sin plan lleva al plan', async () => {
     const shopping = fakeShopping({ forPlan: jest.fn(async () => null) });
     await render(<ShoppingScreen />, { wrapper: withServices(fakeServices({ shopping })) });

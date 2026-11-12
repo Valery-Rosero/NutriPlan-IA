@@ -21,8 +21,13 @@ begin
   perform tt.ok(r.to_buy_g = 200 and r.approx_units = 4 and r.category_name is not null,
                 'huevos: 200 g ≈ 4 unidades, con su sección del supermercado');
 
+  insert into public.shopping_list_items (list_id, custom_name, source, is_checked, checked_at)
+    values (v_list, 'Bolsas de basura', 'manual', true, now()), (v_list, 'Servilletas', 'manual', false, null);
   update public.shopping_list_items set is_checked = true, checked_at = now() where list_id = v_list and ingredient_id = v_huevo;
-  perform tt.ok(public.move_checked_to_pantry(v_list) = 1, 'lo comprado pasa a la despensa');
+  perform tt.ok(public.move_checked_to_pantry(v_list) = 1, 'lo comprado pasa a la despensa (lo manual no cuenta)');
+  perform tt.ok((select moved_to_pantry_at is not null from public.shopping_list_items where list_id = v_list and custom_name = 'Bolsas de basura')
+                and (select moved_to_pantry_at is null from public.shopping_list_items where list_id = v_list and custom_name = 'Servilletas'),
+                'lo manual marcado se cierra con la compra; lo manual sin marcar sigue en la lista');
   perform tt.ok((select sum(quantity_g) from public.pantry_items where ingredient_id = v_huevo) = 200
                 and (select max(expires_on) from public.pantry_items where ingredient_id = v_huevo) = current_date + 21,
                 'con el vencimiento según la vida útil del ingrediente (huevo: 21 días)');

@@ -16,7 +16,7 @@ import {
 } from '@/features/shopping/application/shopping-queries';
 import { useSubstitutes } from '@/features/recipes/application/recipe-queries';
 import { substitutesByIngredient } from '@/features/recipes/domain/recipe';
-import { pendingToPantry, progress, toSections, type ShoppingItem } from '@/features/shopping/domain/shopping';
+import { pendingToPantry, progress, splitClosed, toSections, type ShoppingItem } from '@/features/shopping/domain/shopping';
 import { ShoppingRow } from '@/features/shopping/ui/shopping-row';
 import { parseCop } from '@/features/profile/domain/profile';
 import { useRecordPurchase } from '@/features/spending/application/use-spending';
@@ -97,10 +97,13 @@ function ListView({ planId, listId, items, onRefresh, refreshing }: {
   const add = useAddManualItem();
   const move = useMoveToPantry();
   const [newItem, setNewItem] = useState('');
-  const { done, total } = progress(items);
-  const toPantry = pendingToPantry(items);
+  const { open, closed } = splitClosed(items);
+  const { done, total } = progress(open);
+  const toPantry = pendingToPantry(open);
+  // Todo lo que había que comprar ya se compró y pasó a la despensa: la compra terminó.
+  const allBought = total === 0 && closed > 0;
   // US-147: sustitutos de lo que aún falta comprar del plan (una sola consulta para toda la lista).
-  const swappable = items.filter((i) => i.source === 'plan' && !i.checked && i.ingredientId && (i.toBuyGrams ?? 0) > 0);
+  const swappable = open.filter((i) => i.source === 'plan' && !i.checked && i.ingredientId && (i.toBuyGrams ?? 0) > 0);
   const substitutes = substitutesByIngredient(useSubstitutes(swappable.map((i) => i.ingredientId!)).data ?? []);
   const record = useRecordPurchase();
   const [paid, setPaid] = useState('');
@@ -120,14 +123,30 @@ function ListView({ planId, listId, items, onRefresh, refreshing }: {
     <>
       <MonthlySpendCard />
       <Card variant="primary">
-        <View style={styles.progressRow}>
-          <IconBadge name="cart-outline" tone="accent" />
-          <AppText variant="subtitle" style={styles.flex} accessibilityLiveRegion="polite">
-            {t('shopping.progress', { done, total })}
-          </AppText>
-          <IconButton icon="refresh" label={t('shopping.refresh')} tone="primary" disabled={refreshing} onPress={onRefresh} />
-        </View>
-        <ProgressBar value={total ? done / total : 0} label={t('shopping.progress', { done, total })} />
+        {allBought ? (
+          <>
+            <View style={styles.progressRow}>
+              <IconBadge name="checkmark-done-outline" tone="accent" />
+              <View style={styles.flex}>
+                <AppText variant="subtitle" accessibilityLiveRegion="polite">{t('shopping.allBoughtTitle')}</AppText>
+                <AppText variant="caption" secondary>{t('shopping.allBoughtBody')}</AppText>
+              </View>
+            </View>
+            <Button label={t('shopping.checkAgain')} icon="refresh" variant="secondary" size="sm" loading={refreshing} onPress={onRefresh} />
+          </>
+        ) : (
+          <>
+            <View style={styles.progressRow}>
+              <IconBadge name="cart-outline" tone="accent" />
+              <AppText variant="subtitle" style={styles.flex} accessibilityLiveRegion="polite">
+                {t('shopping.progress', { done, total })}
+              </AppText>
+              <IconButton icon="refresh" label={t('shopping.refresh')} tone="primary" disabled={refreshing} onPress={onRefresh} />
+            </View>
+            <ProgressBar value={total ? done / total : 0} label={t('shopping.progress', { done, total })} />
+            {closed > 0 && <AppText variant="caption" secondary>{t('shopping.closed', { count: closed })}</AppText>}
+          </>
+        )}
         {move.isSuccess && <Banner tone="success" message={t('shopping.moved', { count: move.data })} />}
         {toPantry > 0 && (
           <>
@@ -153,7 +172,7 @@ function ListView({ planId, listId, items, onRefresh, refreshing }: {
         {record.error && <Banner tone="danger" message={t(errorKey(record.error))} />}
       </Card>
 
-      {toSections(items).map((section) =>
+      {toSections(open).map((section) =>
         section.kind === 'have' ? (
           <Card key={section.key} variant="filled">
             <View style={styles.sectionHead}>

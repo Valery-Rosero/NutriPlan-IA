@@ -1,9 +1,8 @@
 # Autorización para el tratamiento de datos sensibles — NutriPlan AI
 
-> BORRADOR para revisión de un abogado. Se muestra en un paso aparte, con casilla propia SIN marcar, y no puede ser condición para crear la cuenta.
-> Versión 1
+> Versión 1 · Vigente desde el 13 de noviembre de 2026.
 
-**Responsable:** [RAZÓN SOCIAL], NIT [NIT], [correo de privacidad].
+**Responsable:** NutriPlan AI, proyecto académico de Pasto, Colombia. Contacto: desde la app, en Perfil › Ayuda y sugerencias.
 
 Para personalizar tus planes de comidas necesitamos tratar datos **sensibles**:
 - Alergias e intolerancias alimentarias.
@@ -17,6 +16,6 @@ Para personalizar tus planes de comidas necesitamos tratar datos **sensibles**:
 
 **Cómo revocar:** en cualquier momento, en Perfil > Privacidad > "Revocar autorización de datos sensibles". Al revocar, borramos estos datos de tu cuenta.
 
-**Terceros:** para generar respuestas, nuestros proveedores (alojamiento y modelos de lenguaje, algunos fuera de Colombia) pueden procesar esta información bajo contrato de transmisión y medidas de seguridad. Consulta la Política de Tratamiento de Datos en [URL].
+**Terceros:** estos datos se guardan en nuestro proveedor de alojamiento (Supabase, en Brasil), bajo contrato de transmisión y medidas de seguridad. **No los enviamos al asistente de inteligencia artificial.** Consulta la Política de Tratamiento de Datos en Perfil › Política de Tratamiento de Datos.
 
 [ ] Autorizo de manera previa, expresa e informada el tratamiento de mis datos sensibles para las finalidades descritas.

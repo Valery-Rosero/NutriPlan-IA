@@ -1,4 +1,4 @@
-import { applyChecked, pendingToPantry, progress, toSections } from '@/features/shopping/domain/shopping';
+import { applyChecked, pendingToPantry, progress, splitClosed, toSections } from '@/features/shopping/domain/shopping';
 import { SHOPPING } from '@/test/fakes';
 
 describe('lista de compras (US-125, US-135)', () => {
@@ -23,5 +23,13 @@ describe('lista de compras (US-125, US-135)', () => {
     let list = applyChecked(SHOPPING, 'i1', true);
     list = applyChecked(list, 'i4', true); // manual, sin ingrediente: no cuenta
     expect(pendingToPantry(list.items)).toBe(1);
+  });
+
+  it('lo que ya pasó a la despensa sale de la lista y se cuenta aparte', () => {
+    const items = SHOPPING.items.map((i) => (i.id === 'i1' ? { ...i, checked: true, movedToPantry: true } : i));
+    const { open, closed } = splitClosed(items);
+    expect(closed).toBe(1);
+    expect(open.find((i) => i.id === 'i1')).toBeUndefined();
+    expect(progress(open)).toEqual({ done: 0, total: 2 });
   });
 });

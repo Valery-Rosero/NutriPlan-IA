@@ -3,7 +3,6 @@ import type { ComponentProps, ReactNode } from 'react';
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
-  Platform,
   Pressable,
   RefreshControl,
   ScrollView,
@@ -58,7 +57,8 @@ export function Screen({ children, scroll, refreshing, onRefresh }: {
 }) {
   const c = useTheme();
   const body = scroll ? (
-    <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    // Edge-to-edge en Android (SDK 57): la ventana no se achica con el teclado; "padding" en ambas plataformas.
+    <KeyboardAvoidingView style={styles.flex} behavior="padding">
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"

@@ -66,6 +66,15 @@ export function applyChecked(list: ShoppingList, itemId: string, checked: boolea
   return { ...list, items: list.items.map((i) => (i.id === itemId ? { ...i, checked } : i)) };
 }
 
+/**
+ * Lo que sigue en la lista. Lo que ya pasó a la despensa (o lo manual que se cerró con esa compra)
+ * sale de la lista: la compra terminó. `closed` dice cuántos se cerraron, para avisarlo.
+ */
+export function splitClosed(items: ShoppingItem[]) {
+  const open = items.filter((i) => !i.movedToPantry);
+  return { open, closed: items.length - open.length };
+}
+
 export function pendingToPantry(items: ShoppingItem[]) {
   return items.filter((i) => i.checked && !i.movedToPantry && i.ingredientId !== null && (i.toBuyGrams ?? 0) > 0).length;
 }

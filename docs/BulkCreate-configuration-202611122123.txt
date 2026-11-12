@@ -1,0 +1,70 @@
+{
+  "config.version" : "2.0",
+  "config.project.from.csv" : "false",
+  "config.encoding" : "UTF-8",
+  "config.file.id" : "2127e230-c11e-4415-a998-8372a080ff53",
+  "config.email.suffix" : "@",
+  "config.file.name" : "nutriplan-jira-scrum.csv",
+  "config.field.mappings" : {
+    "Issue Type" : {
+      "jira.field" : "issuetype",
+      "userChanged" : "false",
+      "manualMapping" : "true"
+    },
+    "Description" : {
+      "jira.field" : "description",
+      "userChanged" : "true",
+      "manualMapping" : "false"
+    },
+    "Parent" : {
+      "jira.field" : "parent",
+      "userChanged" : "false",
+      "manualMapping" : "false"
+    },
+    "Summary" : {
+      "jira.field" : "summary",
+      "userChanged" : "false",
+      "manualMapping" : "false"
+    },
+    "Labels" : {
+      "jira.field" : "labels",
+      "userChanged" : "false",
+      "manualMapping" : "false"
+    },
+    "Sprint" : {
+      "userChanged" : "false",
+      "manualMapping" : "false",
+      "existing.custom.field" : "10020"
+    },
+    "Issue ID" : {
+      "jira.field" : "issue-id",
+      "userChanged" : "false",
+      "manualMapping" : "false"
+    },
+    "Story Points" : {
+      "userChanged" : "false",
+      "manualMapping" : "false",
+      "existing.custom.field" : "10016"
+    }
+  },
+  "config.csv.file.id" : null,
+  "config.value.mappings" : {
+    "Issue Type" : {
+      "Task" : "10129",
+      "Epic" : "10126",
+      "Bug" : "10131",
+      "Sub-task" : "10127",
+      "Story" : "10130"
+    }
+  },
+  "config.delimiter" : ",",
+  "config.project" : {
+    "project.type" : null,
+    "project.key" : "PROYEC",
+    "project.description" : null,
+    "project.url" : null,
+    "project.name" : "Proyecto",
+    "project.lead" : "3dd8c537-4a5c-46a8-83f8-ad5ef0213cd0"
+  },
+  "config.date.format" : "dd/MMM/yy h:mm a"
+}

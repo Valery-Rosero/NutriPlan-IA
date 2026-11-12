@@ -1,11 +1,10 @@
 # Política de Tratamiento de Datos Personales — NutriPlan AI
 
-> BORRADOR para revisión de un abogado. Reemplazar los textos entre [corchetes] antes de publicar.
-> Versión 1 · Vigente desde: [fecha de lanzamiento]
+> Versión 1 · Vigente desde el 13 de noviembre de 2026.
 
 ## 1. Responsable del tratamiento
-[RAZÓN SOCIAL], NIT [NIT], domicilio en [ciudad, Colombia], correo [correo de privacidad], teléfono [teléfono] (en adelante, "NutriPlan AI").
-Área que atiende consultas y reclamos: [nombre del área o cargo], en [correo de privacidad].
+NutriPlan AI es un proyecto académico desarrollado en Pasto, Colombia (en adelante, "NutriPlan AI" o "nosotros"), y es el responsable del tratamiento de tus datos personales.
+Las consultas y reclamos los atiende el equipo de NutriPlan AI, desde la app, en Perfil › Ayuda y sugerencias.
 
 ## 2. Qué datos tratamos
 - **Datos de cuenta:** correo electrónico, nombre para mostrar, región, tamaño del hogar, presupuesto, tiempo máximo de cocina y preferencias de picante.
@@ -37,7 +36,7 @@ Contamos con proveedores que tratan datos por nuestra cuenta, con contrato de tr
 Como titular puedes: conocer, actualizar y rectificar tus datos; solicitar prueba de la autorización; ser informado del uso de tus datos; presentar quejas ante la Superintendencia de Industria y Comercio; **revocar la autorización y solicitar la supresión de tus datos**; y acceder gratuitamente a ellos. En la app puedes exportar tus datos, revocar la autorización de datos sensibles y eliminar tu cuenta.
 
 ## 8. Cómo ejercer tus derechos
-Escribe a [correo de privacidad] o usa la sección Privacidad de la app, indicando tu nombre, el correo de tu cuenta y tu solicitud.
+Escríbenos desde la app, en Perfil › Ayuda y sugerencias, o usa la sección Perfil › Privacidad, indicando el correo de tu cuenta y tu solicitud.
 - **Consultas:** las respondemos en máximo diez (10) días hábiles, prorrogables por cinco (5) más con aviso de los motivos.
 - **Reclamos:** los resolvemos en máximo quince (15) días hábiles, prorrogables por ocho (8) más con aviso de los motivos. Si el reclamo está incompleto, te pediremos subsanarlo dentro de los cinco (5) días siguientes.
 La supresión no procede cuando exista un deber legal o contractual de conservar la información.
@@ -49,10 +48,10 @@ Aplicamos medidas técnicas, humanas y administrativas: cifrado en tránsito y e
 NutriPlan AI es solo para mayores de 18 años y no recolectamos conscientemente datos de menores. Si detectamos una cuenta de un menor, la eliminaremos.
 
 ## 11. Conservación
-Conservamos tus datos mientras tengas cuenta. Al eliminarla, borramos tus datos personales, salvo los que debamos conservar por ley o para probar la autorización (registro de consentimientos, sin contenido de salud) durante [plazo definido por el abogado].
+Conservamos tus datos mientras tengas cuenta. Al eliminarla, borramos tus datos personales, salvo los que debamos conservar por ley o para probar la autorización (registro de consentimientos, sin contenido de salud) durante el tiempo que exija la ley.
 
 ## 12. Cambios
 Si cambiamos esta política de forma sustancial te avisaremos en la app y pediremos de nuevo tu autorización cuando la ley lo exija.
 
 ## 13. Vigencia
-Esta política rige desde [fecha]. La base de datos permanecerá vigente mientras dure la prestación del servicio.
+Esta política rige desde el 13 de noviembre de 2026. La base de datos permanecerá vigente mientras dure la prestación del servicio.

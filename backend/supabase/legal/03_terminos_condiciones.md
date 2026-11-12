@@ -1,9 +1,9 @@
 # Términos y Condiciones de Uso — NutriPlan AI
 
-> BORRADOR para revisión de un abogado. Versión 1 · Vigente desde: [fecha]
+> Versión 1 · Vigente desde el 13 de noviembre de 2026.
 
 ## 1. Quiénes somos y qué ofrecemos
-NutriPlan AI es una aplicación de [RAZÓN SOCIAL], NIT [NIT], que ayuda a planear comidas, adaptar recetas, armar listas de compras y controlar un presupuesto de alimentación. [Describir si es gratuita o de pago y, en ese caso, precio, renovación y cancelación.]
+NutriPlan AI es una aplicación gratuita, desarrollada como proyecto académico en Pasto, Colombia, que ayuda a planear comidas, adaptar recetas, armar listas de compras y controlar un presupuesto de alimentación. No tiene cobros, suscripciones ni publicidad.
 
 ## 2. Quién puede usarla
 Solo personas mayores de 18 años. Al registrarte declaras que lo eres. Podemos cancelar cuentas de menores.
@@ -27,10 +27,10 @@ No uses la app para actividades ilegales, para afectar su funcionamiento, para e
 Si compartes recetas o comentarios, aplican las Reglas de la Comunidad. Eres responsable de lo que publicas y puedes retirarlo cuando quieras.
 
 ## 9. Propiedad intelectual
-La app, su diseño, marcas, recetas oficiales y bases de datos pertenecen a [RAZÓN SOCIAL] o a sus licenciantes. Te damos una licencia personal, limitada, revocable y no exclusiva para usarla.
+La app, su diseño, marcas, recetas oficiales y bases de datos pertenecen al equipo de NutriPlan AI o a sus licenciantes. Te damos una licencia personal, limitada, revocable y no exclusiva para usarla.
 
 ## 10. Responsabilidad
-Hacemos esfuerzos razonables por mantener el servicio disponible y exacto, pero no garantizamos que sea ininterrumpido ni libre de errores. En la medida permitida por la ley, no respondemos por daños indirectos ni por decisiones de salud tomadas sin consultar a un profesional. Nada de lo anterior limita derechos irrenunciables de los consumidores ni nuestra responsabilidad por dolo o culpa grave. [El abogado debe validar esta cláusula frente al Estatuto del Consumidor, Ley 1480 de 2011.]
+Hacemos esfuerzos razonables por mantener el servicio disponible y exacto, pero no garantizamos que sea ininterrumpido ni libre de errores. En la medida permitida por la ley, no respondemos por daños indirectos ni por decisiones de salud tomadas sin consultar a un profesional. Nada de lo anterior limita derechos irrenunciables de los consumidores ni nuestra responsabilidad por dolo o culpa grave.
 
 ## 11. Suspensión y terminación
 Puedes eliminar tu cuenta cuando quieras desde la app. Podemos suspenderla si incumples estos términos o la ley.
@@ -39,4 +39,4 @@ Puedes eliminar tu cuenta cuando quieras desde la app. Podemos suspenderla si in
 Si modificamos estos términos te avisaremos con anticipación razonable; si sigues usando la app después de la fecha de entrada en vigencia, se entiende que los aceptas, salvo que la ley exija una aceptación expresa.
 
 ## 13. Ley aplicable y contacto
-Estos términos se rigen por las leyes de Colombia. Para peticiones, quejas y reclamos: [correo de soporte]. [Incluir datos de contacto del proveedor exigidos por la normativa de comercio electrónico.]
+Estos términos se rigen por las leyes de Colombia. Para peticiones, quejas y reclamos, escríbenos desde la app, en Perfil › Ayuda y sugerencias.

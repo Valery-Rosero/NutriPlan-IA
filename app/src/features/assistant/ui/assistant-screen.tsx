@@ -1,6 +1,6 @@
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useRef, useState } from 'react';
-import { ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { ActivityIndicator, KeyboardAvoidingView, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
@@ -59,7 +59,9 @@ export function AssistantScreen() {
     <>
       <Stack.Screen options={{ headerShown: true, title: t('assistant.title') }} />
       <SafeAreaView style={[styles.flex, { backgroundColor: c.background }]} edges={['left', 'right', 'bottom']}>
-        <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        {/* Android es edge-to-edge (SDK 57): la ventana ya no se achica con el teclado, así que hay que
+            empujar el contenido en las dos plataformas o la caja de texto queda debajo del teclado. */}
+        <KeyboardAvoidingView style={styles.flex} behavior="padding">
           <ScrollView
             ref={scroll}
             contentContainerStyle={styles.content}
