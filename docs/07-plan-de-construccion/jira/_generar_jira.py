@@ -207,15 +207,20 @@ def componente(m):
 
 
 COLS = ["Issue ID", "Issue Type", "Summary", "Parent", "Status", "Resolution", "Priority", "Story Points", "Sprint",
-        "Fix Version", "Component", "Labels", "Labels", "Labels", "Labels", "Labels", "Description"]
+        "Fix Version", "Component"] + ["Labels"] * 8 + ["Description"]
+ESTADO_LABEL = {"To Do": "estado-por-hacer", "In Progress": "estado-en-curso", "Done": "estado-hecho"}
+PRIORIDAD_LABEL = {"High": "prioridad-alta", "Medium": "prioridad-media", "Low": "prioridad-baja"}
 filas = []
 
 
 def fila(iid, tipo, resumen, padre="", estado="To Do", prioridad="", puntos=None, sprint="", version="", comp="", labels=(), desc=""):
-    labels = ([f"sprint-{sprint.split()[1]}"] if sprint else []) + list(labels)
-    labels = list(dict.fromkeys(labels))[:5]
+    # Etiquetas de respaldo: en proyectos team-managed el importador no trae Estado, Prioridad, Componente
+    # ni Versión; con ellas se filtra (JQL) y se cambian en bloque después de importar.
+    respaldo = [f"sprint-{sprint.split()[1]}" if sprint else "", ESTADO_LABEL[estado], PRIORIDAD_LABEL.get(prioridad, ""),
+                version.split()[0] if version else "", comp.split()[0].lower() if comp else ""]
+    labels = list(dict.fromkeys(l for l in respaldo + list(labels) if l))[:8]
     filas.append([iid, tipo, resumen, padre, estado, "Done" if estado == "Done" else "", prioridad,
-                  "" if puntos is None else puntos, sprint, version, comp] + labels + [""] * (5 - len(labels)) + [desc])
+                  "" if puntos is None else puntos, sprint, version, comp] + labels + [""] * (8 - len(labels)) + [desc])
 
 
 sub_id = 1000

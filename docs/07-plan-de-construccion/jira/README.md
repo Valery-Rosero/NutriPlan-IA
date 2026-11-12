@@ -60,4 +60,17 @@ El objetivo de cada sprint no viaja en el CSV: se escribe en Jira al editar el s
 
 **No importes dos veces:** cada importación crea los ítems de nuevo y quedarían duplicados. Si Jira no asignó los sprints, cada ítem tiene la etiqueta `sprint-N`: crea el sprint en el backlog, busca con JQL `labels = sprint-7` y mueve todos los resultados juntos (*Bulk change* o arrastrando). Conviene probar primero en un proyecto de prueba. Para empezar a planear desde cero, se puede no relacionar `Status`, `Resolution` y `Sprint`: todo quedará en el backlog por hacer.
 
+### Si el proyecto es team-managed (administrado por el equipo)
+El importador solo ofrece Resumen, Tipo de incidencia, Descripción, Etiquetas, Id de incidencia, Principal, Sprint y Story point estimate. Relaciona esos y deja sin asignar Status, Resolution, Priority, Component y Fix Version. Todo entra en "Por hacer"; para recuperar lo demás, cada ítem trae etiquetas de respaldo:
+
+| Etiqueta | Para |
+|---|---|
+| `estado-hecho`, `estado-en-curso`, `estado-por-hacer` | Cambiar el estado en bloque |
+| `prioridad-alta`, `prioridad-media`, `prioridad-baja` | Prioridad |
+| `v1.0`, `v1.1`, `v2.0` | Versión |
+| `m01` … `m12` | Módulo (componente) |
+| `sprint-0` … `sprint-11` | Sprint |
+
+Después de importar: buscar con JQL `project = <CLAVE> AND labels = estado-hecho`, seleccionar todo y usar **Cambio masivo → Transición → Listo**; lo mismo con `estado-en-curso`. Luego, en el backlog, completar los sprints 0 a 10.
+
 Al abrir el CSV en Excel las tildes pueden verse raras; es solo Excel (el archivo está en UTF-8). Jira lo lee bien.
