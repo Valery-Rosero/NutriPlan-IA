@@ -37,9 +37,12 @@ npx expo start                          # abre en Android con Expo Go o una deve
 | staging | Supabase, São Paulo | `fiesvxiuxsllqcpxidap` |
 | prod | Supabase, São Paulo | `drgzvvkkjxqvolcerpjx` |
 
-Ninguna tabla se crea a mano en el panel: todo entra por migraciones. Para subir migraciones **y el catálogo** a staging: `cd backend && npx supabase db push --include-seed`. La `service_role` key y las claves de terceros (Resend, LLM) nunca van en el repositorio.
+Ninguna tabla se crea a mano en el panel: todo entra por migraciones. Para subir migraciones **y el catálogo** a staging: `cd backend && npx supabase db push --include-seed --remote` (sin `--remote`, la CLI actual apunta a la base local). Los archivos de catálogo ya cargados no se vuelven a ejecutar: si cambian, se corren a mano en el SQL Editor (son idempotentes). La `service_role` key y las claves de terceros (Resend, LLM) nunca van en el repositorio.
 
-## Estado (14-oct-2026)
-- **Hecho:** MVP (Sprints 0 a 6): base de datos con RLS y recetas versátiles, catálogo real, registro y consentimientos, onboarding y perfil, despensa, receta y "Cocinar ahora", plan semanal con presupuesto, lista de compras sin conexión, calificaciones, exportar y eliminar datos, perfiles de compilación Android. 273 verificaciones SQL y 162 pruebas de la app.
+## Estado (12-nov-2026)
+- **Hecho · F0 + F1 (MVP):** base de datos con RLS y recetas versátiles, catálogo real, registro y consentimientos, onboarding y perfil, despensa, receta y "Cocinar ahora", plan semanal con presupuesto, lista de compras sin conexión, calificaciones, exportar y eliminar datos.
+- **Hecho · F2:** rediseño completo (paleta, modo oscuro), tiempo máximo y cocinas favoritas, sustitutos, asistente con Gemini (ADR-025), ayuda y sugerencias, precios reales de Pasto (SIPSA), gasto del mes y reemplazos para ahorrar, Mi día y metas de nutrición, analítica anónima, accesibilidad (letra al 200 % y TalkBack), arranque sin conexión, registro de fallas con alerta (ADR-026), notificaciones (recordatorios, por vencer, resumen semanal).
+- **Calidad:** 344 verificaciones SQL, 279 pruebas de la app, 15 de la lógica del asistente y 13 de integración contra Supabase real.
+- **Staging al día** (migraciones, catálogo, funciones, secretos, SMTP de Gmail y plantillas en español). Producción (`drgzvvkkjxqvolcerpjx`) aún no.
+- **Pendiente:** probar el APK en un teléfono real (arranque < 3 s, notificaciones, recorrido y checklist de accesibilidad), completar los textos legales, revisión nutricional (US-121), validación con usuarios (US-101), monitor de disponibilidad, llevar todo a producción y publicar en Google Play (US-158).
 - **Para publicar:** ver `docs/07-plan-de-construccion/publicacion-android.md`.
-- **Siguiente (F2):** asistente conversacional, notificaciones de vencimiento, analítica anónima, completar precios SIPSA.
