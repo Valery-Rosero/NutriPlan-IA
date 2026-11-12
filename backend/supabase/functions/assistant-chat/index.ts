@@ -3,6 +3,7 @@
 // alergias, dietas y tiempo), el modelo elige una, se valida aquí y se aplica con apply_assistant_suggestion.
 import { createClient } from 'npm:@supabase/supabase-js@2';
 
+import { reportEdgeError } from '../_shared/report-error.ts';
 import { askGemini, type LlmTurn } from './llm.ts';
 import { fallbackDecision, requestSchema, slotForNow, systemPrompt, validateAnswer, type Candidate, type Target } from './logic.ts';
 
@@ -142,6 +143,7 @@ Deno.serve(async (req) => {
     });
   } catch (e) {
     console.error('assistant-chat: error', (e as { code?: string }).code ?? 'unknown');
+    await reportEdgeError(admin, 'assistant-chat', e);
     return fail(500, 'unknown');
   }
 });

@@ -4,26 +4,29 @@ import '@/infrastructure/i18n';
 
 import { DMSerifDisplay_400Regular, useFonts } from '@expo-google-fonts/dm-serif-display';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
-import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
+import { DarkTheme, DefaultTheme, Stack, ThemeProvider, type ErrorBoundaryProps } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useState } from 'react';
 import { useColorScheme } from 'react-native';
 
+import { computeGates } from '@/core/startup/gates';
 import { createServices } from '@/di/create-services';
 import { ServicesProvider } from '@/di/services';
 import { SessionProvider, useSession } from '@/features/auth/application/session';
 import { useRequiredConsents } from '@/features/legal/application/legal-queries';
 import { useProfile } from '@/features/profile/application/profile-queries';
 import { registerShoppingMutations } from '@/features/shopping/application/shopping-queries';
+import { installGlobalErrorHandler, reportError } from '@/infrastructure/errors/error-reporter';
 import { persister, queryClient, shouldPersistQuery } from '@/infrastructure/query-client';
 import { Colors, type ThemeColors } from '@/shared/theme/colors';
 import { restoreThemePreference } from '@/shared/theme/theme-preference';
-import { DisplayFont } from '@/shared/theme/tokens';
-import { computeGates } from '@/core/startup/gates';
 import { useIsOnline } from '@/shared/hooks/use-is-online';
+import { DisplayFont } from '@/shared/theme/tokens';
 import { useTheme } from '@/shared/theme/use-theme';
+import { CrashState } from '@/shared/ui';
 
 SplashScreen.preventAutoHideAsync();
+installGlobalErrorHandler(); // US-122: errores JS fuera de React también se registran
 void restoreThemePreference(); // claro / oscuro / sistema, según lo que eligió la persona
 
 // Tema de navegación con la paleta de marca (fondos de pantalla y transiciones sin destellos blancos o negros).
@@ -34,6 +37,18 @@ const navigationThemes = {
 
 function navColors(c: ThemeColors) {
   return { primary: c.primary, background: c.background, card: c.surface, text: c.text, border: c.border, notification: c.danger };
+}
+
+/**
+ * US-122: si una pantalla falla, se registra (limpio, sin datos de la persona) y se muestra un camino para
+ * seguir en vez de cerrar la app. "Reintentar" vuelve a dibujar la ruta.
+ */
+export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
+  useEffect(() => {
+    void reportError(error, 'pantalla');
+    void SplashScreen.hideAsync(); // si falla durante el arranque, que no quede escondido detrás del splash
+  }, [error]);
+  return <CrashState onRetry={() => void retry()} />;
 }
 
 export default function RootLayout() {

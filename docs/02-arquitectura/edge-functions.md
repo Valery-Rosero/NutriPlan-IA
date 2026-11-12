@@ -26,3 +26,7 @@ Reconfirma contraseña o token reciente → registra evento mínimo de auditorí
 
 ## 5. Scripts de importación (no son funciones públicas)
 `import-prices` (SIPSA/DANE → `ingredient_prices`, `is_estimated=true`, fuente citada), `import-nutrition` (USDA CC0 / TCAC tras permiso → `ingredient_nutrition`), `import-recipes` (curados → `recipes`, `recipe_ingredients`, `recipe_steps`, `nutritionist_reviews`). Corren desde CI o manualmente con `service_role`; deben ser idempotentes.
+
+## 6. `error-alert`  (POST, secreto compartido; sin JWT)
+**Construida** (ADR-026). La llama la base cada 5 minutos (`pg_cron` + `pg_net`) solo si hay fallas nuevas en `app_errors`, con un resumen ya limpio `{ total, groups: [{ source, error_name, message, times }] }`. Verifica el encabezado `x-alert-secret` contra `ALERT_SECRET` y envía el correo por Resend (`RESEND_API_KEY`, `ALERT_EMAIL`, `ALERT_FROM` opcional). Las demás funciones registran sus fallas con `_shared/report-error.ts`.
+

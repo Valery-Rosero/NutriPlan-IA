@@ -698,5 +698,9 @@
     "counted_other": "Cuentan {{count}} comidas cocinadas (por porción).",
     "pending": "{{slot}}: pendiente",
     "note": "Valores aproximados por porción. Es una guía, no una indicación médica."
+  },
+  "crash": {
+    "title": "Algo salió mal",
+    "body": "Ya le avisamos al equipo para arreglarlo. Puedes intentarlo de nuevo."
   }
 }

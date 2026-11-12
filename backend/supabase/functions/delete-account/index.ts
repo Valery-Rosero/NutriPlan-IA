@@ -3,6 +3,8 @@
 // sus recetas publicadas quedan anónimas (author_id → null). La service_role vive solo aquí.
 import { createClient } from 'npm:@supabase/supabase-js@2';
 
+import { reportEdgeError } from '../_shared/report-error.ts';
+
 type ErrorCode = 'method_not_allowed' | 'not_authenticated' | 'confirmation_required' | 'unknown';
 
 const json = (status: number, body: unknown) =>
@@ -32,6 +34,7 @@ Deno.serve(async (req) => {
   if (deleteError) {
     // Sin datos personales en los logs: solo el estado.
     console.error('delete-account: error al borrar', deleteError.status);
+    await reportEdgeError(admin, 'delete-account', deleteError);
     return fail(500, 'unknown');
   }
   console.info('delete-account: cuenta eliminada');

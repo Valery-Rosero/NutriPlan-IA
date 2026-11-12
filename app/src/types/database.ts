@@ -53,6 +53,20 @@ isOneToOne: false
                   Relationships: [
                     
                   ]
+                },"app_errors": {
+                  Row: {
+                    "alerted_at": string | null,"anonymous_id": string | null,"app_version": string | null,"device_model": string | null,"error_name": string,"id": number,"message": string,"occurred_at": string,"screen": string | null,"source": Database["public"]['Enums']["error_source"],"stack": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "alerted_at"?: string | null,"anonymous_id"?: string | null,"app_version"?: string | null,"device_model"?: string | null,"error_name": string,"id"?: never,"message": string,"occurred_at"?: string,"screen"?: string | null,"source": Database["public"]['Enums']["error_source"],"stack"?: string | null
+                  }
+                  Update: {
+                    "alerted_at"?: string | null,"anonymous_id"?: string | null,"app_version"?: string | null,"device_model"?: string | null,"error_name"?: string,"id"?: never,"message"?: string,"occurred_at"?: string,"screen"?: string | null,"source"?: Database["public"]['Enums']["error_source"],"stack"?: string | null
+                  }
+                  Relationships: [
+                    
+                  ]
                 },"assistant_conversations": {
                   Row: {
                     "created_at": string,"id": string,"user_id": string
@@ -1996,6 +2010,9 @@ isOneToOne: false
 "record_purchase":
 { Args: { "p_list_id"?: string,"p_store"?: string,"p_total": number }; Returns: string
                            },
+"report_app_error":
+{ Args: { "p_anonymous_id"?: string,"p_app_version"?: string,"p_device_model"?: string,"p_error_name": string,"p_message": string,"p_screen"?: string,"p_stack"?: string }; Returns: undefined
+                           },
 "revoke_consent":
 { Args: { "p_kind": Database["public"]['Enums']["legal_doc_kind"] }; Returns: Json
                            },
@@ -2062,7 +2079,7 @@ isOneToOne: false
                            }
           }
           Enums: {
-            "activity_level": "sedentary"|"light"|"moderate"|"active"|"very_active","ai_kind": "plan"|"swap"|"chat","analytics_event": "onboarding_completed"|"plan_generated"|"shopping_list_generated"|"meal_cooked","app_role": "moderator"|"nutritionist"|"admin","budget_period": "week"|"month","chat_role": "user"|"assistant","device_platform": "ios"|"android","diet_kind": "rule_based"|"curated","health_goal": "lose_weight"|"maintain"|"gain_muscle"|"eat_healthier"|"save_time","legal_doc_kind": "privacy_policy"|"terms"|"health_disclaimer"|"community_sharing"|"sensitive_data_authorization","list_status": "active"|"completed","meal_slot": "breakfast"|"lunch"|"dinner"|"snack","meal_status": "planned"|"cooked"|"skipped","notification_frequency": "none"|"weekly_summary"|"daily","notification_kind": "meal_reminder"|"expiry_alert"|"weekly_summary","plan_status": "draft"|"confirmed"|"archived","recipe_status": "draft"|"in_review"|"published"|"rejected","report_reason": "spam"|"dangerous_advice"|"offensive"|"other","review_outcome": "approved"|"rejected","sex": "female"|"male"|"prefer_not_say","shopping_item_source": "plan"|"manual","ticket_category": "bug"|"suggestion","units_dimension": "mass"|"volume"|"count"
+            "activity_level": "sedentary"|"light"|"moderate"|"active"|"very_active","ai_kind": "plan"|"swap"|"chat","analytics_event": "onboarding_completed"|"plan_generated"|"shopping_list_generated"|"meal_cooked","app_role": "moderator"|"nutritionist"|"admin","budget_period": "week"|"month","chat_role": "user"|"assistant","device_platform": "ios"|"android","diet_kind": "rule_based"|"curated","error_source": "app"|"edge","health_goal": "lose_weight"|"maintain"|"gain_muscle"|"eat_healthier"|"save_time","legal_doc_kind": "privacy_policy"|"terms"|"health_disclaimer"|"community_sharing"|"sensitive_data_authorization","list_status": "active"|"completed","meal_slot": "breakfast"|"lunch"|"dinner"|"snack","meal_status": "planned"|"cooked"|"skipped","notification_frequency": "none"|"weekly_summary"|"daily","notification_kind": "meal_reminder"|"expiry_alert"|"weekly_summary","plan_status": "draft"|"confirmed"|"archived","recipe_status": "draft"|"in_review"|"published"|"rejected","report_reason": "spam"|"dangerous_advice"|"offensive"|"other","review_outcome": "approved"|"rejected","sex": "female"|"male"|"prefer_not_say","shopping_item_source": "plan"|"manual","ticket_category": "bug"|"suggestion","units_dimension": "mass"|"volume"|"count"
           }
           CompositeTypes: {
             [_ in never]: never
@@ -2178,7 +2195,7 @@ export type CompositeTypes<
 export const Constants = {
   "public": {
           Enums: {
-            "activity_level": ["sedentary", "light", "moderate", "active", "very_active"],"ai_kind": ["plan", "swap", "chat"],"analytics_event": ["onboarding_completed", "plan_generated", "shopping_list_generated", "meal_cooked"],"app_role": ["moderator", "nutritionist", "admin"],"budget_period": ["week", "month"],"chat_role": ["user", "assistant"],"device_platform": ["ios", "android"],"diet_kind": ["rule_based", "curated"],"health_goal": ["lose_weight", "maintain", "gain_muscle", "eat_healthier", "save_time"],"legal_doc_kind": ["privacy_policy", "terms", "health_disclaimer", "community_sharing", "sensitive_data_authorization"],"list_status": ["active", "completed"],"meal_slot": ["breakfast", "lunch", "dinner", "snack"],"meal_status": ["planned", "cooked", "skipped"],"notification_frequency": ["none", "weekly_summary", "daily"],"notification_kind": ["meal_reminder", "expiry_alert", "weekly_summary"],"plan_status": ["draft", "confirmed", "archived"],"recipe_status": ["draft", "in_review", "published", "rejected"],"report_reason": ["spam", "dangerous_advice", "offensive", "other"],"review_outcome": ["approved", "rejected"],"sex": ["female", "male", "prefer_not_say"],"shopping_item_source": ["plan", "manual"],"ticket_category": ["bug", "suggestion"],"units_dimension": ["mass", "volume", "count"]
+            "activity_level": ["sedentary", "light", "moderate", "active", "very_active"],"ai_kind": ["plan", "swap", "chat"],"analytics_event": ["onboarding_completed", "plan_generated", "shopping_list_generated", "meal_cooked"],"app_role": ["moderator", "nutritionist", "admin"],"budget_period": ["week", "month"],"chat_role": ["user", "assistant"],"device_platform": ["ios", "android"],"diet_kind": ["rule_based", "curated"],"error_source": ["app", "edge"],"health_goal": ["lose_weight", "maintain", "gain_muscle", "eat_healthier", "save_time"],"legal_doc_kind": ["privacy_policy", "terms", "health_disclaimer", "community_sharing", "sensitive_data_authorization"],"list_status": ["active", "completed"],"meal_slot": ["breakfast", "lunch", "dinner", "snack"],"meal_status": ["planned", "cooked", "skipped"],"notification_frequency": ["none", "weekly_summary", "daily"],"notification_kind": ["meal_reminder", "expiry_alert", "weekly_summary"],"plan_status": ["draft", "confirmed", "archived"],"recipe_status": ["draft", "in_review", "published", "rejected"],"report_reason": ["spam", "dangerous_advice", "offensive", "other"],"review_outcome": ["approved", "rejected"],"sex": ["female", "male", "prefer_not_say"],"shopping_item_source": ["plan", "manual"],"ticket_category": ["bug", "suggestion"],"units_dimension": ["mass", "volume", "count"]
           }
         }
 } as const

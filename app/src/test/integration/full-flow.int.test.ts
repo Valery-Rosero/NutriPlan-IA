@@ -205,7 +205,20 @@ run('recorrido completo contra Supabase real', () => {
     expect(data ?? []).toHaveLength(0);
   });
 
-  it('12. exportar mis datos', async () => {
+  it('12. reportar una falla (US-122): se registra limpia y nadie la puede leer desde la app', async () => {
+    const { error } = await client.rpc('report_app_error', {
+      p_error_name: 'TypeError',
+      p_message: 'falló para ana@correo.com',
+      p_screen: 'Hoy',
+      p_anonymous_id: '11111111-2222-4333-8444-555555555555',
+    });
+    expect(error).toBeNull();
+    const { data, error: readError } = await client.from('app_errors').select('message');
+    expect(data ?? []).toHaveLength(0);
+    expect(readError).not.toBeNull(); // sin permiso de lectura
+  });
+
+  it('13. exportar mis datos', async () => {
     const json = JSON.parse(await account.exportData());
     expect(json.allergens).toHaveLength(1);
     expect(json.meal_plans.length).toBeGreaterThan(0);

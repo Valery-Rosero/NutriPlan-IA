@@ -61,6 +61,23 @@ export function ErrorState({ message, onRetry }: { message: string; onRetry?: ()
   );
 }
 
+/**
+ * US-122: lo que ve la persona si una pantalla falla. Sin detalles técnicos ni culpa; un camino para seguir.
+ * La falla ya quedó registrada (sin datos personales) para que el equipo la corrija.
+ */
+export function CrashState({ onRetry }: { onRetry: () => void }) {
+  const { t } = useTranslation();
+  const c = useTheme();
+  return (
+    <View style={[styles.center, { backgroundColor: c.background }]} accessibilityLiveRegion="assertive">
+      <IconBadge name="construct-outline" tone="warning" size={64} />
+      <AppText variant="heading" style={styles.text}>{t('crash.title')}</AppText>
+      <AppText secondary style={styles.text}>{t('crash.body')}</AppText>
+      <Button label={t('common.retry')} icon="refresh" onPress={onRetry} />
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: Spacing.md, padding: Spacing.lg },
   text: { textAlign: 'center' },
