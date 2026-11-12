@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { AppError } from '@/core/errors/app-error';
 import { useServices } from '@/di/services';
+import { useTrack } from '@/features/analytics/application/use-track';
 import { cookingKeys } from '@/features/cooking/application/use-suggestions';
 import { legalKeys, useCurrentDocuments } from '@/features/legal/application/legal-queries';
 import { planKeys } from '@/features/plan/application/plan-queries';
@@ -24,9 +25,11 @@ export function useProfile(enabled = true) {
 export function useUpdateProfile() {
   const { profile } = useServices();
   const queryClient = useQueryClient();
+  const track = useTrack();
   return useMutation({
     mutationFn: (patch: ProfilePatch) => profile.updateProfile(patch),
     onSuccess: (_, patch) => {
+      if (patch.onboardingCompleted) track('onboarding_completed');
       void queryClient.invalidateQueries({ queryKey: profileKeys.me() });
       // El tiempo máximo cambia qué recetas son elegibles (US-137): sugerencias y alternativas se recalculan.
       if (patch.maxCookMinutes !== undefined) {

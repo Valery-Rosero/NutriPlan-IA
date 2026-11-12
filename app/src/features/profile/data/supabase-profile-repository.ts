@@ -23,7 +23,7 @@ export class SupabaseProfileRepository implements ProfileRepository {
   async getProfile() {
     const { data, error } = await this.client
       .from('profiles')
-      .select('id, region_id, household_size, budget_amount, budget_period, max_cook_minutes, target_protein_pct, daily_kcal_target, onboarding_completed_at')
+      .select('id, region_id, household_size, budget_amount, budget_period, max_cook_minutes, target_protein_pct, daily_kcal_target, analytics_enabled, onboarding_completed_at')
       .single();
     if (error) throw toAppError(error);
     return {
@@ -35,6 +35,7 @@ export class SupabaseProfileRepository implements ProfileRepository {
       maxCookMinutes: data.max_cook_minutes,
       targetProteinPct: data.target_protein_pct,
       dailyKcalTarget: data.daily_kcal_target,
+      analyticsEnabled: data.analytics_enabled,
       onboardingCompletedAt: data.onboarding_completed_at,
     };
   }
@@ -48,6 +49,7 @@ export class SupabaseProfileRepository implements ProfileRepository {
     if (patch.maxCookMinutes !== undefined) update.max_cook_minutes = patch.maxCookMinutes;
     if (patch.targetProteinPct !== undefined) update.target_protein_pct = patch.targetProteinPct;
     if (patch.dailyKcalTarget !== undefined) update.daily_kcal_target = patch.dailyKcalTarget;
+    if (patch.analyticsEnabled !== undefined) update.analytics_enabled = patch.analyticsEnabled;
     if (patch.onboardingCompleted) update.onboarding_completed_at = new Date().toISOString();
     const { error } = await this.client.from('profiles').update(update).eq('id', await this.userId());
     if (error) throw toAppError(error);

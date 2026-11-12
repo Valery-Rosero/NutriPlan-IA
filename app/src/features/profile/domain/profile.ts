@@ -14,10 +14,12 @@ export type Profile = {
   targetProteinPct: number | null;
   /** US-159: meta diaria de kcal (800–6000), opcional. Dato sensible. */
   dailyKcalTarget: number | null;
+  /** US-131: compartir estadísticas anónimas de uso (se puede apagar en Privacidad). */
+  analyticsEnabled: boolean;
   onboardingCompletedAt: string | null;
 };
 
-export type ProfilePatch = Partial<Pick<Profile, 'regionId' | 'householdSize' | 'budgetAmount' | 'budgetPeriod' | 'maxCookMinutes' | 'targetProteinPct' | 'dailyKcalTarget'>> & {
+export type ProfilePatch = Partial<Pick<Profile, 'regionId' | 'householdSize' | 'budgetAmount' | 'budgetPeriod' | 'maxCookMinutes' | 'targetProteinPct' | 'dailyKcalTarget' | 'analyticsEnabled'>> & {
   onboardingCompleted?: true;
 };
 

@@ -33,7 +33,8 @@ describe('RecipeScreen (US-115, US-118, US-123, ADR-020)', () => {
 
   it('cocinar ahora descuenta, informa lo que faltó y permite deshacer', async () => {
     const recipes = fakeRecipes();
-    await render(<RecipeScreen />, { wrapper: withServices(fakeServices({ recipes })) });
+    const services = fakeServices({ recipes });
+    await render(<RecipeScreen />, { wrapper: withServices(services) });
     await fireEvent.press(await screen.findByRole('button', { name: 'Cocinar ahora' }));
 
     expect(await screen.findByText('¡Buen provecho!')).toBeOnTheScreen();
@@ -42,6 +43,7 @@ describe('RecipeScreen (US-115, US-118, US-123, ADR-020)', () => {
 
     await fireEvent.press(screen.getByRole('button', { name: /Deshacer/ }));
     expect(recipes.undoCook).toHaveBeenCalledWith('pm1');
+    expect(services.analytics.track).toHaveBeenCalledWith('meal_cooked');
   });
 
   it('US-147: para lo que falta, sugiere con qué reemplazarlo y marca lo que ya tienes', async () => {

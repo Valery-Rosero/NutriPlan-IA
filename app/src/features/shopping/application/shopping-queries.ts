@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient, type QueryClient } from '@tansta
 
 import type { Services } from '@/di/services';
 import { useServices } from '@/di/services';
+import { useTrack } from '@/features/analytics/application/use-track';
 import { cookingKeys } from '@/features/cooking/application/use-suggestions';
 import { pantryKeys } from '@/features/pantry/application/pantry-queries';
 import { applyChecked, type ShoppingList } from '@/features/shopping/domain/shopping';
@@ -97,7 +98,11 @@ function useListMutation<T>(fn: (input: T) => Promise<unknown>, alsoInvalidatePa
 
 export function useGenerateList() {
   const { shopping } = useServices();
-  return useListMutation((planId: string) => shopping.generate(planId));
+  const track = useTrack();
+  return useListMutation(async (planId: string) => {
+    await shopping.generate(planId);
+    track('shopping_list_generated');
+  });
 }
 
 export function useAddManualItem() {

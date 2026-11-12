@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { useServices } from '@/di/services';
+import { useTrack } from '@/features/analytics/application/use-track';
 import type { MealSlot } from '@/features/cooking/domain/cooking';
 import { nutritionKeys } from '@/features/nutrition/application/use-nutrition';
 import { todayIso } from '@/features/pantry/domain/pantry';
@@ -46,6 +47,7 @@ function usePlanMutation<T>(fn: (input: T) => Promise<unknown>) {
 export function useGeneratePlan() {
   const { plans, shopping } = useServices();
   const queryClient = useQueryClient();
+  const track = useTrack();
   return useMutation({
     mutationFn: async (input: GeneratePlanInput) => {
       const planId = await plans.generate(input);
@@ -53,6 +55,8 @@ export function useGeneratePlan() {
       return planId;
     },
     onSuccess: () => {
+      track('plan_generated');
+      track('shopping_list_generated');
       void queryClient.invalidateQueries({ queryKey: planKeys.all });
       void queryClient.invalidateQueries({ queryKey: ['shopping'] });
     },

@@ -6,6 +6,7 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
 import { SupabaseAccountRepository } from '@/features/account/data/supabase-account-repository';
+import { SupabaseAnalyticsRepository } from '@/features/analytics/data/supabase-analytics-repository';
 import { SupabaseAuthRepository } from '@/features/auth/data/supabase-auth-repository';
 import { SupabaseCookingRepository } from '@/features/cooking/data/supabase-cooking-repository';
 import { legalDrafts } from '@/features/legal/data/legal-drafts.generated';
@@ -44,6 +45,7 @@ const plans = new SupabasePlanRepository(client);
 const shopping = new SupabaseShoppingRepository(client);
 const account = new SupabaseAccountRepository(client);
 const spending = new SupabaseSpendingRepository(client);
+const analytics = new SupabaseAnalyticsRepository(client, async () => '11111111-2222-4333-8444-555555555555', '1.0.0');
 const support = new SupabaseSupportRepository(client, () => ({ appVersion: '1.0.0', deviceModel: 'Prueba' }));
 
 const run = KEY ? describe : describe.skip;
@@ -193,7 +195,17 @@ run('recorrido completo contra Supabase real', () => {
     expect(files).toHaveLength(1);
   });
 
-  it('11. exportar mis datos', async () => {
+  it('11. analítica anónima (US-131): se registra; apagada, la base la rechaza sin romper nada', async () => {
+    await analytics.track('plan_generated');
+    await profile.updateProfile({ analyticsEnabled: false });
+    await expect(analytics.track('meal_cooked')).resolves.toBeUndefined();
+    await profile.updateProfile({ analyticsEnabled: true });
+    // los usuarios no pueden leer la analítica (ni siquiera la suya): solo el equipo
+    const { data } = await client.from('analytics_events').select('id');
+    expect(data ?? []).toHaveLength(0);
+  });
+
+  it('12. exportar mis datos', async () => {
     const json = JSON.parse(await account.exportData());
     expect(json.allergens).toHaveLength(1);
     expect(json.meal_plans.length).toBeGreaterThan(0);

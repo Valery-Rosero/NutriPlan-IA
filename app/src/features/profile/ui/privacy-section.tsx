@@ -1,15 +1,19 @@
 import { useRouter } from 'expo-router';
-import { Alert } from 'react-native';
+import { Alert, StyleSheet, Switch, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { errorKey } from '@/core/errors/app-error';
 import { useExportMyData } from '@/features/account/application/account-queries';
 import {
   useGrantSensitiveAuthorization,
+  useProfile,
   useRevokeSensitiveAuthorization,
   useSensitiveAuthorization,
+  useUpdateProfile,
 } from '@/features/profile/application/profile-queries';
-import { Banner, Button, FormSection, ListGroup, ListRow, LoadingState, Pill } from '@/shared/ui';
+import { Spacing } from '@/shared/theme/colors';
+import { useTheme } from '@/shared/theme/use-theme';
+import { AppText, Banner, Button, FormSection, ListGroup, ListRow, LoadingState, Pill } from '@/shared/ui';
 
 /** Autorización de datos sensibles: se puede dar y revocar en cualquier momento (ADR-011). */
 export function PrivacySection({ onDone }: { onDone: () => void }) {
@@ -19,6 +23,9 @@ export function PrivacySection({ onDone }: { onDone: () => void }) {
   const revoke = useRevokeSensitiveAuthorization();
   const router = useRouter();
   const exportData = useExportMyData(t('account.exportTitle'));
+  const profile = useProfile();
+  const update = useUpdateProfile();
+  const c = useTheme();
 
   if (status.isPending) return <LoadingState />;
 
@@ -29,7 +36,7 @@ export function PrivacySection({ onDone }: { onDone: () => void }) {
       { text: t('profile.privacy.revokeConfirm'), style: 'destructive', onPress: () => revoke.mutate(undefined, { onSuccess: onDone }) },
     ]);
 
-  const error = grant.error ?? revoke.error ?? exportData.error;
+  const error = grant.error ?? revoke.error ?? exportData.error ?? update.error;
   return (
     <>
       <FormSection
@@ -54,6 +61,20 @@ export function PrivacySection({ onDone }: { onDone: () => void }) {
         )}
       </FormSection>
 
+      {/* US-131: estadísticas anónimas (sin cuenta, sin salud); se pueden apagar aquí en cualquier momento. */}
+      <FormSection icon="stats-chart-outline" tone="neutral" title={t('profile.analytics.title')} hint={t('profile.analytics.hint')}>
+        <View style={styles.switchRow}>
+          <AppText style={styles.flex}>{t('profile.analytics.label')}</AppText>
+          <Switch
+            accessibilityLabel={t('profile.analytics.label')}
+            value={profile.data?.analyticsEnabled ?? true}
+            disabled={!profile.data || update.isPending}
+            onValueChange={(value) => update.mutate({ analyticsEnabled: value })}
+            trackColor={{ true: c.primary, false: c.border }}
+          />
+        </View>
+      </FormSection>
+
       {error && <Banner tone="danger" message={t(errorKey(error))} />}
 
       <ListGroup title={t('account.rightsTitle')}>
@@ -64,3 +85,8 @@ export function PrivacySection({ onDone }: { onDone: () => void }) {
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  switchRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md, minHeight: 44 },
+  flex: { flex: 1 },
+});

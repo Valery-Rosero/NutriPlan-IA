@@ -1,6 +1,7 @@
-import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { keepPreviousData, useMutation, useQuery, useQueryClient, type QueryClient } from '@tanstack/react-query';
 
 import { useServices } from '@/di/services';
+import { useTrack } from '@/features/analytics/application/use-track';
 import { cookingKeys } from '@/features/cooking/application/use-suggestions';
 import type { MealSlot } from '@/features/cooking/domain/cooking';
 import { nutritionKeys } from '@/features/nutrition/application/use-nutrition';
@@ -42,21 +43,32 @@ export function useSubstitutes(ingredientIds: string[]) {
   });
 }
 
-/** Cocinar cambia la despensa y por lo tanto las sugerencias. */
+/** Cocinar cambia la despensa y por lo tanto las sugerencias. También es un evento de uso (US-131). */
+function useAfterCooking() {
+  const queryClient = useQueryClient();
+  const track = useTrack();
+  return () => {
+    track('meal_cooked');
+    invalidateCooking(queryClient);
+  };
+}
+
 function useInvalidateAfterCooking() {
   const queryClient = useQueryClient();
-  return () => {
-    void queryClient.invalidateQueries({ queryKey: pantryKeys.all });
-    void queryClient.invalidateQueries({ queryKey: cookingKeys.all });
-    void queryClient.invalidateQueries({ queryKey: recipeKeys.all });
-    void queryClient.invalidateQueries({ queryKey: planKeys.all });
-    void queryClient.invalidateQueries({ queryKey: nutritionKeys.all });
-  };
+  return () => invalidateCooking(queryClient);
+}
+
+function invalidateCooking(queryClient: QueryClient) {
+  void queryClient.invalidateQueries({ queryKey: pantryKeys.all });
+  void queryClient.invalidateQueries({ queryKey: cookingKeys.all });
+  void queryClient.invalidateQueries({ queryKey: recipeKeys.all });
+  void queryClient.invalidateQueries({ queryKey: planKeys.all });
+  void queryClient.invalidateQueries({ queryKey: nutritionKeys.all });
 }
 
 export function useCookNow(id: string) {
   const { recipes } = useServices();
-  const invalidate = useInvalidateAfterCooking();
+  const invalidate = useAfterCooking();
   return useMutation({
     mutationFn: ({ slot, servings, choices }: { slot: MealSlot; servings: number; choices: Choice[] }) =>
       recipes.cookNow(id, slot, servings, choices),
@@ -66,7 +78,7 @@ export function useCookNow(id: string) {
 
 export function useCookPlanned() {
   const { recipes } = useServices();
-  const invalidate = useInvalidateAfterCooking();
+  const invalidate = useAfterCooking();
   return useMutation({
     mutationFn: ({ plannedMealId, choices }: { plannedMealId: string; choices: Choice[] }) => recipes.cookPlanned(plannedMealId, choices),
     onSuccess: invalidate,

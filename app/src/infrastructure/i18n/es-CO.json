@@ -369,6 +369,11 @@
       "note": "Si tienes una condición de salud, define tus metas con un profesional.",
       "needsAuthorization": "Las metas de nutrición son datos sensibles: para guardarlas necesitamos tu autorización.",
       "authorize": "Revisar mi autorización"
+    },
+    "analytics": {
+      "title": "Estadísticas de uso",
+      "hint": "Anónimas: solo contamos acciones como \"se generó un plan\", sin tu nombre, correo, alergias ni salud. Nos ayudan a decidir qué mejorar.",
+      "label": "Compartir estadísticas anónimas"
     }
   },
   "health": {

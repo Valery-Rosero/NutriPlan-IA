@@ -36,11 +36,15 @@ describe('Hoy (ADR-024): el flujo gira en torno a la cocina', () => {
   it('organizar la semana genera el plan Y la lista de mercado', async () => {
     const plans = fakePlans({ current: jest.fn(async () => null) });
     const shopping = fakeShopping();
-    await render(<TodayScreen />, { wrapper: withServices(fakeServices({ plans, shopping, pantry: kitchenWith(['Papa']) })) });
+    const services = fakeServices({ plans, shopping, pantry: kitchenWith(['Papa']) });
+    await render(<TodayScreen />, { wrapper: withServices(services) });
 
     await fireEvent.press(await screen.findByRole('button', { name: 'Organizar mi semana' }));
     await waitFor(() => expect(shopping.generate).toHaveBeenCalledWith('plan1'));
     expect(plans.generate).toHaveBeenCalledWith(expect.objectContaining({ days: 7 }));
+    // US-131: eventos anónimos de uso (sin datos de la persona)
+    await waitFor(() => expect(services.analytics.track).toHaveBeenCalledWith('plan_generated'));
+    expect(services.analytics.track).toHaveBeenCalledWith('shopping_list_generated');
   });
 });
 

@@ -46,7 +46,7 @@ export function fakeLegal(overrides: Partial<LegalRepository> = {}): jest.Mocked
 }
 
 export const PROFILE: Profile = {
-  id: 'u1', regionId: 3, householdSize: 4, budgetAmount: null, budgetPeriod: null, maxCookMinutes: null, targetProteinPct: null, dailyKcalTarget: null, onboardingCompletedAt: '2026-10-13T00:00:00Z',
+  id: 'u1', regionId: 3, householdSize: 4, budgetAmount: null, budgetPeriod: null, maxCookMinutes: null, targetProteinPct: null, dailyKcalTarget: null, analyticsEnabled: true, onboardingCompletedAt: '2026-10-13T00:00:00Z',
 };
 
 export function fakeProfile(overrides: Partial<ProfileRepository> = {}): jest.Mocked<ProfileRepository> {
@@ -201,6 +201,7 @@ export function fakeServices(overrides: Partial<Services> = {}): Services {
       monthly: jest.fn(async () => ({ monthStart: '2026-11-01', spent: 38200, purchases: 2, monthlyBudget: 60000, percent: 64 })),
       recordPurchase: jest.fn(async () => {}),
     },
+    analytics: { track: jest.fn(async () => {}) },
     nutrition: {
       day: jest.fn(async () => [
         { plannedMealId: 'b', slot: 'breakfast' as const, title: 'Huevos pericos', status: 'cooked' as const, kcal: 420, proteinG: 21, carbsG: 30, fatG: 22 },
