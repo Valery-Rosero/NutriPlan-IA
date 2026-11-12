@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { useServices } from '@/di/services';
 import type { MealSlot } from '@/features/cooking/domain/cooking';
+import { nutritionKeys } from '@/features/nutrition/application/use-nutrition';
 import { todayIso } from '@/features/pantry/domain/pantry';
 import type { GeneratePlanInput, SavingSuggestion } from '@/features/plan/domain/plan';
 
@@ -32,7 +33,13 @@ export function useAlternatives(slot: MealSlot, excludeRecipeId: string) {
 
 function usePlanMutation<T>(fn: (input: T) => Promise<unknown>) {
   const queryClient = useQueryClient();
-  return useMutation({ mutationFn: fn, onSuccess: () => queryClient.invalidateQueries({ queryKey: planKeys.all }) });
+  return useMutation({
+    mutationFn: fn,
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: planKeys.all });
+      void queryClient.invalidateQueries({ queryKey: nutritionKeys.all }); // omitir o cambiar afecta Mi día
+    },
+  });
 }
 
 /** Organizar la semana deja lista también la lista de mercado (lo que falta según la cocina). */

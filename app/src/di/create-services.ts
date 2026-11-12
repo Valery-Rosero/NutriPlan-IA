@@ -10,6 +10,7 @@ import { createLoginThrottle } from '@/features/auth/domain/login-throttle';
 import { SupabaseCookingRepository } from '@/features/cooking/data/supabase-cooking-repository';
 import { legalDrafts } from '@/features/legal/data/legal-drafts.generated';
 import { SupabaseLegalRepository } from '@/features/legal/data/supabase-legal-repository';
+import { SupabaseNutritionRepository } from '@/features/nutrition/data/supabase-nutrition-repository';
 import { SupabasePantryRepository } from '@/features/pantry/data/supabase-pantry-repository';
 import { SupabasePlanRepository } from '@/features/plan/data/supabase-plan-repository';
 import { SupabaseProfileRepository } from '@/features/profile/data/supabase-profile-repository';
@@ -33,6 +34,7 @@ export function createServices(): Services {
     account: new SupabaseAccountRepository(supabase),
     assistant: new SupabaseAssistantRepository(supabase),
     spending: new SupabaseSpendingRepository(supabase),
+    nutrition: new SupabaseNutritionRepository(supabase),
     // Solo versión y modelo (US-151): nada de salud ni de perfil.
     support: new SupabaseSupportRepository(supabase, () => ({
       appVersion: Constants.expoConfig?.version ?? null,

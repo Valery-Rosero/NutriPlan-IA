@@ -4,7 +4,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { KitchenScreen } from '@/features/kitchen/ui/kitchen-screen';
 import { todayIso } from '@/features/pantry/domain/pantry';
 import { TodayScreen } from '@/features/today/ui/today-screen';
-import { fakePantry, fakePlans, fakeServices, fakeShopping, PLAN, withServices } from '@/test/fakes';
+import { fakePantry, fakePlans, fakeProfile, fakeServices, fakeShopping, PLAN, PROFILE, withServices } from '@/test/fakes';
 
 const kitchenWith = (names: string[]) =>
   fakePantry({ list: jest.fn(async () => names.map((name) => ({ id: name, ingredientId: name, name, grams: 500, expiresOn: null }))) });
@@ -41,6 +41,21 @@ describe('Hoy (ADR-024): el flujo gira en torno a la cocina', () => {
     await fireEvent.press(await screen.findByRole('button', { name: 'Organizar mi semana' }));
     await waitFor(() => expect(shopping.generate).toHaveBeenCalledWith('plan1'));
     expect(plans.generate).toHaveBeenCalledWith(expect.objectContaining({ days: 7 }));
+  });
+});
+
+describe('Mi día (US-159)', () => {
+  it('suma solo lo cocinado y muestra lo que falta como pendiente', async () => {
+    await render(<TodayScreen />, { wrapper: withServices(fakeServices({ pantry: kitchenWith(['Papa']) })) });
+    expect(await screen.findByText('1000 kcal cocinadas hoy')).toBeOnTheScreen();
+    expect(screen.getByText('Cuentan 2 comidas cocinadas (por porción).')).toBeOnTheScreen();
+    expect(screen.getByText('Cena: pendiente')).toBeOnTheScreen();
+  });
+
+  it('con meta, muestra el avance frente a ella', async () => {
+    const profile = fakeProfile({ getProfile: jest.fn(async () => ({ ...PROFILE, dailyKcalTarget: 2000 })) });
+    await render(<TodayScreen />, { wrapper: withServices(fakeServices({ profile, pantry: kitchenWith(['Papa']) })) });
+    expect(await screen.findByText('1000 de 2000 kcal')).toBeOnTheScreen();
   });
 });
 

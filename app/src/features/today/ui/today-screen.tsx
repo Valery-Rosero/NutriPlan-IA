@@ -9,6 +9,7 @@ import { momentOfDay } from '@/features/cooking/domain/cooking';
 import { SLOT_ICON } from '@/features/cooking/ui/slot-icon';
 import { SuggestionCard } from '@/features/cooking/ui/suggestion-card';
 import { HealthDisclaimerNote } from '@/features/legal/ui/health-disclaimer-note';
+import { DailyNutritionCard } from '@/features/nutrition/ui/daily-nutrition-card';
 import { usePantry } from '@/features/pantry/application/pantry-queries';
 import { expiryStatus, todayIso } from '@/features/pantry/domain/pantry';
 import { QuickAdd } from '@/features/pantry/ui/quick-add';
@@ -141,6 +142,9 @@ export function TodayScreen() {
           </Card>
         </>
       )}
+
+      {/* Mi día (US-159): lo que ya se cocinó hoy, frente a la meta */}
+      <DailyNutritionCard date={today} />
 
       {/* Ideas para este momento del día con lo que hay */}
       <SectionHeader title={t('today.ideasTitle')} />

@@ -3,6 +3,7 @@ import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tansta
 import { useServices } from '@/di/services';
 import { cookingKeys } from '@/features/cooking/application/use-suggestions';
 import type { MealSlot } from '@/features/cooking/domain/cooking';
+import { nutritionKeys } from '@/features/nutrition/application/use-nutrition';
 import { pantryKeys } from '@/features/pantry/application/pantry-queries';
 import { planKeys } from '@/features/plan/application/plan-queries';
 import type { Choice, RatingTag } from '@/features/recipes/domain/recipe';
@@ -49,6 +50,7 @@ function useInvalidateAfterCooking() {
     void queryClient.invalidateQueries({ queryKey: cookingKeys.all });
     void queryClient.invalidateQueries({ queryKey: recipeKeys.all });
     void queryClient.invalidateQueries({ queryKey: planKeys.all });
+    void queryClient.invalidateQueries({ queryKey: nutritionKeys.all });
   };
 }
 

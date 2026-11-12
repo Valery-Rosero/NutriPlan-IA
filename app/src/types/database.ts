@@ -1904,6 +1904,11 @@ isOneToOne: false
               "coverage": number,"missing": Json,"missing_count": number,"recipe_id": string,"title": string,"total_minutes": number,"uses_expiring": boolean
             }[]
                            },
+"daily_nutrition":
+{ Args: { "p_date"?: string }; Returns: {
+              "carbs_g": number,"fat_g": number,"kcal": number,"planned_meal_id": string,"protein_g": number,"slot": Database["public"]['Enums']["meal_slot"],"status": Database["public"]['Enums']["meal_status"],"title": string
+            }[]
+                           },
 "eligible_recipes":
 { Args: { "p_max_minutes"?: number,"p_slot"?: Database["public"]['Enums']["meal_slot"] }; Returns: {
               "author_id": string | null,

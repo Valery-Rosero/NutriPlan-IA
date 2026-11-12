@@ -1,5 +1,5 @@
 import { initialOnboarding, onboardingReducer, type OnboardingEvent } from '@/features/profile/domain/onboarding';
-import { budgetSchema, nextCookTime, parseCop } from '@/features/profile/domain/profile';
+import { budgetSchema, kcalTargetSchema, macroSplit, nextCookTime, parseCop } from '@/features/profile/domain/profile';
 
 const run = (authorized: boolean, events: OnboardingEvent[]) => events.reduce(onboardingReducer, initialOnboarding(authorized));
 
@@ -53,5 +53,23 @@ describe('tiempo máximo de cocina (US-137)', () => {
     expect(nextCookTime(20)).toBe(30);
     expect(nextCookTime(25)).toBe(30);
     expect(nextCookTime(60)).toBeNull();
+  });
+});
+
+describe('metas de nutrición (US-136, US-159)', () => {
+  it('solo la proteína se elige; carbohidratos y grasa completan el 100 %', () => {
+    expect(macroSplit(30)).toEqual({ protein: 30, carbs: 40, fat: 30 });
+    expect(macroSplit(40)).toEqual({ protein: 40, carbs: 30, fat: 30 });
+    for (const p of [15, 25, 45]) {
+      const m = macroSplit(p);
+      expect(m.protein + m.carbs + m.fat).toBe(100);
+    }
+  });
+
+  it('la meta de kcal es opcional y razonable (800–6000)', () => {
+    expect(kcalTargetSchema.safeParse(null).success).toBe(true);
+    expect(kcalTargetSchema.safeParse(2000).success).toBe(true);
+    expect(kcalTargetSchema.safeParse(500).success).toBe(false);
+    expect(kcalTargetSchema.safeParse(9000).success).toBe(false);
   });
 });

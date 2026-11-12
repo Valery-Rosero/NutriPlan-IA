@@ -27,7 +27,8 @@
     "mustAccept": "Debes marcar esta casilla para continuar.",
     "householdSize": "Entre 1 y 12 personas.",
     "budgetAmount": "Escribe un monto mayor que cero o déjalo vacío.",
-    "messageLength": "Máximo 500 caracteres."
+    "messageLength": "Máximo 500 caracteres.",
+    "kcalTarget": "Escribe un número entre 800 y 6000, o déjalo vacío."
   },
   "auth": {
     "welcome": {
@@ -357,6 +358,17 @@
       "upTo": "Hasta {{minutes}} min",
       "cuisinesTitle": "Cocinas favoritas",
       "cuisinesHint": "Las pondremos más seguido en tu plan, sin dejar de usar lo que tienes. No excluyen ninguna receta."
+    },
+    "targets": {
+      "title": "Tus metas (opcional)",
+      "hint": "Para ver tu día frente a una meta y que el plan prefiera recetas que encajen.",
+      "protein": "Proteína (% de las kcal)",
+      "noGoal": "Sin meta",
+      "split": "Proteína {{protein}} % · Carbohidratos {{carbs}} % · Grasa {{fat}} %",
+      "kcal": "Meta de kcal al día (opcional)",
+      "note": "Si tienes una condición de salud, define tus metas con un profesional.",
+      "needsAuthorization": "Las metas de nutrición son datos sensibles: para guardarlas necesitamos tu autorización.",
+      "authorize": "Revisar mi autorización"
     }
   },
   "health": {
@@ -668,5 +680,16 @@
     "setBudget": "Fijar un presupuesto",
     "paidLabel": "¿Cuánto pagaste? (opcional)",
     "recorded": "Listo, sumamos la compra a tu gasto del mes."
+  },
+  "nutrition": {
+    "title": "Mi día",
+    "kcal": "{{kcal}} kcal cocinadas hoy",
+    "kcalOfTarget": "{{kcal}} de {{target}} kcal",
+    "macrosA11y": "Proteína {{p}} gramos, carbohidratos {{c}} gramos, grasa {{f}} gramos",
+    "proteinShare": "{{pct}} % de las kcal vino de proteína (tu meta: {{goal}} %).",
+    "counted_one": "Cuenta {{count}} comida cocinada (por porción).",
+    "counted_other": "Cuentan {{count}} comidas cocinadas (por porción).",
+    "pending": "{{slot}}: pendiente",
+    "note": "Valores aproximados por porción. Es una guía, no una indicación médica."
   }
 }

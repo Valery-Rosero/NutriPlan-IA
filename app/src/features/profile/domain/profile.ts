@@ -10,10 +10,14 @@ export type Profile = {
   budgetPeriod: BudgetPeriod | null;
   /** US-137: tope de minutos por receta; null = sin límite. */
   maxCookMinutes: number | null;
+  /** US-136: % de kcal desde proteína (10–50). Dato sensible: requiere la autorización (ADR-011). */
+  targetProteinPct: number | null;
+  /** US-159: meta diaria de kcal (800–6000), opcional. Dato sensible. */
+  dailyKcalTarget: number | null;
   onboardingCompletedAt: string | null;
 };
 
-export type ProfilePatch = Partial<Pick<Profile, 'regionId' | 'householdSize' | 'budgetAmount' | 'budgetPeriod' | 'maxCookMinutes'>> & {
+export type ProfilePatch = Partial<Pick<Profile, 'regionId' | 'householdSize' | 'budgetAmount' | 'budgetPeriod' | 'maxCookMinutes' | 'targetProteinPct' | 'dailyKcalTarget'>> & {
   onboardingCompleted?: true;
 };
 
@@ -63,6 +67,28 @@ export const COOK_TIME_OPTIONS = [15, 20, 30, 45, 60] as const;
 export function nextCookTime(current: number): number | null {
   return COOK_TIME_OPTIONS.find((option) => option > current) ?? null;
 }
+
+/** US-136: opciones de proteína (el control es por pasos de 5; la base acepta 10–50). */
+export const PROTEIN_OPTIONS = [15, 20, 25, 30, 35, 40, 45] as const;
+
+/** Grasa fija en 30 % de las kcal (rango usual de referencia); los carbohidratos completan el 100 %. */
+export const FAT_PCT = 30;
+
+/**
+ * Solo la proteína se elige; carbohidratos y grasa se derivan y siempre suman 100 % (no se guardan,
+ * igual que en la base). Ej.: proteína 40 → carbohidratos 30, grasa 30.
+ */
+export function macroSplit(proteinPct: number) {
+  return { protein: proteinPct, carbs: 100 - FAT_PCT - proteinPct, fat: FAT_PCT };
+}
+
+/** Meta diaria de kcal: vacío = sin meta; fuera de 800–6000 es inválida. */
+export const kcalTargetSchema = z
+  .number()
+  .int()
+  .min(800, { error: 'validation.kcalTarget' })
+  .max(6000, { error: 'validation.kcalTarget' })
+  .nullable();
 
 /** Convierte "150.000" o "150000" a número (los pesos no llevan decimales en la UI). */
 export function parseCop(text: string): number | null {
