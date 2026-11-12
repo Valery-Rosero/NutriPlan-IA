@@ -106,7 +106,7 @@ Todos se implementan en **una migración nueva** con sus pruebas, sin editar las
 | C3 | `NutriPlan AI — Stack y arquitectura de datos.md` (raíz) dice 9 migraciones, 123 pruebas y 14 funciones; el paquete dice 11, 148 y 16. | El documento raíz quedó viejo; manda el paquete. Marcarlo como histórico. |
 | C4 | `nutriplan-supabase/` y `backend/supabase/` son copias idénticas. | Una sola fuente: `backend/supabase/` dentro del repositorio. |
 | C5 | `AGENTS.md` pide marcar el "Estado" de cada historia, pero `historias.json` no tiene ese campo. | Llevar el estado en el tablero (GitHub Projects o Jira, ya existe el CSV de importación), no en el JSON. |
-| C6 | Proveedor de LLM sin decidir. | Proponer Claude (Anthropic) detrás de la interfaz propia: un modelo pequeño y barato para explicaciones del plan y uno mayor para el asistente (F2). Se decide en el spike US-103 con costo medido por plan. |
+| C6 | Proveedor de LLM sin decidir. | Proponer Claude (Anthropic) detrás de la interfaz propia: un modelo pequeño y barato para explicaciones del plan y uno mayor para el asistente (F2). Se decide en el spike US-103 con costo medido por plan. **Resuelto (ADR-025):** Google Gemini Flash-Lite, porque el equipo ya tenía la clave; el plan no usa LLM (ADR-023). |
 
 ## 2. Estructura del repositorio
 
@@ -175,7 +175,7 @@ Después del MVP sigue F2 según `plan.md`: asistente, notificaciones, analític
 - [ ] **No crear tablas a mano en el panel.** Todo entra por migraciones (`supabase db push`); un cambio manual rompe la reproducibilidad.
 
 ### Para la IA del plan (Sprint 4)
-- [ ] Cuenta en el proveedor de LLM (propuesta: Anthropic), API key cargada como secreto de Edge Functions (`supabase secrets set …`) y un **tope de gasto mensual** configurado en la consola del proveedor.
+- [x] Cuenta en el proveedor de LLM (al final, Google Gemini: ADR-025), API key cargada como secreto de Edge Functions (`supabase secrets set …`). Pendiente: plan de pago y **tope de gasto mensual** antes de usuarios reales.
 
 ### Contenido (lo más lento: empezar ya, en paralelo)
 - [ ] **Ciudad piloto** (los datos de ejemplo usan Pasto › Nariño › Colombia): confirmarla.
@@ -186,7 +186,8 @@ Después del MVP sigue F2 según `plan.md`: asistente, notificaciones, analític
 ### Para publicar (Sprint 6)
 - [ ] Cuenta de **Expo/EAS** (gratuita).
 - [ ] Decidir plataformas: **Android** (Google Play, US$25 una vez) y/o **iOS** (Apple Developer, US$99/año). Propuesta: Android con prueba cerrada para el piloto.
-- [ ] Cuenta de **Sentry** (plan gratuito).
+- [x] ~~Cuenta de **Sentry**~~: no hace falta, el registro de fallas es propio (ADR-026). Para las alertas por correo: cuenta de **Resend** y su clave como secreto.
+- [x] Firebase para los avisos: `google-services.json` como variable secreta de EAS y la llave FCM en `eas credentials` (ver `publicacion-android.md`).
 - [ ] Decidir el alcance legal: piloto académico con textos marcados "borrador" o revisión real de un abogado antes de abrir a público (`checklist-cumplimiento.md`).
 
 ## 5. Riesgos del arranque

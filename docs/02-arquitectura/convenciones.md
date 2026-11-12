@@ -33,5 +33,5 @@
 - Edge Functions: una carpeta por función, `index.ts` + `schema.ts` (Zod) + pruebas con `deno test`.
 - Nombres: archivos `kebab-case`, componentes `PascalCase`, SQL `snake_case`, migraciones `AAAAMMDDhhmmss_descripcion.sql`.
 - Commits convencionales; un PR por historia, título `US-123: …`.
-- Pruebas: cada criterio Dado/Cuando/Entonces → una prueba (Jest/RNTL para UI con dobles inyectados, SQL para reglas, Maestro para flujos críticos).
+- Pruebas: cada criterio Dado/Cuando/Entonces → una prueba (Jest/RNTL para UI con dobles inyectados, SQL para reglas, `npm run test:integration` para flujos críticos contra Supabase real; ADR-013).
 - i18n: claves jerárquicas `feature.pantalla.elemento`; es-CO único idioma, estructura lista para más.

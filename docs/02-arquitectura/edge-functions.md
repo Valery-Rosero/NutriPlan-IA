@@ -1,6 +1,8 @@
 # Contratos de Edge Functions
 
-Todas: Deno + TypeScript, validan entrada/salida con Zod, exigen `Authorization: Bearer <JWT>` (excepto `send-notifications`, que solo invoca pg_cron con secreto), responden JSON `{ ok: true, data } | { ok: false, error: { code, message } }`, no registran contenido de salud. Estado: **por construir**.
+Todas: Deno + TypeScript, validan entrada/salida con Zod, exigen `Authorization: Bearer <JWT>` (excepto `send-notifications` y `error-alert`, que solo invoca pg_cron con un secreto compartido y tienen `verify_jwt = false` en `config.toml`), responden JSON `{ ok: true, data } | { ok: false, error: { code, message } }`, no registran contenido de salud. Las fallas del servidor se registran con `_shared/report-error.ts` (ADR-026).
+
+**Estado (12-nov-2026):** construidas y desplegadas en staging: `assistant-chat`, `delete-account`, `send-notifications`, `error-alert`. `generate-plan` quedó reemplazada por la RPC `generate_plan` (ADR-023). Secretos: `backend/supabase/functions/.env.example` (los valores nunca van al repositorio).
 
 ## 1. `generate-plan`  (POST) — REEMPLAZADA por la RPC `generate_plan` (ADR-023)
 > Se conserva como referencia. El plan se genera con reglas en SQL (`generate_plan(p_start, p_days, p_slots)` + `save_generated_plan`). Si más adelante se agrega un LLM para redactar explicaciones, irá en una Edge Function aparte que no decide recetas.

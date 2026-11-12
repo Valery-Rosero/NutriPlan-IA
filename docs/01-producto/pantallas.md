@@ -1,26 +1,30 @@
 # Pantallas y navegación
 
-Referencia visual: `referencias/app-nutricion-ia-prototipo.html` (clicable) y `referencias/app-nutricion-ia-diseno.html`. Las siguientes son las pantallas del prototipo; las historias añaden más (ver columna Historias).
+Referencia visual original: `referencias/app-nutricion-ia-prototipo.html` (clicable) y `referencias/app-nutricion-ia-diseno.html`. El flujo actual está centrado en la cocina (ADR-024) y el estilo en `02-arquitectura/sistema-de-diseno.md`. Las rutas viven en `app/src/app/` (Expo Router).
 
-## Navegación (Expo Router)
-- **Grupo `(auth)`:** Bienvenida · Registro · Inicio de sesión · Verificación de correo · Recuperar contraseña.
-- **Onboarding:** Hogar (región y personas) → Autorización de datos sensibles → Alergias y dieta → Presupuesto → ¿Qué hay en tu cocina? (omitible: US-130). El aviso de salud se acepta antes, en la puerta de consentimientos.
-- **Pestañas (ADR-024):** **Hoy** (¿qué cocino?) · **Mi cocina** (lo que tengo + lista de mercado) · **Mi semana** (plan y presupuesto). Perfil desde el ícono superior. El asistente (F2) irá dentro de Hoy.
-- **Modales/pilas:** Receta (detalle), Sustituir comida, Preferencias (picante, cocinas, tiempo, macros, batch), Consentimientos y privacidad, Exportar/Eliminar datos, Comunidad (publicar/calificar/reportar), Notificaciones.
+## Navegación
+- **Acceso `(auth)`:** Bienvenida (`welcome`) · Registro (`sign-up`) · Inicio de sesión (`sign-in`) · Verificar correo (`verify-email`) · Recuperar contraseña (`forgot-password`). Fuera del grupo: `auth-callback` (enlace del correo) y `reset-password`.
+- **Puertas** (`_layout.tsx`, `core/startup/gates.ts`): sin sesión → acceso; documentos pendientes → `consents` (incluye el aviso de salud); perfil incompleto → `onboarding`; si no hay conexión al abrir, entra con la caché (US-150).
+- **Onboarding** (`onboarding`): Hogar (región y personas) → Autorización de datos sensibles → Alergias y dieta → Presupuesto → ¿Qué hay en tu cocina? (omitible: US-130).
+- **Pestañas (ADR-024):** **Hoy** · **Mi cocina** · **Mi semana**. Perfil desde el ícono superior.
+- **Pilas y modales:** Receta (`recipe/[id]`), Cambiar comida (`plan/swap/[mealId]`, modal), Agregar a la despensa (`pantry/add`, modal), Asistente (`assistant`), Perfil (`profile/index`) y sus secciones (`profile/[section]`), Ayuda y reportes (`help`), Textos legales (`legal/[kind]`), Eliminar cuenta (`account/delete`). `design-system` solo en desarrollo.
 
-## Pantallas base (prototipo)
-| Pantalla | Propósito | Datos/RPC clave | Módulos |
+## Pantallas
+| Pantalla | Propósito | Datos/RPC clave | Historias |
 |---|---|---|---|
-| Onboarding | Capturar dieta, alergias, presupuesto, porciones | `profiles`, `user_allergens`, `user_diets`, `accept_consent` | M01, M02 |
-| Personalización | Ajustes finos (tiempo, macros, cocinas, picante, despensa, batch) | `profile_preferences*` | M02 |
-| Plan semanal | Ver/cambiar comidas, costo y estado de presupuesto | `meal_plans`, `planned_meals`, `plan_budget_status`, `generate-plan` | M04, M07 |
-| Asistente | Chat que propone cambios y explica | `assistant-chat`, `apply_assistant_suggestion` | M05 |
-| Receta | Ingredientes escalados, pasos, nutrición, "Cocinar" | `scale_recipe`, `recipe_cost`, `mark_meal_cooked` | M03, M08 |
-| Compras | Lista agrupada por sección, casillas, total estimado | `generate_shopping_list`, `shopping_list_items` | M06, M07 |
-| Despensa | Inventario, vencimientos, "cocinar con lo que tengo" | `add_to_pantry`, `recipes_using_expiring_ingredients`, `recipe_pantry_match` | M06 |
+| Hoy | ¿Qué cocino ahora? Sugerencias con lo que hay, comidas del plan de hoy, "Mi día" (calorías y proteína), aviso de tiempo máximo, entrada al asistente | `cook_with_what_i_have`, `daily_nutrition`, `planned_meals` | US-119, US-159, US-136, US-139 |
+| Mi cocina › Despensa | Lo que tengo, vencimientos, agregar rápido | `pantry_items`, `add_to_pantry` (lo que vence pronto también pesa en `cook_with_what_i_have` y en los avisos) | US-123, US-130 |
+| Mi cocina › Lista de mercado | Lista agrupada, casillas sin conexión, sustitutos, registrar lo pagado, pasar a la despensa | `generate_shopping_list`, `my_shopping_items`, `substitute_shopping_item`, `record_purchase`, `move_checked_to_pantry` | US-124–126, US-147, US-141 |
+| Mi semana | Plan semanal, cambiar comidas, presupuesto, gasto del mes y reemplazos para ahorrar | `generate_plan`, `plan_budget_status`, `monthly_spend`, `plan_savings` | US-117, US-120, US-127, US-129, US-132, US-141, US-152 |
+| Receta | Ingredientes escalados con opciones intercambiables, pasos, nutrición, costo, cocinar, calificar | `preview_recipe`, `recipe_flex_menu`, `cook_planned_meal`, `cook_now`, `rate_meal` | US-115, US-118, US-128, US-156 |
+| Cambiar comida | Alternativas seguras para un momento del plan | `eligible_recipes`, `planned_meals` | US-129 |
+| Asistente | Chat que propone una receta de la lista segura y explica por qué | `assistant-chat`, `apply_assistant_suggestion` | US-157, US-160, US-173 |
+| Perfil | Resumen de la cocina; cada fila edita una parte: hogar, restricciones, presupuesto, preferencias (tiempo, cocinas, metas), notificaciones, privacidad, apariencia | `profiles`, `set_my_restrictions`, `set_my_cuisines`, `notification_preferences`, `register_push_device` | US-116, US-136–139, US-148, US-149, US-153, US-131 |
+| Ayuda | Reportar un problema o sugerencia, con captura opcional | `support_tickets`, bucket `support-screenshots` | US-151 |
+| Privacidad y cuenta | Consentimientos, exportar datos, eliminar cuenta | `accept_consent`, `revoke_consent`, `export_my_data`, `delete-account` | US-113, US-114, US-133 |
 
 ## Estados obligatorios en cada pantalla
-Carga (esqueleto), vacío (con acción), error (reintentar), sin conexión (banner + caché) y — donde aplique — bloqueado por consentimiento (CTA a aceptar).
+Carga (esqueleto), vacío (con acción), error (reintentar), sin conexión (banner + caché; la carga ofrece reintentar) y, donde aplique, bloqueado por consentimiento (botón para aceptar). Si algo se rompe al dibujar, `ErrorBoundary` muestra `CrashState` y registra la falla.
 
 ## Accesibilidad
-Etiquetas, orden de foco, contraste AA, objetivo táctil ≥44pt, soporte de texto grande, sin información solo por color, mensajes de error asociados al campo.
+Etiquetas, orden de foco, contraste AA, objetivo táctil ≥44pt, texto hasta 200 %, sin información solo por color, mensajes de error asociados al campo (US-140; prueba estática en `app/src/test/a11y-static.test.ts`).

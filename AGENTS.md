@@ -13,7 +13,7 @@ App móvil (Expo/React Native + TypeScript) con backend Supabase que genera plan
 2. **Nunca calcules cantidades, calorías, costos ni escalado en el cliente.** Usa `scale_recipe`, `recipe_cost`, `plan_budget_status`, `generate_shopping_list`. Una sola fuente de verdad.
 3. **Nunca crees `profiles` desde la app.** Lo hace el trigger `private.handle_new_user` al registrarse. El registro DEBE enviar `privacy_policy_document_id`, `terms_document_id` e `is_adult:true` en `options.data`.
 4. **La app nunca habla con el LLM.** Solo Edge Functions, con salida estructurada y validada (Zod) y con la `service_role` fuera del cliente. Jamás pongas `service_role` ni claves de LLM en el bundle de la app.
-5. **Datos de salud/alergias/dietas = datos sensibles.** No se escriben en logs, Sentry, analytics ni mensajes de error. `analytics_events` solo guarda eventos anónimos sin contenido de salud. No hay captura de datos sensibles sin `sensitive_data_authorization` vigente (la BD lo impone; la UI debe pedirlo antes, y permitir revocarlo).
+5. **Datos de salud/alergias/dietas = datos sensibles.** No se escriben en logs, en el registro de fallas (`app_errors`, ADR-026), en analytics ni en mensajes de error. `analytics_events` solo guarda eventos anónimos sin contenido de salud. No hay captura de datos sensibles sin `sensitive_data_authorization` vigente (la BD lo impone; la UI debe pedirlo antes, y permitir revocarlo).
 6. **Solo mayores de 18.** No hay perfiles de menores ni fecha de nacimiento (solo `birth_year`).
 7. **Todo cambio de esquema es una migración nueva** en `backend/supabase/migrations/` (nunca editar las ya aplicadas). Toda tabla nueva lleva RLS + pruebas. Corre `backend/supabase/tests/run_local.sh` (Supabase local en Docker) antes de cada commit de backend; debe estar en verde (344 verificaciones al 12-nov-2026, en dos fases: reglas con `tests/fixtures.sql` y catálogo real con `catalog/`).
 8. **No inventes datos nutricionales ni precios.** Los precios del piloto son estimados y se marcan como tal (`is_estimated`). Todo aviso de salud (`04_aviso_salud`) debe mostrarse donde la spec lo indique; la app no da diagnóstico ni tratamiento.
@@ -34,10 +34,11 @@ App móvil (Expo/React Native + TypeScript) con backend Supabase que genera plan
 - [ ] Lint, `tsc --noEmit` estricto, pruebas unitarias y de BD en verde en CI.
 - [ ] Estados vacío / carga / error / sin conexión implementados.
 - [ ] Accesibilidad verificada (lector de pantalla en los flujos tocados).
-- [ ] Sin datos sensibles en logs/Sentry; sin secretos en el repo.
+- [ ] Sin datos sensibles en logs ni en el registro de fallas; sin secretos en el repo (tampoco `google-services.json` ni llaves de Firebase).
+- [ ] Documentación al día: si cambió el esquema, regenerar `docs/03-datos/modelo-de-datos.md` (`python docs/03-datos/_generar_modelo.py`) y actualizar `funciones-rpc.md`; si cambió una pantalla o ruta, `01-producto/pantallas.md`.
 - [ ] RLS probada para cualquier tabla nueva o tocada.
 - [ ] Textos en i18n; documentación del módulo actualizada si cambió el contrato.
 - [ ] Migraciones en orden, aplican desde cero (`backend/supabase/tests/run_local.sh`).
 
 ## 6. Convenciones rápidas
-Ver `02-arquitectura/convenciones.md` (estructura de carpetas, nombres, TanStack Query, Zod, tipos generados con `supabase gen types typescript`, Expo Router, Jest + RNTL, Maestro). Ante duda: simple, tipado, probado.
+Ver `02-arquitectura/convenciones.md` (estructura de carpetas, nombres, TanStack Query, Zod, tipos generados con `supabase gen types typescript`, Expo Router, Jest + RNTL, pruebas de integración). Ante duda: simple, tipado, probado.

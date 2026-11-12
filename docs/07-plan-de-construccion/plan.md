@@ -2,6 +2,8 @@
 
 > Antes de empezar, lee `plan-de-arranque.md`: refuerzos a la especificación (migración `…001200_hardening`), sprints del MVP y lo que debe proveer el equipo.
 
+> **Estado al 12-nov-2026:** F0, F1 y F2 construidas (el detalle por historia está en `README.md`, sección Estado). Staging al día. Faltan: pruebas en el teléfono con el APK, validación con usuarios (US-101), revisión de una nutricionista (US-121), revisión legal y producción. F3, después.
+
 Orden = fases; dentro de cada fase, el orden del backlog (`rank` en `05-historias-de-usuario/indice.md`) respetando dependencias. Una historia solo empieza si sus dependencias están hechas.
 
 ## Fase 0 — Fundaciones y validación (8 historias)
@@ -9,13 +11,13 @@ Orden = fases; dentro de cada fase, el orden del backlog (`rank` en `05-historia
 2. Tres proyectos Supabase (dev/staging/prod); `supabase db push`; ejecutar `tests/run_remote.sh` en un proyecto desechable para confirmar compatibilidad real. **US-102**.
 3. Configurar Auth (correo+contraseña, reglas de contraseña, verificación de correo, plantillas es-CO).
 4. Cargar textos legales revisados en `legal_documents` (hash) y verificar `private.legal_readiness()`. **US-113, US-114**.
-5. App esqueleto Expo Router, i18n, supabase-js, TanStack Query, Sentry con scrubbing, tema/accesibilidad.
+5. App esqueleto Expo Router, i18n, supabase-js, TanStack Query, registro de fallas con limpieza de datos (en F2 se hizo propio: ADR-026), tema/accesibilidad.
 6. **US-104** Registro/ingreso (ver M01). **US-105** verificación documentada de cifrado/TLS/RLS.
 7. Spikes: **US-103** (motor de recomendación y costo por usuario → ADR), **US-112** (fuente de precios → ADR). **US-101** validar prototipo con usuarios.
 **Salida F0:** un usuario puede registrarse con consentimientos, la CI despliega a staging, y hay decisiones sobre motor y precios.
 
 ## Fase 1 — MVP (24 historias)
-Secuencia sugerida (cada bloque cierra con pruebas E2E Maestro del flujo):
+Secuencia sugerida (cada bloque cierra con pruebas del flujo; se usó la prueba de integración contra Supabase real en vez de Maestro):
 1. **Datos:** importadores de nutrición/recetas/precios, catálogo inicial publicado (**US-110**, **US-111**, **US-121**; precios según US-112). Permiso ICBF antes de usar TCAC.
 2. **Perfil:** onboarding dieta/alergias/presupuesto/porciones (**US-106–109**, con autorización de datos sensibles), editar perfil (**US-116**).
 3. **Receta:** detalle, escalado, nutrición (**US-118**, **US-115**).
@@ -36,11 +38,12 @@ Comunidad (167–169, con `community_sharing` 154), batch/picante (170, 171), va
 ## Estrategia de pruebas
 | Nivel | Herramienta | Qué cubre |
 |---|---|---|
-| BD | `backend/supabase/tests` (SQL, 148 aserciones) | RLS, reglas, RPC, consentimientos. Añadir pruebas por cada migración |
-| Unitarias | Jest | utilidades, esquemas Zod, hooks |
-| Componentes | RNTL | formularios, estados vacío/error, accesibilidad |
-| Edge Functions | `deno test` con LLM simulado | validación, fallback, cuota |
-| E2E | Maestro | registro→onboarding→plan→compras→cocinar |
+| BD | `backend/supabase/tests/run_local.sh` (SQL, 344 comprobaciones al 12-nov-2026) | RLS, reglas, RPC, consentimientos, catálogo real. Añadir pruebas por cada migración |
+| Unitarias | Jest (`npm test` en `app/`) | utilidades, esquemas Zod, hooks, puertas de arranque, limpieza de errores |
+| Componentes | RNTL | formularios, estados vacío/error, accesibilidad (más `a11y-static.test.ts`) |
+| Edge Functions | Jest sobre la lógica pura (`npm run test:functions`) con LLM simulado | validación, respaldo, cuota |
+| Integración | `npm run test:integration` contra Supabase local | registro→onboarding→plan→compras→cocinar |
+| Manual en teléfono | APK de EAS | arranque < 3 s, avisos, TalkBack, letra al 200 % |
 | Seguridad | pruebas de RLS con 2 usuarios; revisión de logs | ningún dato ajeno visible |
 | Contenido | script que verifica que ninguna receta publicada viola alergias declaradas en perfiles de prueba | seguridad alimentaria |
 

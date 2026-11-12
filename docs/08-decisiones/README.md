@@ -15,8 +15,8 @@ Estado: **Aceptada** = ya implementada o decidida con el usuario; **Propuesta** 
 | [009](ADR-009.md) | Consentimientos versionados con hash | Aceptada |
 | [010](ADR-010.md) | Solo mayores de 18; `birth_year` en vez de fecha | Aceptada |
 | [011](ADR-011.md) | Autorización separada de datos sensibles (facultativa y revocable) | Aceptada |
-| [012](ADR-012.md) | Expo Router, TanStack Query (+persist), Zustand mínimo, RHF + Zod | Propuesta |
-| [013](ADR-013.md) | Jest + RNTL + Maestro + pruebas SQL | Propuesta |
+| [012](ADR-012.md) | Expo Router, TanStack Query (+persist), Zustand mínimo, RHF + Zod | Aceptada con cambios (sin Zustand) |
+| [013](ADR-013.md) | Jest + RNTL + Maestro + pruebas SQL | Aceptada con cambios (integración en vez de Maestro) |
 | [014](ADR-014.md) | Offline MVP = caché de lectura + cola de casillas de compras | Aceptada |
 | [015](ADR-015.md) | Analítica propia anónima (`analytics_events`) | Aceptada |
 | [016](ADR-016.md) | Tres entornos y despliegue con GitHub Actions + EAS + `supabase db push` | Aceptada |
