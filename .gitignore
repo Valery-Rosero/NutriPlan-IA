@@ -7,3 +7,6 @@ node_modules/
 # la clave de la cuenta de servicio (firebase-adminsdk) se sube con 'eas credentials' y nunca entra aquí.
 google-services.json
 *firebase-adminsdk*.json
+
+# Configuraciones exportadas del importador de Jira (son personales, no van al repositorio)
+BulkCreate-configuration-*.txt
