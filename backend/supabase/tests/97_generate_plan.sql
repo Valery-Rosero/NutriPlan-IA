@@ -17,8 +17,8 @@ begin
   v_today_plan := (select plan_id from public.planned_meals where id = (v_cook ->> 'planned_meal_id')::uuid);
 
   v_plan := public.generate_plan(current_date, 7);
-  perform tt.ok((select count(*) from public.planned_meals where plan_id = v_plan) = 20,
-                'plan de 7 días × 3 comidas, sin volver a planear el almuerzo de hoy que ya se cocinó');
+  perform tt.ok((select count(*) from public.planned_meals where plan_id = v_plan) = 21,
+                'plan de 7 días × 3 comidas: lo cocinado con "Cocinar ahora" es un adicional y no ocupa el almuerzo');
   perform tt.ok((select status from public.meal_plans where id = v_today_plan) = 'archived',
                 'el borrador con una comida cocinada se archiva, no se borra (historial)');
   perform tt.ok(exists (select 1 from public.planned_meals where plan_id = v_plan and reason_code = 'pantry_expiring'),
@@ -33,6 +33,12 @@ begin
   perform tt.ok((select count(*) from public.meal_plans where user_id = p and status = 'draft') = 1
                 and not exists (select 1 from public.meal_plans where id = v_plan),
                 'volver a generar reemplaza el borrador anterior');
+
+  -- Una comida PLANEADA que ya se cocinó sí ocupa su momento al volver a generar
+  perform public.cook_planned_meal((select id from public.planned_meals where plan_id = v_plan2 and meal_date = current_date and slot = 'lunch'));
+  v_plan2 := public.generate_plan(current_date, 7);
+  perform tt.ok((select count(*) from public.planned_meals where plan_id = v_plan2) = 20,
+                'el almuerzo de hoy cocinado desde el plan no se vuelve a planear');
 
   v_plan := public.generate_plan(current_date, 1, array['breakfast']::public.meal_slot[]);
   perform tt.ok((select count(*) from public.planned_meals where plan_id = v_plan) = 1, 'plan solo para hoy (US-139)');

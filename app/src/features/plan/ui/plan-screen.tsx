@@ -198,7 +198,37 @@ function DayPage({ day, hasPrev, hasNext, onPrev, onNext }: {
           </View>
         ))
       )}
+      {day.extras.length > 0 && (
+        <View style={styles.extras}>
+          <Divider />
+          <View>
+            <AppText variant="label">{t('plan.extras.title')}</AppText>
+            <AppText variant="caption" secondary>{t('plan.extras.hint')}</AppText>
+          </View>
+          {day.extras.map((meal) => (
+            <ExtraRow key={meal.id} meal={meal} />
+          ))}
+        </View>
+      )}
     </Card>
+  );
+}
+
+/** Plato adicional: lo que se cocinó fuera del plan ese día (siempre cocinado; no se cambia ni se omite). */
+function ExtraRow({ meal }: { meal: PlannedMeal }) {
+  const { t } = useTranslation();
+  const router = useRouter();
+  return (
+    <View style={styles.meal}>
+      <IconBadge name={SLOT_ICON[meal.slot]} tone="accent" size={32} />
+      <View style={styles.flex}>
+        <View style={styles.slotRow}>
+          <AppText variant="caption" secondary>{capitalize(t(`slots.${meal.slot}`))}</AppText>
+          <Pill label={t('plan.extras.badge')} tone="accent" icon="add-circle-outline" />
+        </View>
+        <TextLink label={meal.recipeTitle} onPress={() => router.push({ pathname: '/recipe/[id]', params: { id: meal.recipeId } })} />
+      </View>
+    </View>
   );
 }
 
@@ -267,4 +297,5 @@ const styles = StyleSheet.create({
   done: { opacity: 0.75 },
   slotRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
   mealActions: { flexDirection: 'row', gap: Spacing.lg, marginTop: Spacing.xs },
+  extras: { gap: Spacing.sm },
 });

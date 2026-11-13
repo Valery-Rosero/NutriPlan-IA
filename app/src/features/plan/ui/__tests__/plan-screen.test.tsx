@@ -103,4 +103,17 @@ describe('PlanScreen (US-117, US-129, US-132, US-155)', () => {
       expect(screen.getByRole('tab', { name: /^Domingo, 1 de noviembre/ })).toBeEnabled();
     });
   });
+
+  it('los platos adicionales salen en "Adicionales" del día, sin contar en el avance del plan', async () => {
+    const batido = {
+      id: 'x1', date: '2026-10-13', slot: 'snack' as const, recipeId: 'r7', recipeTitle: 'Batido de fruta', totalMinutes: 5,
+      servings: 1, status: 'cooked' as const, reasonCode: 'user_request',
+    };
+    const plans = fakePlans({ current: jest.fn(async () => ({ ...PLAN, extras: [batido] })) });
+    await render(<PlanScreen />, { wrapper: withServices(fakeServices({ plans })) });
+    await fireEvent.press(await screen.findByRole('tab', { name: /^Martes, 13 de octubre/ }));
+    expect(screen.getByText('Adicionales')).toBeOnTheScreen();
+    expect(screen.getByRole('link', { name: 'Batido de fruta' })).toBeOnTheScreen();
+    expect(screen.getAllByText('0 de 2 comidas cocinadas').length).toBeGreaterThan(0); // el batido no cuenta en el avance
+  });
 });

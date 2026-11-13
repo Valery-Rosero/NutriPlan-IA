@@ -36,7 +36,10 @@ Cada una lleva su ADR, migración (si aplica), pruebas y actualización de `docs
   2. **Ítems manuales de la lista** → su sección del supermercado (`shopping_list_items.store_category_id` ya existe).
   3. **Alimentos fuera del catálogo en la despensa** → requiere ampliar `pantry_items` (hoy exige `ingredient_id`): nombre libre, grupo y sección, y revisar la restricción única y las funciones que leen la despensa.
 
-### B4. Antojos y comidas extra en el calendario
+### B4. Platos adicionales y opciones de la receta · ✅ hecho (13-nov, ADR-028), probar en el APK
+Rediseñado con la dueña del producto: lo que se cocina fuera del plan (receta del asistente, "¿Qué cocino?") se **suma** como plato adicional del día y se ve en el calendario; en la receta, las opciones se dividen en "En tu cocina" y "Para comprar" y se pueden quitar. La propuesta anterior (texto libre, "Comí algo más") queda descartada por ahora.
+
+#### (Propuesta anterior, descartada) Antojos y comidas extra en el calendario
 - Botón **"Comí algo más"** en la página del día: una receta del catálogo o texto libre (clasificado con B3).
 - Se ve en el calendario con su propio estilo (*Antojo*), junto a lo planeado.
 - **Cuenta en Mi día como aproximado** (exacto si es del catálogo; estimado por la IA si es texto libre).

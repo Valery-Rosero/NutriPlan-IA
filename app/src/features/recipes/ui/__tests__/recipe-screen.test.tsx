@@ -15,10 +15,33 @@ describe('RecipeScreen (US-115, US-118, US-123, ADR-020)', () => {
     await render(<RecipeScreen />, { wrapper: withServices(fakeServices({ recipes })) });
 
     expect(await screen.findByText('Arroz salteado con lo que tengas')).toBeOnTheScreen();
-    expect(screen.getByRole('radio', { name: 'Cerdo · lo tienes' })).toBeSelected();
+    expect(screen.getByRole('radio', { name: 'Cerdo' })).toBeSelected();
     expect(await screen.findByText('420 kcal')).toBeOnTheScreen();
     // porciones = tamaño del hogar (4) y la opción resuelta con la despensa (cerdo)
     expect(recipes.preview).toHaveBeenCalledWith('r1', 4, [{ groupKey: 1, ingredientId: 'cerdo' }]);
+  });
+
+  it('las opciones se dividen en "En tu cocina" y "Para comprar"', async () => {
+    await render(<RecipeScreen />, { wrapper: withServices(fakeServices()) });
+    expect(await screen.findByText('En tu cocina')).toBeOnTheScreen();
+    expect(screen.getByText('Para comprar')).toBeOnTheScreen();
+    // Cerdo (lo tienes) va antes que Pechuga de pollo (para comprar)
+    const radios = screen.getAllByRole('radio').map((r) => r.props.accessibilityLabel);
+    expect(radios.indexOf('Cerdo')).toBeLessThan(radios.indexOf('Pechuga de pollo'));
+  });
+
+  it('lo elegido se puede quitar; si el grupo queda vacío, avisa y no deja cocinar hasta elegir', async () => {
+    await render(<RecipeScreen />, { wrapper: withServices(fakeServices()) });
+    const cerdo = await screen.findByRole('radio', { name: 'Cerdo' });
+    expect(cerdo.props.accessibilityHint).toBe('Toca para quitar'); // la ✕ se anuncia al lector de pantalla
+    await fireEvent.press(cerdo);
+    expect(screen.getByRole('radio', { name: 'Cerdo' })).not.toBeSelected();
+    expect(screen.getByText('Elige al menos 1 opción de Proteína.')).toBeOnTheScreen();
+    expect(screen.getByRole('button', { name: 'Cocinar ahora' })).toBeDisabled();
+
+    await fireEvent.press(screen.getByRole('radio', { name: 'Pechuga de pollo' }));
+    expect(screen.queryByText('Elige al menos 1 opción de Proteína.')).not.toBeOnTheScreen();
+    expect(screen.getByRole('button', { name: 'Cocinar ahora' })).toBeEnabled();
   });
 
   it('cambiar de opción y de porciones vuelve a calcular en el servidor', async () => {

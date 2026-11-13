@@ -16,7 +16,8 @@
     "save": "Guardar",
     "edit": "Editar",
     "waitingConnection": "Sin conexión. Esto se cargará solo apenas vuelva internet.",
-    "understood": "Entendido"
+    "understood": "Entendido",
+    "tapToRemove": "Toca para quitar"
   },
   "validation": {
     "required": "Este campo es obligatorio.",
@@ -238,6 +239,11 @@
       "day": "Volver a generar (hoy)",
       "week": "Volver a generar (semana)",
       "month": "Volver a generar (mes)"
+    },
+    "extras": {
+      "title": "Adicionales",
+      "hint": "Lo que cocinaste fuera del plan este día.",
+      "badge": "Adicional"
     }
   },
   "shopping": {
@@ -581,7 +587,14 @@
     "substitutes": {
       "label": "Puedes usar:",
       "have": "lo tienes"
-    }
+    },
+    "options": {
+      "have": "En tu cocina",
+      "buy": "Para comprar",
+      "chooseAtLeast_one": "Elige al menos {{count}} opción de {{group}}.",
+      "chooseAtLeast_other": "Elige al menos {{count}} opciones de {{group}}."
+    },
+    "completeChoicesFirst": "Primero elige las opciones que faltan."
   },
   "units": {
     "kg": "kg",

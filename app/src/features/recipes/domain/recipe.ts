@@ -90,17 +90,29 @@ export type RatingTag = (typeof RATING_TAGS)[number];
  * Elegir/quitar una opción respetando el máximo del grupo:
  * con máximo 1 reemplaza; con más, si se llena, sale la elegida hace más tiempo.
  */
+/**
+ * Tocar una opción: si está elegida, se QUITA (aunque el grupo quede por debajo de su mínimo: la pantalla
+ * lo avisa y no deja cocinar hasta completar, ver `missingGroups`). Si no, se agrega; al pasar del máximo
+ * sale la más antigua.
+ */
 export function toggleChoice(choices: Choice[], group: FlexGroup, ingredientId: string): Choice[] {
   const inGroup = choices.filter((c) => c.groupKey === group.key);
   const others = choices.filter((c) => c.groupKey !== group.key);
   if (inGroup.some((c) => c.ingredientId === ingredientId)) {
-    // No se puede bajar del mínimo quitando: se queda como está.
-    return inGroup.length <= Math.max(group.min, 1) && group.min > 0
-      ? choices
-      : [...others, ...inGroup.filter((c) => c.ingredientId !== ingredientId)];
+    return [...others, ...inGroup.filter((c) => c.ingredientId !== ingredientId)];
   }
   const next = [...inGroup, { groupKey: group.key, ingredientId }];
   return [...others, ...next.slice(Math.max(0, next.length - group.max))];
+}
+
+/** Grupos a los que les faltan opciones para llegar a su mínimo (no se puede cocinar así). */
+export function missingGroups(groups: FlexGroup[], choices: Choice[]): FlexGroup[] {
+  return groups.filter((g) => choices.filter((c) => c.groupKey === g.key).length < g.min);
+}
+
+/** Opciones de un grupo separadas: lo que hay en tu cocina y lo que tocaría comprar. */
+export function splitByPantry(options: FlexOption[]): { have: FlexOption[]; buy: FlexOption[] } {
+  return { have: options.filter((o) => o.inPantry), buy: options.filter((o) => !o.inPantry) };
 }
 
 /** Selección inicial: lo que la base resolvió con la despensa (opciones marcadas `selected`). */

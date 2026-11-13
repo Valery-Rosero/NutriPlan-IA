@@ -15,7 +15,7 @@ const meal = (over: Partial<PlannedMeal>): PlannedMeal => ({
   status: 'planned', reasonCode: null, ...over,
 });
 const plan = (startDate: string, endDate: string, meals: PlannedMeal[] = []): MealPlan => ({
-  id: 'p', startDate, endDate, status: 'confirmed', budgetLimit: null, meals,
+  id: 'p', startDate, endDate, status: 'confirmed', budgetLimit: null, meals, extras: [],
 });
 
 describe('calendario de Mi semana (B1)', () => {
@@ -68,5 +68,13 @@ describe('calendario de Mi semana (B1)', () => {
     expect(weeks[0][4]).toMatchObject({ date: '2026-11-13', inPlan: true, isToday: true });
     expect(weeks[2][6].date).toBe('2026-11-29');
     expect(weeks.flat().every((d) => d.date.length === 10)).toBe(true);
+  });
+
+  it('los platos adicionales van aparte y no cambian el estado del día', () => {
+    const base = plan('2026-11-13', '2026-11-13', [meal({ id: 'almuerzo' })]);
+    const days = calendarDays({ ...base, extras: [meal({ id: 'batido', slot: 'snack', status: 'cooked' })] }, '2026-11-13');
+    expect(days[0].meals.map((m) => m.id)).toEqual(['almuerzo']);
+    expect(days[0].extras.map((m) => m.id)).toEqual(['batido']);
+    expect(days[0].state).toBe('pending'); // un batido cocinado no marca el día "a medias"
   });
 });

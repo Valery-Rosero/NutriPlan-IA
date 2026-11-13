@@ -1,5 +1,5 @@
 import i18n from '@/infrastructure/i18n';
-import { initialChoices, slotForNow, toggleChoice, type FlexGroup } from '@/features/recipes/domain/recipe';
+import { initialChoices, missingGroups, slotForNow, splitByPantry, toggleChoice, type FlexGroup } from '@/features/recipes/domain/recipe';
 import { formatQuantity } from '@/features/recipes/ui/format-quantity';
 
 const group = (key: number, min: number, max: number): FlexGroup => ({
@@ -21,10 +21,22 @@ describe('toggleChoice', () => {
     expect(choices.map((c) => c.ingredientId)).toEqual(['b', 'c']);
   });
 
-  it('no deja un grupo obligatorio por debajo del mínimo', () => {
+  it('quitar siempre funciona; si un grupo obligatorio queda vacío, se marca como pendiente', () => {
     const g = group(1, 1, 1);
-    const choices = initialChoices([g]);
-    expect(toggleChoice(choices, g, 'a')).toBe(choices);
+    const choices = toggleChoice(initialChoices([g]), g, 'a');
+    expect(choices).toEqual([]);
+    expect(missingGroups([g], choices).map((x) => x.key)).toEqual([1]);
+    expect(missingGroups([g], initialChoices([g]))).toEqual([]);
+  });
+
+  it('separa lo que hay en la cocina de lo que hay que comprar', () => {
+    const g: FlexGroup = { ...group(1, 1, 1), options: [
+      { ingredientId: 'cerdo', name: 'Cerdo', inPantry: true, isDefault: false, selected: true },
+      { ingredientId: 'res', name: 'Res', inPantry: false, isDefault: false, selected: false },
+    ] };
+    const { have, buy } = splitByPantry(g.options);
+    expect(have.map((o) => o.name)).toEqual(['Cerdo']);
+    expect(buy.map((o) => o.name)).toEqual(['Res']);
   });
 
   it('en un grupo opcional sí se puede quitar todo', () => {

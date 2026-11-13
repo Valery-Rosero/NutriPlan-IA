@@ -2,7 +2,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 
 import { AppError, toAppError } from '@/core/errors/app-error';
 import type { MealSlot } from '@/features/cooking/domain/cooking';
-import type { GeneratePlanInput, MealPlan, PlanRepository, SwapReason } from '@/features/plan/domain/plan';
+import type { GeneratePlanInput, MealPlan, PlannedMeal, PlanRepository, SwapReason } from '@/features/plan/domain/plan';
 import type { Database } from '@/types/database';
 
 export class SupabasePlanRepository implements PlanRepository {
@@ -15,31 +15,34 @@ export class SupabasePlanRepository implements PlanRepository {
   async current(today: string): Promise<MealPlan | null> {
     const { data, error } = await this.client
       .from('meal_plans')
-      .select('id, start_date, end_date, status, budget_limit, planned_meals(id, meal_date, slot, recipe_id, servings, status, reason_code, recipes!planned_meals_recipe_id_fkey(title, total_minutes))')
+      .select(`id, start_date, end_date, status, budget_limit, planned_meals(${MEAL_FIELDS})`)
       .neq('status', 'archived')
       .gte('end_date', today)
       .order('start_date')
-      .limit(1)
-      .maybeSingle();
+      .limit(5);
     if (error) throw toAppError(error);
-    if (!data) return null;
+    // Un plan con solo adicionales (el de un día que crea "Cocinar ahora" sin plan) no es un plan para mostrar.
+    const plan = data.find((p) => p.planned_meals.some((m) => !m.is_extra));
+    if (!plan) return null;
+
+    // Adicionales de esos días, estén en el plan que estén (regenerar un borrador lo archiva con lo cocinado).
+    const extras = await this.client
+      .from('planned_meals')
+      .select(`${MEAL_FIELDS}, meal_plans!inner(user_id)`)
+      .eq('is_extra', true)
+      .gte('meal_date', plan.start_date)
+      .lte('meal_date', plan.end_date)
+      .order('cooked_at');
+    if (extras.error) throw toAppError(extras.error);
+
     return {
-      id: data.id,
-      startDate: data.start_date,
-      endDate: data.end_date,
-      status: data.status,
-      budgetLimit: data.budget_limit,
-      meals: data.planned_meals.map((m) => ({
-        id: m.id,
-        date: m.meal_date,
-        slot: m.slot,
-        recipeId: m.recipe_id,
-        recipeTitle: m.recipes.title,
-        totalMinutes: m.recipes.total_minutes ?? 0,
-        servings: m.servings,
-        status: m.status,
-        reasonCode: m.reason_code,
-      })),
+      id: plan.id,
+      startDate: plan.start_date,
+      endDate: plan.end_date,
+      status: plan.status,
+      budgetLimit: plan.budget_limit,
+      meals: plan.planned_meals.filter((m) => !m.is_extra).map(toMeal),
+      extras: extras.data.map(toMeal),
     };
   }
 
@@ -102,4 +105,32 @@ export class SupabasePlanRepository implements PlanRepository {
     const { error } = await this.client.from('meal_plans').update({ status: 'confirmed' }).eq('id', planId);
     if (error) throw toAppError(error);
   }
+}
+
+const MEAL_FIELDS =
+  'id, meal_date, slot, recipe_id, servings, status, reason_code, is_extra, recipes!planned_meals_recipe_id_fkey(title, total_minutes)';
+
+type MealRow = {
+  id: string;
+  meal_date: string;
+  slot: PlannedMeal['slot'];
+  recipe_id: string;
+  servings: number;
+  status: PlannedMeal['status'];
+  reason_code: string | null;
+  recipes: { title: string; total_minutes: number | null };
+};
+
+function toMeal(m: MealRow): PlannedMeal {
+  return {
+    id: m.id,
+    date: m.meal_date,
+    slot: m.slot,
+    recipeId: m.recipe_id,
+    recipeTitle: m.recipes.title,
+    totalMinutes: m.recipes.total_minutes ?? 0,
+    servings: m.servings,
+    status: m.status,
+    reasonCode: m.reason_code,
+  };
 }

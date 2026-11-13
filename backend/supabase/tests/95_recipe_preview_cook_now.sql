@@ -9,6 +9,7 @@ declare
   v_huevo uuid := (select id from public.ingredients where name = 'Huevo');
   v_pollo uuid := (select id from public.ingredients where name = 'Pechuga de pollo');
   v jsonb;
+  v2 jsonb;
 begin
   perform tt.login(h);
   v := public.preview_recipe(v_arroz, 4, jsonb_build_array(jsonb_build_object('group_key', 1, 'ingredient_id', v_pollo)));
@@ -29,8 +30,13 @@ begin
   perform tt.ok((select sum(quantity_g) from public.pantry_items where ingredient_id = v_cerdo) = 200,
                 'cocinar ahora descuenta 300 g de los 500 g de cerdo');
   perform tt.ok(v -> 'shortfall' @> '[{"ingredient_name": "Arroz blanco"}]'::jsonb, 'informa lo que faltó (arroz)');
-  perform tt.throws(format($q$ select public.cook_now(%L, 'lunch', 4) $q$, v_arroz), 'meal_not_pending',
-                    'no se registra dos veces el almuerzo de hoy');
+  -- Platos adicionales (20261113000500): cocinar otra vez en el mismo momento SUMA, no falla ni reemplaza.
+  v2 := public.cook_now(v_arroz, 'lunch', 4);
+  perform tt.ok((select count(*) from public.planned_meals where meal_date = current_date and slot = 'lunch' and is_extra and status = 'cooked') = 2,
+                'un segundo "Cocinar ahora" en el almuerzo queda como otro plato adicional');
+  perform public.undo_meal_cooked((v2 ->> 'planned_meal_id')::uuid);
+  perform tt.ok(not exists (select 1 from public.planned_meals where id = (v2 ->> 'planned_meal_id')::uuid),
+                'deshacer un adicional lo quita (no queda pendiente)');
   perform public.undo_meal_cooked((v ->> 'planned_meal_id')::uuid);
   perform tt.ok((select sum(quantity_g) from public.pantry_items where ingredient_id = v_cerdo) = 500, 'deshacer devuelve el cerdo');
   perform tt.throws(format($q$ select public.cook_now(%L, 'breakfast', 4) $q$, v_arroz), 'slot_mismatch',

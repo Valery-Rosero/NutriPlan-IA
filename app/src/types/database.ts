@@ -845,14 +845,14 @@ isOneToOne: false
                   ]
                 },"planned_meals": {
                   Row: {
-                    "cooked_at": string | null,"created_at": string,"id": string,"meal_date": string,"plan_id": string,"reason_code": string | null,"reason_ingredient_id": string | null,"recipe_id": string,"replaced_recipe_id": string | null,"servings": number,"slot": Database["public"]['Enums']["meal_slot"],"status": Database["public"]['Enums']["meal_status"],"updated_at": string
+                    "cooked_at": string | null,"created_at": string,"id": string,"is_extra": boolean,"meal_date": string,"plan_id": string,"reason_code": string | null,"reason_ingredient_id": string | null,"recipe_id": string,"replaced_recipe_id": string | null,"servings": number,"slot": Database["public"]['Enums']["meal_slot"],"status": Database["public"]['Enums']["meal_status"],"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "cooked_at"?: string | null,"created_at"?: string,"id"?: string,"meal_date": string,"plan_id": string,"reason_code"?: string | null,"reason_ingredient_id"?: string | null,"recipe_id": string,"replaced_recipe_id"?: string | null,"servings": number,"slot": Database["public"]['Enums']["meal_slot"],"status"?: Database["public"]['Enums']["meal_status"],"updated_at"?: string
+                    "cooked_at"?: string | null,"created_at"?: string,"id"?: string,"is_extra"?: boolean,"meal_date": string,"plan_id": string,"reason_code"?: string | null,"reason_ingredient_id"?: string | null,"recipe_id": string,"replaced_recipe_id"?: string | null,"servings": number,"slot": Database["public"]['Enums']["meal_slot"],"status"?: Database["public"]['Enums']["meal_status"],"updated_at"?: string
                   }
                   Update: {
-                    "cooked_at"?: string | null,"created_at"?: string,"id"?: string,"meal_date"?: string,"plan_id"?: string,"reason_code"?: string | null,"reason_ingredient_id"?: string | null,"recipe_id"?: string,"replaced_recipe_id"?: string | null,"servings"?: number,"slot"?: Database["public"]['Enums']["meal_slot"],"status"?: Database["public"]['Enums']["meal_status"],"updated_at"?: string
+                    "cooked_at"?: string | null,"created_at"?: string,"id"?: string,"is_extra"?: boolean,"meal_date"?: string,"plan_id"?: string,"reason_code"?: string | null,"reason_ingredient_id"?: string | null,"recipe_id"?: string,"replaced_recipe_id"?: string | null,"servings"?: number,"slot"?: Database["public"]['Enums']["meal_slot"],"status"?: Database["public"]['Enums']["meal_status"],"updated_at"?: string
                   }
                   Relationships: [
                     {

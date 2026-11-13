@@ -129,6 +129,7 @@ export const PLAN: MealPlan = {
     { id: 'm2', date: '2026-10-13', slot: 'dinner', recipeId: 'r2', recipeTitle: 'Sopa de verduras del día', totalMinutes: 50, servings: 4, status: 'planned', reasonCode: 'variety' },
     { id: 'm1', date: '2026-10-13', slot: 'lunch', recipeId: 'r1', recipeTitle: 'Arroz salteado con lo que tengas', totalMinutes: 40, servings: 4, status: 'planned', reasonCode: 'pantry_expiring' },
   ],
+  extras: [],
 };
 
 export function fakePlans(overrides: Partial<PlanRepository> = {}): jest.Mocked<PlanRepository> {

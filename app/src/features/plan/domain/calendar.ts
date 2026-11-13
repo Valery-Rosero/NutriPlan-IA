@@ -15,7 +15,10 @@ export type CalendarDay = {
   /** El día está dentro del plan (los de relleno de la cuadrícula no). */
   inPlan: boolean;
   isToday: boolean;
+  /** Lo planeado, en orden del día. */
   meals: PlannedMeal[];
+  /** Platos adicionales de ese día (no cambian el estado del día). */
+  extras: PlannedMeal[];
   state: DayState;
 };
 
@@ -52,9 +55,10 @@ export function dayState(meals: PlannedMeal[]): DayState {
 /** Las páginas del libro: un día del plan por página, con sus comidas en orden del día. */
 export function calendarDays(plan: MealPlan, today: string): CalendarDay[] {
   const byDate = new Map(groupByDay(plan.meals).map((d) => [d.date, d.meals]));
+  const extrasByDate = new Map(groupByDay(plan.extras).map((d) => [d.date, d.meals]));
   return planDates(plan).map((date) => {
     const meals = byDate.get(date) ?? [];
-    return { date, inPlan: true, isToday: date === today, meals, state: dayState(meals) };
+    return { date, inPlan: true, isToday: date === today, meals, extras: extrasByDate.get(date) ?? [], state: dayState(meals) };
   });
 }
 
@@ -85,7 +89,7 @@ export function monthWeeks(days: CalendarDay[], today: string): CalendarDay[][] 
     weeks.push(
       Array.from({ length: 7 }, (_, i) => {
         const date = addDays(start, i);
-        return byDate.get(date) ?? { date, inPlan: false, isToday: date === today, meals: [], state: 'empty' as const };
+        return byDate.get(date) ?? { date, inPlan: false, isToday: date === today, meals: [], extras: [], state: 'empty' as const };
       }),
     );
   }

@@ -52,6 +52,7 @@ const run = KEY ? describe : describe.skip;
 
 run('recorrido completo contra Supabase real', () => {
   let eggId: number;
+  let extraId = '';
   let planId: string;
 
   it('1. registro con los documentos vigentes y mayoría de edad', async () => {
@@ -143,14 +144,20 @@ run('recorrido completo contra Supabase real', () => {
     const cooked = await recipes.cookNow(detail.id, detail.slots.includes('lunch') ? 'lunch' : detail.slots[0], 4, initialChoices(detail.groups));
     expect(cooked.plannedMealId).toBeTruthy();
     await recipes.rate(cooked.plannedMealId, 5, ['loved_repeat'], 'Rico');
+    // Sin plan, cocinar crea uno de un día solo con el adicional: Mi semana no lo muestra como plan.
+    expect(await plans.current(todayIso())).toBeNull();
+    extraId = cooked.plannedMealId;
   });
 
   it('8. plan: generar la semana, ver, presupuesto, cambiar, omitir, confirmar', async () => {
     planId = await plans.generate({ start: todayIso(), days: 7, slots: ['breakfast', 'lunch', 'dinner'] });
     const plan = (await plans.current(todayIso()))!;
     expect(plan.id).toBe(planId);
-    expect(plan.meals.length).toBeGreaterThanOrEqual(20);
+    expect(plan.meals.length).toBeGreaterThanOrEqual(21); // lo cocinado antes es un adicional: no ocupa el almuerzo
     expect(plan.meals.every((m) => m.recipeTitle.length > 0)).toBe(true);
+    // El plato adicional de hoy sigue visible (aunque quedó en el borrador de un día, ahora archivado)
+    expect(plan.extras.map((m) => m.id)).toEqual([extraId]);
+    expect(plan.meals.some((m) => m.id === extraId)).toBe(false);
 
     const budget = await plans.budget(planId);
     expect(budget.budgetLimit).toBe(150000);

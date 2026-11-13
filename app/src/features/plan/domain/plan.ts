@@ -21,7 +21,13 @@ export type MealPlan = {
   endDate: string;
   status: PlanStatus;
   budgetLimit: number | null;
+  /** Solo lo PLANEADO (una comida por momento del día). */
   meals: PlannedMeal[];
+  /**
+   * Platos adicionales: lo que se cocinó fuera del plan en estos días (una receta del asistente, una
+   * sugerencia de "¿Qué cocino?"). Siempre cocinados; no cuentan en el avance ni en el costo del plan.
+   */
+  extras: PlannedMeal[];
 };
 
 export type BudgetStatus = {

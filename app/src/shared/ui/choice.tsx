@@ -6,19 +6,25 @@ import { MinTouch, Spacing } from '@/shared/theme/colors';
 import { Radius, Typography } from '@/shared/theme/tokens';
 import { useTheme } from '@/shared/theme/use-theme';
 
-/** Opción seleccionable. `multiple` = casilla; si no, botón de opción única. */
-export function Chip({ label, selected, onPress, multiple }: {
+/**
+ * Opción seleccionable. `multiple` = casilla; si no, botón de opción única.
+ * `removable`: elegida, muestra una ✕ y tocarla la quita (por ejemplo, ingredientes de una receta).
+ */
+export function Chip({ label, selected, onPress, multiple, removable }: {
   label: string;
   selected: boolean;
   onPress: () => void;
   multiple?: boolean;
+  removable?: boolean;
 }) {
   const c = useTheme();
+  const { t } = useTranslation();
   return (
     <Pressable
       accessibilityRole={multiple ? 'checkbox' : 'radio'}
       accessibilityState={multiple ? { checked: selected } : { selected }}
       accessibilityLabel={label}
+      accessibilityHint={removable && selected ? t('common.tapToRemove') : undefined}
       onPress={onPress}
       style={[
         styles.chip,
@@ -26,6 +32,7 @@ export function Chip({ label, selected, onPress, multiple }: {
       ]}>
       {selected && <Ionicons name="checkmark" size={16} color={c.onPrimary} />}
       <Text style={[styles.chipLabel, { color: selected ? c.onPrimary : c.text }]}>{label}</Text>
+      {removable && selected && <Ionicons name="close-circle" size={18} color={c.onPrimary} />}
     </Pressable>
   );
 }

@@ -10,7 +10,9 @@ import { useProfile } from '@/features/profile/application/profile-queries';
 import { useCookNow, useCookPlanned, useRecipe, useRecipePreview, useSubstitutes } from '@/features/recipes/application/recipe-queries';
 import {
   initialChoices,
+  missingGroups,
   slotForNow,
+  splitByPantry,
   substitutesByIngredient,
   toggleChoice,
   type Choice,
@@ -65,6 +67,9 @@ export function RecipeScreen() {
 
   if (recipe.isPending) return <Screen><LoadingState /></Screen>;
   if (recipe.isError) return <Screen><ErrorState message={t(errorKey(recipe.error))} onRetry={() => void recipe.refetch()} /></Screen>;
+
+  // No se cocina con un grupo obligatorio vacío (la persona quitó su opción): primero hay que elegir.
+  const incomplete = !!detail && !!currentChoices && missingGroups(detail.groups, currentChoices).length > 0;
 
   const onCook = () =>
     mealId
@@ -125,7 +130,8 @@ export function RecipeScreen() {
           <Button
             label={t(mealId ? 'recipe.cookPlanned' : 'recipe.cookNow')}
             icon="flame-outline"
-            hint={t('recipe.cookNowHint')}
+            hint={incomplete ? t('recipe.completeChoicesFirst') : t('recipe.cookNowHint')}
+            disabled={incomplete}
             loading={cook.isPending}
             onPress={onCook}
           />
@@ -133,6 +139,17 @@ export function RecipeScreen() {
         <HealthDisclaimerNote />
       </Screen>
     </>
+  );
+}
+
+/** Subtítulo de las opciones: "En tu cocina" o "Para comprar". */
+function OptionsHeader({ icon, label }: { icon: 'home-outline' | 'cart-outline'; label: string }) {
+  const c = useTheme();
+  return (
+    <View style={styles.optionsHeader}>
+      <Ionicons name={icon} size={14} color={c.textSecondary} />
+      <AppText variant="caption" secondary>{label}</AppText>
+    </View>
   );
 }
 
@@ -148,24 +165,40 @@ function FlexGroups({ detail, choices, onChange }: { detail: RecipeDetail; choic
           <AppText variant="caption" secondary>{t('recipe.chooseHint')}</AppText>
         </View>
       </View>
-      {detail.groups.map((group) => (
-        <View key={group.key} style={styles.group}>
-          <AppText variant="label">
-            {`${group.label} · ${group.max > 1 ? t('recipe.chooseUpTo', { count: group.max }) : t('recipe.chooseOne')}`}
-          </AppText>
-          <ChipGroup>
-            {group.options.map((o) => (
-              <Chip
-                key={o.ingredientId}
-                multiple={group.max > 1}
-                label={o.inPantry ? `${o.name} · ${t('recipe.atHome')}` : o.name}
-                selected={choices.some((c) => c.groupKey === group.key && c.ingredientId === o.ingredientId)}
-                onPress={() => onChange(toggleChoice(choices, group, o.ingredientId))}
-              />
-            ))}
-          </ChipGroup>
-        </View>
-      ))}
+      {detail.groups.map((group) => {
+        const { have, buy } = splitByPantry(group.options);
+        const chip = (o: (typeof group.options)[number]) => (
+          <Chip
+            key={o.ingredientId}
+            multiple={group.max > 1}
+            removable
+            label={o.name}
+            selected={choices.some((c) => c.groupKey === group.key && c.ingredientId === o.ingredientId)}
+            onPress={() => onChange(toggleChoice(choices, group, o.ingredientId))}
+          />
+        );
+        const missing = choices.filter((c) => c.groupKey === group.key).length < group.min;
+        return (
+          <View key={group.key} style={styles.group}>
+            <AppText variant="label">
+              {`${group.label} · ${group.max > 1 ? t('recipe.chooseUpTo', { count: group.max }) : t('recipe.chooseOne')}`}
+            </AppText>
+            {have.length > 0 && (
+              <>
+                <OptionsHeader icon="home-outline" label={t('recipe.options.have')} />
+                <ChipGroup>{have.map(chip)}</ChipGroup>
+              </>
+            )}
+            {buy.length > 0 && (
+              <>
+                <OptionsHeader icon="cart-outline" label={t('recipe.options.buy')} />
+                <ChipGroup>{buy.map(chip)}</ChipGroup>
+              </>
+            )}
+            {missing && <Banner tone="warning" message={t('recipe.options.chooseAtLeast', { count: group.min, group: group.label })} />}
+          </View>
+        );
+      })}
     </Card>
   );
 }
@@ -264,6 +297,7 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md },
   flex: { flex: 1 },
   group: { gap: Spacing.sm },
+  optionsHeader: { flexDirection: 'row', alignItems: 'center', gap: Spacing.xs },
   line: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md, paddingVertical: Spacing.xs },
   substitute: { flexDirection: 'row', alignItems: 'flex-start', gap: Spacing.xs, marginLeft: 20 + Spacing.md, marginBottom: Spacing.xs },
   tiles: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm },
