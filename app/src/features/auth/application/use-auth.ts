@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { AppError, toAppError } from '@/core/errors/app-error';
 import { useServices } from '@/di/services';
+import { clearRecoveryMark, markRecoveryRequested } from '@/features/auth/application/recovery-mark';
 import type { Credentials } from '@/features/auth/domain/auth-repository';
 import type { SignUpForm } from '@/features/auth/domain/schemas';
 import { currentDocumentsQuery } from '@/features/legal/application/legal-queries';
@@ -61,7 +62,13 @@ export function useResendConfirmation() {
 
 export function useRequestPasswordReset() {
   const { auth } = useServices();
-  return useMutation({ mutationFn: (email: string) => auth.requestPasswordReset(email) });
+  return useMutation({
+    mutationFn: async (email: string) => {
+      await auth.requestPasswordReset(email);
+      // Si el enlace del correo vuelve sin dirección, así se sabe que va a "Nueva contraseña".
+      await markRecoveryRequested();
+    },
+  });
 }
 
 export function useExchangeCode() {
@@ -71,5 +78,10 @@ export function useExchangeCode() {
 
 export function useUpdatePassword() {
   const { auth } = useServices();
-  return useMutation({ mutationFn: (password: string) => auth.updatePassword(password) });
+  return useMutation({
+    mutationFn: async (password: string) => {
+      await auth.updatePassword(password);
+      await clearRecoveryMark();
+    },
+  });
 }

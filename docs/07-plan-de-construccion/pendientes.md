@@ -10,7 +10,7 @@ Se avanza **de a un ítem**, en este orden, y cada uno se cierra probado (prueba
 | A3 | **Verificación por correo:** staging deja crear la cuenta sin verificar porque "Confirm email" está apagado en el panel de Supabase (en `config.toml` se apaga a propósito solo para local/CI) | Encender en el panel de staging y probar |
 | A4 | **Cierre de sesión** con diálogo del sistema → diálogo propio de la app (`ConfirmDialog`), también en quitar de la despensa y revocar la autorización | Hecho; probar en el APK |
 | A6 | Notificaciones en el APK (recordatorio de comida) | ✅ Probado el 13-nov |
-| A7 | Recuperar contraseña en el APK (Iniciar sesión → "¿Olvidaste tu contraseña?" → correo → nueva contraseña) | Por probar |
+| A7 | Recuperar contraseña: el enlace abría la app "donde quedó" (Supabase volvía a `nutriplan://` sin pantalla). Arreglado con `+native-intent.tsx` (el código va a "Nueva contraseña" llegue por donde llegue); revisar además Redirect URLs del panel de staging | Arreglado; probar en el APK nuevo |
 | A5 | Importar el backlog a Jira (Sprint → "No asignar", validar, importar una vez; sprints y estados con las etiquetas) | En curso |
 
 ## B. Funciones nuevas (decisiones ya tomadas)
