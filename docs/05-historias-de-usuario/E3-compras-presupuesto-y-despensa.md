@@ -782,7 +782,7 @@ Convierte el plan de comidas en una lista de compras accionable, controla el gas
 | Etiquetas | foto-y-ocr |
 | Ref. backlog | HU-63 · Subárea: Foto y OCR |
 | Dependencias | US-119 |
-| Estado | En curso (14-nov-2026) · por medir en el APK |
+| Estado | En curso (13-nov-2026) · por medir en el APK |
 
 **Historia de usuario**
 
@@ -830,7 +830,7 @@ Convierte el plan de comidas en una lista de compras accionable, controla el gas
 | Etiquetas | foto-y-ocr |
 | Ref. backlog | HU-64 · Subárea: Foto y OCR |
 | Dependencias | US-119, US-141 |
-| Estado | En curso (14-nov-2026) · por medir en el APK |
+| Estado | En curso (13-nov-2026) · por medir en el APK |
 
 **Historia de usuario**
 

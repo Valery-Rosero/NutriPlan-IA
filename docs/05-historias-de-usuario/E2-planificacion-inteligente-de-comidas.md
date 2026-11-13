@@ -885,7 +885,7 @@ Genera, ajusta y explica los planes de comidas diarios y semanales: motor de rec
 | Etiquetas | asistente-ia, plan, agregada-por-po |
 | Ref. backlog | HU-74 · Subárea: Asistente IA |
 | Dependencias | US-117, US-129, US-152, US-157 |
-| Estado | Hecha (14-nov-2026) · por probar en el APK |
+| Estado | Hecha (13-nov-2026) · por probar en el APK |
 
 **Historia de usuario**
 

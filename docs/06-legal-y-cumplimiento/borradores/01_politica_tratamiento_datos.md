@@ -1,6 +1,6 @@
 # Política de Tratamiento de Datos Personales — NutriPlan AI
 
-> Versión 2 · Vigente desde el 14 de noviembre de 2026.
+> Versión 2 · Vigente desde el 13 de noviembre de 2026.
 
 ## 1. Responsable del tratamiento
 NutriPlan AI es un proyecto académico desarrollado en Pasto, Colombia (en adelante, "NutriPlan AI" o "nosotros"), y es el responsable del tratamiento de tus datos personales.
@@ -60,4 +60,4 @@ Conservamos tus datos mientras tengas cuenta. Al eliminarla, borramos tus datos 
 Si cambiamos esta política de forma sustancial te avisaremos en la app y pediremos de nuevo tu autorización cuando la ley lo exija.
 
 ## 13. Vigencia
-Esta política rige desde el 14 de noviembre de 2026 (versión 2: incluye las fotos de la nevera o del recibo y las recetas creadas por el asistente). La base de datos permanecerá vigente mientras dure la prestación del servicio.
+Esta política rige desde el 13 de noviembre de 2026 (versión 2: incluye las fotos de la nevera o del recibo y las recetas creadas por el asistente). La base de datos permanecerá vigente mientras dure la prestación del servicio.
