@@ -22,6 +22,7 @@ import {
   Card,
   Chip,
   ChipGroup,
+  DictationHint,
   FoodTile,
   IconBadge,
   IconButton,
@@ -98,6 +99,7 @@ export function AssistantScreen() {
                     {mealTitle ? t('assistant.introSwap', { title: mealTitle }) : t('assistant.intro')}
                   </AppText>
                   <AppText variant="caption" secondary>{t('assistant.safety')}</AppText>
+                  <DictationHint />
                 </View>
               </View>
             </Card>

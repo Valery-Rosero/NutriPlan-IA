@@ -12,3 +12,4 @@ export { StepProgress } from './step-progress';
 export { ListGroup, ListRow } from './list-row';
 export { ConfirmDialog } from './confirm-dialog';
 export { FoodTile } from './food-tile';
+export { DictationHint } from './dictation-hint';

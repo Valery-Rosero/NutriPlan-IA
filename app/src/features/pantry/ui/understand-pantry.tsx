@@ -18,6 +18,7 @@ import {
   Checkbox,
   Chip,
   ChipGroup,
+  DictationHint,
   FoodTile,
   IconBadge,
   Pill,
@@ -170,6 +171,7 @@ function TextCard({ onUnderstood }: { onUnderstood: (review: Review) => void }) 
         maxLength={300}
         placeholder="2 libras de papa criolla, 6 huevos y un queso"
       />
+      <DictationHint />
       {understand.error && <Banner tone="danger" message={t(errorKey(understand.error))} />}
       <Button
         label={t('pantry.understand.go')}

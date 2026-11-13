@@ -17,7 +17,8 @@
     "edit": "Editar",
     "waitingConnection": "Sin conexión. Esto se cargará solo apenas vuelva internet.",
     "understood": "Entendido",
-    "tapToRemove": "Toca para quitar"
+    "tapToRemove": "Toca para quitar",
+    "dictationHint": "¿Prefieres hablar? Toca el micrófono de tu teclado y díctalo."
   },
   "validation": {
     "required": "Este campo es obligatorio.",
