@@ -47,6 +47,15 @@ Rediseñado con la dueña del producto: lo que se cocina fuera del plan (receta 
 - Nota técnica: "Cocinar ahora" (`cook_now`) solo admite una comida por momento del día y solo del catálogo; los extras necesitan su propia tabla (`meal_extras`) y su RPC.
 - Depende de B1 (dónde se muestran) y B3 (texto libre).
 
+### B5. "Cocina viva" e IA en más lugares · ✅ hecho (13–14-nov), probar en el APK
+- Interfaz "Cocina viva": paleta de cuatro sabores, letra del sistema, barra flotante con el Asistente, emojis de comida.
+- Registro con Términos y Política desplegables; onboarding de 7 pasos (preferencias y notificaciones).
+- Mi cocina agrupada por grupo de alimento, con el grupo sugerido por la IA visible y corregible (ADR-027).
+- Asistente que crea recetas propias con ingredientes del catálogo, hasta tres opciones y respuestas con formato (ADR-029).
+- "Escríbelo como lo dirías" en Agregar (IA) y "Para completar más recetas" en Mi cocina (base) (ADR-030).
+- **Para que funcione en el APK** (lo corre la dueña del producto): migraciones a staging por GitHub Actions; luego
+  `npx supabase functions deploy assistant-chat`, `categorize-food` y `understand-pantry` con `--project-ref fiesvxiuxsllqcpxidap`.
+
 ## C. Antes de usuarios reales (sin cambios)
 Revisión de un abogado de los textos legales · revisión de una nutricionista (US-121) · validación con 5 personas (US-101) · producción (`drgzvvkkjxqvolcerpjx`) · Google Play (US-158) · monitor de disponibilidad · Gemini en plan de pago con tope de gasto y clave rotada · renovar el token de Supabase del despliegue (cada 90 días).
 

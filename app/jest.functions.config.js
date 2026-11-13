@@ -9,4 +9,6 @@ module.exports = {
   testMatch: ['**/*.test.ts'],
   transform: { '^.+\\.ts$': ['babel-jest', { presets: ['babel-preset-expo'] }] },
   moduleNameMapper: { '^npm:zod@4$': '<rootDir>/node_modules/zod' },
+  // Las funciones viven fuera de app/: los ayudantes que inserta Babel (@babel/runtime) se buscan aquí.
+  modulePaths: ['<rootDir>/node_modules'],
 };

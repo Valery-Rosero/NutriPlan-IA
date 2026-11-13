@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { errorKey } from '@/core/errors/app-error';
 import { useAddCustomToPantry, useAddToPantry, useIngredientSearch, useUnits } from '@/features/pantry/application/pantry-queries';
 import { addDays, CUSTOM_UNITS, todayIso, unitsFor, type CustomUnit, type IngredientOption } from '@/features/pantry/domain/pantry';
+import { UnderstandPantry } from '@/features/pantry/ui/understand-pantry';
 import { MinTouch, Spacing } from '@/shared/theme/colors';
 import { useTheme } from '@/shared/theme/use-theme';
 import { Radius } from '@/shared/theme/tokens';
@@ -20,7 +21,10 @@ const EXPIRY_OPTIONS = [
   { key: 'month1', days: 30 },
 ] as const;
 
-/** Agregar a la despensa: buscar (sin tildes y con errores de tipeo), cantidad, unidad y vencimiento. */
+/**
+ * Agregar a la despensa. Dos caminos: escribirlo como se diría (IA, varias cosas a la vez; ADR-030) o buscar en
+ * el catálogo (sin tildes y con errores de tipeo) con cantidad, unidad y vencimiento.
+ */
 export function AddPantryItemScreen() {
   const { t } = useTranslation();
   const router = useRouter();
@@ -32,6 +36,7 @@ export function AddPantryItemScreen() {
   const [quantity, setQuantity] = useState('');
   const [unitId, setUnitId] = useState<number | null>(null);
   const [expiry, setExpiry] = useState<(typeof EXPIRY_OPTIONS)[number]['key']>('none');
+  const [reviewing, setReviewing] = useState(false);
   const results = useIngredientSearch(selected || customName !== null ? '' : query);
   const units = useUnits();
   const add = useAddToPantry();
@@ -58,35 +63,41 @@ export function AddPantryItemScreen() {
           <CustomItemForm initialName={customName} onCancel={() => setCustomName(null)} onSaved={() => router.back()} />
         ) : !selected ? (
           <>
-            <TextField label={t('pantry.search')} icon="search" value={query} onChangeText={setQuery} autoFocus autoCorrect={false} placeholder={t('pantry.searchPlaceholder')} />
-            {results.isError && <Banner tone="danger" message={t(errorKey(results.error))} />}
-            {query.trim().length >= 2 && results.data?.length === 0 && <AppText secondary>{t('pantry.noResults')}</AppText>}
-            {results.data?.map((ingredient) => (
-              <Pressable
-                key={ingredient.id}
-                accessibilityRole="button"
-                accessibilityLabel={ingredient.name}
-                accessibilityHint={t('pantry.selectHint')}
-                onPress={() => setSelected(ingredient)}
-                style={({ pressed }) => [
-                  styles.result,
-                  { borderColor: c.divider, backgroundColor: pressed ? c.surface : c.card },
-                ]}>
-                <Ionicons name="leaf-outline" size={18} color={c.primary} />
-                <AppText style={styles.flex}>{ingredient.name}</AppText>
-                <Ionicons name="add-circle-outline" size={22} color={c.textSecondary} />
-              </Pressable>
-            ))}
-            {query.trim().length >= 2 && (
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel={t('pantry.custom.addAs', { name: query.trim() })}
-                accessibilityHint={t('pantry.custom.note')}
-                onPress={() => setCustomName(query.trim())}
-                style={({ pressed }) => [styles.result, styles.custom, { borderColor: c.border, backgroundColor: pressed ? c.surface : 'transparent' }]}>
-                <Ionicons name="create-outline" size={18} color={c.primary} />
-                <AppText style={styles.flex}>{t('pantry.custom.addAs', { name: query.trim() })}</AppText>
-              </Pressable>
+            <UnderstandPantry onSaved={() => router.back()} onReviewing={setReviewing} />
+            {!reviewing && (
+              <>
+                <AppText variant="label" secondary style={styles.or}>{t('pantry.understand.or')}</AppText>
+                <TextField label={t('pantry.search')} icon="search" value={query} onChangeText={setQuery} autoCorrect={false} placeholder={t('pantry.searchPlaceholder')} />
+                {results.isError && <Banner tone="danger" message={t(errorKey(results.error))} />}
+                {query.trim().length >= 2 && results.data?.length === 0 && <AppText secondary>{t('pantry.noResults')}</AppText>}
+                {results.data?.map((ingredient) => (
+                  <Pressable
+                    key={ingredient.id}
+                    accessibilityRole="button"
+                    accessibilityLabel={ingredient.name}
+                    accessibilityHint={t('pantry.selectHint')}
+                    onPress={() => setSelected(ingredient)}
+                    style={({ pressed }) => [
+                      styles.result,
+                      { borderColor: c.divider, backgroundColor: pressed ? c.surface : c.card },
+                    ]}>
+                    <Ionicons name="leaf-outline" size={18} color={c.primary} />
+                    <AppText style={styles.flex}>{ingredient.name}</AppText>
+                    <Ionicons name="add-circle-outline" size={22} color={c.textSecondary} />
+                  </Pressable>
+                ))}
+                {query.trim().length >= 2 && (
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel={t('pantry.custom.addAs', { name: query.trim() })}
+                    accessibilityHint={t('pantry.custom.note')}
+                    onPress={() => setCustomName(query.trim())}
+                    style={({ pressed }) => [styles.result, styles.custom, { borderColor: c.border, backgroundColor: pressed ? c.surface : 'transparent' }]}>
+                    <Ionicons name="create-outline" size={18} color={c.primary} />
+                    <AppText style={styles.flex}>{t('pantry.custom.addAs', { name: query.trim() })}</AppText>
+                  </Pressable>
+                )}
+              </>
             )}
           </>
         ) : (
@@ -196,4 +207,5 @@ const styles = StyleSheet.create({
   custom: { borderStyle: 'dashed' },
   selected: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md },
   labelRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.xs },
+  or: { textAlign: 'center' },
 });

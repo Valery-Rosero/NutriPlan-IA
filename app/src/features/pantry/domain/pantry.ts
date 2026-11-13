@@ -20,6 +20,24 @@ export type PantryItem = {
 
 export type FoodGroup = { id: number; code: string; name: string };
 
+/**
+ * ADR-030: una cosa que la IA entendió de un texto libre. Es solo una PROPUESTA: la persona la revisa antes
+ * de guardar. `ingredientId` null = alimento propio. `units`: unidades válidas para guardarla.
+ */
+export type ParsedPantryItem = {
+  ingredientId: string | null;
+  name: string;
+  quantity: number;
+  unit: string;
+  units: string[];
+  expiresInDays: number | null;
+};
+
+export type UnderstoodPantry = { items: ParsedPantryItem[]; source: 'ai' | 'rules' };
+
+/** ADR-030: qué comprar para completar recetas (lo calcula la base con lo que le falta a cada una). */
+export type BuyNext = { ingredientId: string; name: string; completes: number; helps: number; recipes: string[] };
+
 export type Unit = { id: number; code: string; name: string; dimension: 'mass' | 'volume' | 'count' };
 
 export type IngredientOption = { id: string; name: string; countUnits: Unit[] };
@@ -49,6 +67,10 @@ export interface PantryRepository {
   setCustomGroup(id: string, foodGroupId: number): Promise<void>;
   /** Grupos de alimento de la base (datos de referencia). */
   foodGroups(): Promise<FoodGroup[]>;
+  /** "Escríbelo como lo dirías": la Edge Function understand-pantry (IA con respaldo de reglas). */
+  understand(text: string): Promise<UnderstoodPantry>;
+  /** Qué comprar para terminar recetas que casi se pueden hacer (RPC what_to_buy_next). */
+  buyNext(limit: number): Promise<BuyNext[]>;
   /** Quita un lote del catálogo o un alimento propio (cada uno vive en su tabla). */
   remove(item: Pick<PantryItem, 'id' | 'ingredientId'>): Promise<void>;
   search(query: string): Promise<IngredientOption[]>;

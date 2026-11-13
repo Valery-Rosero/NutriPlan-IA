@@ -75,6 +75,16 @@ export function fakePantry(overrides: Partial<PantryRepository> = {}): jest.Mock
     add: jest.fn(async () => {}),
     addCustom: jest.fn(async () => {}),
     setCustomGroup: jest.fn(async () => {}),
+    understand: jest.fn(async () => ({
+      source: 'ai' as const,
+      items: [
+        { ingredientId: 'criolla', name: 'Papa criolla', quantity: 2, unit: 'lb', units: ['g', 'lb', 'kg'], expiresInDays: 15 },
+        { ingredientId: null, name: 'Queso crema', quantity: 1, unit: 'unit', units: ['g', 'kg', 'lb', 'unit', 'ml', 'l'], expiresInDays: 10 },
+      ],
+    })),
+    buyNext: jest.fn(async () => [
+      { ingredientId: 'cebolla', name: 'Cebolla cabezona', completes: 2, helps: 3, recipes: ['Sudado de lo que haya', 'Arroz salteado con lo que tengas'] },
+    ]),
     foodGroups: jest.fn(async () => [
       { id: 2, code: 'poultry', name: 'Aves' },
       { id: 5, code: 'dairy', name: 'Lácteos' },
@@ -89,6 +99,7 @@ export function fakePantry(overrides: Partial<PantryRepository> = {}): jest.Mock
       { id: 1, code: 'g', name: 'gramo', dimension: 'mass' as const },
       { id: 2, code: 'kg', name: 'kilogramo', dimension: 'mass' as const },
       { id: 8, code: 'unit', name: 'unidad', dimension: 'count' as const },
+      { id: 3, code: 'lb', name: 'libra', dimension: 'mass' as const },
     ]),
     ...overrides,
   } as jest.Mocked<PantryRepository>;

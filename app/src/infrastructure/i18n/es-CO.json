@@ -322,6 +322,34 @@
       "noGroup": "Sin grupo: elígelo tú",
       "change": "Cambiar",
       "changeHint": "Elige el grupo de {{name}}"
+    },
+    "understand": {
+      "title": "Escríbelo como lo dirías",
+      "hint": "Ej.: «2 libras de papa criolla, 6 huevos y un queso». La IA lo separa y tú revisas antes de guardar.",
+      "label": "Lo que compraste o tienes",
+      "go": "Entender",
+      "reviewTitle": "Revisa lo que entendí",
+      "reviewHint": "Quita lo que no va y ajusta cantidades. Nada se guarda hasta que toques «Guardar».",
+      "rules": "Lo entendí sin la IA (no está disponible ahora): revísalo bien.",
+      "include": "Guardar {{name}}",
+      "own": "Propio",
+      "expiresIn_one": "vence en {{count}} día",
+      "expiresIn_other": "vence en {{count}} días",
+      "noExpiry": "sin fecha",
+      "save_one": "Guardar {{count}} cosa",
+      "save_other": "Guardar {{count}} cosas",
+      "again": "Escribir otra vez",
+      "nothing": "No encontré alimentos en lo que escribiste. Prueba con «2 libras de papa».",
+      "or": "o búscalo en el catálogo"
+    },
+    "buyNext": {
+      "title": "Para completar más recetas",
+      "hint": "Lo calcula NutriPlan con lo que le falta a cada receta segura para ti.",
+      "completes_one": "Completa {{count}} receta: {{list}}",
+      "completes_other": "Completa {{count}} recetas: {{list}}",
+      "helps": "Te acerca a: {{list}}",
+      "add": "Agregar a mi lista",
+      "added": "Listo, en tu lista de mercado."
     }
   },
   "profile": {

@@ -1,7 +1,8 @@
-import type { SupabaseClient } from '@supabase/supabase-js';
+import { FunctionsHttpError, type SupabaseClient } from '@supabase/supabase-js';
 
-import { toAppError } from '@/core/errors/app-error';
+import { AppError, toAppError } from '@/core/errors/app-error';
 import type {
+  BuyNext,
   CustomUnit,
   FoodGroup,
   IngredientOption,
@@ -9,6 +10,7 @@ import type {
   NewPantryItem,
   PantryItem,
   PantryRepository,
+  UnderstoodPantry,
   Unit,
 } from '@/features/pantry/domain/pantry';
 import type { Database } from '@/types/database';
@@ -59,6 +61,40 @@ export class SupabasePantryRepository implements PantryRepository {
     const { data, error } = await this.client.from('food_groups').select('id, code, name').order('id');
     if (error) throw toAppError(error);
     return data;
+  }
+
+  async understand(text: string): Promise<UnderstoodPantry> {
+    type Payload = {
+      ok: boolean;
+      data?: {
+        source: 'ai' | 'rules';
+        items: { ingredient_id: string | null; name: string; quantity: number; unit: string; units: string[]; expires_in_days: number | null }[];
+      };
+      error?: { code: string };
+    };
+    const { data, error } = await this.client.functions.invoke<Payload>('understand-pantry', { body: { text } });
+    if (error) {
+      const body = error instanceof FunctionsHttpError ? await error.context.json().catch(() => null) : null;
+      throw toAppError(body?.error?.code ?? error);
+    }
+    if (!data?.ok || !data.data) throw new AppError('unknown');
+    return {
+      source: data.data.source,
+      items: data.data.items.map((i) => ({
+        ingredientId: i.ingredient_id,
+        name: i.name,
+        quantity: i.quantity,
+        unit: i.unit,
+        units: i.units,
+        expiresInDays: i.expires_in_days,
+      })),
+    };
+  }
+
+  async buyNext(limit: number): Promise<BuyNext[]> {
+    const { data, error } = await this.client.rpc('what_to_buy_next', { p_limit: limit });
+    if (error) throw toAppError(error);
+    return data.map((r) => ({ ingredientId: r.ingredient_id, name: r.name, completes: r.completes, helps: r.helps, recipes: r.recipes }));
   }
 
   async add({ ingredientId, quantity, unitId, expiresOn }: NewPantryItem) {

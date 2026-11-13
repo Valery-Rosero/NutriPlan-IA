@@ -1,6 +1,6 @@
 # Modelo de datos (generado desde las migraciones)
 
-> Fuente de verdad: `backend/supabase/migrations/`. Este archivo se generó leyendo la base real después de aplicar las 31 migraciones (67 tablas, todas con RLS). Si cambia una migración, regenerar: `python docs/03-datos/_generar_modelo.py` (con Supabase local encendido).
+> Fuente de verdad: `backend/supabase/migrations/`. Este archivo se generó leyendo la base real después de aplicar las 32 migraciones (67 tablas, todas con RLS). Si cambia una migración, regenerar: `python docs/03-datos/_generar_modelo.py` (con Supabase local encendido).
 
 Principios: 3FN; lo derivable no se guarda (alérgenos y dietas de una receta, nutrición por porción, picante y apto-batch); cantidades canónicas en gramos; RLS en todas las tablas; ver `reglas-de-negocio.md`.
 
@@ -1242,7 +1242,7 @@ Restricciones:
 ## Enums
 
 - `activity_level`: sedentary, light, moderate, active, very_active
-- `ai_kind`: plan, swap, chat, label
+- `ai_kind`: plan, swap, chat, label, pantry
 - `analytics_event`: onboarding_completed, plan_generated, shopping_list_generated, meal_cooked
 - `app_role`: moderator, nutritionist, admin
 - `budget_period`: week, month

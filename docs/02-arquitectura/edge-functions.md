@@ -2,7 +2,7 @@
 
 Todas: Deno + TypeScript, validan entrada/salida con Zod, exigen `Authorization: Bearer <JWT>` (excepto `send-notifications` y `error-alert`, que solo invoca pg_cron con un secreto compartido y tienen `verify_jwt = false` en `config.toml`), responden JSON `{ ok: true, data } | { ok: false, error: { code, message } }`, no registran contenido de salud. Las fallas del servidor se registran con `_shared/report-error.ts` (ADR-026).
 
-**Estado (12-nov-2026):** construidas y desplegadas en staging: `assistant-chat`, `delete-account`, `send-notifications`, `error-alert`. Nueva (13-nov-2026, por desplegar): `categorize-food`. `generate-plan` quedó reemplazada por la RPC `generate_plan` (ADR-023). Secretos: `backend/supabase/functions/.env.example` (los valores nunca van al repositorio).
+**Estado (12-nov-2026):** construidas y desplegadas en staging: `assistant-chat`, `delete-account`, `send-notifications`, `error-alert`. Nuevas, por desplegar: `categorize-food` (13-nov) y `understand-pantry` (14-nov); `assistant-chat` cambió (ADR-029) y hay que volver a desplegarla. `generate-plan` quedó reemplazada por la RPC `generate_plan` (ADR-023). Secretos: `backend/supabase/functions/.env.example` (los valores nunca van al repositorio).
 
 ## 1. `generate-plan`  (POST) — REEMPLAZADA por la RPC `generate_plan` (ADR-023)
 > Se conserva como referencia. El plan se genera con reglas en SQL (`generate_plan(p_start, p_days, p_slots)` + `save_generated_plan`). Si más adelante se agrega un LLM para redactar explicaciones, irá en una Edge Function aparte que no decide recetas.
@@ -40,3 +40,10 @@ Reconfirma contraseña o token reciente → registra evento mínimo de auditorí
 **Orden:** caché `food_labels` → ingrediente del catálogo con el mismo nombre normalizado → Gemini (listas cerradas de `food_groups` e `ingredient_categories`, validado; se guarda en la caché y se registra en `ai_generations` con `kind = 'label'`, cuota 100/día por persona) → reglas (`logic.ts`).
 **Salida:** `{ ok: true, data: { key, name, is_food, food_group_id, food_group, store_category_id, store_category, meal_slot, kcal_per_serving, protein_g_per_serving, source: 'cache' | 'catalog' | 'ai' | 'rules' } }`. Nunca falla por la IA: sin IA responde con reglas.
 **Sin datos de salud.** No se usa para filtrar alergias. Lógica pura probada con `npm run test:functions` (app/); el adaptador de Gemini es compartido (`_shared/gemini.ts`).
+
+## 8. `understand-pantry`  (POST, JWT) — ADR-030
+**Entrada:** `{ text: string }` (2 a 300 caracteres): lo que la persona compró o tiene, escrito de corrido.
+**Orden:** Gemini (catálogo como lista cerrada `I…`, salida estructurada, validada en `logic.ts`; cuota 40/día, `ai_generations.kind = 'pantry'`) → reglas (`rulesParse`).
+**Salida:** `{ ok: true, data: { source: 'ai' | 'rules', items: [{ ingredient_id | null, name, quantity, unit, units, expires_in_days }] } }`. `units` = unidades válidas para guardarlo (catálogo: contables del ingrediente + masa; propio: las de un alimento propio). **No guarda nada:** la app muestra la lista para revisar y guarda lo marcado con `add_to_pantry` o como alimento propio.
+**Sin datos de salud.** Lógica pura probada con `npm run test:functions` (app/).
+

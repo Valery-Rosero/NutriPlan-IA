@@ -3,7 +3,17 @@ import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tansta
 import { useServices } from '@/di/services';
 import { cookingKeys } from '@/features/cooking/application/use-suggestions';
 import { classifyQuietly } from '@/features/food/domain/food-label';
-import { addDays, sortPantry, todayIso, type NewCustomPantryItem, type NewPantryItem, type PantryItem } from '@/features/pantry/domain/pantry';
+import {
+  addDays,
+  CUSTOM_UNITS,
+  sortPantry,
+  todayIso,
+  type CustomUnit,
+  type NewCustomPantryItem,
+  type NewPantryItem,
+  type PantryItem,
+  type ParsedPantryItem,
+} from '@/features/pantry/domain/pantry';
 import type { QuickItem } from '@/features/pantry/domain/quick-add';
 
 export const pantryKeys = {
@@ -12,7 +22,50 @@ export const pantryKeys = {
   search: (query: string) => [...pantryKeys.all, 'search', query] as const,
   units: () => [...pantryKeys.all, 'units'] as const,
   foodGroups: () => [...pantryKeys.all, 'food-groups'] as const,
+  buyNext: () => [...pantryKeys.all, 'buy-next'] as const,
 };
+
+/** ADR-030: qué comprar para completar recetas. Depende de la cocina: se invalida con ella (pantryKeys.all). */
+export function useBuyNext(enabled = true) {
+  const { pantry } = useServices();
+  return useQuery({ queryKey: pantryKeys.buyNext(), queryFn: () => pantry.buyNext(3), enabled });
+}
+
+/** ADR-030: "Escríbelo como lo dirías" → lista para revisar (no guarda nada). */
+export function useUnderstandPantry() {
+  const { pantry } = useServices();
+  return useMutation({ mutationFn: (text: string) => pantry.understand(text) });
+}
+
+/**
+ * Guarda lo revisado de una vez: lo del catálogo con add_to_pantry (convierte a gramos y valida) y lo demás
+ * como alimento propio, clasificado (B3b). Si algo falla se detiene y lo ya guardado queda.
+ */
+export function useSaveUnderstood() {
+  const { pantry, foodLabels } = useServices();
+  const invalidate = useInvalidatePantry();
+  return useMutation({
+    mutationFn: async (items: ParsedPantryItem[]) => {
+      const units = await pantry.listUnits();
+      for (const item of items) {
+        const expiresOn = item.expiresInDays === null ? null : addDays(todayIso(), item.expiresInDays);
+        if (item.ingredientId) {
+          const unit = units.find((u) => u.code === item.unit);
+          if (!unit) throw new Error('unknown');
+          await pantry.add({ ingredientId: item.ingredientId, quantity: item.quantity, unitId: unit.id, expiresOn });
+        } else {
+          const unit = (CUSTOM_UNITS as readonly string[]).includes(item.unit) ? (item.unit as CustomUnit) : 'unit';
+          const label = await classifyQuietly(foodLabels, item.name);
+          await pantry.addCustom({
+            name: item.name, quantity: item.quantity, unit, expiresOn,
+            foodGroupId: label?.foodGroupId ?? null, storeCategoryId: label?.storeCategoryId ?? null,
+          });
+        }
+      }
+    },
+    onSettled: invalidate,
+  });
+}
 
 /** Grupos de alimento (datos de referencia: casi nunca cambian). */
 export function useFoodGroups() {
@@ -40,6 +93,7 @@ function useInvalidatePantry() {
   const queryClient = useQueryClient();
   return () => {
     void queryClient.invalidateQueries({ queryKey: pantryKeys.items() });
+    void queryClient.invalidateQueries({ queryKey: pantryKeys.buyNext() });
     void queryClient.invalidateQueries({ queryKey: cookingKeys.all });
   };
 }

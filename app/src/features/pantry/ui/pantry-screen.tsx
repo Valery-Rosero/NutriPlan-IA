@@ -18,6 +18,7 @@ import {
   type PantryItem,
   type PantrySection,
 } from '@/features/pantry/domain/pantry';
+import { BuyNextCard } from '@/features/pantry/ui/buy-next-card';
 import { QuickAdd } from '@/features/pantry/ui/quick-add';
 import { Spacing } from '@/shared/theme/colors';
 import {
@@ -81,6 +82,7 @@ export function PantryScreen({ embedded }: { embedded?: boolean }) {
             <View style={styles.header}>
               <Button label={t('pantry.add')} icon="add" flavor="basil" onPress={add} />
               <QuickAddCollapsible />
+              <BuyNextCard />
             </View>
           }
           renderSectionHeader={({ section }) => (

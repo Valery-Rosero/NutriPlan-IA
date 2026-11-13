@@ -11,6 +11,7 @@ Solo Android. Las compilaciones se hacen en la nube con EAS: no hace falta Andro
    npx supabase functions deploy delete-account               # US-133
    npx supabase functions deploy assistant-chat               # US-157 (Gemini)
    npx supabase functions deploy categorize-food              # B3: clasificación de alimentos (Gemini)
+   npx supabase functions deploy understand-pantry            # ADR-030: "Escríbelo como lo dirías" (Gemini)
    npx supabase functions deploy send-notifications error-alert  # avisos y alertas de fallas
    ```
    Para producción, lo mismo con `--project-ref drgzvvkkjxqvolcerpjx`.

@@ -16,7 +16,7 @@
 - Fallas: `app/src/core/errors/scrub.ts` limpia el texto antes de enviarlo (primera capa) y agrupa repetidas; nunca se envían alergias, condiciones, medidas ni el contenido de formularios.
 - Logs de Edge Functions: IDs y códigos, no contenido; nunca prompts con datos de salud.
 - Prompts al LLM (ADR-025): solo el mensaje de la persona y las recetas candidatas ya filtradas por SQL (título, tiempo, qué ingredientes tiene en la despensa y cuáles le faltan); sin nombre, correo, alergias ni metas. La elegibilidad se valida en la BD.
-- Cuota del asistente: 30 mensajes por día por persona; clasificación de alimentos: 100 por día (medidas en `ai_generations`).
+- Cuota del asistente: 30 mensajes por día por persona; clasificación de alimentos: 100 por día; entender lo escrito en la cocina: 40 por día (medidas en `ai_generations`). El asistente además puede crear hasta 60 recetas propias al día (`create_assistant_recipe`).
 - Clasificación de alimentos (ADR-027): la IA solo escoge de listas cerradas de la base y se valida; su resultado **no se usa para filtrar alergias**. La caché `food_labels` no tiene datos personales y solo la escribe la función.
 - Entrada del asistente tratada como no confiable (inyección de prompts): salida estructurada (`responseSchema`), sin ejecutar texto libre; acciones solo vía `apply_assistant_suggestion`.
 - Avisos push: el permiso se pide solo cuando la persona activa los avisos; el texto nombra la comida o el ingrediente, nunca datos de salud. El token se borra al cerrar sesión.
@@ -28,7 +28,7 @@
 | Proveedor | Para qué | Qué recibe |
 |---|---|---|
 | Supabase (São Paulo, Brasil) | Base de datos, Auth, Storage, Edge Functions | Todos los datos de la cuenta |
-| Google: Gemini API | Asistente, recetas del asistente (ADR-029) y clasificación de alimentos (ADR-027) | Mensaje de la persona, recetas candidatas y lo que falta de su despensa; nombres de los ingredientes que puede usar y cuáles hay en su cocina; el texto de un alimento escrito a mano ("queso campesino"). Sin identidad ni datos de salud |
+| Google: Gemini API | Asistente, recetas del asistente (ADR-029), clasificación de alimentos (ADR-027) y entender lo escrito en la cocina (ADR-030) | Mensaje de la persona, recetas candidatas y lo que falta de su despensa; nombres de los ingredientes que puede usar y cuáles hay en su cocina; el texto de un alimento escrito a mano ("queso campesino"). Sin identidad ni datos de salud |
 | Google: Gmail (SMTP) | Correos de verificación y recuperación | Correo electrónico |
 | Google: Firebase Cloud Messaging | Entrega de avisos en Android | Token del dispositivo y texto del aviso |
 | Expo (EAS, Expo Push) | Compilación y envío de avisos | Token del dispositivo y texto del aviso |
