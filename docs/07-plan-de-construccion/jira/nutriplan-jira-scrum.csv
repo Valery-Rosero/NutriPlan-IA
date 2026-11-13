@@ -709,7 +709,7 @@ Ficha completa: docs/05-historias-de-usuario (US-162)."
 "1195","Sub-task","ADR y modelo de porciones sobrantes","162","To Do","","","","","","M06 Compras y despensa","estado-por-hacer","m06","","","","","","",""
 "1196","Sub-task","Sugerir recetas con las sobras","162","To Do","","","","","","M06 Compras y despensa","estado-por-hacer","m06","","","","","","",""
 "1197","Sub-task","Pruebas","162","To Do","","","","","","M06 Compras y despensa","estado-por-hacer","m06","","","","","","",""
-"163","Story","US-163 · Reconocer ingredientes desde una foto","3","To Do","","Low","13","","v2.0 Comunidad e integraciones","M12 Integraciones futuras","estado-por-hacer","prioridad-baja","v2.0","m12","F3","historia","foto-y-ocr","","*Como* usuario, *quiero* tomar una foto de mi despensa o refrigerador, *para* que la app identifique automáticamente los ingredientes disponibles.
+"163","Story","US-163 · Reconocer ingredientes desde una foto","3","In Progress","","Low","13","Sprint 12","v2.0 Comunidad e integraciones","M12 Integraciones futuras","sprint-12","estado-en-curso","prioridad-baja","v2.0","m12","F3","historia","foto-y-ocr","*Como* usuario, *quiero* tomar una foto de mi despensa o refrigerador, *para* que la app identifique automáticamente los ingredientes disponibles.
 
 *Criterios de aceptación*
 # Dado que tomo una foto de mi refrigerador Cuando la app procesa la imagen Entonces identifica correctamente al menos el 70% de los ítems presentes sobre una lista de prueba de 20 alimentos comunes, y me permite corregir o eliminar cualquier ítem mal identificado antes de guardar.
@@ -717,10 +717,10 @@ Ficha completa: docs/05-historias-de-usuario (US-162)."
 *Depende de:* US-119
 
 Ficha completa: docs/05-historias-de-usuario (US-163)."
-"1198","Sub-task","Spike: modelo de visión y costo","163","To Do","","","","","","M12 Integraciones futuras","estado-por-hacer","m12","","","","","","",""
-"1199","Sub-task","Reconocer ingredientes desde la cámara","163","To Do","","","","","","M12 Integraciones futuras","estado-por-hacer","m12","","","","","","",""
-"1200","Sub-task","Confirmar antes de agregar a la despensa","163","To Do","","","","","","M12 Integraciones futuras","estado-por-hacer","m12","","","","","","",""
-"164","Story","US-164 · Escanear recibo de compra con OCR","3","To Do","","Low","13","","v2.0 Comunidad e integraciones","M12 Integraciones futuras","estado-por-hacer","prioridad-baja","v2.0","m12","F3","historia","foto-y-ocr","","*Como* usuario, *quiero* escanear el recibo de mi compra, *para* actualizar mi despensa y mi gasto real automáticamente.
+"1198","Sub-task","Spike: modelo de visión y costo","163","In Progress","","","","","","M12 Integraciones futuras","estado-en-curso","m12","","","","","","",""
+"1199","Sub-task","Reconocer ingredientes desde la cámara","163","In Progress","","","","","","M12 Integraciones futuras","estado-en-curso","m12","","","","","","",""
+"1200","Sub-task","Confirmar antes de agregar a la despensa","163","In Progress","","","","","","M12 Integraciones futuras","estado-en-curso","m12","","","","","","",""
+"164","Story","US-164 · Escanear recibo de compra con OCR","3","In Progress","","Low","13","Sprint 12","v2.0 Comunidad e integraciones","M12 Integraciones futuras","sprint-12","estado-en-curso","prioridad-baja","v2.0","m12","F3","historia","foto-y-ocr","*Como* usuario, *quiero* escanear el recibo de mi compra, *para* actualizar mi despensa y mi gasto real automáticamente.
 
 *Criterios de aceptación*
 # Dado que subo la foto de un recibo de supermercado estándar Cuando se procesa con OCR Entonces se extraen correctamente ítem, cantidad y precio del 80% de las líneas en una muestra de prueba de 20 recibos; las líneas no reconocidas quedan marcadas para revisión manual, nunca se descartan silenciosamente.
@@ -728,9 +728,9 @@ Ficha completa: docs/05-historias-de-usuario (US-163)."
 *Depende de:* US-119, US-141
 
 Ficha completa: docs/05-historias-de-usuario (US-164)."
-"1201","Sub-task","Spike: OCR de recibos de Pasto","164","To Do","","","","","","M12 Integraciones futuras","estado-por-hacer","m12","","","","","","",""
-"1202","Sub-task","Leer el recibo y registrar el gasto","164","To Do","","","","","","M12 Integraciones futuras","estado-por-hacer","m12","","","","","","",""
-"1203","Sub-task","Confirmar ítems antes de guardar","164","To Do","","","","","","M12 Integraciones futuras","estado-por-hacer","m12","","","","","","",""
+"1201","Sub-task","Spike: OCR de recibos de Pasto","164","In Progress","","","","","","M12 Integraciones futuras","estado-en-curso","m12","","","","","","",""
+"1202","Sub-task","Leer el recibo y registrar el gasto","164","In Progress","","","","","","M12 Integraciones futuras","estado-en-curso","m12","","","","","","",""
+"1203","Sub-task","Confirmar ítems antes de guardar","164","In Progress","","","","","","M12 Integraciones futuras","estado-en-curso","m12","","","","","","",""
 "165","Story","US-165 · Mostrar precios actualizados según supermercado elegido","3","To Do","","Low","8","","v2.0 Comunidad e integraciones","M12 Integraciones futuras","estado-por-hacer","prioridad-baja","v2.0","m12","F3","historia","supermercados","","*Como* usuario, *quiero* ver el precio actualizado de los ingredientes de mi lista según el supermercado que elijo, *para* presupuestar con precisión.
 
 *Criterios de aceptación*

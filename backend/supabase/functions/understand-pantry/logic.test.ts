@@ -1,5 +1,5 @@
 // Pruebas de understand-pantry (ADR-030). Corren con `npm run test:functions` desde app/.
-import { match, rulesParse, systemPrompt, validateItems, type CatalogIngredient } from './logic.ts';
+import { match, photoPrompt, rulesParse, systemPrompt, validateItems, validatePhoto, type CatalogIngredient } from './logic.ts';
 
 const catalog: CatalogIngredient[] = [ // I1…I6
   { id: 'papa', name: 'Papa', shelf_life_days: 30, units: ['unit', 'g', 'lb', 'kg'] },
@@ -20,9 +20,9 @@ describe('validar lo que entiende la IA', () => {
       ],
     }, catalog);
     expect(items).toEqual([
-      { ingredient_id: 'criolla', name: 'Papa criolla', quantity: 2, unit: 'lb', units: ['g', 'lb', 'kg'], expires_in_days: 15 },
-      { ingredient_id: 'huevo', name: 'Huevo', quantity: 6, unit: 'unit', units: ['unit', 'g', 'lb', 'kg'], expires_in_days: 20 },
-      { ingredient_id: null, name: 'Queso crema', quantity: 1, unit: 'unit', units: ['g', 'kg', 'lb', 'unit', 'ml', 'l'], expires_in_days: 10 },
+      { ingredient_id: 'criolla', name: 'Papa criolla', quantity: 2, unit: 'lb', units: ['g', 'lb', 'kg'], expires_in_days: 15, uncertain: false },
+      { ingredient_id: 'huevo', name: 'Huevo', quantity: 6, unit: 'unit', units: ['unit', 'g', 'lb', 'kg'], expires_in_days: 20, uncertain: false },
+      { ingredient_id: null, name: 'Queso crema', quantity: 1, unit: 'unit', units: ['g', 'kg', 'lb', 'unit', 'ml', 'l'], expires_in_days: 10, uncertain: false },
     ]);
   });
 
@@ -91,3 +91,45 @@ describe('prompt', () => {
     expect(prompt).not.toMatch(/alergia|dieta|correo/i);
   });
 });
+
+describe('ADR-032 · foto de la nevera o del recibo', () => {
+  it('nevera: reconoce alimentos del catálogo y marca lo dudoso para revisar (F-2, F-3)', () => {
+    const r = validatePhoto({
+      items: [
+        { ref: 'I3', name: 'huevos', quantity: 10, unit: 'unit', uncertain: false },
+        { ref: 'I4', name: 'tomates', quantity: 4, unit: 'unit', uncertain: false },
+        { ref: null, name: 'salsa rosada', quantity: 1, unit: 'unit', uncertain: true },
+      ],
+      total: 50000, problem: null,
+    }, catalog, 'fridge');
+    expect(r?.items.map((i) => [i.name, i.quantity, i.uncertain])).toEqual([
+      ['Huevo', 10, false], ['Tomate', 4, false], ['Salsa rosada', 1, true],
+    ]);
+    expect(r?.total).toBeNull(); // una nevera no tiene total
+    expect(r?.problem).toBeNull();
+  });
+
+  it('recibo: lee el total en pesos (F-4); un total absurdo se descarta', () => {
+    expect(validatePhoto({ items: [{ ref: 'I1', name: 'papa', quantity: 2, unit: 'kg', uncertain: false }], total: 45230.4 }, catalog, 'receipt')?.total).toBe(45230);
+    expect(validatePhoto({ items: [{ ref: 'I1', name: 'papa', quantity: 2, unit: 'kg', uncertain: false }], total: 5 }, catalog, 'receipt')?.total).toBeNull();
+  });
+
+  it('sin alimentos o con la foto borrosa lo dice (F-6)', () => {
+    expect(validatePhoto({ items: [], problem: 'unclear' }, catalog, 'fridge')).toEqual({ items: [], total: null, problem: 'unclear' });
+    expect(validatePhoto({ items: [] }, catalog, 'receipt')?.problem).toBe('no_food');
+  });
+
+  it('descarta referencias inventadas y respuestas mal formadas', () => {
+    expect(validatePhoto({ items: [{ ref: 'I99', name: 'x', quantity: 1, unit: 'unit', uncertain: false }] }, catalog, 'fridge')?.problem).toBe('no_food');
+    expect(validatePhoto('no es json', catalog, 'fridge')).toBeNull();
+  });
+
+  it('el prompt del recibo pide ignorar lo que no es comida y nunca devolver datos de la tienda ni de pago (F-4)', () => {
+    const p = photoPrompt(catalog, 'receipt');
+    expect(p).toMatch(/Ignora bolsas, aseo/);
+    expect(p).toMatch(/datos de pago/);
+    expect(p).toContain('I2 Papa criolla');
+    expect(photoPrompt(catalog, 'fridge')).toMatch(/nevera/);
+  });
+});
+

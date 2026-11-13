@@ -19,6 +19,8 @@ export type ParsedItem = {
   /** Unidades válidas para guardarlo (catálogo: las del ingrediente; propio: las de un alimento propio). */
   units: string[];
   expires_in_days: number | null;
+  /** ADR-032 (foto): la IA no está segura de qué es. Llega desmarcado para revisar (F-3). */
+  uncertain: boolean;
 };
 
 /** Toda cantidad de un ingrediente del catálogo se puede guardar en masa. */
@@ -90,7 +92,14 @@ export function validateItems(raw: unknown, catalog: CatalogIngredient[]): Parse
   return out.length ? merge(out) : null;
 }
 
-function toItem(ingredient: CatalogIngredient | null, name: string, quantity: number, unit: string, expires: number | null): ParsedItem {
+function toItem(
+  ingredient: CatalogIngredient | null,
+  name: string,
+  quantity: number,
+  unit: string,
+  expires: number | null,
+  uncertain = false,
+): ParsedItem {
   const units = unitsFor(ingredient);
   // Si la unidad no sirve para ese ingrediente (p. ej. "litros" de papa), queda la primera válida para revisar.
   return {
@@ -100,6 +109,7 @@ function toItem(ingredient: CatalogIngredient | null, name: string, quantity: nu
     unit: units.includes(unit) ? unit : units[0],
     units,
     expires_in_days: expires ?? ingredient?.shelf_life_days ?? null,
+    uncertain,
   };
 }
 
@@ -108,7 +118,10 @@ function merge(items: ParsedItem[]): ParsedItem[] {
   const out: ParsedItem[] = [];
   for (const item of items) {
     const same = out.find((o) => (o.ingredient_id ?? o.name) === (item.ingredient_id ?? item.name) && o.unit === item.unit);
-    if (same) same.quantity += item.quantity;
+    if (same) {
+      same.quantity += item.quantity;
+      same.uncertain = same.uncertain && item.uncertain;
+    }
     else out.push({ ...item });
   }
   return out;
@@ -193,3 +206,93 @@ const singular = (text: string) =>
     .join(' ');
 
 const capitalize = (text: string) => text.charAt(0).toUpperCase() + text.slice(1);
+
+// ------------------------------------------------------------------ foto de la nevera o del recibo (ADR-032)
+export const PHOTO_KINDS = ['fridge', 'receipt'] as const;
+export type PhotoKind = (typeof PHOTO_KINDS)[number];
+export const IMAGE_MIME = ['image/jpeg', 'image/png', 'image/webp'] as const;
+/** Base64 de una foto ya reducida en el teléfono (~1024 px): unos 150 KB. Con margen, máximo ~3 MB. */
+export const MAX_IMAGE_BASE64 = 4_000_000;
+
+export type PhotoResult = {
+  items: ParsedItem[];
+  /** Recibo: total pagado, si se lee con claridad. La app pregunta antes de sumarlo al gasto del mes. */
+  total: number | null;
+  /** F-6: la foto no sirve (no hay comida o no se ve bien). */
+  problem: 'no_food' | 'unclear' | null;
+};
+
+export const PHOTO_SCHEMA = {
+  type: 'OBJECT',
+  properties: {
+    items: {
+      type: 'ARRAY',
+      items: {
+        type: 'OBJECT',
+        properties: {
+          ref: { type: 'STRING', nullable: true, description: 'Referencia exacta I… si es un ingrediente de la lista; null si no.' },
+          name: { type: 'STRING', description: 'Nombre corto del alimento, en español.' },
+          quantity: { type: 'NUMBER' },
+          unit: { type: 'STRING', enum: [...UNITS] },
+          expires_in_days: { type: 'INTEGER', nullable: true },
+          uncertain: { type: 'BOOLEAN', description: 'true si no estás segura de qué alimento es.' },
+        },
+        required: ['name', 'quantity', 'unit', 'uncertain'],
+      },
+    },
+    total: { type: 'NUMBER', nullable: true, description: 'Solo recibos: el TOTAL pagado en pesos, o null.' },
+    problem: { type: 'STRING', nullable: true, enum: ['no_food', 'unclear'], description: 'Si la foto no sirve; si no, null.' },
+  },
+  required: ['items'],
+};
+
+const photoItemSchema = z.object({
+  ref: z.string().nullable().optional(),
+  name: z.string().trim().min(1).max(80),
+  quantity: z.number().positive().max(100000),
+  unit: z.enum(UNITS),
+  expires_in_days: z.number().int().min(0).max(365).nullable().optional(),
+  uncertain: z.boolean().optional().default(false),
+});
+const photoAnswerSchema = z.object({
+  items: z.array(z.unknown()).max(40),
+  total: z.number().nullable().optional(),
+  problem: z.enum(['no_food', 'unclear']).nullable().optional(),
+});
+
+export function photoPrompt(catalog: CatalogIngredient[], kind: PhotoKind): string {
+  const what = kind === 'fridge'
+    ? 'una foto de una nevera, alacena o mesa con alimentos. Lista los alimentos que se VEN, con una cantidad aproximada (unidades si se pueden contar).'
+    : 'una foto de un recibo de compra de un supermercado o tienda de Colombia. Lista solo los ALIMENTOS comprados con su cantidad. Ignora bolsas, aseo, impuestos y descuentos. Lee el TOTAL pagado en pesos si se ve con claridad.';
+  return [
+    `Recibes ${what}`,
+    `Máximo ${MAX_ITEMS} alimentos. Para cada uno: nombre, cantidad, unidad (${UNITS.join(', ')}), días aproximados hasta que se dañe y si no estás segura de qué es (uncertain).`,
+    'Si el alimento es uno de esta lista, usa su referencia EXACTA I…:',
+    catalog.map((c, i) => `I${i + 1} ${c.name}`).join('\n'),
+    'Si no está en la lista, ref = null y escribe su nombre bien escrito.',
+    'Nunca devuelvas nombres de personas, del almacén, NIT, direcciones ni datos de pago: solo alimentos, cantidades y el total.',
+    'Si no hay alimentos, problem = "no_food". Si la foto está muy oscura, borrosa o cortada para leerla, problem = "unclear". No inventes lo que no ves.',
+  ].join('\n');
+}
+
+/** Valida lo que vio la IA. Lo inválido se descarta; null si la forma no sirve. */
+export function validatePhoto(raw: unknown, catalog: CatalogIngredient[], kind: PhotoKind): PhotoResult | null {
+  const parsed = photoAnswerSchema.safeParse(raw);
+  if (!parsed.success) return null;
+  const items: ParsedItem[] = [];
+  for (const candidate of parsed.data.items) {
+    const item = photoItemSchema.safeParse(candidate);
+    if (!item.success) continue;
+    const { ref, name, quantity, unit, expires_in_days, uncertain } = item.data;
+    const ingredient = ref ? catalog[Number(ref.replace(/^I/i, '')) - 1] ?? null : null;
+    if (ref && !ingredient) continue; // referencia inventada
+    items.push(toItem(ingredient, ingredient ? ingredient.name : capitalize(name), quantity, unit, expires_in_days ?? null, uncertain));
+    if (items.length === MAX_ITEMS) break;
+  }
+  const total = kind === 'receipt' && parsed.data.total && parsed.data.total >= 100 && parsed.data.total <= 10_000_000
+    ? Math.round(parsed.data.total)
+    : null;
+  const problem = items.length === 0 ? (parsed.data.problem ?? 'no_food') : null;
+  return { items: merge(items), total, problem };
+}
+

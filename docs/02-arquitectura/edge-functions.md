@@ -43,7 +43,9 @@ Reconfirma contraseña o token reciente → registra evento mínimo de auditorí
 **Salida:** `{ ok: true, data: { key, name, is_food, food_group_id, food_group, store_category_id, store_category, meal_slot, kcal_per_serving, protein_g_per_serving, source: 'cache' | 'catalog' | 'ai' | 'rules' } }`. Nunca falla por la IA: sin IA responde con reglas.
 **Sin datos de salud.** No se usa para filtrar alergias. Lógica pura probada con `npm run test:functions` (app/); el adaptador de Gemini es compartido (`_shared/gemini.ts`).
 
-## 8. `understand-pantry`  (POST, JWT) — ADR-030
+## 8. `understand-pantry`  (POST, JWT) — ADR-030, ADR-032
+> **Foto (ADR-032):** también acepta `{ image: { data (base64, ≤ ~3 MB), mime_type: jpeg|png|webp }, kind: 'fridge' | 'receipt' }`. Salida: `{ items (con uncertain), total (solo recibo), problem: 'no_food' | 'unclear' | null, source: 'ai' }`. Sin IA o sin cuota: `ai_unavailable` (503) / `quota_exceeded`. La imagen no se guarda ni se registra.
+>
 **Entrada:** `{ text: string }` (2 a 300 caracteres): lo que la persona compró o tiene, escrito de corrido.
 **Orden:** Gemini (catálogo como lista cerrada `I…`, salida estructurada, validada en `logic.ts`; cuota 40/día, `ai_generations.kind = 'pantry'`) → reglas (`rulesParse`).
 **Salida:** `{ ok: true, data: { source: 'ai' | 'rules', items: [{ ingredient_id | null, name, quantity, unit, units, expires_in_days }] } }`. `units` = unidades válidas para guardarlo (catálogo: contables del ingrediente + masa; propio: las de un alimento propio). **No guarda nada:** la app muestra la lista para revisar y guarda lo marcado con `add_to_pantry` o como alimento propio.

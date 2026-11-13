@@ -42,8 +42,8 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "NutriPlan usa tus fotos solo si eliges adjuntar una captura a un reporte.",
-          "cameraPermission": false,
+          "photosPermission": "NutriPlan usa una foto solo cuando la eliges: para agregar alimentos desde una foto de tu nevera o de un recibo, o para adjuntarla a un reporte.",
+          "cameraPermission": "NutriPlan usa la cámara solo cuando tomas una foto de tu nevera o de un recibo para agregar alimentos. La foto no se guarda.",
           "microphonePermission": false
         }
       ],

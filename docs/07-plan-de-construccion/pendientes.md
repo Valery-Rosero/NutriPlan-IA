@@ -61,7 +61,7 @@ Se construye **una a la vez**: plan → aprobación → construir con pruebas �
 | # | Qué | Estado |
 |---|---|---|
 | 1 | Cambios a toda la semana con el asistente (US-174, ADR-031) | ✅ Hecho (14-nov); probar en el APK con Gemini en staging |
-| 2 | Foto de la nevera o del recibo (US-163, US-164). Decidido: el total del recibo va al gasto del mes **preguntando antes** | Pendiente: empieza después de revisar la 1 en el APK |
+| 2 | Foto de la nevera o del recibo (US-163, US-164, ADR-032). Decidido: el total del recibo va al gasto del mes **preguntando antes** | ✅ Hecho (14-nov); APK nuevo (permiso de cámara); medir precisión con 20 fotos de nevera y 20 recibos; política v2 a aceptar |
 | 3 | Notas de voz. Decidido: primero solo la pista del micrófono del teclado; botón propio solo si no basta | Pendiente |
 | — | Machine learning (predicción y agrupamiento) | **Descartado** por la dueña del producto (14-nov) |
 

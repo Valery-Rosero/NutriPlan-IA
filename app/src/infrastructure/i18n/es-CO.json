@@ -383,6 +383,28 @@
       "helps": "Te acerca a: {{list}}",
       "add": "Agregar a mi lista",
       "added": "Listo, en tu lista de mercado."
+    },
+    "photo": {
+      "title": "Con una foto",
+      "hint": "La IA reconoce lo que hay. Tú revisas antes de guardar.",
+      "fridge": "De la nevera",
+      "receipt": "Del recibo",
+      "gallery": "Elegir de la galería",
+      "notStored": "La foto no se guarda: se usa una vez para reconocer los alimentos.",
+      "denied": "Sin permiso de cámara no puedo tomar la foto. Puedes elegir una de tu galería o activarlo en los ajustes del teléfono.",
+      "working": "Mirando la foto…",
+      "reviewTitle": "Revisa lo que vi",
+      "uncertain": "no estoy segura",
+      "problems": {
+        "no_food": "No vi alimentos en la foto. Prueba otra vez con la nevera abierta o el recibo completo.",
+        "unclear": "La foto está muy oscura o borrosa para leerla. Prueba otra vez con más luz."
+      },
+      "retry": "Tomar otra foto",
+      "spendQuestion": "El recibo dice que pagaste {{amount}}. ¿Lo sumo a tu gasto del mes?",
+      "spendYes": "Sí, sumarlo",
+      "spendNo": "No, gracias",
+      "spendDone": "Listo, quedó en tu gasto del mes.",
+      "take": "Tomar foto"
     }
   },
   "profile": {
@@ -552,7 +574,8 @@
     "message_not_found": "No encontramos ese mensaje.",
     "invalid_input": "Escribe un mensaje de hasta 1000 caracteres.",
     "invalid_amount": "Escribe cuánto pagaste, en pesos.",
-    "invalid_push_token": "No pudimos registrar este teléfono. Inténtalo de nuevo."
+    "invalid_push_token": "No pudimos registrar este teléfono. Inténtalo de nuevo.",
+    "ai_unavailable": "No pude analizar la foto en este momento. Escríbelo o búscalo en el catálogo."
   },
   "onboarding": {
     "progress": "Paso {{step}} de {{total}}",

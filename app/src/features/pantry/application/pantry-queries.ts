@@ -12,7 +12,9 @@ import {
   type NewCustomPantryItem,
   type NewPantryItem,
   type PantryItem,
+  type PantryPhoto,
   type ParsedPantryItem,
+  type PhotoKind,
 } from '@/features/pantry/domain/pantry';
 import type { QuickItem } from '@/features/pantry/domain/quick-add';
 
@@ -29,6 +31,12 @@ export const pantryKeys = {
 export function useBuyNext(enabled = true) {
   const { pantry } = useServices();
   return useQuery({ queryKey: pantryKeys.buyNext(), queryFn: () => pantry.buyNext(3), enabled });
+}
+
+/** ADR-032: lo que la IA ve en una foto de la nevera o del recibo → lista para revisar (no guarda nada). */
+export function useUnderstandPhoto() {
+  const { pantry } = useServices();
+  return useMutation({ mutationFn: ({ photo, kind }: { photo: PantryPhoto; kind: PhotoKind }) => pantry.understandPhoto(photo, kind) });
 }
 
 /** ADR-030: "Escríbelo como lo dirías" → lista para revisar (no guarda nada). */

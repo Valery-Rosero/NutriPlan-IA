@@ -3182,10 +3182,10 @@
   "deps": [
    119
   ],
-  "backend": "Edge Function con proveedor de visión + Storage; BRECHA: mapeo producto → ingrediente.",
+  "backend": "Edge Function `understand-pantry` con foto (Gemini, lista cerrada del catálogo); la foto no se guarda (ADR-032).",
   "screens": "Despensa (foto)",
   "notes": "Las fotos son datos personales: Storage por usuario, borrado tras procesar.",
-  "tests": "",
+  "tests": "functions/understand-pantry/logic.test.ts; app/src/features/pantry/ui/__tests__/pantry-photo.test.tsx; take-photo.test.ts",
   "subtasks": []
  },
  {
@@ -3225,10 +3225,10 @@
    119,
    141
   ],
-  "backend": "Edge Function de OCR; resultado a `purchases` y `purchase_items`; BRECHA: presentaciones de empaque (bolsa de 500 g).",
+  "backend": "Edge Function `understand-pantry` con foto del recibo: alimentos, cantidades y total; el total va a `record_purchase` solo si la persona acepta (ADR-032).",
   "screens": "Compras (escanear recibo)",
   "notes": "",
-  "tests": "",
+  "tests": "functions/understand-pantry/logic.test.ts; app/src/features/pantry/ui/__tests__/pantry-photo.test.tsx",
   "subtasks": []
  },
  {

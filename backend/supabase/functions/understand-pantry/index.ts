@@ -2,15 +2,33 @@
 // para la cocina, relacionadas con el catálogo, con cantidad, unidad y vencimiento sugeridos. Solo PROPONE: la
 // persona revisa la lista y la app guarda con add_to_pantry (que valida) o como alimento propio.
 // Orden: Gemini (lista cerrada del catálogo, validado) → reglas. Nunca falla por la IA.
-// Sin datos de salud: solo recibe el texto y los nombres del catálogo.
+// ADR-032: también recibe una FOTO (nevera o recibo). La foto se procesa en memoria y NO se guarda en ningún
+// lado ni se registra; sin IA no hay reglas para una foto, así que responde ai_unavailable.
+// Sin datos de salud: solo recibe el texto o la foto y los nombres del catálogo.
 import { createClient } from 'npm:@supabase/supabase-js@2';
 
 import { askGeminiJson } from '../_shared/gemini.ts';
 import { reportEdgeError } from '../_shared/report-error.ts';
-import { MASS, MAX_TEXT, RESPONSE_SCHEMA, rulesParse, systemPrompt, validateItems, type CatalogIngredient } from './logic.ts';
+import {
+  IMAGE_MIME,
+  MASS,
+  MAX_IMAGE_BASE64,
+  MAX_TEXT,
+  PHOTO_KINDS,
+  PHOTO_SCHEMA,
+  photoPrompt,
+  RESPONSE_SCHEMA,
+  rulesParse,
+  systemPrompt,
+  validateItems,
+  validatePhoto,
+  type CatalogIngredient,
+  type PhotoKind,
+} from './logic.ts';
 
 const DAILY_AI_QUOTA = 40;
 const AI_TIMEOUT_MS = 8000;
+const PHOTO_TIMEOUT_MS = 20000; // una foto tarda más en analizarse que un texto
 
 const json = (status: number, body: unknown) =>
   new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
@@ -23,7 +41,16 @@ Deno.serve(async (req) => {
 
   const body = await req.json().catch(() => null);
   const text = typeof body?.text === 'string' ? body.text.trim() : '';
-  if (text.length < 2 || text.length > MAX_TEXT) return fail(400, 'invalid_input');
+  // Foto: { image: { data (base64), mime_type }, kind: 'fridge' | 'receipt' }
+  const image = body?.image && typeof body.image.data === 'string' ? body.image : null;
+  const kind: PhotoKind | null = (PHOTO_KINDS as readonly string[]).includes(body?.kind) ? body.kind : null;
+  if (image) {
+    if (!kind || !(IMAGE_MIME as readonly string[]).includes(image.mime_type) || image.data.length < 100 || image.data.length > MAX_IMAGE_BASE64) {
+      return fail(400, 'invalid_input');
+    }
+  } else if (text.length < 2 || text.length > MAX_TEXT) {
+    return fail(400, 'invalid_input');
+  }
 
   const url = Deno.env.get('SUPABASE_URL')!;
   const user = createClient(url, Deno.env.get('SUPABASE_ANON_KEY')!, {
@@ -62,6 +89,32 @@ Deno.serve(async (req) => {
     const { count } = await admin
       .from('ai_generations').select('id', { count: 'exact', head: true })
       .eq('user_id', who.user.id).eq('kind', 'pantry').gte('created_at', since);
+    // ADR-032: foto. Sin IA (o sin cuota) no hay cómo leerla: la app ofrece escribirlo o buscarlo.
+    if (image && kind) {
+      if ((count ?? 0) >= DAILY_AI_QUOTA) return fail(429, 'quota_exceeded');
+      const started = Date.now();
+      try {
+        const answer = await askGeminiJson({
+          system: photoPrompt(catalog, kind),
+          turns: [{ role: 'user', text: kind === 'fridge' ? 'Esta es mi nevera.' : 'Este es mi recibo.', images: [{ mimeType: image.mime_type, data: image.data }] }],
+          schema: PHOTO_SCHEMA,
+          temperature: 0.1,
+          maxOutputTokens: 1200,
+          timeoutMs: PHOTO_TIMEOUT_MS,
+          caller: 'understand-pantry',
+        });
+        await admin.from('ai_generations').insert({
+          user_id: who.user.id, kind: 'pantry', model: answer.model,
+          input_tokens: answer.inputTokens, output_tokens: answer.outputTokens, latency_ms: Date.now() - started,
+        });
+        const result = validatePhoto(answer.raw, catalog, kind);
+        if (result) return json(200, { ok: true, data: { ...result, source: 'ai' } });
+      } catch (e) {
+        console.warn('understand-pantry: foto sin ia', (e as Error).message); // nunca la imagen ni su contenido
+      }
+      return fail(503, 'ai_unavailable');
+    }
+
     if ((count ?? 0) < DAILY_AI_QUOTA) {
       const started = Date.now();
       try {

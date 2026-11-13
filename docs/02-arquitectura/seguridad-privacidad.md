@@ -28,7 +28,7 @@
 | Proveedor | Para qué | Qué recibe |
 |---|---|---|
 | Supabase (São Paulo, Brasil) | Base de datos, Auth, Storage, Edge Functions | Todos los datos de la cuenta |
-| Google: Gemini API | Asistente, recetas del asistente (ADR-029), clasificación de alimentos (ADR-027) y entender lo escrito en la cocina (ADR-030) | Mensaje de la persona, recetas candidatas y lo que falta de su despensa; nombres de los ingredientes que puede usar y cuáles hay en su cocina; el texto de un alimento escrito a mano ("queso campesino"). Sin identidad ni datos de salud |
+| Google: Gemini API | Asistente, recetas del asistente (ADR-029), clasificación de alimentos (ADR-027) y entender lo escrito o fotografiado en la cocina (ADR-030, ADR-032) | Mensaje de la persona, recetas candidatas y lo que falta de su despensa; nombres de los ingredientes que puede usar y cuáles hay en su cocina; el texto de un alimento escrito a mano ("queso campesino"); la foto que la persona decide tomar de su nevera o de un recibo (reducida, no se guarda ni se registra). Sin identidad ni datos de salud |
 | Google: Gmail (SMTP) | Correos de verificación y recuperación | Correo electrónico |
 | Google: Firebase Cloud Messaging | Entrega de avisos en Android | Token del dispositivo y texto del aviso |
 | Expo (EAS, Expo Push) | Compilación y envío de avisos | Token del dispositivo y texto del aviso |

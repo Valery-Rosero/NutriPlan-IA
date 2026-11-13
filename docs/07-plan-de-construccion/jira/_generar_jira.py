@@ -56,11 +56,11 @@ for sprint, ids in {
     "Sprint 9": [112, 131, 136, 140, 141, 152, 159],
     "Sprint 10": [122, 148, 149, 150, 153],
     "Sprint 11": [101, 121, 158],
-    "Sprint 12": [174],
+    "Sprint 12": [163, 164, 174],
 }.items():
     for i in ids:
         SPRINT_DE[i] = sprint
-ESTADO = {101: "To Do", 121: "In Progress", 158: "In Progress", 174: "In Progress"}  # el resto con sprint: Done; sin sprint: To Do
+ESTADO = {101: "To Do", 121: "In Progress", 158: "In Progress", 163: "In Progress", 164: "In Progress", 174: "In Progress"}  # el resto con sprint: Done; sin sprint: To Do
 
 PUNTOS = {101: 5, 102: 8, 103: 5, 104: 8, 105: 3, 106: 3, 107: 5, 108: 2, 109: 2, 110: 13, 111: 8, 112: 5, 113: 5,
           114: 2, 115: 3, 116: 3, 117: 13, 118: 5, 119: 5, 120: 5, 121: 5, 122: 8, 123: 5, 124: 8, 125: 3, 126: 5,

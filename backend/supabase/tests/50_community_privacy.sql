@@ -119,11 +119,13 @@ declare
   v_old smallint := private.latest_legal_document('privacy_policy');
   v_new smallint;
 begin
-  insert into public.legal_documents (kind, version) values ('privacy_policy', 2) returning id into v_new;
+  -- La versión siguiente a la vigente (las migraciones ya publican versiones nuevas: no se fija el número).
+  insert into public.legal_documents (kind, version)
+  select 'privacy_policy', max(version) + 1 from public.legal_documents where kind = 'privacy_policy' returning id into v_new;
   perform tt.login(b);
   perform tt.ok(exists (select 1 from public.my_pending_consents where document_id = v_new), 'una nueva versión de la política aparece como consentimiento pendiente');
   perform tt.reset();
   perform tt.throws($q$ insert into auth.users (id, email, raw_user_meta_data)
                         values (gen_random_uuid(), 'late@test.dev', jsonb_build_object('privacy_policy_document_id', $q$ || v_old || $q$, 'terms_document_id', $q$ || private.latest_legal_document('terms') || $q$, 'is_adult', true)) $q$,
-                    'consent_required', 'tras publicar la v2, aceptar la v1 ya no basta para registrarse');
+                    'consent_required', 'tras publicar una versión nueva, aceptar la anterior ya no basta para registrarse');
 end $$;

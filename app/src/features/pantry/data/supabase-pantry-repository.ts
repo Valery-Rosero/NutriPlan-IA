@@ -10,10 +10,32 @@ import type {
   NewPantryItem,
   PantryItem,
   PantryRepository,
+  PantryPhoto,
+  PhotoKind,
   UnderstoodPantry,
+  UnderstoodPhoto,
   Unit,
 } from '@/features/pantry/domain/pantry';
 import type { Database } from '@/types/database';
+
+type RemoteItem = {
+  ingredient_id: string | null;
+  name: string;
+  quantity: number;
+  unit: string;
+  units: string[];
+  expires_in_days: number | null;
+  uncertain?: boolean;
+};
+const toParsed = (i: RemoteItem) => ({
+  ingredientId: i.ingredient_id,
+  name: i.name,
+  quantity: i.quantity,
+  unit: i.unit,
+  units: i.units,
+  expiresInDays: i.expires_in_days,
+  uncertain: !!i.uncertain,
+});
 
 export class SupabasePantryRepository implements PantryRepository {
   private readonly client: SupabaseClient<Database>;
@@ -80,15 +102,25 @@ export class SupabasePantryRepository implements PantryRepository {
     if (!data?.ok || !data.data) throw new AppError('unknown');
     return {
       source: data.data.source,
-      items: data.data.items.map((i) => ({
-        ingredientId: i.ingredient_id,
-        name: i.name,
-        quantity: i.quantity,
-        unit: i.unit,
-        units: i.units,
-        expiresInDays: i.expires_in_days,
-      })),
+      items: data.data.items.map(toParsed),
     };
+  }
+
+  async understandPhoto(photo: PantryPhoto, kind: PhotoKind): Promise<UnderstoodPhoto> {
+    type Payload = {
+      ok: boolean;
+      data?: { items: RemoteItem[]; total: number | null; problem: 'no_food' | 'unclear' | null };
+      error?: { code: string };
+    };
+    const { data, error } = await this.client.functions.invoke<Payload>('understand-pantry', {
+      body: { image: { data: photo.base64, mime_type: photo.mimeType }, kind },
+    });
+    if (error) {
+      const body = error instanceof FunctionsHttpError ? await error.context.json().catch(() => null) : null;
+      throw toAppError(body?.error?.code ?? error);
+    }
+    if (!data?.ok || !data.data) throw new AppError('unknown');
+    return { items: data.data.items.map(toParsed), total: data.data.total, problem: data.data.problem };
   }
 
   async buyNext(limit: number): Promise<BuyNext[]> {

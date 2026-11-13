@@ -1,7 +1,9 @@
 // Adaptador de Gemini compartido por las Edge Functions (ADR-025). Cambiar de proveedor solo toca este archivo.
 // Salida estructurada: el modelo devuelve JSON con el esquema que se le pasa, no texto libre.
 
-export type LlmTurn = { role: 'user' | 'assistant'; text: string };
+/** Imagen que acompaña un turno (foto de la nevera o de un recibo, ADR-032). Base64 sin prefijo `data:`. */
+export type LlmImage = { mimeType: string; data: string };
+export type LlmTurn = { role: 'user' | 'assistant'; text: string; images?: LlmImage[] };
 export type LlmAnswer = { raw: unknown; inputTokens: number | null; outputTokens: number | null; model: string };
 
 /**
@@ -64,7 +66,10 @@ async function call(key: string, model: string, req: GeminiRequest, timeoutMs: n
       signal: controller.signal,
       body: JSON.stringify({
         systemInstruction: { parts: [{ text: req.system }] },
-        contents: req.turns.map((t) => ({ role: t.role === 'assistant' ? 'model' : 'user', parts: [{ text: t.text }] })),
+        contents: req.turns.map((t) => ({
+          role: t.role === 'assistant' ? 'model' : 'user',
+          parts: [...(t.images ?? []).map((i) => ({ inlineData: { mimeType: i.mimeType, data: i.data } })), { text: t.text }],
+        })),
         generationConfig: {
           temperature: req.temperature,
           maxOutputTokens: req.maxOutputTokens,

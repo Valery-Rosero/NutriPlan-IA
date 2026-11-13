@@ -782,7 +782,7 @@ Convierte el plan de comidas en una lista de compras accionable, controla el gas
 | Etiquetas | foto-y-ocr |
 | Ref. backlog | HU-63 · Subárea: Foto y OCR |
 | Dependencias | US-119 |
-| Estado | Pendiente |
+| Estado | En curso (14-nov-2026) · por medir en el APK |
 
 **Historia de usuario**
 
@@ -801,7 +801,7 @@ Convierte el plan de comidas en una lista de compras accionable, controla el gas
 
 - **Backend (qué existe y cómo usarlo):** Edge Function con proveedor de visión + Storage; BRECHA: mapeo producto → ingrediente.
 - **Pantallas / UI:** Despensa (foto)
-- **Reglas, límites y notas:** Las fotos son datos personales: Storage por usuario, borrado tras procesar.
+- **Reglas, límites y notas:** Las fotos son datos personales: Storage por usuario, borrado tras procesar. Construida (ADR-032): foto de la nevera en "Agregar a mi cocina"; la persona revisa y lo dudoso llega desmarcado. **Falta medir la precisión** con 20 fotos reales (criterio de este escenario).
 - **Pruebas existentes:** ninguna aún; escribir las del DoD
 
 **Subtareas**
@@ -830,7 +830,7 @@ Convierte el plan de comidas en una lista de compras accionable, controla el gas
 | Etiquetas | foto-y-ocr |
 | Ref. backlog | HU-64 · Subárea: Foto y OCR |
 | Dependencias | US-119, US-141 |
-| Estado | Pendiente |
+| Estado | En curso (14-nov-2026) · por medir en el APK |
 
 **Historia de usuario**
 
@@ -849,7 +849,7 @@ Convierte el plan de comidas en una lista de compras accionable, controla el gas
 
 - **Backend (qué existe y cómo usarlo):** Edge Function de OCR; resultado a `purchases` y `purchase_items`; BRECHA: presentaciones de empaque (bolsa de 500 g).
 - **Pantallas / UI:** Compras (escanear recibo)
-- **Reglas, límites y notas:** 
+- **Reglas, límites y notas:**  Construida (ADR-032): se toman alimentos, cantidades y el **total** (que se suma al gasto del mes solo si la persona acepta); **no** el precio por línea ni `purchase_items`. **Falta medir la precisión** con 20 recibos reales.
 - **Pruebas existentes:** ninguna aún; escribir las del DoD
 
 **Subtareas**

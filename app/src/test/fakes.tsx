@@ -82,6 +82,14 @@ export function fakePantry(overrides: Partial<PantryRepository> = {}): jest.Mock
         { ingredientId: null, name: 'Queso crema', quantity: 1, unit: 'unit', units: ['g', 'kg', 'lb', 'unit', 'ml', 'l'], expiresInDays: 10 },
       ],
     })),
+    understandPhoto: jest.fn(async (_photo: unknown, kind: string) => ({
+      items: [
+        { ingredientId: 'huevo', name: 'Huevo', quantity: 10, unit: 'unit', units: ['unit', 'g', 'lb', 'kg'], expiresInDays: 21, uncertain: false },
+        { ingredientId: null, name: 'Salsa rosada', quantity: 1, unit: 'unit', units: ['g', 'kg', 'lb', 'unit', 'ml', 'l'], expiresInDays: null, uncertain: true },
+      ],
+      total: kind === 'receipt' ? 45000 : null,
+      problem: null,
+    })),
     buyNext: jest.fn(async () => [
       { ingredientId: 'cebolla', name: 'Cebolla cabezona', completes: 2, helps: 3, recipes: ['Sudado de lo que haya', 'Arroz salteado con lo que tengas'] },
     ]),

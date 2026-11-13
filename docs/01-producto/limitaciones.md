@@ -27,6 +27,7 @@ Léelo antes de implementar. "BRECHA" = la historia lo pide pero **el esquema/fu
 - **Datos nutricionales:** USDA FoodData Central (CC0) y TCAC del ICBF (pendiente permiso). Los valores son referenciales.
 - **Búsqueda:** `search_ingredients` es por texto/trigrama; sin búsqueda semántica.
 - **Alimentos propios (B3b):** lo que no está en el catálogo se guarda en la despensa, pero no entra en recetas, plan, lista de compras ni avisos de vencimiento. Su grupo y sección los sugiere la IA (ADR-027) y son solo informativos.
+- **Foto de la nevera o del recibo (ADR-032):** necesita la IA (sin ella se escribe o se busca). Del recibo se toman alimentos, cantidades y el total; no el precio por línea. La precisión aún no se ha medido con fotos reales.
 - **Idiomas/regiones:** solo es-CO, COP, una región piloto.
 - **Plataformas:** solo Android (APK con EAS; Google Play después). Sin iOS, web ni tablet optimizada en el piloto.
 - **Avisos push:** no funcionan en Expo Go; hay que probarlos en el APK instalado.

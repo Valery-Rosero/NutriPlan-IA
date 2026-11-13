@@ -31,9 +31,22 @@ export type ParsedPantryItem = {
   unit: string;
   units: string[];
   expiresInDays: number | null;
+  /** ADR-032 (foto): la IA no está segura de qué es; llega desmarcado y con aviso (F-3). */
+  uncertain?: boolean;
 };
 
 export type UnderstoodPantry = { items: ParsedPantryItem[]; source: 'ai' | 'rules' };
+
+/** ADR-032: foto de la nevera o de un recibo. */
+export type PhotoKind = 'fridge' | 'receipt';
+export type PantryPhoto = { base64: string; mimeType: string };
+export type UnderstoodPhoto = {
+  items: ParsedPantryItem[];
+  /** Recibo: total pagado si se leyó con claridad (se pregunta antes de sumarlo al gasto del mes). */
+  total: number | null;
+  /** F-6: la foto no sirve. */
+  problem: 'no_food' | 'unclear' | null;
+};
 
 /** ADR-030: qué comprar para completar recetas (lo calcula la base con lo que le falta a cada una). */
 export type BuyNext = { ingredientId: string; name: string; completes: number; helps: number; recipes: string[] };
@@ -69,6 +82,8 @@ export interface PantryRepository {
   foodGroups(): Promise<FoodGroup[]>;
   /** "Escríbelo como lo dirías": la Edge Function understand-pantry (IA con respaldo de reglas). */
   understand(text: string): Promise<UnderstoodPantry>;
+  /** ADR-032: lo que la IA ve en una foto (no se guarda). Sin IA falla con ai_unavailable. */
+  understandPhoto(photo: PantryPhoto, kind: PhotoKind): Promise<UnderstoodPhoto>;
   /** Qué comprar para terminar recetas que casi se pueden hacer (RPC what_to_buy_next). */
   buyNext(limit: number): Promise<BuyNext[]>;
   /** Quita un lote del catálogo o un alimento propio (cada uno vive en su tabla). */
