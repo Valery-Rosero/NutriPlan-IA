@@ -3,6 +3,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import { toAppError } from '@/core/errors/app-error';
 import type {
   CustomUnit,
+  FoodGroup,
   IngredientOption,
   NewCustomPantryItem,
   NewPantryItem,
@@ -22,8 +23,8 @@ export class SupabasePantryRepository implements PantryRepository {
   /** Lo del catálogo y los alimentos propios (B3b), juntos. */
   async list(): Promise<PantryItem[]> {
     const [catalog, custom] = await Promise.all([
-      this.client.from('pantry_items').select('id, ingredient_id, quantity_g, expires_on, ingredients!inner(name)').gt('quantity_g', 0),
-      this.client.from('pantry_custom_items').select('id, name, quantity, unit, expires_on'),
+      this.client.from('pantry_items').select('id, ingredient_id, quantity_g, expires_on, ingredients!inner(name, food_group_id)').gt('quantity_g', 0),
+      this.client.from('pantry_custom_items').select('id, name, quantity, unit, expires_on, food_group_id'),
     ]);
     if (catalog.error) throw toAppError(catalog.error);
     if (custom.error) throw toAppError(custom.error);
@@ -35,6 +36,7 @@ export class SupabasePantryRepository implements PantryRepository {
         grams: row.quantity_g,
         expiresOn: row.expires_on,
         custom: null,
+        foodGroupId: row.ingredients.food_group_id,
       })),
       ...custom.data.map((row) => ({
         id: row.id,
@@ -43,8 +45,20 @@ export class SupabasePantryRepository implements PantryRepository {
         grams: 0,
         expiresOn: row.expires_on,
         custom: { quantity: Number(row.quantity), unit: row.unit as CustomUnit },
+        foodGroupId: row.food_group_id,
       })),
     ];
+  }
+
+  async setCustomGroup(id: string, foodGroupId: number) {
+    const { error } = await this.client.from('pantry_custom_items').update({ food_group_id: foodGroupId }).eq('id', id);
+    if (error) throw toAppError(error);
+  }
+
+  async foodGroups(): Promise<FoodGroup[]> {
+    const { data, error } = await this.client.from('food_groups').select('id, code, name').order('id');
+    if (error) throw toAppError(error);
+    return data;
   }
 
   async add({ ingredientId, quantity, unitId, expiresOn }: NewPantryItem) {

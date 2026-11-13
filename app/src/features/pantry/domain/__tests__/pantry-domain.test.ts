@@ -1,4 +1,4 @@
-import { addDays, expiryStatus, groupByUrgency, sortPantry, unitsFor, type PantryItem, type Unit } from '@/features/pantry/domain/pantry';
+import { addDays, expiryStatus, groupPantry, sortPantry, unitsFor, type FoodGroup, type PantryItem, type Unit } from '@/features/pantry/domain/pantry';
 
 const units: Unit[] = [
   { id: 1, code: 'g', name: 'gramo', dimension: 'mass' },
@@ -37,19 +37,44 @@ describe('unidades ofrecidas', () => {
   });
 });
 
-describe('cocina agrupada por urgencia', () => {
-  const item = (name: string, expiresOn: string | null): PantryItem => ({ id: name, ingredientId: name, name, grams: 100, expiresOn, custom: null });
+describe('cocina agrupada: primero lo urgente, luego por grupo de alimento', () => {
+  const GROUPS: FoodGroup[] = [
+    { id: 5, code: 'dairy', name: 'Lácteos' },
+    { id: 9, code: 'grains', name: 'Cereales y derivados' },
+    { id: 10, code: 'vegetables', name: 'Verduras' },
+    { id: 15, code: 'tubers', name: 'Tubérculos' },
+    { id: 2, code: 'poultry', name: 'Aves' },
+  ];
+  const item = (name: string, expiresOn: string | null, foodGroupId: number | null = null): PantryItem =>
+    ({ id: name, ingredientId: name, name, grams: 100, expiresOn, custom: null, foodGroupId });
 
-  it('separa lo vencido, lo que vence pronto y el resto, sin grupos vacíos', () => {
-    const groups = groupByUrgency(
-      [item('Leche', '2026-10-10'), item('Espinaca', '2026-10-14'), item('Arroz', null), item('Papa', '2026-10-30')],
+  it('separa lo vencido y lo que vence pronto; el resto va por grupo en orden de cocina', () => {
+    const sections = groupPantry(
+      [
+        item('Leche', '2026-10-10', 5),
+        item('Espinaca', '2026-10-14', 10),
+        item('Arroz', null, 9),
+        item('Papa', '2026-10-30', 15),
+        item('Pollo', null, 2),
+        item('Queso', null, 5),
+      ],
       '2026-10-13',
+      GROUPS,
     );
-    expect(groups.map((g) => [g.key, g.data.map((i) => i.name)])).toEqual([
+    expect(sections.map((s) => [s.key, s.data.map((i) => i.name)])).toEqual([
       ['expired', ['Leche']],
       ['soon', ['Espinaca']],
-      ['rest', ['Arroz', 'Papa']],
+      ['group-poultry', ['Pollo']],
+      ['group-dairy', ['Queso']],
+      ['group-grains', ['Arroz']],
+      ['group-tubers', ['Papa']],
     ]);
-    expect(groupByUrgency([item('Arroz', null)], '2026-10-13').map((g) => g.key)).toEqual(['rest']);
+    expect(sections[2].group?.name).toBe('Aves');
+  });
+
+  it('sin grupo (o con uno que no existe) va a "Otros", al final', () => {
+    const sections = groupPantry([item('Bolsas', null), item('Raro', null, 99), item('Arroz', null, 9)], '2026-10-13', GROUPS);
+    expect(sections.map((s) => s.key)).toEqual(['group-grains', 'group-other']);
+    expect(sections[1].data.map((i) => i.name)).toEqual(['Bolsas', 'Raro']);
   });
 });

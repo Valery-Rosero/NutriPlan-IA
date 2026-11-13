@@ -297,7 +297,7 @@
     "groups": {
       "expired": "Vencido: revísalo",
       "soon": "Úsalo primero",
-      "rest": "En tu cocina"
+      "other": "Otros"
     },
     "selectHint": "Elegir este ingrediente para agregarlo",
     "custom": {
@@ -316,6 +316,12 @@
         "l": "litros",
         "unit": "unidades"
       }
+    },
+    "ai": {
+      "group": "Grupo sugerido: {{group}}",
+      "noGroup": "Sin grupo: elígelo tú",
+      "change": "Cambiar",
+      "changeHint": "Elige el grupo de {{name}}"
     }
   },
   "profile": {

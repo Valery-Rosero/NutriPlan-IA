@@ -11,7 +11,14 @@ export type PantryItem = {
   grams: number;
   expiresOn: string | null;
   custom: { quantity: number; unit: CustomUnit } | null;
+  /**
+   * Grupo de alimento (food_groups). Del catálogo viene del ingrediente; en un alimento propio lo sugirió la
+   * clasificación con IA (ADR-027) y la persona lo puede cambiar. Ausente o null = "Otros".
+   */
+  foodGroupId?: number | null;
 };
+
+export type FoodGroup = { id: number; code: string; name: string };
 
 export type Unit = { id: number; code: string; name: string; dimension: 'mass' | 'volume' | 'count' };
 
@@ -38,6 +45,10 @@ export interface PantryRepository {
   add(item: NewPantryItem): Promise<void>;
   /** B3b: alimento fuera del catálogo (tabla aparte; no toca las funciones de recetas). */
   addCustom(item: NewCustomPantryItem): Promise<void>;
+  /** Corrige el grupo de un alimento propio (lo que sugirió la IA es solo una sugerencia). */
+  setCustomGroup(id: string, foodGroupId: number): Promise<void>;
+  /** Grupos de alimento de la base (datos de referencia). */
+  foodGroups(): Promise<FoodGroup[]>;
   /** Quita un lote del catálogo o un alimento propio (cada uno vive en su tabla). */
   remove(item: Pick<PantryItem, 'id' | 'ingredientId'>): Promise<void>;
   search(query: string): Promise<IngredientOption[]>;
@@ -88,15 +99,48 @@ export function sortPantry(items: PantryItem[]): PantryItem[] {
   });
 }
 
-export type PantryGroupKey = 'expired' | 'soon' | 'rest';
-export type PantryGroup = { key: PantryGroupKey; data: PantryItem[] };
+/** Orden en que se muestran los grupos (de lo que más se cocina a lo que menos) y su emoji. */
+export const FOOD_GROUP_ORDER = [
+  'poultry', 'red_meat', 'fish', 'shellfish', 'egg', 'dairy', 'legumes', 'grains', 'tubers',
+  'vegetables', 'fruits', 'nuts_seeds', 'fats_oils', 'herbs_spices', 'honey', 'other',
+] as const;
 
-/** Agrupa la cocina por urgencia (vencido, úsalo primero, el resto) conservando el orden; omite grupos vacíos. */
-export function groupByUrgency(items: PantryItem[], today: string): PantryGroup[] {
-  const groups: Record<PantryGroupKey, PantryItem[]> = { expired: [], soon: [], rest: [] };
+export const FOOD_GROUP_EMOJI: Record<string, string> = {
+  poultry: '🍗', red_meat: '🥩', fish: '🐟', shellfish: '🦐', egg: '🥚', dairy: '🧀', legumes: '🫘', grains: '🌾',
+  tubers: '🥔', vegetables: '🥕', fruits: '🍓', nuts_seeds: '🥜', fats_oils: '🫒', herbs_spices: '🌿', honey: '🍯', other: '🧺',
+};
+
+export type PantrySection =
+  | { key: 'expired' | 'soon'; group: null; data: PantryItem[] }
+  | { key: string; group: FoodGroup | null; data: PantryItem[] };
+
+/**
+ * "Lo que tengo": primero lo vencido y lo que vence pronto (úsalo primero); el resto, por grupo de alimento
+ * (ADR-027). Sin grupo conocido va a "Otros". Conserva el orden de entrada y omite secciones vacías.
+ */
+export function groupPantry(items: PantryItem[], today: string, groups: FoodGroup[]): PantrySection[] {
+  const expired: PantryItem[] = [];
+  const soon: PantryItem[] = [];
+  const byGroup = new Map<string, PantryItem[]>();
+  const codeOf = new Map(groups.map((g) => [g.id, g.code]));
   for (const item of items) {
     const status = expiryStatus(item.expiresOn, today);
-    groups[status === 'expired' ? 'expired' : status === 'soon' ? 'soon' : 'rest'].push(item);
+    if (status === 'expired') expired.push(item);
+    else if (status === 'soon') soon.push(item);
+    else {
+      const code = (item.foodGroupId != null && codeOf.get(item.foodGroupId)) || 'other';
+      byGroup.set(code, [...(byGroup.get(code) ?? []), item]);
+    }
   }
-  return (['expired', 'soon', 'rest'] as const).filter((key) => groups[key].length).map((key) => ({ key, data: groups[key] }));
+  const rank = (code: string) => {
+    const i = (FOOD_GROUP_ORDER as readonly string[]).indexOf(code);
+    return i === -1 ? FOOD_GROUP_ORDER.length : i;
+  };
+  const sections: PantrySection[] = [];
+  if (expired.length) sections.push({ key: 'expired', group: null, data: expired });
+  if (soon.length) sections.push({ key: 'soon', group: null, data: soon });
+  for (const code of [...byGroup.keys()].sort((a, b) => rank(a) - rank(b))) {
+    sections.push({ key: `group-${code}`, group: groups.find((g) => g.code === code) ?? null, data: byGroup.get(code)! });
+  }
+  return sections;
 }

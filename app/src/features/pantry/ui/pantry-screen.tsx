@@ -6,8 +6,18 @@ import { useTranslation } from 'react-i18next';
 import { errorKey } from '@/core/errors/app-error';
 import { foodEmoji } from '@/core/food-emoji';
 import { formatGrams } from '@/core/format';
-import { usePantry, useRemovePantryItem } from '@/features/pantry/application/pantry-queries';
-import { daysBetween, expiryStatus, groupByUrgency, todayIso, type PantryItem } from '@/features/pantry/domain/pantry';
+import { useFoodGroups, usePantry, useRemovePantryItem, useSetCustomGroup } from '@/features/pantry/application/pantry-queries';
+import {
+  daysBetween,
+  expiryStatus,
+  FOOD_GROUP_EMOJI,
+  FOOD_GROUP_ORDER,
+  groupPantry,
+  todayIso,
+  type FoodGroup,
+  type PantryItem,
+  type PantrySection,
+} from '@/features/pantry/domain/pantry';
 import { QuickAdd } from '@/features/pantry/ui/quick-add';
 import { Spacing } from '@/shared/theme/colors';
 import {
@@ -15,6 +25,8 @@ import {
   Banner,
   Button,
   Card,
+  Chip,
+  ChipGroup,
   ConfirmDialog,
   EmptyState,
   ErrorState,
@@ -27,11 +39,15 @@ import {
   type Tone,
 } from '@/shared/ui';
 
-/** US-119 / US-142: lo que hay en casa, agrupado por urgencia (lo que vence primero arriba). */
+/**
+ * US-119 / US-142: lo que hay en casa. Arriba lo urgente (vencido, úsalo primero); el resto, por grupo de
+ * alimento (ADR-027). En los alimentos propios se ve el grupo que sugirió la IA y se puede cambiar.
+ */
 export function PantryScreen({ embedded }: { embedded?: boolean }) {
   const { t } = useTranslation();
   const router = useRouter();
   const pantry = usePantry();
+  const groups = useFoodGroups().data ?? [];
   const remove = useRemovePantryItem();
   const add = () => router.push('/pantry/add');
   const Container = embedded ? EmbeddedContainer : Screen;
@@ -57,7 +73,7 @@ export function PantryScreen({ embedded }: { embedded?: boolean }) {
         </ScrollView>
       ) : (
         <SectionList
-          sections={groupByUrgency(pantry.data, todayIso())}
+          sections={groupPantry(pantry.data, todayIso(), groups)}
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.list}
           stickySectionHeadersEnabled={false}
@@ -68,11 +84,11 @@ export function PantryScreen({ embedded }: { embedded?: boolean }) {
             </View>
           }
           renderSectionHeader={({ section }) => (
-            <AppText variant="heading" style={styles.sectionTitle}>
-              {t(`pantry.groups.${section.key}`, { count: section.data.length })}
+            <AppText variant="heading" accessibilityRole="header" style={styles.sectionTitle}>
+              {sectionTitle(section, t)}
             </AppText>
           )}
-          renderItem={({ item }) => <PantryRow item={item} onRemove={() => confirmRemove(item)} />}
+          renderItem={({ item }) => <PantryRow item={item} groups={groups} onRemove={() => confirmRemove(item)} />}
         />
       )}
       <ConfirmDialog
@@ -116,7 +132,17 @@ function QuickAddCollapsible() {
   );
 }
 
-function PantryRow({ item, onRemove }: { item: PantryItem; onRemove: () => void }) {
+function sectionTitle(section: PantrySection, t: (k: string, o?: Record<string, unknown>) => string) {
+  if (section.key === 'expired' || section.key === 'soon') return t(`pantry.groups.${section.key}`, { count: section.data.length });
+  const code = section.group?.code ?? 'other';
+  return `${FOOD_GROUP_EMOJI[code] ?? FOOD_GROUP_EMOJI.other} ${section.group?.name ?? t('pantry.groups.other')}`;
+}
+
+/** Grupos en el mismo orden que la lista, para elegir al corregir. */
+const sortGroups = (groups: FoodGroup[]) =>
+  [...groups].sort((a, b) => (FOOD_GROUP_ORDER as readonly string[]).indexOf(a.code) - (FOOD_GROUP_ORDER as readonly string[]).indexOf(b.code));
+
+function PantryRow({ item, groups, onRemove }: { item: PantryItem; groups: FoodGroup[]; onRemove: () => void }) {
   const { t } = useTranslation();
   const today = todayIso();
   const status = expiryStatus(item.expiresOn, today);
@@ -153,7 +179,46 @@ function PantryRow({ item, onRemove }: { item: PantryItem; onRemove: () => void 
         </View>
         <IconButton icon="trash-outline" label={t('pantry.removeLabel', { name: item.name })} onPress={onRemove} />
       </View>
+      {item.custom && <SuggestedGroup item={item} groups={groups} />}
     </Card>
+  );
+}
+
+/** Alimento propio: el grupo que sugirió la IA, a la vista y corregible con un toque. */
+function SuggestedGroup({ item, groups }: { item: PantryItem; groups: FoodGroup[] }) {
+  const { t } = useTranslation();
+  const [open, setOpen] = useState(false);
+  const change = useSetCustomGroup();
+  const current = groups.find((g) => g.id === item.foodGroupId);
+  return (
+    <View style={styles.suggested}>
+      <View style={styles.meta}>
+        <Pill
+          label={current ? t('pantry.ai.group', { group: current.name }) : t('pantry.ai.noGroup')}
+          tone="berry"
+          icon="sparkles-outline"
+        />
+        <TextLink
+          label={open ? t('common.cancel') : t('pantry.ai.change')}
+          hint={t('pantry.ai.changeHint', { name: item.name })}
+          onPress={() => setOpen((o) => !o)}
+        />
+      </View>
+      {open && (
+        <ChipGroup>
+          {sortGroups(groups).map((g) => (
+            <Chip
+              key={g.id}
+              label={`${FOOD_GROUP_EMOJI[g.code] ?? ''} ${g.name}`.trim()}
+              selected={g.id === item.foodGroupId}
+              flavor="basil"
+              onPress={() => change.mutate({ id: item.id, foodGroupId: g.id }, { onSuccess: () => setOpen(false) })}
+            />
+          ))}
+        </ChipGroup>
+      )}
+      {change.error && <Banner tone="danger" message={t(errorKey(change.error))} />}
+    </View>
   );
 }
 
@@ -167,4 +232,5 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md },
   info: { flex: 1, gap: Spacing.xxs },
   meta: { flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: Spacing.sm },
+  suggested: { gap: Spacing.sm, marginLeft: 48 + Spacing.md },
 });

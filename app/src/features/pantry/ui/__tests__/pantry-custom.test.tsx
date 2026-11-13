@@ -73,3 +73,39 @@ describe('B3b: alimentos propios en la despensa', () => {
     await waitFor(() => expect(pantry.remove).toHaveBeenCalledWith(QUESO));
   });
 });
+
+describe('Clasificación visible en Mi cocina (ADR-027)', () => {
+  beforeEach(() => jest.clearAllMocks());
+
+  it('lo que no vence pronto se agrupa por grupo de alimento, con su encabezado', async () => {
+    const pantry = fakePantry({
+      list: jest.fn(async () => [
+        { ...ARROZ, name: 'Papa', foodGroupId: 15 },
+        { ...ARROZ, id: 'p2', name: 'Pechuga de pollo', foodGroupId: 2 },
+        { ...QUESO, foodGroupId: null },
+      ]),
+    });
+    await render(<PantryScreen />, { wrapper: withServices(fakeServices({ pantry })) });
+
+    expect(await screen.findByRole('header', { name: '🍗 Aves' })).toBeOnTheScreen();
+    expect(screen.getByRole('header', { name: '🥔 Tubérculos' })).toBeOnTheScreen();
+    expect(screen.getByRole('header', { name: '🧺 Otros' })).toBeOnTheScreen();
+  });
+
+  it('un alimento propio muestra el grupo que sugirió la IA y se puede corregir', async () => {
+    const pantry = fakePantry({ list: jest.fn(async () => [{ ...QUESO, name: 'Queso crema', foodGroupId: 10 }]) });
+    await render(<PantryScreen />, { wrapper: withServices(fakeServices({ pantry })) });
+
+    expect(await screen.findByText('Grupo sugerido: Verduras')).toBeOnTheScreen();
+    await fireEvent.press(screen.getByRole('link', { name: 'Cambiar' }));
+    await fireEvent.press(await screen.findByRole('radio', { name: '🧀 Lácteos' }));
+    await waitFor(() => expect(pantry.setCustomGroup).toHaveBeenCalledWith('c1', 5));
+  });
+
+  it('los del catálogo no muestran sugerencia (su grupo viene de la ficha del ingrediente)', async () => {
+    const pantry = fakePantry({ list: jest.fn(async () => [{ ...ARROZ, foodGroupId: 15 }]) });
+    await render(<PantryScreen />, { wrapper: withServices(fakeServices({ pantry })) });
+    expect(await screen.findByText('Arroz')).toBeOnTheScreen();
+    expect(screen.queryByText(/Grupo sugerido/)).not.toBeOnTheScreen();
+  });
+});

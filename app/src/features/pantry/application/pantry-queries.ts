@@ -11,7 +11,24 @@ export const pantryKeys = {
   items: () => [...pantryKeys.all, 'items'] as const,
   search: (query: string) => [...pantryKeys.all, 'search', query] as const,
   units: () => [...pantryKeys.all, 'units'] as const,
+  foodGroups: () => [...pantryKeys.all, 'food-groups'] as const,
 };
+
+/** Grupos de alimento (datos de referencia: casi nunca cambian). */
+export function useFoodGroups() {
+  const { pantry } = useServices();
+  return useQuery({ queryKey: pantryKeys.foodGroups(), queryFn: () => pantry.foodGroups(), staleTime: Infinity });
+}
+
+/** Corrige el grupo que sugirió la IA para un alimento propio (ADR-027: es solo una sugerencia). */
+export function useSetCustomGroup() {
+  const { pantry } = useServices();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, foodGroupId }: { id: string; foodGroupId: number }) => pantry.setCustomGroup(id, foodGroupId),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: pantryKeys.items() }),
+  });
+}
 
 export function usePantry() {
   const { pantry } = useServices();
