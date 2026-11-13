@@ -47,7 +47,7 @@ export function PlanCalendar({ days, layout, selected, today, onSelect }: {
           ))}
         </View>
       ))}
-      <Legend color={c.primary} />
+      <Legend color={c.onMangoContainer} />
     </View>
   );
 }
@@ -61,7 +61,8 @@ function DayCell({ day, selected, letter, onSelect, compact }: {
 }) {
   const { t } = useTranslation();
   const c = useTheme();
-  const fg = selected ? c.onPrimary : day.inPlan ? c.text : c.textSecondary;
+  // "Cocina viva": Mi semana es mango (el día elegido se llena; hoy lleva aro).
+  const fg = selected ? c.onMango : day.inPlan ? c.text : c.textSecondary;
   const label = `${capitalize(formatDay(day.date))}${day.isToday ? `, ${t('plan.today')}` : ''}. ${t(`plan.calendar.state.${day.state}`)}`;
 
   return (
@@ -75,12 +76,12 @@ function DayCell({ day, selected, letter, onSelect, compact }: {
         styles.cell,
         compact && styles.cellCompact,
         {
-          backgroundColor: selected ? c.primary : day.inPlan ? c.surface : 'transparent',
-          borderColor: day.isToday ? c.accent : 'transparent',
+          backgroundColor: selected ? c.mango : day.inPlan ? c.surface : 'transparent',
+          borderColor: day.isToday ? c.onMangoContainer : 'transparent',
           opacity: !day.inPlan ? 0.45 : pressed ? 0.8 : 1,
         },
       ]}>
-      {letter ? <AppText variant="caption" style={{ color: selected ? c.onPrimary : c.textSecondary }}>{letter}</AppText> : null}
+      {letter ? <AppText variant="caption" style={{ color: selected ? c.onMango : c.textSecondary }}>{letter}</AppText> : null}
       <AppText variant="label" style={{ color: fg }} maxFontSizeMultiplier={1.4}>{dayNumber(day.date)}</AppText>
       <StateDot state={day.state} selected={selected} />
     </Pressable>
@@ -90,7 +91,7 @@ function DayCell({ day, selected, letter, onSelect, compact }: {
 /** Punto del día: lleno = todo hecho; mitad = algo cocinado; aro = pendiente; nada = sin comidas. */
 function StateDot({ state, selected }: { state: CalendarDay['state']; selected: boolean }) {
   const c = useTheme();
-  const color = selected ? c.onPrimary : c.primary;
+  const color = selected ? c.onMango : c.onMangoContainer;
   if (state === 'empty') return <View style={styles.dotSpace} />;
   return (
     <View

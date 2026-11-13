@@ -37,6 +37,10 @@ const PAIRS: [Key, Key][] = [
   ['onMangoContainer', 'mangoContainer'],
   ['onBerry', 'berry'],
   ['onBerryContainer', 'berryContainer'],
+  // Tarjetas teñidas con el sabor (borrador del plan, sugerencia del asistente): texto normal y secundario.
+  ...(['tomatoContainer', 'basilContainer', 'mangoContainer', 'berryContainer'] as const).flatMap(
+    (bg) => (['text', 'textSecondary'] as const).map((fg) => [fg, bg] as [Key, Key]),
+  ),
 ];
 
 describe.each(['light', 'dark'] as const)('paleta %s', (mode) => {

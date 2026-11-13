@@ -4,8 +4,9 @@ import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { errorKey, toAppError } from '@/core/errors/app-error';
+import { foodEmoji } from '@/core/food-emoji';
 import { capitalize, formatDay } from '@/core/format';
-import { SLOT_ICON } from '@/features/cooking/ui/slot-icon';
+import { SLOT_EMOJI } from '@/features/cooking/ui/slot-icon';
 import { HealthDisclaimerNote } from '@/features/legal/ui/health-disclaimer-note';
 import { todayIso } from '@/features/pantry/domain/pantry';
 import { useConfirmPlan, useCurrentPlan, useGeneratePlan, useSkipMeal } from '@/features/plan/application/plan-queries';
@@ -17,6 +18,8 @@ import { PlanCalendar } from '@/features/plan/ui/plan-calendar';
 import { MonthlySpendCard } from '@/features/spending/ui/monthly-spend-card';
 import { CookTimeNotice } from '@/features/profile/ui/cook-time-notice';
 import { Spacing } from '@/shared/theme/colors';
+import { Radius } from '@/shared/theme/tokens';
+import { useTheme } from '@/shared/theme/use-theme';
 import {
   AppText,
   Banner,
@@ -26,6 +29,7 @@ import {
   Divider,
   EmptyState,
   ErrorState,
+  FoodTile,
   IconBadge,
   IconButton,
   LoadingState,
@@ -45,6 +49,7 @@ function HorizonPicker({ value, onChange }: { value: Horizon; onChange: (h: Hori
   return (
     <SegmentedControl
       label={t('plan.horizon.label')}
+      flavor="mango"
       value={value}
       onChange={onChange}
       options={(['day', 'week', 'month'] as const).map((h) => ({ value: h, label: t(`plan.horizon.${h}`) }))}
@@ -68,6 +73,7 @@ export function PlanScreen() {
     <Screen scroll>
       <BrandHeader
         title={t('plan.title')}
+        flavor="mango"
         subtitle={data ? t('plan.range', { start: formatDay(data.startDate), end: formatDay(data.endDate) }) : t('plan.pitch')}
         action={{ icon: 'person-circle-outline', label: t('profile.title'), onPress: () => router.push('/profile') }}>
         {data && <WeekSummary plan={data} />}
@@ -85,7 +91,7 @@ export function PlanScreen() {
           action={
             <View style={styles.actions}>
               <HorizonPicker value={horizon} onChange={setHorizon} />
-              <Button label={t(`plan.generate.${horizon}`)} icon="sparkles-outline" loading={generate.isPending} onPress={() => generateFor(horizon)} />
+              <Button label={t(`plan.generate.${horizon}`)} icon="sparkles-outline" flavor="mango" loading={generate.isPending} onPress={() => generateFor(horizon)} />
             </View>
           }
         />
@@ -106,18 +112,19 @@ function WeekSummary({ plan }: { plan: MealPlan }) {
       <View style={styles.pills}>
         <Pill
           label={t(`plan.status.${plan.status}`)}
-          tone={plan.status === 'draft' ? 'warning' : 'primary'}
+          tone={plan.status === 'draft' ? 'mango' : 'accent'}
           icon={plan.status === 'draft' ? 'create-outline' : 'checkmark-circle-outline'}
         />
         <Pill label={t('plan.cookedCount', { done: cooked, total: plan.meals.length })} icon="restaurant-outline" />
       </View>
-      <ProgressBar value={plan.meals.length ? cooked / plan.meals.length : 0} label={t('plan.cookedCount', { done: cooked, total: plan.meals.length })} />
+      <ProgressBar value={plan.meals.length ? cooked / plan.meals.length : 0} label={t('plan.cookedCount', { done: cooked, total: plan.meals.length })} tone="accent" />
     </View>
   );
 }
 
 function PlanView({ plan, onRegenerate, regenerating }: { plan: MealPlan; onRegenerate: (h: Horizon) => void; regenerating: boolean }) {
   const { t } = useTranslation();
+  const c = useTheme();
   const confirm = useConfirmPlan();
   const [horizon, setHorizon] = useState<Horizon>(() => horizonOf(planDates(plan).length));
   const today = todayIso();
@@ -129,16 +136,16 @@ function PlanView({ plan, onRegenerate, regenerating }: { plan: MealPlan; onRege
     <>
       {/* Un borrador se revisa y se confirma: la acción va arriba. */}
       {plan.status === 'draft' && (
-        <Card variant="primary">
+        <Card variant="filled" style={{ backgroundColor: c.mangoContainer }}>
           <View style={styles.row}>
-            <IconBadge name="create-outline" tone="accent" />
+            <IconBadge name="create-outline" tone="mango" />
             <View style={styles.flex}>
               <AppText variant="subtitle">{t('plan.draftTitle')}</AppText>
               <AppText variant="caption" secondary>{t('plan.draftHint')}</AppText>
             </View>
           </View>
           {confirm.error && <Banner tone="danger" message={t(errorKey(confirm.error))} />}
-          <Button label={t('plan.confirm')} icon="checkmark" loading={confirm.isPending} onPress={() => confirm.mutate(plan.id)} />
+          <Button label={t('plan.confirm')} icon="checkmark" flavor="mango" loading={confirm.isPending} onPress={() => confirm.mutate(plan.id)} />
           <HorizonPicker value={horizon} onChange={setHorizon} />
           <Button label={t(`plan.regenerateFor.${horizon}`)} icon="refresh" variant="ghost" loading={regenerating} onPress={() => onRegenerate(horizon)} />
         </Card>
@@ -184,7 +191,7 @@ function DayPage({ day, hasPrev, hasNext, onPrev, onNext }: {
         <IconButton icon="chevron-back" label={t('plan.calendar.prevDay')} disabled={!hasPrev} onPress={onPrev} />
         <View style={styles.dayTitle}>
           <SectionHeader title={capitalize(formatDay(day.date))} />
-          {day.isToday && <Pill label={t('plan.today')} tone="accent" icon="today-outline" />}
+          {day.isToday && <Pill label={t('plan.today')} tone="mango" icon="today-outline" />}
         </View>
         <IconButton icon="chevron-forward" label={t('plan.calendar.nextDay')} disabled={!hasNext} onPress={onNext} />
       </View>
@@ -218,13 +225,14 @@ function DayPage({ day, hasPrev, hasNext, onPrev, onNext }: {
 function ExtraRow({ meal }: { meal: PlannedMeal }) {
   const { t } = useTranslation();
   const router = useRouter();
+  const c = useTheme();
   return (
-    <View style={styles.meal}>
-      <IconBadge name={SLOT_ICON[meal.slot]} tone="accent" size={32} />
+    <View style={[styles.meal, styles.extra, { borderColor: c.mango }]}>
+      <FoodTile emoji={foodEmoji(meal.recipeTitle, SLOT_EMOJI[meal.slot])} flavor="mango" size={44} />
       <View style={styles.flex}>
         <View style={styles.slotRow}>
           <AppText variant="caption" secondary>{capitalize(t(`slots.${meal.slot}`))}</AppText>
-          <Pill label={t('plan.extras.badge')} tone="accent" icon="add-circle-outline" />
+          <Pill label={t('plan.extras.badge')} tone="mango" icon="add-circle-outline" />
         </View>
         <TextLink label={meal.recipeTitle} onPress={() => router.push({ pathname: '/recipe/[id]', params: { id: meal.recipeId } })} />
       </View>
@@ -240,14 +248,14 @@ function MealRow({ meal }: { meal: PlannedMeal }) {
 
   return (
     <View style={[styles.meal, !pending && styles.done]}>
-      <IconBadge name={SLOT_ICON[meal.slot]} tone={meal.status === 'cooked' ? 'primary' : 'neutral'} size={36} />
+      <FoodTile emoji={foodEmoji(meal.recipeTitle, SLOT_EMOJI[meal.slot])} flavor={meal.status === 'cooked' ? 'basil' : 'mango'} size={44} />
       <View style={styles.flex}>
         <View style={styles.slotRow}>
           <AppText variant="caption" secondary>{capitalize(t(`slots.${meal.slot}`))}</AppText>
           {!pending && (
             <Pill
               label={t(`plan.mealStatus.${meal.status}`)}
-              tone={meal.status === 'cooked' ? 'primary' : 'neutral'}
+              tone={meal.status === 'cooked' ? 'accent' : 'neutral'}
               icon={meal.status === 'cooked' ? 'checkmark' : 'remove'}
             />
           )}
@@ -298,4 +306,5 @@ const styles = StyleSheet.create({
   slotRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
   mealActions: { flexDirection: 'row', gap: Spacing.lg, marginTop: Spacing.xs },
   extras: { gap: Spacing.sm },
+  extra: { borderWidth: 1.5, borderStyle: 'dashed', borderRadius: Radius.md, paddingHorizontal: Spacing.sm },
 });
