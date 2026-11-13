@@ -40,6 +40,11 @@ begin
   update public.meal_plans set status = 'confirmed' where id = v_plan;
   perform tt.throws($q$ select public.generate_plan(current_date, 7) $q$, 'plan_overlap_confirmed',
                     'no pisa un plan confirmado');
-  perform tt.throws($q$ select public.generate_plan(current_date, 20) $q$, 'invalid_days', 'máximo 14 días');
+  perform tt.throws($q$ select public.generate_plan(current_date, 32) $q$, 'invalid_days', 'máximo 31 días');
+  -- B2: plan de un mes
+  v_plan := public.generate_plan(current_date + 60, 31);
+  perform tt.ok((select end_date - start_date from public.meal_plans where id = v_plan) = 30
+                and (select count(distinct meal_date) from public.planned_meals where plan_id = v_plan) = 31,
+                'plan de un mes: 31 días, todos con comidas');
   perform tt.reset();
 end $$;

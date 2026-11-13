@@ -157,8 +157,6 @@
   "plan": {
     "title": "Mi semana",
     "empty": "Aún no tienes plan. Lo armamos con lo que hay en tu despensa, tus restricciones y variedad.",
-    "generateWeek": "Generar plan de la semana",
-    "generateToday": "Solo para hoy",
     "regenerate": "Volver a generar",
     "confirm": "Confirmar plan",
     "range": "Del {{start}} al {{end}}",
@@ -224,6 +222,22 @@
       "prevDay": "Día anterior",
       "nextDay": "Día siguiente",
       "emptyDay": "No hay comidas planeadas este día."
+    },
+    "horizon": {
+      "label": "¿Para cuánto tiempo?",
+      "day": "Hoy",
+      "week": "Semana",
+      "month": "Mes"
+    },
+    "generate": {
+      "day": "Planear hoy",
+      "week": "Planear la semana",
+      "month": "Planear el mes"
+    },
+    "regenerateFor": {
+      "day": "Volver a generar (hoy)",
+      "week": "Volver a generar (semana)",
+      "month": "Volver a generar (mes)"
     }
   },
   "shopping": {
@@ -447,7 +461,7 @@
     "network": "Sin conexión. Inténtalo de nuevo.",
     "unknown": "Algo salió mal. Inténtalo de nuevo.",
     "no_eligible_recipes": "No hay recetas que cumplan tus restricciones para armar el plan.",
-    "invalid_days": "El plan puede durar entre 1 y 14 días.",
+    "invalid_days": "El plan puede durar entre 1 y 31 días.",
     "list_not_found": "No encontramos esa lista de compras.",
     "meal_not_cooked": "Primero marca la comida como cocinada.",
     "email_not_authorized": "Por ahora no podemos enviar correos a esa dirección. Estamos terminando de configurar el envío de correos; inténtalo más tarde.",

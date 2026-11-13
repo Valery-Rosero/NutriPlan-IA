@@ -9,8 +9,8 @@ import { SLOT_ICON } from '@/features/cooking/ui/slot-icon';
 import { HealthDisclaimerNote } from '@/features/legal/ui/health-disclaimer-note';
 import { todayIso } from '@/features/pantry/domain/pantry';
 import { useConfirmPlan, useCurrentPlan, useGeneratePlan, useSkipMeal } from '@/features/plan/application/plan-queries';
-import { calendarDays, calendarLayout, initialDayIndex, type CalendarDay } from '@/features/plan/domain/calendar';
-import type { MealPlan, PlannedMeal } from '@/features/plan/domain/plan';
+import { calendarDays, calendarLayout, initialDayIndex, planDates, type CalendarDay } from '@/features/plan/domain/calendar';
+import { HORIZON_DAYS, horizonOf, type Horizon, type MealPlan, type PlannedMeal } from '@/features/plan/domain/plan';
 import { BudgetCard } from '@/features/plan/ui/budget-card';
 import { DayPager } from '@/features/plan/ui/day-pager';
 import { PlanCalendar } from '@/features/plan/ui/plan-calendar';
@@ -33,10 +33,24 @@ import {
   ProgressBar,
   Screen,
   SectionHeader,
+  SegmentedControl,
   TextLink,
 } from '@/shared/ui';
 
-const WEEK = { days: 7, slots: ['breakfast', 'lunch', 'dinner'] as const };
+const SLOTS = ['breakfast', 'lunch', 'dinner'] as const;
+
+/** Hoy · Semana · Mes. */
+function HorizonPicker({ value, onChange }: { value: Horizon; onChange: (h: Horizon) => void }) {
+  const { t } = useTranslation();
+  return (
+    <SegmentedControl
+      label={t('plan.horizon.label')}
+      value={value}
+      onChange={onChange}
+      options={(['day', 'week', 'month'] as const).map((h) => ({ value: h, label: t(`plan.horizon.${h}`) }))}
+    />
+  );
+}
 
 /** US-117 (plan semanal), US-139 (solo hoy), US-129 (cambiar), US-155 (motivo), US-127/132 (presupuesto). */
 export function PlanScreen() {
@@ -45,9 +59,10 @@ export function PlanScreen() {
   const plan = useCurrentPlan();
   const generate = useGeneratePlan();
 
-  const generateWeek = () => generate.mutate({ start: todayIso(), days: WEEK.days, slots: [...WEEK.slots] });
-  const generateToday = () => generate.mutate({ start: todayIso(), days: 1, slots: [...WEEK.slots] });
   const data = plan.data;
+  // B2: hoy, semana o mes. Con un plan en borrador, "volver a generar" parte de su misma duración.
+  const [horizon, setHorizon] = useState<Horizon>('week');
+  const generateFor = (h: Horizon) => generate.mutate({ start: todayIso(), days: HORIZON_DAYS[h], slots: [...SLOTS] });
 
   return (
     <Screen scroll>
@@ -69,13 +84,13 @@ export function PlanScreen() {
           message={t('plan.empty')}
           action={
             <View style={styles.actions}>
-              <Button label={t('plan.generateWeek')} icon="sparkles-outline" loading={generate.isPending} onPress={generateWeek} />
-              <Button label={t('plan.generateToday')} variant="secondary" onPress={generateToday} />
+              <HorizonPicker value={horizon} onChange={setHorizon} />
+              <Button label={t(`plan.generate.${horizon}`)} icon="sparkles-outline" loading={generate.isPending} onPress={() => generateFor(horizon)} />
             </View>
           }
         />
       ) : (
-        <PlanView key={data.id} plan={data} onRegenerate={generateWeek} regenerating={generate.isPending} />
+        <PlanView key={data.id} plan={data} onRegenerate={generateFor} regenerating={generate.isPending} />
       )}
       <HealthDisclaimerNote />
     </Screen>
@@ -101,9 +116,10 @@ function WeekSummary({ plan }: { plan: MealPlan }) {
   );
 }
 
-function PlanView({ plan, onRegenerate, regenerating }: { plan: MealPlan; onRegenerate: () => void; regenerating: boolean }) {
+function PlanView({ plan, onRegenerate, regenerating }: { plan: MealPlan; onRegenerate: (h: Horizon) => void; regenerating: boolean }) {
   const { t } = useTranslation();
   const confirm = useConfirmPlan();
+  const [horizon, setHorizon] = useState<Horizon>(() => horizonOf(planDates(plan).length));
   const today = todayIso();
   const days = calendarDays(plan, today);
   const [index, setIndex] = useState(() => initialDayIndex(days, today));
@@ -123,7 +139,8 @@ function PlanView({ plan, onRegenerate, regenerating }: { plan: MealPlan; onRege
           </View>
           {confirm.error && <Banner tone="danger" message={t(errorKey(confirm.error))} />}
           <Button label={t('plan.confirm')} icon="checkmark" loading={confirm.isPending} onPress={() => confirm.mutate(plan.id)} />
-          <Button label={t('plan.regenerate')} icon="refresh" variant="ghost" loading={regenerating} onPress={onRegenerate} />
+          <HorizonPicker value={horizon} onChange={setHorizon} />
+          <Button label={t(`plan.regenerateFor.${horizon}`)} icon="refresh" variant="ghost" loading={regenerating} onPress={() => onRegenerate(horizon)} />
         </Card>
       )}
 

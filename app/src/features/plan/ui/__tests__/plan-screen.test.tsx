@@ -7,11 +7,25 @@ import { fakePlans, fakeServices, PLAN, withServices } from '@/test/fakes';
 describe('PlanScreen (US-117, US-129, US-132, US-155)', () => {
   beforeEach(() => jest.clearAllMocks());
 
-  it('sin plan ofrece generarlo para la semana o solo para hoy', async () => {
+  it('sin plan ofrece planear hoy, la semana (por defecto) o el mes (B2)', async () => {
     const plans = fakePlans({ current: jest.fn(async () => null) });
     await render(<PlanScreen />, { wrapper: withServices(fakeServices({ plans })) });
-    await fireEvent.press(await screen.findByRole('button', { name: 'Solo para hoy' }));
-    expect(plans.generate).toHaveBeenCalledWith(expect.objectContaining({ days: 1, slots: ['breakfast', 'lunch', 'dinner'] }));
+    expect(await screen.findByRole('radio', { name: 'Semana' })).toBeSelected();
+
+    await fireEvent.press(screen.getByRole('radio', { name: 'Hoy' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Planear hoy' }));
+    expect(plans.generate).toHaveBeenLastCalledWith(expect.objectContaining({ days: 1, slots: ['breakfast', 'lunch', 'dinner'] }));
+
+    await fireEvent.press(screen.getByRole('radio', { name: 'Mes' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Planear el mes' }));
+    expect(plans.generate).toHaveBeenLastCalledWith(expect.objectContaining({ days: 30 }));
+  });
+
+  it('un borrador se vuelve a generar con su misma duración, o con otra si se elige', async () => {
+    const plans = fakePlans();
+    await render(<PlanScreen />, { wrapper: withServices(fakeServices({ plans })) });
+    await fireEvent.press(await screen.findByRole('button', { name: 'Volver a generar (semana)' }));
+    expect(plans.generate).toHaveBeenLastCalledWith(expect.objectContaining({ days: 7 }));
   });
 
   it('muestra las comidas con su motivo y alerta si el plan se pasa del presupuesto', async () => {

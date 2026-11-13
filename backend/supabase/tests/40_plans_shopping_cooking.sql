@@ -17,8 +17,8 @@ begin
   perform tt.ok((select budget_limit from public.meal_plans where id = v_plan) = 100000, 'el plan de 7 días toma el presupuesto semanal completo');
   perform tt.throws(format($q$ insert into public.meal_plans (user_id, start_date, end_date) values (%L, current_date + 3, current_date + 9) $q$, c),
                     'meal_plans_no_overlap', 'no se permiten dos planes que cubran el mismo día');
-  perform tt.throws(format($q$ insert into public.meal_plans (user_id, start_date, end_date) values (%L, current_date + 20, current_date + 40) $q$, c),
-                    'check', 'un plan no puede durar más de 14 días');
+  perform tt.throws(format($q$ insert into public.meal_plans (user_id, start_date, end_date) values (%L, current_date + 20, current_date + 60) $q$, c),
+                    'check', 'un plan no puede durar más de 31 días');
 
   insert into public.planned_meals (plan_id, meal_date, slot, recipe_id, servings) values
     (v_plan, current_date,     'dinner', v_bowl, 2),

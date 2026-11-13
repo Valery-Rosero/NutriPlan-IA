@@ -55,6 +55,16 @@ export type SwapReason = 'user_request' | 'budget_friendly';
 
 export type GeneratePlanInput = { start: string; days: number; slots: MealSlot[] };
 
+/** B2: se planea por día, semana o mes (el generador acepta de 1 a 31 días). */
+export const HORIZON_DAYS = { day: 1, week: 7, month: 30 } as const;
+export type Horizon = keyof typeof HORIZON_DAYS;
+
+/** La duración más cercana a un plan existente (para "volver a generar" con la misma). */
+export function horizonOf(days: number): Horizon {
+  if (days <= 1) return 'day';
+  return days <= 7 ? 'week' : 'month';
+}
+
 /** Puerto del plan semanal. Falla con AppError. */
 export interface PlanRepository {
   /** El plan vigente hoy o el próximo (sin archivados). */

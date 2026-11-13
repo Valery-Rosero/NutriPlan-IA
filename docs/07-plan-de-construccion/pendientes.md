@@ -21,7 +21,7 @@ Cada una lleva su ADR, migración (si aplica), pruebas y actualización de `docs
 - Al tocar un día se abre su **página**; se pasa de día **deslizando, como hoja de libro**. Sin scroll largo.
 - La página muestra las comidas del día (y, cuando exista B3, los extras), con el costo del día. El presupuesto queda como resumen arriba.
 
-### B2. Planear por día, semana o mes
+### B2. Planear por día, semana o mes · ✅ hecho (13-nov), probar en el APK
 - Opciones al generar: **Hoy · Semana · Mes**.
 - El generador (`generate_plan`) hoy acepta 1–14 días: extenderlo a **31** y probar el tiempo de respuesta con un mes.
 - Depende de B1 para verse bien (cuadrícula del mes).
