@@ -1,6 +1,6 @@
 # Modelo de datos (generado desde las migraciones)
 
-> Fuente de verdad: `backend/supabase/migrations/`. Este archivo se generó leyendo la base real después de aplicar las 28 migraciones (65 tablas, todas con RLS). Si cambia una migración, regenerar: `python docs/03-datos/_generar_modelo.py` (con Supabase local encendido).
+> Fuente de verdad: `backend/supabase/migrations/`. Este archivo se generó leyendo la base real después de aplicar las 29 migraciones (66 tablas, todas con RLS). Si cambia una migración, regenerar: `python docs/03-datos/_generar_modelo.py` (con Supabase local encendido).
 
 Principios: 3FN; lo derivable no se guarda (alérgenos y dietas de una receta, nutrición por porción, picante y apto-batch); cantidades canónicas en gramos; RLS en todas las tablas; ver `reglas-de-negocio.md`.
 
@@ -35,8 +35,8 @@ Jerarquía país > departamento > ciudad. Los precios caen al padre cuando no ha
 
 Restricciones:
 - **CHECK**: `CHECK (((parent_id IS NULL) OR (parent_id <> id)))`
-- **FK**: `FOREIGN KEY (parent_id) REFERENCES regions(id)`
 - **FK**: `FOREIGN KEY (country_code) REFERENCES countries(code)`
+- **FK**: `FOREIGN KEY (parent_id) REFERENCES regions(id)`
 - **PK**: `PRIMARY KEY (id)`
 - **UNIQUE**: `UNIQUE (code)`
 
@@ -93,8 +93,8 @@ Restricciones:
 
 Restricciones:
 - **PK**: `PRIMARY KEY (id)`
-- **UNIQUE**: `UNIQUE (code)`
 - **UNIQUE**: `UNIQUE (id, kind)`
+- **UNIQUE**: `UNIQUE (code)`
 
 ### `diet_excluded_food_groups`
 
@@ -104,8 +104,8 @@ Restricciones:
 | `food_group_id` | smallint | no |  |  |
 
 Restricciones:
-- **FK**: `FOREIGN KEY (diet_id) REFERENCES diets(id) ON DELETE CASCADE`
 - **FK**: `FOREIGN KEY (food_group_id) REFERENCES food_groups(id) ON DELETE CASCADE`
+- **FK**: `FOREIGN KEY (diet_id) REFERENCES diets(id) ON DELETE CASCADE`
 - **PK**: `PRIMARY KEY (diet_id, food_group_id)`
 
 ### `diet_excluded_allergens`
@@ -158,8 +158,8 @@ Restricciones:
 | `rounding_step` | numeric(6,3) | no |  | Redondeo práctico al escalar (ej. 0.25 tazas, 0.5 unidades). |
 
 Restricciones:
-- **CHECK**: `CHECK ((factor > (0)::numeric))`
 - **CHECK**: `CHECK ((rounding_step > (0)::numeric))`
+- **CHECK**: `CHECK ((factor > (0)::numeric))`
 - **PK**: `PRIMARY KEY (id)`
 - **UNIQUE**: `UNIQUE (id, dimension)`
 - **UNIQUE**: `UNIQUE (code)`
@@ -258,16 +258,16 @@ Restricciones:
 | `adult_declared_at` | timestamp with time zone | sí |  | Momento en que la persona declaró ser mayor de 18 años. Se guarda solo la declaración, no la fecha de nacimiento (minimización). |
 
 Restricciones:
+- **CHECK**: `CHECK (((household_size >= 1) AND (household_size <= 12)))`
+- **CHECK**: `CHECK (((max_cook_minutes >= 5) AND (max_cook_minutes <= 240)))`
+- **CHECK**: `CHECK (((target_protein_pct >= 10) AND (target_protein_pct <= 50)))`
+- **CHECK**: `CHECK ((budget_amount > (0)::numeric))`
+- **CHECK**: `CHECK (((budget_amount IS NULL) = (budget_period IS NULL)))`
 - **CHECK**: `CHECK (((daily_kcal_target >= 800) AND (daily_kcal_target <= 6000)))`
 - **CHECK**: `CHECK ((char_length(display_name) <= 80))`
-- **CHECK**: `CHECK (((household_size >= 1) AND (household_size <= 12)))`
-- **CHECK**: `CHECK ((budget_amount > (0)::numeric))`
-- **CHECK**: `CHECK (((max_cook_minutes >= 5) AND (max_cook_minutes <= 240)))`
 - **CHECK**: `CHECK (((spice_tolerance >= 0) AND (spice_tolerance <= 3)))`
-- **CHECK**: `CHECK (((target_protein_pct >= 10) AND (target_protein_pct <= 50)))`
-- **CHECK**: `CHECK (((budget_amount IS NULL) = (budget_period IS NULL)))`
-- **FK**: `FOREIGN KEY (id) REFERENCES auth.users(id) ON DELETE CASCADE`
 - **FK**: `FOREIGN KEY (region_id) REFERENCES regions(id)`
+- **FK**: `FOREIGN KEY (id) REFERENCES auth.users(id) ON DELETE CASCADE`
 - **PK**: `PRIMARY KEY (id)`
 
 ### `profile_health`
@@ -286,8 +286,8 @@ Datos sensibles (Ley 1581/2012, art. 5). Requieren autorización expresa y separ
 | `birth_year` | smallint | sí |  | Solo el año: alcanza para calcular necesidades y evita guardar la fecha completa (minimización). |
 
 Restricciones:
-- **CHECK**: `CHECK (((height_cm >= (50)::numeric) AND (height_cm <= (260)::numeric)))`
 - **CHECK**: `CHECK (((weight_kg >= (20)::numeric) AND (weight_kg <= (400)::numeric)))`
+- **CHECK**: `CHECK (((height_cm >= (50)::numeric) AND (height_cm <= (260)::numeric)))`
 - **CHECK**: `CHECK (((birth_year >= 1900) AND (birth_year <= ((EXTRACT(year FROM CURRENT_DATE))::integer - 18))))`
 - **FK**: `FOREIGN KEY (user_id) REFERENCES profiles(id) ON DELETE CASCADE`
 - **PK**: `PRIMARY KEY (user_id)`
@@ -368,12 +368,12 @@ US-122: fallas técnicas, sin datos personales ni de salud (se limpian al insert
 | `alerted_at` | timestamp with time zone | sí |  |  |
 
 Restricciones:
-- **CHECK**: `CHECK ((char_length(message) <= 500))`
-- **CHECK**: `CHECK ((char_length(device_model) <= 80))`
 - **CHECK**: `CHECK ((char_length(app_version) <= 40))`
+- **CHECK**: `CHECK ((char_length(device_model) <= 80))`
+- **CHECK**: `CHECK (((char_length(error_name) >= 1) AND (char_length(error_name) <= 120)))`
+- **CHECK**: `CHECK ((char_length(message) <= 500))`
 - **CHECK**: `CHECK ((char_length(screen) <= 120))`
 - **CHECK**: `CHECK ((char_length(stack) <= 4000))`
-- **CHECK**: `CHECK (((char_length(error_name) >= 1) AND (char_length(error_name) <= 120)))`
 - **PK**: `PRIMARY KEY (id)`
 
 ## Catálogo y recetas
@@ -397,9 +397,9 @@ Restricciones:
 
 Restricciones:
 - **CHECK**: `CHECK ((rounding_step > (0)::numeric))`
-- **CHECK**: `CHECK (((char_length(name) >= 2) AND (char_length(name) <= 80)))`
 - **CHECK**: `CHECK ((density_g_per_ml > (0)::numeric))`
 - **CHECK**: `CHECK (((heat_level >= 0) AND (heat_level <= 3)))`
+- **CHECK**: `CHECK (((char_length(name) >= 2) AND (char_length(name) <= 80)))`
 - **CHECK**: `CHECK ((shelf_life_days > 0))`
 - **FK**: `FOREIGN KEY (store_category_id) REFERENCES ingredient_categories(id)`
 - **FK**: `FOREIGN KEY (food_group_id) REFERENCES food_groups(id)`
@@ -440,15 +440,15 @@ Valores por 100 g. Separada de ingredients: es un dato con fuente y fecha de ver
 | `verified_at` | date | sí |  |  |
 
 Restricciones:
-- **CHECK**: `CHECK (((sugar_g <= carbs_g) AND (fiber_g <= carbs_g)))`
-- **CHECK**: `CHECK ((kcal >= (0)::numeric))`
-- **CHECK**: `CHECK ((protein_g >= (0)::numeric))`
+- **CHECK**: `CHECK ((((protein_g + carbs_g) + fat_g) <= 100.5))`
 - **CHECK**: `CHECK ((carbs_g >= (0)::numeric))`
+- **CHECK**: `CHECK ((sugar_g >= (0)::numeric))`
+- **CHECK**: `CHECK (((sugar_g <= carbs_g) AND (fiber_g <= carbs_g)))`
 - **CHECK**: `CHECK ((fat_g >= (0)::numeric))`
 - **CHECK**: `CHECK ((fiber_g >= (0)::numeric))`
-- **CHECK**: `CHECK ((sugar_g >= (0)::numeric))`
+- **CHECK**: `CHECK ((kcal >= (0)::numeric))`
+- **CHECK**: `CHECK ((protein_g >= (0)::numeric))`
 - **CHECK**: `CHECK ((sodium_mg >= (0)::numeric))`
-- **CHECK**: `CHECK ((((protein_g + carbs_g) + fat_g) <= 100.5))`
 - **FK**: `FOREIGN KEY (ingredient_id) REFERENCES ingredients(id) ON DELETE CASCADE`
 - **PK**: `PRIMARY KEY (ingredient_id)`
 
@@ -478,8 +478,8 @@ Sustitutos candidatos. Qué sustitutos sirven a cada usuario se decide al consul
 Restricciones:
 - **CHECK**: `CHECK ((ratio > (0)::numeric))`
 - **CHECK**: `CHECK ((ingredient_id <> substitute_id))`
-- **FK**: `FOREIGN KEY (substitute_id) REFERENCES ingredients(id) ON DELETE CASCADE`
 - **FK**: `FOREIGN KEY (ingredient_id) REFERENCES ingredients(id) ON DELETE CASCADE`
+- **FK**: `FOREIGN KEY (substitute_id) REFERENCES ingredients(id) ON DELETE CASCADE`
 - **PK**: `PRIMARY KEY (ingredient_id, substitute_id)`
 
 ### `ingredient_prices`
@@ -497,9 +497,9 @@ Historial de precios por kg (unidad canónica). La moneda sale de region > count
 
 Restricciones:
 - **CHECK**: `CHECK ((price_per_kg > (0)::numeric))`
+- **FK**: `FOREIGN KEY (ingredient_id) REFERENCES ingredients(id) ON DELETE CASCADE`
 - **FK**: `FOREIGN KEY (region_id) REFERENCES regions(id)`
 - **FK**: `FOREIGN KEY (source_id) REFERENCES price_sources(id)`
-- **FK**: `FOREIGN KEY (ingredient_id) REFERENCES ingredients(id) ON DELETE CASCADE`
 - **PK**: `PRIMARY KEY (id)`
 - **UNIQUE**: `UNIQUE (ingredient_id, region_id, source_id, observed_on)`
 
@@ -528,17 +528,17 @@ Restricciones:
 | `search_tsv` | tsvector | sí | generada: to_tsvector('spanish'::regconfig, ((title \|\| ' '::text) \|\| COALESCE(description, ''::text))) |  |
 
 Restricciones:
-- **CHECK**: `CHECK (((status <> 'published'::recipe_status) OR (published_at IS NOT NULL)))`
-- **CHECK**: `CHECK ((keeps_days > 0))`
-- **CHECK**: `CHECK (((difficulty >= 1) AND (difficulty <= 3)))`
-- **CHECK**: `CHECK (((char_length(title) >= 3) AND (char_length(title) <= 120)))`
-- **CHECK**: `CHECK (((base_servings >= 1) AND (base_servings <= 24)))`
 - **CHECK**: `CHECK ((prep_minutes >= 0))`
-- **CHECK**: `CHECK ((cook_minutes >= 0))`
+- **CHECK**: `CHECK (((base_servings >= 1) AND (base_servings <= 24)))`
 - **CHECK**: `CHECK (((keeps_days IS NULL) = (storage_notes IS NULL)))`
-- **FK**: `FOREIGN KEY (main_protein_id) REFERENCES protein_sources(id)`
+- **CHECK**: `CHECK (((status <> 'published'::recipe_status) OR (published_at IS NOT NULL)))`
+- **CHECK**: `CHECK ((cook_minutes >= 0))`
+- **CHECK**: `CHECK (((difficulty >= 1) AND (difficulty <= 3)))`
+- **CHECK**: `CHECK ((keeps_days > 0))`
+- **CHECK**: `CHECK (((char_length(title) >= 3) AND (char_length(title) <= 120)))`
 - **FK**: `FOREIGN KEY (author_id) REFERENCES profiles(id) ON DELETE SET NULL`
 - **FK**: `FOREIGN KEY (cuisine_id) REFERENCES cuisines(id)`
+- **FK**: `FOREIGN KEY (main_protein_id) REFERENCES protein_sources(id)`
 - **PK**: `PRIMARY KEY (id)`
 
 ### `recipe_meal_slots`
@@ -568,9 +568,9 @@ Restricciones:
 Restricciones:
 - **CHECK**: `CHECK ((quantity > (0)::numeric))`
 - **CHECK**: `CHECK (((scaling_exponent >= (0)::numeric) AND (scaling_exponent <= (1)::numeric)))`
+- **FK**: `FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE`
 - **FK**: `FOREIGN KEY (ingredient_id) REFERENCES ingredients(id)`
 - **FK**: `FOREIGN KEY (unit_id) REFERENCES units(id)`
-- **FK**: `FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE`
 - **PK**: `PRIMARY KEY (recipe_id, ingredient_id)`
 
 ### `recipe_flex_groups`
@@ -587,11 +587,11 @@ Grupo intercambiable de una receta. min_choices = 0: grupo opcional (se usa solo
 | `sort_order` | smallint | no | 0 |  |
 
 Restricciones:
+- **CHECK**: `CHECK (((char_length(label) >= 2) AND (char_length(label) <= 60)))`
 - **CHECK**: `CHECK ((max_choices >= min_choices))`
 - **CHECK**: `CHECK ((group_key > 0))`
-- **CHECK**: `CHECK (((char_length(label) >= 2) AND (char_length(label) <= 60)))`
-- **CHECK**: `CHECK (((min_choices >= 0) AND (min_choices <= 5)))`
 - **CHECK**: `CHECK (((max_choices >= 1) AND (max_choices <= 5)))`
+- **CHECK**: `CHECK (((min_choices >= 0) AND (min_choices <= 5)))`
 - **FK**: `FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE`
 - **PK**: `PRIMARY KEY (recipe_id, group_key)`
 
@@ -609,8 +609,8 @@ Restricciones:
 | `notes` | text | sí |  |  |
 
 Restricciones:
-- **CHECK**: `CHECK (((scaling_exponent >= (0)::numeric) AND (scaling_exponent <= (1)::numeric)))`
 - **CHECK**: `CHECK ((quantity > (0)::numeric))`
+- **CHECK**: `CHECK (((scaling_exponent >= (0)::numeric) AND (scaling_exponent <= (1)::numeric)))`
 - **FK**: `FOREIGN KEY (unit_id) REFERENCES units(id)`
 - **FK**: `FOREIGN KEY (ingredient_id) REFERENCES ingredients(id)`
 - **FK**: `FOREIGN KEY (recipe_id, group_key) REFERENCES recipe_flex_groups(recipe_id, group_key) ON DELETE CASCADE`
@@ -626,8 +626,8 @@ Restricciones:
 | `timer_seconds` | integer | sí |  |  |
 
 Restricciones:
-- **CHECK**: `CHECK ((timer_seconds > 0))`
 - **CHECK**: `CHECK ((step_number > 0))`
+- **CHECK**: `CHECK ((timer_seconds > 0))`
 - **FK**: `FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE`
 - **PK**: `PRIMARY KEY (recipe_id, step_number)`
 
@@ -701,8 +701,8 @@ Restricciones:
 | `declared_at` | timestamp with time zone | no | now() |  |
 
 Restricciones:
-- **FK**: `FOREIGN KEY (condition_id) REFERENCES medical_conditions(id)`
 - **FK**: `FOREIGN KEY (user_id) REFERENCES profiles(id) ON DELETE CASCADE`
+- **FK**: `FOREIGN KEY (condition_id) REFERENCES medical_conditions(id)`
 - **PK**: `PRIMARY KEY (user_id, condition_id)`
 
 ### `user_disliked_ingredients`
@@ -725,8 +725,8 @@ Restricciones:
 | `cuisine_id` | smallint | no |  |  |
 
 Restricciones:
-- **FK**: `FOREIGN KEY (cuisine_id) REFERENCES cuisines(id)`
 - **FK**: `FOREIGN KEY (user_id) REFERENCES profiles(id) ON DELETE CASCADE`
+- **FK**: `FOREIGN KEY (cuisine_id) REFERENCES cuisines(id)`
 - **PK**: `PRIMARY KEY (user_id, cuisine_id)`
 
 ### `favorite_recipes`
@@ -780,6 +780,32 @@ Restricciones:
 - **PK**: `PRIMARY KEY (id)`
 - **UNIQUE**: `UNIQUE NULLS NOT DISTINCT (user_id, ingredient_id, expires_on)`
 
+### `pantry_custom_items`
+
+Despensa: alimentos fuera del catálogo (B3b, ADR-027). No entran en recetas, plan ni lista; solo se muestran y se exportan. La cantidad queda en la unidad que escribió la persona.
+
+| Columna | Tipo | Nulo | Default / generada | Nota |
+|---|---|---|---|---|
+| `id` | uuid | no | gen_random_uuid() |  |
+| `user_id` | uuid | no | auth.uid() |  |
+| `name` | text | no |  |  |
+| `food_group_id` | smallint | sí |  |  |
+| `store_category_id` | smallint | sí |  |  |
+| `quantity` | numeric(10,2) | no |  |  |
+| `unit` | text | no |  |  |
+| `expires_on` | date | sí |  |  |
+| `created_at` | timestamp with time zone | no | now() |  |
+| `updated_at` | timestamp with time zone | no | now() |  |
+
+Restricciones:
+- **CHECK**: `CHECK (((char_length(btrim(name)) >= 1) AND (char_length(btrim(name)) <= 80)))`
+- **CHECK**: `CHECK (((quantity > (0)::numeric) AND (quantity <= (100000)::numeric)))`
+- **CHECK**: `CHECK ((unit = ANY (ARRAY['g'::text, 'kg'::text, 'lb'::text, 'ml'::text, 'l'::text, 'unit'::text])))`
+- **FK**: `FOREIGN KEY (user_id) REFERENCES profiles(id) ON DELETE CASCADE`
+- **FK**: `FOREIGN KEY (food_group_id) REFERENCES food_groups(id)`
+- **FK**: `FOREIGN KEY (store_category_id) REFERENCES ingredient_categories(id)`
+- **PK**: `PRIMARY KEY (id)`
+
 ### `meal_plans`
 
 | Columna | Tipo | Nulo | Default / generada | Nota |
@@ -794,8 +820,8 @@ Restricciones:
 | `updated_at` | timestamp with time zone | no | now() |  |
 
 Restricciones:
-- **CHECK**: `CHECK (((end_date >= start_date) AND ((end_date - start_date) <= 30)))`
 - **CHECK**: `CHECK ((budget_limit > (0)::numeric))`
+- **CHECK**: `CHECK (((end_date >= start_date) AND ((end_date - start_date) <= 30)))`
 - **FK**: `FOREIGN KEY (user_id) REFERENCES profiles(id) ON DELETE CASCADE`
 - **PK**: `PRIMARY KEY (id)`
 - **EXCLUDE**: `EXCLUDE USING gist (user_id WITH =, daterange(start_date, end_date, '[]'::text) WITH &&) WHERE ((status <> 'archived'::plan_status))`
@@ -819,13 +845,13 @@ Restricciones:
 | `updated_at` | timestamp with time zone | no | now() |  |
 
 Restricciones:
-- **CHECK**: `CHECK (((servings > (0)::numeric) AND (servings <= (48)::numeric)))`
 - **CHECK**: `CHECK (((reason_code IS NOT NULL) OR (reason_ingredient_id IS NULL)))`
 - **CHECK**: `CHECK (((status = 'cooked'::meal_status) = (cooked_at IS NOT NULL)))`
-- **FK**: `FOREIGN KEY (replaced_recipe_id) REFERENCES recipes(id)`
-- **FK**: `FOREIGN KEY (reason_ingredient_id) REFERENCES ingredients(id)`
+- **CHECK**: `CHECK (((servings > (0)::numeric) AND (servings <= (48)::numeric)))`
 - **FK**: `FOREIGN KEY (plan_id) REFERENCES meal_plans(id) ON DELETE CASCADE`
+- **FK**: `FOREIGN KEY (reason_ingredient_id) REFERENCES ingredients(id)`
 - **FK**: `FOREIGN KEY (recipe_id) REFERENCES recipes(id)`
+- **FK**: `FOREIGN KEY (replaced_recipe_id) REFERENCES recipes(id)`
 - **FK**: `FOREIGN KEY (reason_code) REFERENCES recommendation_reasons(code)`
 - **PK**: `PRIMARY KEY (id)`
 - **UNIQUE**: `UNIQUE (plan_id, meal_date, slot)`
@@ -841,8 +867,8 @@ Restricciones:
 | `is_auto` | boolean | no | false | true = la fijó el sistema al cocinar (se borra al deshacer). false = la eligió la persona. |
 
 Restricciones:
-- **FK**: `FOREIGN KEY (recipe_id, group_key, ingredient_id) REFERENCES recipe_flex_options(recipe_id, group_key, ingredient_id) ON DELETE CASCADE`
 - **FK**: `FOREIGN KEY (planned_meal_id) REFERENCES planned_meals(id) ON DELETE CASCADE`
+- **FK**: `FOREIGN KEY (recipe_id, group_key, ingredient_id) REFERENCES recipe_flex_options(recipe_id, group_key, ingredient_id) ON DELETE CASCADE`
 - **PK**: `PRIMARY KEY (planned_meal_id, group_key, ingredient_id)`
 
 ### `meal_pantry_deductions`
@@ -896,13 +922,13 @@ Restricciones:
 | `moved_to_pantry_at` | timestamp with time zone | sí |  | Cuándo se sumó a la despensa lo comprado (evita sumarlo dos veces). |
 
 Restricciones:
-- **CHECK**: `CHECK ((pantry_g >= (0)::numeric))`
-- **CHECK**: `CHECK ((needed_g > (0)::numeric))`
+- **CHECK**: `CHECK ((is_checked = (checked_at IS NOT NULL)))`
 - **CHECK**: `CHECK (((ingredient_id IS NULL) <> (custom_name IS NULL)))`
 - **CHECK**: `CHECK (((source <> 'plan'::shopping_item_source) OR (ingredient_id IS NOT NULL)))`
 - **CHECK**: `CHECK (((ingredient_id IS NULL) OR (store_category_id IS NULL)))`
-- **CHECK**: `CHECK ((is_checked = (checked_at IS NOT NULL)))`
 - **CHECK**: `CHECK (((char_length(custom_name) >= 1) AND (char_length(custom_name) <= 80)))`
+- **CHECK**: `CHECK ((needed_g > (0)::numeric))`
+- **CHECK**: `CHECK ((pantry_g >= (0)::numeric))`
 - **FK**: `FOREIGN KEY (store_category_id) REFERENCES ingredient_categories(id)`
 - **FK**: `FOREIGN KEY (list_id) REFERENCES shopping_lists(id) ON DELETE CASCADE`
 - **FK**: `FOREIGN KEY (ingredient_id) REFERENCES ingredients(id)`
@@ -924,8 +950,8 @@ US-147: en esta lista, el ingrediente del plan se compra como su sustituto (cant
 Restricciones:
 - **CHECK**: `CHECK ((ratio > (0)::numeric))`
 - **CHECK**: `CHECK ((ingredient_id <> substitute_id))`
-- **FK**: `FOREIGN KEY (ingredient_id) REFERENCES ingredients(id)`
 - **FK**: `FOREIGN KEY (substitute_id) REFERENCES ingredients(id)`
+- **FK**: `FOREIGN KEY (ingredient_id) REFERENCES ingredients(id)`
 - **FK**: `FOREIGN KEY (list_id) REFERENCES shopping_lists(id) ON DELETE CASCADE`
 - **PK**: `PRIMARY KEY (list_id, ingredient_id)`
 
@@ -942,8 +968,8 @@ Restricciones:
 | `created_at` | timestamp with time zone | no | now() |  |
 
 Restricciones:
-- **CHECK**: `CHECK ((total_amount >= (0)::numeric))`
 - **CHECK**: `CHECK ((char_length(store_name) <= 80))`
+- **CHECK**: `CHECK ((total_amount >= (0)::numeric))`
 - **FK**: `FOREIGN KEY (user_id) REFERENCES profiles(id) ON DELETE CASCADE`
 - **FK**: `FOREIGN KEY (shopping_list_id) REFERENCES shopping_lists(id) ON DELETE SET NULL`
 - **PK**: `PRIMARY KEY (id)`
@@ -960,9 +986,9 @@ Restricciones:
 | `line_amount` | numeric(12,2) | no |  |  |
 
 Restricciones:
-- **CHECK**: `CHECK ((quantity_g > (0)::numeric))`
-- **CHECK**: `CHECK ((line_amount >= (0)::numeric))`
 - **CHECK**: `CHECK (((ingredient_id IS NOT NULL) OR (raw_text IS NOT NULL)))`
+- **CHECK**: `CHECK ((line_amount >= (0)::numeric))`
+- **CHECK**: `CHECK ((quantity_g > (0)::numeric))`
 - **FK**: `FOREIGN KEY (purchase_id) REFERENCES purchases(id) ON DELETE CASCADE`
 - **FK**: `FOREIGN KEY (ingredient_id) REFERENCES ingredients(id)`
 - **PK**: `PRIMARY KEY (id)`
@@ -986,9 +1012,9 @@ Historial: cada vez que se cocina y califica queda una fila (receta + usuario + 
 
 Restricciones:
 - **CHECK**: `CHECK (((rating >= 1) AND (rating <= 5)))`
+- **FK**: `FOREIGN KEY (planned_meal_id) REFERENCES planned_meals(id) ON DELETE SET NULL`
 - **FK**: `FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE`
 - **FK**: `FOREIGN KEY (user_id) REFERENCES profiles(id) ON DELETE CASCADE`
-- **FK**: `FOREIGN KEY (planned_meal_id) REFERENCES planned_meals(id) ON DELETE SET NULL`
 - **PK**: `PRIMARY KEY (id)`
 - **UNIQUE**: `UNIQUE (planned_meal_id)`
 
@@ -1000,8 +1026,8 @@ Restricciones:
 | `tag_id` | smallint | no |  |  |
 
 Restricciones:
-- **FK**: `FOREIGN KEY (tag_id) REFERENCES rating_tags(id)`
 - **FK**: `FOREIGN KEY (rating_id) REFERENCES recipe_ratings(id) ON DELETE CASCADE`
+- **FK**: `FOREIGN KEY (tag_id) REFERENCES rating_tags(id)`
 - **PK**: `PRIMARY KEY (rating_id, tag_id)`
 
 ### `recipe_comments`
@@ -1038,8 +1064,8 @@ Restricciones:
 Restricciones:
 - **CHECK**: `CHECK (((comment_id IS NULL) <> (recipe_id IS NULL)))`
 - **FK**: `FOREIGN KEY (reporter_id) REFERENCES profiles(id) ON DELETE CASCADE`
-- **FK**: `FOREIGN KEY (comment_id) REFERENCES recipe_comments(id) ON DELETE CASCADE`
 - **FK**: `FOREIGN KEY (resolved_by) REFERENCES profiles(id) ON DELETE SET NULL`
+- **FK**: `FOREIGN KEY (comment_id) REFERENCES recipe_comments(id) ON DELETE CASCADE`
 - **FK**: `FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE`
 - **PK**: `PRIMARY KEY (id)`
 - **UNIQUE**: `UNIQUE (reporter_id, comment_id)`
@@ -1059,8 +1085,8 @@ Restricciones:
 | `created_at` | timestamp with time zone | no | now() |  |
 
 Restricciones:
-- **CHECK**: `CHECK (((screenshot_path IS NULL) OR (screenshot_path ~~ ((user_id)::text || '/%'::text))))`
 - **CHECK**: `CHECK ((char_length((message)::text) >= 1))`
+- **CHECK**: `CHECK (((screenshot_path IS NULL) OR (screenshot_path ~~ ((user_id)::text || '/%'::text))))`
 - **FK**: `FOREIGN KEY (user_id) REFERENCES profiles(id) ON DELETE CASCADE`
 - **PK**: `PRIMARY KEY (id)`
 
@@ -1111,8 +1137,8 @@ Restricciones:
 | `created_at` | timestamp with time zone | no | now() |  |
 
 Restricciones:
-- **CHECK**: `CHECK ((input_tokens >= 0))`
 - **CHECK**: `CHECK ((latency_ms >= 0))`
+- **CHECK**: `CHECK ((input_tokens >= 0))`
 - **CHECK**: `CHECK ((output_tokens >= 0))`
 - **FK**: `FOREIGN KEY (user_id) REFERENCES profiles(id) ON DELETE CASCADE`
 - **PK**: `PRIMARY KEY (id)`
@@ -1136,14 +1162,14 @@ Caché compartida de la clasificación de textos libres (B3, ADR-027). Solo la e
 | `created_at` | timestamp with time zone | no | now() |  |
 
 Restricciones:
-- **CHECK**: `CHECK (((char_length(name) >= 1) AND (char_length(name) <= 80)))`
-- **CHECK**: `CHECK (((kcal_per_serving >= (0)::numeric) AND (kcal_per_serving <= (3000)::numeric)))`
-- **CHECK**: `CHECK (((protein_g_per_serving >= (0)::numeric) AND (protein_g_per_serving <= (300)::numeric)))`
-- **CHECK**: `CHECK ( CASE WHEN is_food THEN (food_group_id IS NOT NULL) ELSE ((food_group_id IS NULL) AND (kcal_per_serving IS NULL) AND (protein_g_per_serving IS NULL)) END)`
 - **CHECK**: `CHECK ((source = ANY (ARRAY['ai'::text, 'manual'::text])))`
+- **CHECK**: `CHECK ( CASE WHEN is_food THEN (food_group_id IS NOT NULL) ELSE ((food_group_id IS NULL) AND (kcal_per_serving IS NULL) AND (protein_g_per_serving IS NULL)) END)`
+- **CHECK**: `CHECK (((kcal_per_serving >= (0)::numeric) AND (kcal_per_serving <= (3000)::numeric)))`
 - **CHECK**: `CHECK (((key ~ '^[a-z0-9]([a-z0-9 ]{0,78}[a-z0-9])?$'::text) AND (char_length(key) >= 2)))`
-- **FK**: `FOREIGN KEY (food_group_id) REFERENCES food_groups(id)`
+- **CHECK**: `CHECK (((char_length(name) >= 1) AND (char_length(name) <= 80)))`
+- **CHECK**: `CHECK (((protein_g_per_serving >= (0)::numeric) AND (protein_g_per_serving <= (300)::numeric)))`
 - **FK**: `FOREIGN KEY (store_category_id) REFERENCES ingredient_categories(id)`
+- **FK**: `FOREIGN KEY (food_group_id) REFERENCES food_groups(id)`
 - **PK**: `PRIMARY KEY (key)`
 
 ### `notifications`
@@ -1159,10 +1185,10 @@ Restricciones:
 | `sent_at` | timestamp with time zone | sí |  |  |
 
 Restricciones:
-- **CHECK**: `CHECK (((kind = 'expiry_alert'::notification_kind) = (pantry_item_id IS NOT NULL)))`
 - **CHECK**: `CHECK (((kind = 'meal_reminder'::notification_kind) = (planned_meal_id IS NOT NULL)))`
-- **FK**: `FOREIGN KEY (planned_meal_id) REFERENCES planned_meals(id) ON DELETE CASCADE`
+- **CHECK**: `CHECK (((kind = 'expiry_alert'::notification_kind) = (pantry_item_id IS NOT NULL)))`
 - **FK**: `FOREIGN KEY (user_id) REFERENCES profiles(id) ON DELETE CASCADE`
+- **FK**: `FOREIGN KEY (planned_meal_id) REFERENCES planned_meals(id) ON DELETE CASCADE`
 - **FK**: `FOREIGN KEY (pantry_item_id) REFERENCES pantry_items(id) ON DELETE CASCADE`
 - **PK**: `PRIMARY KEY (id)`
 - **UNIQUE**: `UNIQUE (kind, planned_meal_id)`

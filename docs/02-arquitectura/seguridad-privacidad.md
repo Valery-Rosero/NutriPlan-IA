@@ -1,7 +1,7 @@
 # Seguridad y privacidad
 
 ## Controles implementados en BD
-- RLS en las 64 tablas; `grants` mínimos; helpers en esquema `private`; vistas `security_invoker`. Las funciones `SECURITY DEFINER` (`export_my_data`, `register_push_device`, `unregister_push_device`, `report_app_error`) filtran por `auth.uid()` de forma explícita.
+- RLS en todas las tablas (66 al 13-nov-2026); `grants` mínimos; helpers en esquema `private`; vistas `security_invoker`. Las funciones `SECURITY DEFINER` (`export_my_data`, `register_push_device`, `unregister_push_device`, `report_app_error`) filtran por `auth.uid()` de forma explícita.
 - Triggers `private.require_sensitive_authorization` en `profile_health`, `user_conditions`, `user_allergens`, `user_diets`, y `private.require_sensitive_for_targets` en las metas de proteína y calorías de `profiles`: sin autorización vigente no se escribe. Al revocarla, las metas se borran (`purge_targets_on_revoke`).
 - `profiles.adult_declared_at` inmutable; sin fecha de nacimiento (`birth_year`).
 - `user_consents` con `accepted_at/revoked_at` y `legal_documents.content_sha256` (evidencia del texto aceptado).

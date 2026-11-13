@@ -26,7 +26,7 @@ Cada una lleva su ADR, migración (si aplica), pruebas y actualización de `docs
 - El generador (`generate_plan`) hoy acepta 1–14 días: extenderlo a **31** y probar el tiempo de respuesta con un mes.
 - Depende de B1 para verse bien (cuadrícula del mes).
 
-### B3. Clasificación de alimentos con IA · B3a ✅ hecho (13-nov): función, caché e ítems manuales de la lista. Falta B3b (despensa) y desplegar `categorize-food`
+### B3. Clasificación de alimentos con IA · ✅ hecho (13-nov): B3a función, caché e ítems manuales de la lista; B3b alimentos propios en la despensa (tabla `pantry_custom_items`). Falta desplegar `categorize-food`
 - Edge Function `categorize-food` con Gemini Flash-Lite (mismo adaptador que el asistente, ADR-025).
 - La IA **solo escoge de listas cerradas** de la base: 16 grupos de alimento, 8 secciones del supermercado y momento del día; además estima calorías y proteína por porción. La base valida la respuesta (ADR-003).
 - **Caché** compartida por texto normalizado ("empanada" se clasifica una vez); respaldo con reglas simples si la IA falla; la persona puede corregir la categoría.

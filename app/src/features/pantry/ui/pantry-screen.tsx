@@ -82,7 +82,7 @@ export function PantryScreen({ embedded }: { embedded?: boolean }) {
         cancelLabel={t('common.cancel')}
         danger
         onConfirm={() => {
-          if (toRemove) remove.mutate(toRemove.id);
+          if (toRemove) remove.mutate(toRemove);
           setToRemove(null);
         }}
         onCancel={() => setToRemove(null)}
@@ -127,16 +127,21 @@ function PantryRow({ item, onRemove }: { item: PantryItem; onRemove: () => void 
         ? t('pantry.expired')
         : t('pantry.expiresIn', { count: daysBetween(today, item.expiresOn!) });
   const tone: Tone = status === 'expired' ? 'danger' : status === 'soon' ? 'warning' : 'neutral';
+  // B3b: un alimento propio muestra su cantidad tal como se escribió (no hay gramos).
+  const amount = item.custom
+    ? t('pantry.custom.amount', { quantity: item.custom.quantity.toLocaleString('es-CO'), unit: t(`pantry.custom.units.${item.custom.unit}`) })
+    : formatGrams(item.grams);
 
   return (
     <Card style={styles.card}>
       <View style={styles.row}>
         <IconBadge name={status === 'expired' ? 'alert-circle-outline' : 'leaf-outline'} tone={tone === 'neutral' ? 'primary' : tone} />
         {/* La información se lee junta; el botón de quitar queda aparte para que el lector lo alcance. */}
-        <View style={styles.info} accessible accessibilityLabel={`${item.name}, ${formatGrams(item.grams)}. ${expiry}.`}>
+        <View style={styles.info} accessible accessibilityLabel={`${item.name}${item.custom ? ` (${t('pantry.custom.badge')})` : ''}, ${amount}. ${expiry}.`}>
           <AppText variant="subtitle">{item.name}</AppText>
           <View style={styles.meta}>
-            <AppText variant="caption" secondary>{formatGrams(item.grams)}</AppText>
+            <AppText variant="caption" secondary>{amount}</AppText>
+            {item.custom && <Pill label={t('pantry.custom.badge')} tone="neutral" icon="create-outline" />}
             {status === 'none' ? (
               <AppText variant="caption" secondary>{`· ${expiry}`}</AppText>
             ) : (

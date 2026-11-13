@@ -2,7 +2,8 @@ import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tansta
 
 import { useServices } from '@/di/services';
 import { cookingKeys } from '@/features/cooking/application/use-suggestions';
-import { addDays, sortPantry, todayIso, type NewPantryItem } from '@/features/pantry/domain/pantry';
+import { classifyQuietly } from '@/features/food/domain/food-label';
+import { addDays, sortPantry, todayIso, type NewCustomPantryItem, type NewPantryItem, type PantryItem } from '@/features/pantry/domain/pantry';
 import type { QuickItem } from '@/features/pantry/domain/quick-add';
 
 export const pantryKeys = {
@@ -32,6 +33,22 @@ export function useAddToPantry() {
   return useMutation({ mutationFn: (item: NewPantryItem) => pantry.add(item), onSuccess: invalidate });
 }
 
+/**
+ * B3b: alimento fuera del catálogo. Se clasifica (grupo y sección) sin estorbar: si la clasificación
+ * falla o tarda, se guarda igual, sin grupo.
+ */
+export function useAddCustomToPantry() {
+  const { pantry, foodLabels } = useServices();
+  const invalidate = useInvalidatePantry();
+  return useMutation({
+    mutationFn: async (item: Omit<NewCustomPantryItem, 'foodGroupId' | 'storeCategoryId'>) => {
+      const label = await classifyQuietly(foodLabels, item.name);
+      await pantry.addCustom({ ...item, foodGroupId: label?.foodGroupId ?? null, storeCategoryId: label?.storeCategoryId ?? null });
+    },
+    onSuccess: invalidate,
+  });
+}
+
 /** Un toque: agrega lo típico con vencimiento según la vida útil del ingrediente. */
 export function useQuickAdd() {
   const { pantry } = useServices();
@@ -55,7 +72,7 @@ export function useQuickAdd() {
 export function useRemovePantryItem() {
   const { pantry } = useServices();
   const invalidate = useInvalidatePantry();
-  return useMutation({ mutationFn: (id: string) => pantry.remove(id), onSuccess: invalidate });
+  return useMutation({ mutationFn: (item: Pick<PantryItem, 'id' | 'ingredientId'>) => pantry.remove(item), onSuccess: invalidate });
 }
 
 export function useIngredientSearch(query: string) {

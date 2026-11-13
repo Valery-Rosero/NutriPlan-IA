@@ -1,7 +1,15 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 import { toAppError } from '@/core/errors/app-error';
-import type { IngredientOption, NewPantryItem, PantryRepository, Unit } from '@/features/pantry/domain/pantry';
+import type {
+  CustomUnit,
+  IngredientOption,
+  NewCustomPantryItem,
+  NewPantryItem,
+  PantryItem,
+  PantryRepository,
+  Unit,
+} from '@/features/pantry/domain/pantry';
 import type { Database } from '@/types/database';
 
 export class SupabasePantryRepository implements PantryRepository {
@@ -11,19 +19,32 @@ export class SupabasePantryRepository implements PantryRepository {
     this.client = client;
   }
 
-  async list() {
-    const { data, error } = await this.client
-      .from('pantry_items')
-      .select('id, ingredient_id, quantity_g, expires_on, ingredients!inner(name)')
-      .gt('quantity_g', 0);
-    if (error) throw toAppError(error);
-    return data.map((row) => ({
-      id: row.id,
-      ingredientId: row.ingredient_id,
-      name: row.ingredients.name,
-      grams: row.quantity_g,
-      expiresOn: row.expires_on,
-    }));
+  /** Lo del catálogo y los alimentos propios (B3b), juntos. */
+  async list(): Promise<PantryItem[]> {
+    const [catalog, custom] = await Promise.all([
+      this.client.from('pantry_items').select('id, ingredient_id, quantity_g, expires_on, ingredients!inner(name)').gt('quantity_g', 0),
+      this.client.from('pantry_custom_items').select('id, name, quantity, unit, expires_on'),
+    ]);
+    if (catalog.error) throw toAppError(catalog.error);
+    if (custom.error) throw toAppError(custom.error);
+    return [
+      ...catalog.data.map((row) => ({
+        id: row.id,
+        ingredientId: row.ingredient_id,
+        name: row.ingredients.name,
+        grams: row.quantity_g,
+        expiresOn: row.expires_on,
+        custom: null,
+      })),
+      ...custom.data.map((row) => ({
+        id: row.id,
+        ingredientId: null,
+        name: row.name,
+        grams: 0,
+        expiresOn: row.expires_on,
+        custom: { quantity: Number(row.quantity), unit: row.unit as CustomUnit },
+      })),
+    ];
   }
 
   async add({ ingredientId, quantity, unitId, expiresOn }: NewPantryItem) {
@@ -36,8 +57,21 @@ export class SupabasePantryRepository implements PantryRepository {
     if (error) throw toAppError(error);
   }
 
-  async remove(id: string) {
-    const { error } = await this.client.from('pantry_items').delete().eq('id', id);
+  async addCustom({ name, quantity, unit, expiresOn, foodGroupId, storeCategoryId }: NewCustomPantryItem) {
+    const { error } = await this.client.from('pantry_custom_items').insert({
+      name: name.trim(),
+      quantity,
+      unit,
+      expires_on: expiresOn,
+      food_group_id: foodGroupId,
+      store_category_id: storeCategoryId,
+    });
+    if (error) throw toAppError(error);
+  }
+
+  async remove({ id, ingredientId }: Pick<PantryItem, 'id' | 'ingredientId'>) {
+    const table = ingredientId === null ? 'pantry_custom_items' : 'pantry_items';
+    const { error } = await this.client.from(table).delete().eq('id', id);
     if (error) throw toAppError(error);
   }
 

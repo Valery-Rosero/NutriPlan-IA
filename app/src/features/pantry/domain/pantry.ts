@@ -1,10 +1,33 @@
-export type PantryItem = { id: string; ingredientId: string; name: string; grams: number; expiresOn: string | null };
+/** Unidades de un alimento propio (B3b): se guarda lo que escribió la persona, sin pasar a gramos. */
+export const CUSTOM_UNITS = ['g', 'kg', 'lb', 'ml', 'l', 'unit'] as const;
+export type CustomUnit = (typeof CUSTOM_UNITS)[number];
+
+export type PantryItem = {
+  id: string;
+  /** null = alimento propio, fuera del catálogo (B3b): no entra en recetas, plan ni lista. */
+  ingredientId: string | null;
+  name: string;
+  /** Gramos (catálogo). En un alimento propio es 0: su cantidad va en `custom`. */
+  grams: number;
+  expiresOn: string | null;
+  custom: { quantity: number; unit: CustomUnit } | null;
+};
 
 export type Unit = { id: number; code: string; name: string; dimension: 'mass' | 'volume' | 'count' };
 
 export type IngredientOption = { id: string; name: string; countUnits: Unit[] };
 
 export type NewPantryItem = { ingredientId: string; quantity: number; unitId: number; expiresOn: string | null };
+
+/** B3b: un alimento que no está en el catálogo. Grupo y sección los sugiere la clasificación (opcionales). */
+export type NewCustomPantryItem = {
+  name: string;
+  quantity: number;
+  unit: CustomUnit;
+  expiresOn: string | null;
+  foodGroupId: number | null;
+  storeCategoryId: number | null;
+};
 
 export type IngredientRef = { id: string; name: string; shelfLifeDays: number | null };
 
@@ -13,7 +36,10 @@ export interface PantryRepository {
   list(): Promise<PantryItem[]>;
   /** Convierte a gramos en la base y suma al lote con el mismo vencimiento (add_to_pantry). */
   add(item: NewPantryItem): Promise<void>;
-  remove(id: string): Promise<void>;
+  /** B3b: alimento fuera del catálogo (tabla aparte; no toca las funciones de recetas). */
+  addCustom(item: NewCustomPantryItem): Promise<void>;
+  /** Quita un lote del catálogo o un alimento propio (cada uno vive en su tabla). */
+  remove(item: Pick<PantryItem, 'id' | 'ingredientId'>): Promise<void>;
   search(query: string): Promise<IngredientOption[]>;
   /** Ingredientes del catálogo por nombre exacto (agregado rápido). */
   findByNames(names: string[]): Promise<IngredientRef[]>;

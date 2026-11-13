@@ -24,7 +24,7 @@ describe('vencimientos (US-142)', () => {
   });
 
   it('ordena: primero lo que vence, al final lo que no tiene fecha', () => {
-    const item = (name: string, expiresOn: string | null): PantryItem => ({ id: name, ingredientId: name, name, grams: 1, expiresOn });
+    const item = (name: string, expiresOn: string | null): PantryItem => ({ id: name, ingredientId: name, name, grams: 1, expiresOn, custom: null });
     const sorted = sortPantry([item('Arroz', null), item('Leche', '2026-10-20'), item('Huevo', '2026-10-15')]);
     expect(sorted.map((i) => i.name)).toEqual(['Huevo', 'Leche', 'Arroz']);
   });
@@ -38,7 +38,7 @@ describe('unidades ofrecidas', () => {
 });
 
 describe('cocina agrupada por urgencia', () => {
-  const item = (name: string, expiresOn: string | null): PantryItem => ({ id: name, ingredientId: name, name, grams: 100, expiresOn });
+  const item = (name: string, expiresOn: string | null): PantryItem => ({ id: name, ingredientId: name, name, grams: 100, expiresOn, custom: null });
 
   it('separa lo vencido, lo que vence pronto y el resto, sin grupos vacíos', () => {
     const groups = groupByUrgency(

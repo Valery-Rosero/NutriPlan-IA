@@ -3,7 +3,25 @@ export type Json = string | number | boolean | null | { [key: string]: Json | un
 
 export type Database = {
   
-  "public": {
+  "graphql_public": {
+          Tables: {
+            [_ in never]: never
+          }
+          Views: {
+            [_ in never]: never
+          }
+          Functions: {
+            "graphql":
+{ Args: { "extensions"?: Json,"operationName"?: string,"query"?: string,"variables"?: Json }; Returns: Json
+                           }
+          }
+          Enums: {
+            [_ in never]: never
+          }
+          CompositeTypes: {
+            [_ in never]: never
+          }
+        },"public": {
           Tables: {
             "ai_generations": {
                   Row: {
@@ -344,6 +362,38 @@ isOneToOne: false
                   }
                   Relationships: [
                     
+                  ]
+                },"food_labels": {
+                  Row: {
+                    "created_at": string,"food_group_id": number | null,"is_food": boolean,"kcal_per_serving": number | null,"key": string,"meal_slot": Database["public"]['Enums']["meal_slot"] | null,"model": string | null,"name": string,"protein_g_per_serving": number | null,"source": string,"store_category_id": number
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"food_group_id"?: number | null,"is_food": boolean,"kcal_per_serving"?: number | null,"key": string,"meal_slot"?: Database["public"]['Enums']["meal_slot"] | null,"model"?: string | null,"name": string,"protein_g_per_serving"?: number | null,"source"?: string,"store_category_id": number
+                  }
+                  Update: {
+                    "created_at"?: string,"food_group_id"?: number | null,"is_food"?: boolean,"kcal_per_serving"?: number | null,"key"?: string,"meal_slot"?: Database["public"]['Enums']["meal_slot"] | null,"model"?: string | null,"name"?: string,"protein_g_per_serving"?: number | null,"source"?: string,"store_category_id"?: number
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "food_labels_food_group_id_fkey"
+      columns: ["food_group_id"]
+isOneToOne: false
+      referencedRelation: "food_groups"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "food_labels_store_category_id_fkey"
+      columns: ["store_category_id"]
+isOneToOne: false
+      referencedRelation: "ingredient_categories"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "food_labels_store_category_id_fkey"
+      columns: ["store_category_id"]
+isOneToOne: false
+      referencedRelation: "my_shopping_items"
+      referencedColumns: ["category_id"]
+    }
                   ]
                 },"ingredient_allergens": {
                   Row: {
@@ -692,6 +742,44 @@ isOneToOne: false
     },{
       foreignKeyName: "nutritionist_reviews_reviewer_id_fkey"
       columns: ["reviewer_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"pantry_custom_items": {
+                  Row: {
+                    "created_at": string,"expires_on": string | null,"food_group_id": number | null,"id": string,"name": string,"quantity": number,"store_category_id": number | null,"unit": string,"updated_at": string,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"expires_on"?: string | null,"food_group_id"?: number | null,"id"?: string,"name": string,"quantity": number,"store_category_id"?: number | null,"unit": string,"updated_at"?: string,"user_id"?: string
+                  }
+                  Update: {
+                    "created_at"?: string,"expires_on"?: string | null,"food_group_id"?: number | null,"id"?: string,"name"?: string,"quantity"?: number,"store_category_id"?: number | null,"unit"?: string,"updated_at"?: string,"user_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "pantry_custom_items_food_group_id_fkey"
+      columns: ["food_group_id"]
+isOneToOne: false
+      referencedRelation: "food_groups"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "pantry_custom_items_store_category_id_fkey"
+      columns: ["store_category_id"]
+isOneToOne: false
+      referencedRelation: "ingredient_categories"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "pantry_custom_items_store_category_id_fkey"
+      columns: ["store_category_id"]
+isOneToOne: false
+      referencedRelation: "my_shopping_items"
+      referencedColumns: ["category_id"]
+    },{
+      foreignKeyName: "pantry_custom_items_user_id_fkey"
+      columns: ["user_id"]
 isOneToOne: false
       referencedRelation: "profiles"
       referencedColumns: ["id"]
@@ -2085,7 +2173,7 @@ isOneToOne: false
                            }
           }
           Enums: {
-            "activity_level": "sedentary"|"light"|"moderate"|"active"|"very_active","ai_kind": "plan"|"swap"|"chat","analytics_event": "onboarding_completed"|"plan_generated"|"shopping_list_generated"|"meal_cooked","app_role": "moderator"|"nutritionist"|"admin","budget_period": "week"|"month","chat_role": "user"|"assistant","device_platform": "ios"|"android","diet_kind": "rule_based"|"curated","error_source": "app"|"edge","health_goal": "lose_weight"|"maintain"|"gain_muscle"|"eat_healthier"|"save_time","legal_doc_kind": "privacy_policy"|"terms"|"health_disclaimer"|"community_sharing"|"sensitive_data_authorization","list_status": "active"|"completed","meal_slot": "breakfast"|"lunch"|"dinner"|"snack","meal_status": "planned"|"cooked"|"skipped","notification_frequency": "none"|"weekly_summary"|"daily","notification_kind": "meal_reminder"|"expiry_alert"|"weekly_summary","plan_status": "draft"|"confirmed"|"archived","recipe_status": "draft"|"in_review"|"published"|"rejected","report_reason": "spam"|"dangerous_advice"|"offensive"|"other","review_outcome": "approved"|"rejected","sex": "female"|"male"|"prefer_not_say","shopping_item_source": "plan"|"manual","ticket_category": "bug"|"suggestion","units_dimension": "mass"|"volume"|"count"
+            "activity_level": "sedentary"|"light"|"moderate"|"active"|"very_active","ai_kind": "plan"|"swap"|"chat"|"label","analytics_event": "onboarding_completed"|"plan_generated"|"shopping_list_generated"|"meal_cooked","app_role": "moderator"|"nutritionist"|"admin","budget_period": "week"|"month","chat_role": "user"|"assistant","device_platform": "ios"|"android","diet_kind": "rule_based"|"curated","error_source": "app"|"edge","health_goal": "lose_weight"|"maintain"|"gain_muscle"|"eat_healthier"|"save_time","legal_doc_kind": "privacy_policy"|"terms"|"health_disclaimer"|"community_sharing"|"sensitive_data_authorization","list_status": "active"|"completed","meal_slot": "breakfast"|"lunch"|"dinner"|"snack","meal_status": "planned"|"cooked"|"skipped","notification_frequency": "none"|"weekly_summary"|"daily","notification_kind": "meal_reminder"|"expiry_alert"|"weekly_summary","plan_status": "draft"|"confirmed"|"archived","recipe_status": "draft"|"in_review"|"published"|"rejected","report_reason": "spam"|"dangerous_advice"|"offensive"|"other","review_outcome": "approved"|"rejected","sex": "female"|"male"|"prefer_not_say","shopping_item_source": "plan"|"manual","ticket_category": "bug"|"suggestion","units_dimension": "mass"|"volume"|"count"
           }
           CompositeTypes: {
             [_ in never]: never
@@ -2199,9 +2287,13 @@ export type CompositeTypes<
   : never
 
 export const Constants = {
-  "public": {
+  "graphql_public": {
           Enums: {
-            "activity_level": ["sedentary", "light", "moderate", "active", "very_active"],"ai_kind": ["plan", "swap", "chat"],"analytics_event": ["onboarding_completed", "plan_generated", "shopping_list_generated", "meal_cooked"],"app_role": ["moderator", "nutritionist", "admin"],"budget_period": ["week", "month"],"chat_role": ["user", "assistant"],"device_platform": ["ios", "android"],"diet_kind": ["rule_based", "curated"],"error_source": ["app", "edge"],"health_goal": ["lose_weight", "maintain", "gain_muscle", "eat_healthier", "save_time"],"legal_doc_kind": ["privacy_policy", "terms", "health_disclaimer", "community_sharing", "sensitive_data_authorization"],"list_status": ["active", "completed"],"meal_slot": ["breakfast", "lunch", "dinner", "snack"],"meal_status": ["planned", "cooked", "skipped"],"notification_frequency": ["none", "weekly_summary", "daily"],"notification_kind": ["meal_reminder", "expiry_alert", "weekly_summary"],"plan_status": ["draft", "confirmed", "archived"],"recipe_status": ["draft", "in_review", "published", "rejected"],"report_reason": ["spam", "dangerous_advice", "offensive", "other"],"review_outcome": ["approved", "rejected"],"sex": ["female", "male", "prefer_not_say"],"shopping_item_source": ["plan", "manual"],"ticket_category": ["bug", "suggestion"],"units_dimension": ["mass", "volume", "count"]
+            
+          }
+        },"public": {
+          Enums: {
+            "activity_level": ["sedentary", "light", "moderate", "active", "very_active"],"ai_kind": ["plan", "swap", "chat", "label"],"analytics_event": ["onboarding_completed", "plan_generated", "shopping_list_generated", "meal_cooked"],"app_role": ["moderator", "nutritionist", "admin"],"budget_period": ["week", "month"],"chat_role": ["user", "assistant"],"device_platform": ["ios", "android"],"diet_kind": ["rule_based", "curated"],"error_source": ["app", "edge"],"health_goal": ["lose_weight", "maintain", "gain_muscle", "eat_healthier", "save_time"],"legal_doc_kind": ["privacy_policy", "terms", "health_disclaimer", "community_sharing", "sensitive_data_authorization"],"list_status": ["active", "completed"],"meal_slot": ["breakfast", "lunch", "dinner", "snack"],"meal_status": ["planned", "cooked", "skipped"],"notification_frequency": ["none", "weekly_summary", "daily"],"notification_kind": ["meal_reminder", "expiry_alert", "weekly_summary"],"plan_status": ["draft", "confirmed", "archived"],"recipe_status": ["draft", "in_review", "published", "rejected"],"report_reason": ["spam", "dangerous_advice", "offensive", "other"],"review_outcome": ["approved", "rejected"],"sex": ["female", "male", "prefer_not_say"],"shopping_item_source": ["plan", "manual"],"ticket_category": ["bug", "suggestion"],"units_dimension": ["mass", "volume", "count"]
           }
         }
 } as const

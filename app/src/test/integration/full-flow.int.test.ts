@@ -110,6 +110,18 @@ run('recorrido completo contra Supabase real', () => {
     const items = await pantry.list();
     expect(items.find((i) => i.name === 'Papa')?.grams).toBe(1000);
     expect(items.find((i) => i.name === 'Cerdo')?.grams).toBe(600);
+
+    // B3b: un alimento propio (fuera del catálogo) convive con la despensa del catálogo
+    await pantry.addCustom({ name: 'Galletas de la tienda', quantity: 2, unit: 'unit', expiresOn: null, foodGroupId: 9, storeCategoryId: 5 });
+    await pantry.addCustom({ name: 'Bocadillo veleño', quantity: 250, unit: 'g', expiresOn: null, foodGroupId: null, storeCategoryId: null });
+    const withCustom = await pantry.list();
+    const galletas = withCustom.find((i) => i.name === 'Galletas de la tienda')!;
+    expect(galletas).toMatchObject({ ingredientId: null, custom: { quantity: 2, unit: 'unit' } });
+    expect(withCustom.find((i) => i.name === 'Papa')?.custom).toBeNull();
+    await pantry.remove(galletas); // se borra de su tabla, no de la del catálogo
+    const after = await pantry.list();
+    expect(after.some((i) => i.name === 'Galletas de la tienda')).toBe(false);
+    expect(after.some((i) => i.name === 'Papa')).toBe(true);
   });
 
   it('6. "¿Qué cocino?": sugerencias seguras (ninguna resuelve con huevo)', async () => {
@@ -227,5 +239,6 @@ run('recorrido completo contra Supabase real', () => {
     expect(json.allergens).toHaveLength(1);
     expect(json.meal_plans.length).toBeGreaterThan(0);
     expect(json.support_tickets).toHaveLength(1);
+    expect(json.pantry_custom.map((i: { name: string }) => i.name)).toEqual(['Bocadillo veleño']); // B3b
   });
 });

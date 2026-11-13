@@ -3,7 +3,7 @@
 ## Vista general
 ```
 App Android (Expo SDK 57, RN + TS)
-  ├─ supabase-js (anon key + JWT del usuario) ──► PostgREST / RPC ──► Postgres 17 (RLS en las 64 tablas)
+  ├─ supabase-js (anon key + JWT del usuario) ──► PostgREST / RPC ──► Postgres 17 (RLS en todas las tablas)
   │                                                 ├─ generate_plan (reglas en SQL, ADR-023)
   │                                                 └─ pg_cron ─┬─ cada 15 min: programa avisos ─┐
   │                                                             └─ cada 5 min: fallas nuevas ─┐   │

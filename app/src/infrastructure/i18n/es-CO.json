@@ -305,7 +305,24 @@
       "soon": "Úsalo primero",
       "rest": "En tu cocina"
     },
-    "selectHint": "Elegir este ingrediente para agregarlo"
+    "selectHint": "Elegir este ingrediente para agregarlo",
+    "custom": {
+      "addAs": "Agregar «{{name}}» como alimento propio",
+      "title": "Alimento propio",
+      "note": "No está en nuestro catálogo: lo guardamos en tu cocina, pero no se usa para calcular recetas.",
+      "backToSearch": "Volver a buscar en el catálogo",
+      "nameLabel": "Nombre",
+      "badge": "Propio",
+      "amount": "{{quantity}} {{unit}}",
+      "units": {
+        "g": "g",
+        "kg": "kg",
+        "lb": "libras",
+        "ml": "ml",
+        "l": "litros",
+        "unit": "unidades"
+      }
+    }
   },
   "profile": {
     "title": "Perfil",

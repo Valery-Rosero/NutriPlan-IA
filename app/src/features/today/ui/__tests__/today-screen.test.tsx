@@ -7,7 +7,7 @@ import { TodayScreen } from '@/features/today/ui/today-screen';
 import { fakePantry, fakePlans, fakeProfile, fakeServices, fakeShopping, PLAN, PROFILE, withServices } from '@/test/fakes';
 
 const kitchenWith = (names: string[]) =>
-  fakePantry({ list: jest.fn(async () => names.map((name) => ({ id: name, ingredientId: name, name, grams: 500, expiresOn: null }))) });
+  fakePantry({ list: jest.fn(async () => names.map((name) => ({ id: name, ingredientId: name, name, grams: 500, expiresOn: null, custom: null }))) });
 
 describe('Hoy (ADR-024): el flujo gira en torno a la cocina', () => {
   beforeEach(() => jest.clearAllMocks());
