@@ -4,6 +4,7 @@ import { ScrollView, SectionList, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { errorKey } from '@/core/errors/app-error';
+import { foodEmoji } from '@/core/food-emoji';
 import { formatGrams } from '@/core/format';
 import { usePantry, useRemovePantryItem } from '@/features/pantry/application/pantry-queries';
 import { daysBetween, expiryStatus, groupByUrgency, todayIso, type PantryItem } from '@/features/pantry/domain/pantry';
@@ -17,7 +18,7 @@ import {
   ConfirmDialog,
   EmptyState,
   ErrorState,
-  IconBadge,
+  FoodTile,
   IconButton,
   LoadingState,
   Pill,
@@ -49,10 +50,10 @@ export function PantryScreen({ embedded }: { embedded?: boolean }) {
       ) : pantry.data.length === 0 ? (
         <ScrollView contentContainerStyle={styles.list}>
           <EmptyState message={t('pantry.empty')} icon="basket-outline" />
-          <Card variant="primary">
+          <Card variant="filled">
             <QuickAdd />
           </Card>
-          <Button label={t('pantry.add')} icon="add" variant="secondary" onPress={add} />
+          <Button label={t('pantry.add')} icon="add" variant="secondary" flavor="basil" onPress={add} />
         </ScrollView>
       ) : (
         <SectionList
@@ -62,7 +63,7 @@ export function PantryScreen({ embedded }: { embedded?: boolean }) {
           stickySectionHeadersEnabled={false}
           ListHeaderComponent={
             <View style={styles.header}>
-              <Button label={t('pantry.add')} icon="add" onPress={add} />
+              <Button label={t('pantry.add')} icon="add" flavor="basil" onPress={add} />
               <QuickAddCollapsible />
             </View>
           }
@@ -126,7 +127,8 @@ function PantryRow({ item, onRemove }: { item: PantryItem; onRemove: () => void 
       : status === 'expired'
         ? t('pantry.expired')
         : t('pantry.expiresIn', { count: daysBetween(today, item.expiresOn!) });
-  const tone: Tone = status === 'expired' ? 'danger' : status === 'soon' ? 'warning' : 'neutral';
+  // "Cocina viva": lo que vence pronto va en mango (úsalo primero), no en rojo; lo vencido sí es un problema.
+  const tone: Tone = status === 'expired' ? 'danger' : status === 'soon' ? 'mango' : 'neutral';
   // B3b: un alimento propio muestra su cantidad tal como se escribió (no hay gramos).
   const amount = item.custom
     ? t('pantry.custom.amount', { quantity: item.custom.quantity.toLocaleString('es-CO'), unit: t(`pantry.custom.units.${item.custom.unit}`) })
@@ -135,7 +137,7 @@ function PantryRow({ item, onRemove }: { item: PantryItem; onRemove: () => void 
   return (
     <Card style={styles.card}>
       <View style={styles.row}>
-        <IconBadge name={status === 'expired' ? 'alert-circle-outline' : 'leaf-outline'} tone={tone === 'neutral' ? 'primary' : tone} />
+        <FoodTile emoji={foodEmoji(item.name, '🥫')} flavor={status === 'expired' ? 'tomato' : status === 'soon' ? 'mango' : 'basil'} size={48} />
         {/* La información se lee junta; el botón de quitar queda aparte para que el lector lo alcance. */}
         <View style={styles.info} accessible accessibilityLabel={`${item.name}${item.custom ? ` (${t('pantry.custom.badge')})` : ''}, ${amount}. ${expiry}.`}>
           <AppText variant="subtitle">{item.name}</AppText>
@@ -145,7 +147,7 @@ function PantryRow({ item, onRemove }: { item: PantryItem; onRemove: () => void 
             {status === 'none' ? (
               <AppText variant="caption" secondary>{`· ${expiry}`}</AppText>
             ) : (
-              <Pill label={expiry} tone={tone} />
+              <Pill label={expiry} tone={tone} icon={status === 'expired' ? 'alert-circle-outline' : 'time-outline'} />
             )}
           </View>
         </View>

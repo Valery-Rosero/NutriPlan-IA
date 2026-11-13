@@ -1,7 +1,7 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { MinTouch, Spacing, type ThemeColors } from '@/shared/theme/colors';
+import { flavorColors, MinTouch, Spacing, type FlavorName, type ThemeColors } from '@/shared/theme/colors';
 import { Radius, Typography } from '@/shared/theme/tokens';
 import { useTheme } from '@/shared/theme/use-theme';
 import { AppText, TextLink, type IconName } from '@/shared/ui/primitives';
@@ -22,7 +22,7 @@ export function toneColors(c: ThemeColors, tone: Tone) {
 }
 
 /** Barra de progreso accesible (el lector anuncia el porcentaje). `value` entre 0 y 1. */
-export function ProgressBar({ value, label, tone = 'primary' }: { value: number; label: string; tone?: 'primary' | 'warning' }) {
+export function ProgressBar({ value, label, tone = 'primary' }: { value: number; label: string; tone?: 'primary' | 'warning' | 'accent' }) {
   const c = useTheme();
   const percent = Math.round(Math.min(1, Math.max(0, value)) * 100);
   return (
@@ -32,7 +32,7 @@ export function ProgressBar({ value, label, tone = 'primary' }: { value: number;
       accessibilityLabel={label}
       accessibilityValue={{ min: 0, max: 100, now: percent, text: `${percent} %` }}
       style={[styles.track, { backgroundColor: c.track }]}>
-      <View style={[styles.fill, { width: `${percent}%`, backgroundColor: tone === 'warning' ? c.warning : c.primary }]} />
+      <View style={[styles.fill, { width: `${percent}%`, backgroundColor: { primary: c.primary, warning: c.warning, accent: c.accent }[tone] }]} />
     </View>
   );
 }
@@ -63,14 +63,19 @@ export function IconBadge({ name, tone = 'primary', size = 40 }: { name: IconNam
   );
 }
 
-/** Selector de una opción entre pocas (momento del día, secciones). Cada opción es un radio de ≥ 44 pt. */
-export function SegmentedControl<T extends string>({ options, value, onChange, label }: {
+/**
+ * Selector de una opción entre pocas (momento del día, secciones). Cada opción es un radio de ≥ 44 pt.
+ * La elegida se llena con el sabor de la sección, como la pestaña activa de la barra.
+ */
+export function SegmentedControl<T extends string>({ options, value, onChange, label, flavor = 'tomato' }: {
   options: { value: T; label: string }[];
   value: T;
   onChange: (value: T) => void;
   label: string;
+  flavor?: FlavorName;
 }) {
   const c = useTheme();
+  const f = flavorColors(c, flavor);
   return (
     <View accessibilityRole="radiogroup" accessibilityLabel={label} style={[styles.segmented, { backgroundColor: c.surface }]}>
       {options.map((option) => {
@@ -82,9 +87,9 @@ export function SegmentedControl<T extends string>({ options, value, onChange, l
             accessibilityLabel={option.label}
             accessibilityState={{ selected }}
             onPress={() => onChange(option.value)}
-            style={[styles.segment, selected && { backgroundColor: c.card, borderColor: c.border }]}>
+            style={[styles.segment, selected && { backgroundColor: f.fill }]}>
             {/* Sin límite de líneas: con letra grande (200 %) la opción hace salto de línea en vez de cortarse (US-140). */}
-            <Text style={[Typography.label, styles.segmentLabel, { color: selected ? c.primary : c.textSecondary }]}>
+            <Text style={[Typography.label, styles.segmentLabel, { color: selected ? f.onFill : c.textSecondary, fontWeight: selected ? '700' : '600' }]}>
               {option.label}
             </Text>
           </Pressable>
@@ -123,14 +128,12 @@ const styles = StyleSheet.create({
   },
   pillText: { fontWeight: '600' },
   badge: { borderRadius: Radius.md, alignItems: 'center', justifyContent: 'center' },
-  segmented: { flexDirection: 'row', borderRadius: Radius.md, padding: Spacing.xs, gap: Spacing.xs },
+  segmented: { flexDirection: 'row', borderRadius: Radius.pill, padding: Spacing.xs, gap: Spacing.xs },
   segmentLabel: { textAlign: 'center' },
   segment: {
     flex: 1,
     minHeight: MinTouch,
-    borderRadius: Radius.sm,
-    borderWidth: 1,
-    borderColor: 'transparent',
+    borderRadius: Radius.pill,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: Spacing.xs,

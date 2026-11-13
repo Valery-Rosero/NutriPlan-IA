@@ -32,12 +32,12 @@ export function ShoppingRow({ item, planId, label, substitutes, onToggle, onRemo
     <View style={styles.wrap}>
       <View style={styles.row}>
         <View style={styles.flex}>
-          <Checkbox checked={item.checked} strikeWhenChecked onChange={onToggle} label={label} />
+          <Checkbox checked={item.checked} strikeWhenChecked onChange={onToggle} label={label} flavor="basil" />
         </View>
         {canSwap && (
           <IconButton
             icon="swap-horizontal"
-            tone="primary"
+            tone="basil"
             label={t('shopping.substitute.open', { name: item.name })}
             onPress={() => setOpen((o) => !o)}
           />

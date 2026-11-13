@@ -31,16 +31,18 @@ export function KitchenScreen() {
       <BrandHeader
         title={t('kitchen.title')}
         subtitle={t('kitchen.subtitle')}
+        flavor="basil"
         action={{ icon: 'person-circle-outline', label: t('profile.title'), onPress: () => router.push('/profile') }}>
         {items.length > 0 && (
           <View style={styles.pills}>
-            <Pill label={t('kitchen.count', { count: items.length })} icon="basket-outline" />
-            {expiring > 0 && <Pill label={t('kitchen.expiring', { count: expiring })} tone="warning" icon="alert-circle-outline" />}
+            <Pill label={t('kitchen.count', { count: items.length })} tone="accent" icon="leaf-outline" />
+            {expiring > 0 && <Pill label={t('kitchen.expiring', { count: expiring })} tone="mango" icon="alert-circle-outline" />}
           </View>
         )}
       </BrandHeader>
       <SegmentedControl
         label={t('kitchen.title')}
+        flavor="basil"
         value={tab}
         onChange={setTab}
         options={[

@@ -5,7 +5,7 @@ import { useController, type Control, type FieldPath, type FieldValues } from 'r
 import { Pressable, StyleSheet, Text, TextInput, View, type TextInputProps } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { MinTouch, Spacing } from '@/shared/theme/colors';
+import { flavorColors, MinTouch, Spacing, type FlavorName } from '@/shared/theme/colors';
 import { Radius, Typography } from '@/shared/theme/tokens';
 import { useTheme } from '@/shared/theme/use-theme';
 
@@ -63,8 +63,10 @@ export function TextField({ label, error, secure, icon, style, ...input }: Field
 }
 
 /** Casilla accesible. Nunca arranca marcada si representa un consentimiento. */
-export function Checkbox({ checked, onChange, label, error, strikeWhenChecked, children }: {
+export function Checkbox({ checked, onChange, label, error, strikeWhenChecked, flavor = 'tomato', children }: {
   checked: boolean;
+  /** Sabor de la sección (Mi cocina: albahaca). El mango no sirve aquí: su borde no se ve sobre blanco. */
+  flavor?: Exclude<FlavorName, 'mango'>;
   /** Tacha el texto al marcar (lista de mercado: lo comprado se aparta visualmente). */
   strikeWhenChecked?: boolean;
   onChange: (checked: boolean) => void;
@@ -75,6 +77,7 @@ export function Checkbox({ checked, onChange, label, error, strikeWhenChecked, c
   const { t } = useTranslation();
   const c = useTheme();
   const message = error ? t(error) : undefined;
+  const f = flavorColors(c, flavor);
   return (
     <View style={styles.field}>
       <Pressable
@@ -84,8 +87,8 @@ export function Checkbox({ checked, onChange, label, error, strikeWhenChecked, c
         accessibilityHint={message}
         onPress={() => onChange(!checked)}
         style={styles.checkRow}>
-        <View style={[styles.box, { borderColor: message ? c.danger : c.primary, backgroundColor: checked ? c.primary : 'transparent' }]}>
-          {checked && <Ionicons name="checkmark" size={18} color={c.onPrimary} />}
+        <View style={[styles.box, { borderColor: message ? c.danger : f.fill, backgroundColor: checked ? f.fill : 'transparent' }]}>
+          {checked && <Ionicons name="checkmark" size={18} color={f.onFill} />}
         </View>
         <Text
           style={[

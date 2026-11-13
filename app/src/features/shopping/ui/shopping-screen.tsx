@@ -54,14 +54,14 @@ export function ShoppingScreen({ embedded }: { embedded?: boolean }) {
       return <ErrorState message={t(errorKey(plan.error ?? list.error))} onRetry={() => void list.refetch()} />;
     }
     if (!planId) {
-      return <EmptyState icon="calendar-outline" message={t('shopping.noPlan')} action={<Button label={t('shopping.goToPlan')} onPress={() => router.navigate('/week')} />} />;
+      return <EmptyState icon="calendar-outline" message={t('shopping.noPlan')} action={<Button label={t('shopping.goToPlan')} flavor="basil" onPress={() => router.navigate('/week')} />} />;
     }
     if (!list.data) {
       return (
         <EmptyState
           icon="cart-outline"
           message={t('shopping.noList')}
-          action={<Button label={t('shopping.build')} loading={generate.isPending} onPress={() => generate.mutate(planId)} />}
+          action={<Button label={t('shopping.build')} flavor="basil" loading={generate.isPending} onPress={() => generate.mutate(planId)} />}
         />
       );
     }
@@ -122,7 +122,7 @@ function ListView({ planId, listId, items, onRefresh, refreshing }: {
   return (
     <>
       <MonthlySpendCard />
-      <Card variant="primary">
+      <Card>
         {allBought ? (
           <>
             <View style={styles.progressRow}>
@@ -132,7 +132,7 @@ function ListView({ planId, listId, items, onRefresh, refreshing }: {
                 <AppText variant="caption" secondary>{t('shopping.allBoughtBody')}</AppText>
               </View>
             </View>
-            <Button label={t('shopping.checkAgain')} icon="refresh" variant="secondary" size="sm" loading={refreshing} onPress={onRefresh} />
+            <Button label={t('shopping.checkAgain')} icon="refresh" variant="secondary" flavor="basil" size="sm" loading={refreshing} onPress={onRefresh} />
           </>
         ) : (
           <>
@@ -141,9 +141,9 @@ function ListView({ planId, listId, items, onRefresh, refreshing }: {
               <AppText variant="subtitle" style={styles.flex} accessibilityLiveRegion="polite">
                 {t('shopping.progress', { done, total })}
               </AppText>
-              <IconButton icon="refresh" label={t('shopping.refresh')} tone="primary" disabled={refreshing} onPress={onRefresh} />
+              <IconButton icon="refresh" label={t('shopping.refresh')} tone="basil" disabled={refreshing} onPress={onRefresh} />
             </View>
-            <ProgressBar value={total ? done / total : 0} label={t('shopping.progress', { done, total })} />
+            <ProgressBar value={total ? done / total : 0} label={t('shopping.progress', { done, total })} tone="accent" />
             {closed > 0 && <AppText variant="caption" secondary>{t('shopping.closed', { count: closed })}</AppText>}
           </>
         )}
@@ -162,6 +162,7 @@ function ListView({ planId, listId, items, onRefresh, refreshing }: {
             <Button
               label={t('shopping.moveToPantry', { count: toPantry })}
               icon="basket-outline"
+              flavor="basil"
               size="sm"
               loading={move.isPending || record.isPending}
               onPress={moveAndRecord}
@@ -176,7 +177,7 @@ function ListView({ planId, listId, items, onRefresh, refreshing }: {
         section.kind === 'have' ? (
           <Card key={section.key} variant="filled">
             <View style={styles.sectionHead}>
-              <IconBadge name="checkmark-done-outline" size={32} />
+              <IconBadge name="checkmark-done-outline" tone="accent" size={32} />
               <AppText variant="subtitle" style={styles.flex}>{t('shopping.haveSection')}</AppText>
             </View>
             {section.data.map((item) => (
@@ -214,6 +215,7 @@ function ListView({ planId, listId, items, onRefresh, refreshing }: {
         <Button
           label={t('shopping.add')}
           variant="secondary"
+          flavor="basil"
           size="sm"
           disabled={newItem.trim().length === 0}
           loading={add.isPending}
