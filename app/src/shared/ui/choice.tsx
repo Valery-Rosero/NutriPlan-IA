@@ -2,7 +2,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { MinTouch, Spacing } from '@/shared/theme/colors';
+import { flavorColors, MinTouch, Spacing, type FlavorName } from '@/shared/theme/colors';
 import { Radius, Typography } from '@/shared/theme/tokens';
 import { useTheme } from '@/shared/theme/use-theme';
 
@@ -10,14 +10,17 @@ import { useTheme } from '@/shared/theme/use-theme';
  * Opción seleccionable. `multiple` = casilla; si no, botón de opción única.
  * `removable`: elegida, muestra una ✕ y tocarla la quita (por ejemplo, ingredientes de una receta).
  */
-export function Chip({ label, selected, onPress, multiple, removable }: {
+export function Chip({ label, selected, onPress, multiple, removable, flavor = 'tomato' }: {
   label: string;
   selected: boolean;
   onPress: () => void;
   multiple?: boolean;
   removable?: boolean;
+  /** Sabor al elegirla (receta: lo que tienes en albahaca, lo que hay que comprar en mango). */
+  flavor?: FlavorName;
 }) {
   const c = useTheme();
+  const f = flavorColors(c, flavor);
   const { t } = useTranslation();
   return (
     <Pressable
@@ -28,11 +31,11 @@ export function Chip({ label, selected, onPress, multiple, removable }: {
       onPress={onPress}
       style={[
         styles.chip,
-        { borderColor: selected ? c.primary : c.border, backgroundColor: selected ? c.primary : c.surface },
+        { borderColor: selected ? f.fill : c.border, backgroundColor: selected ? f.fill : c.surface },
       ]}>
-      {selected && <Ionicons name="checkmark" size={16} color={c.onPrimary} />}
-      <Text style={[styles.chipLabel, { color: selected ? c.onPrimary : c.text }]}>{label}</Text>
-      {removable && selected && <Ionicons name="close-circle" size={18} color={c.onPrimary} />}
+      {selected && <Ionicons name="checkmark" size={16} color={f.onFill} />}
+      <Text style={[styles.chipLabel, { color: selected ? f.onFill : c.text }]}>{label}</Text>
+      {removable && selected && <Ionicons name="close-circle" size={18} color={f.onFill} />}
     </Pressable>
   );
 }

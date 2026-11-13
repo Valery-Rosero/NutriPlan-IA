@@ -5,6 +5,7 @@ import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { errorKey } from '@/core/errors/app-error';
+import { foodEmoji } from '@/core/food-emoji';
 import { HealthDisclaimerNote } from '@/features/legal/ui/health-disclaimer-note';
 import { useProfile } from '@/features/profile/application/profile-queries';
 import { useCookNow, useCookPlanned, useRecipe, useRecipePreview, useSubstitutes } from '@/features/recipes/application/recipe-queries';
@@ -35,6 +36,7 @@ import {
   Chip,
   ChipGroup,
   ErrorState,
+  FoodTile,
   IconBadge,
   LoadingState,
   Pill,
@@ -83,6 +85,7 @@ export function RecipeScreen() {
     <>
       <Stack.Screen options={{ headerShown: true, title: '' }} />
       <Screen scroll>
+        <FoodTile emoji={foodEmoji(recipe.data.title)} size={140} wide />
         <BrandHeader title={recipe.data.title} subtitle={recipe.data.description ?? undefined}>
           <View style={styles.pills}>
             <Pill label={t('recipe.meta', { minutes: recipe.data.totalMinutes })} icon="time-outline" />
@@ -115,8 +118,8 @@ export function RecipeScreen() {
         <Card>
           {recipe.data.steps.map((step, i) => (
             <View key={i} style={styles.step} accessible accessibilityLabel={t('recipe.stepA11y', { n: i + 1, text: step })}>
-              <View style={[styles.stepNumber, { backgroundColor: c.brand }]}>
-                <AppText variant="label" tone="onBrand">{String(i + 1)}</AppText>
+              <View style={[styles.stepNumber, { backgroundColor: c.tomato }]}>
+                <AppText variant="label" style={{ color: c.onTomato }}>{String(i + 1)}</AppText>
               </View>
               <AppText style={styles.flex}>{step}</AppText>
             </View>
@@ -142,13 +145,11 @@ export function RecipeScreen() {
   );
 }
 
-/** Subtítulo de las opciones: "En tu cocina" o "Para comprar". */
-function OptionsHeader({ icon, label }: { icon: 'home-outline' | 'cart-outline'; label: string }) {
-  const c = useTheme();
+/** Subtítulo de las opciones: "En tu cocina" (albahaca) o "Para comprar" (mango); se entiende sin leer. */
+function OptionsHeader({ kind, label }: { kind: 'have' | 'buy'; label: string }) {
   return (
     <View style={styles.optionsHeader}>
-      <Ionicons name={icon} size={14} color={c.textSecondary} />
-      <AppText variant="caption" secondary>{label}</AppText>
+      <Pill label={label} tone={kind === 'have' ? 'accent' : 'mango'} icon={kind === 'have' ? 'home-outline' : 'cart-outline'} />
     </View>
   );
 }
@@ -157,9 +158,9 @@ function FlexGroups({ detail, choices, onChange }: { detail: RecipeDetail; choic
   const { t } = useTranslation();
   if (detail.groups.length === 0) return null;
   return (
-    <Card variant="primary">
+    <Card>
       <View style={styles.row}>
-        <IconBadge name="swap-horizontal" tone="accent" />
+        <IconBadge name="swap-horizontal" />
         <View style={styles.flex}>
           <AppText variant="heading">{t('recipe.chooseTitle')}</AppText>
           <AppText variant="caption" secondary>{t('recipe.chooseHint')}</AppText>
@@ -170,6 +171,7 @@ function FlexGroups({ detail, choices, onChange }: { detail: RecipeDetail; choic
         const chip = (o: (typeof group.options)[number]) => (
           <Chip
             key={o.ingredientId}
+            flavor={o.inPantry ? 'basil' : 'mango'}
             multiple={group.max > 1}
             removable
             label={o.name}
@@ -185,13 +187,13 @@ function FlexGroups({ detail, choices, onChange }: { detail: RecipeDetail; choic
             </AppText>
             {have.length > 0 && (
               <>
-                <OptionsHeader icon="home-outline" label={t('recipe.options.have')} />
+                <OptionsHeader kind="have" label={t('recipe.options.have')} />
                 <ChipGroup>{have.map(chip)}</ChipGroup>
               </>
             )}
             {buy.length > 0 && (
               <>
-                <OptionsHeader icon="cart-outline" label={t('recipe.options.buy')} />
+                <OptionsHeader kind="buy" label={t('recipe.options.buy')} />
                 <ChipGroup>{buy.map(chip)}</ChipGroup>
               </>
             )}
@@ -205,7 +207,6 @@ function FlexGroups({ detail, choices, onChange }: { detail: RecipeDetail; choic
 
 function PreviewSections({ preview }: { preview: RecipePreview }) {
   const { t } = useTranslation();
-  const c = useTheme();
   const n = preview.per_serving;
   const have = preview.lines.filter((l) => l.in_pantry).length;
   // US-147: para lo que falta, qué se puede usar en su lugar (seguro para la persona; lo filtra la base).
@@ -216,7 +217,7 @@ function PreviewSections({ preview }: { preview: RecipePreview }) {
     <>
       <SectionHeader title={t('recipe.ingredients')} />
       <Card>
-        <ProgressBar value={preview.lines.length ? have / preview.lines.length : 0} label={haveLabel} />
+        <ProgressBar value={preview.lines.length ? have / preview.lines.length : 0} label={haveLabel} tone="accent" />
         <AppText variant="caption" secondary>{haveLabel}</AppText>
         {preview.lines.map((line) => {
           const amount = formatQuantity(line.quantity, line.unit_code, t);
@@ -224,10 +225,12 @@ function PreviewSections({ preview }: { preview: RecipePreview }) {
           return (
             <View key={`${line.ingredient_id}-${line.group_key ?? 'base'}`}>
               <View style={styles.line} accessible accessibilityLabel={`${line.ingredient_name}, ${amount}. ${status}.`}>
-              <Ionicons name={line.in_pantry ? 'checkmark-circle' : 'cart-outline'} size={20} color={line.in_pantry ? c.primary : c.textSecondary} />
+              <FoodTile emoji={foodEmoji(line.ingredient_name, '🥫')} flavor={line.in_pantry ? 'basil' : 'mango'} size={40} />
               <View style={styles.flex}>
                 <AppText>{`${line.ingredient_name}${line.is_optional ? ` (${t('recipe.optional')})` : ''}`}</AppText>
-                <AppText variant="caption" style={{ color: line.in_pantry ? c.primary : c.textSecondary }}>{status}</AppText>
+                <View style={styles.status}>
+                  <Pill label={status} tone={line.in_pantry ? 'accent' : 'mango'} icon={line.in_pantry ? 'checkmark' : 'cart-outline'} />
+                </View>
               </View>
               <AppText variant="label" secondary>{amount}</AppText>
               </View>
@@ -272,9 +275,9 @@ function SubstituteHint({ options }: { options: Substitute[] }) {
   const note = options.find((o) => o.note)?.note;
   return (
     <View style={styles.substitute} accessible accessibilityLabel={`${t('recipe.substitutes.label')} ${text}. ${note ?? ''}`}>
-      <Ionicons name="swap-horizontal" size={16} color={options[0].inPantry ? c.primary : c.textSecondary} />
+      <Ionicons name="swap-horizontal" size={16} color={options[0].inPantry ? c.success : c.textSecondary} />
       <View style={styles.flex}>
-        <AppText variant="caption" tone={options[0].inPantry ? 'primary' : 'default'}>{`${t('recipe.substitutes.label')} ${text}`}</AppText>
+        <AppText variant="caption" style={{ color: options[0].inPantry ? c.success : c.text }}>{`${t('recipe.substitutes.label')} ${text}`}</AppText>
         {note && <AppText variant="caption" secondary>{note}</AppText>}
       </View>
     </View>
@@ -297,9 +300,10 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md },
   flex: { flex: 1 },
   group: { gap: Spacing.sm },
-  optionsHeader: { flexDirection: 'row', alignItems: 'center', gap: Spacing.xs },
+  optionsHeader: { flexDirection: 'row' },
+  status: { flexDirection: 'row', marginTop: Spacing.xxs },
   line: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md, paddingVertical: Spacing.xs },
-  substitute: { flexDirection: 'row', alignItems: 'flex-start', gap: Spacing.xs, marginLeft: 20 + Spacing.md, marginBottom: Spacing.xs },
+  substitute: { flexDirection: 'row', alignItems: 'flex-start', gap: Spacing.xs, marginLeft: 40 + Spacing.md, marginBottom: Spacing.xs },
   tiles: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm },
   tile: { flexGrow: 1, flexBasis: '45%', padding: Spacing.md, borderRadius: Radius.md, gap: Spacing.xxs },
   step: { flexDirection: 'row', alignItems: 'flex-start', gap: Spacing.md, paddingVertical: Spacing.xs },
