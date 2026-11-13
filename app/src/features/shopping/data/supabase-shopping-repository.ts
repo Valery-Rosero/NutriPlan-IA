@@ -51,8 +51,10 @@ export class SupabaseShoppingRepository implements ShoppingRepository {
     if (error) throw toAppError(error);
   }
 
-  async addManual(listId: string, name: string) {
-    const { error } = await this.client.from('shopping_list_items').insert({ list_id: listId, custom_name: name.trim(), source: 'manual' });
+  async addManual(listId: string, name: string, storeCategoryId: number | null = null) {
+    const { error } = await this.client
+      .from('shopping_list_items')
+      .insert({ list_id: listId, custom_name: name.trim(), source: 'manual', store_category_id: storeCategoryId });
     if (error) throw toAppError(error);
   }
 

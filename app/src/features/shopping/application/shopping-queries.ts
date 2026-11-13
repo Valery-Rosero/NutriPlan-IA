@@ -4,6 +4,7 @@ import type { Services } from '@/di/services';
 import { useServices } from '@/di/services';
 import { useTrack } from '@/features/analytics/application/use-track';
 import { cookingKeys } from '@/features/cooking/application/use-suggestions';
+import { classifyQuietly } from '@/features/food/domain/food-label';
 import { pantryKeys } from '@/features/pantry/application/pantry-queries';
 import { applyChecked, type ShoppingList } from '@/features/shopping/domain/shopping';
 
@@ -105,9 +106,13 @@ export function useGenerateList() {
   });
 }
 
+/** B3: lo escrito a mano va a su sección del supermercado (clasificación con IA); si no se puede, a "Otros". */
 export function useAddManualItem() {
-  const { shopping } = useServices();
-  return useListMutation(({ listId, name }: { listId: string; name: string }) => shopping.addManual(listId, name));
+  const { shopping, foodLabels } = useServices();
+  return useListMutation(async ({ listId, name }: { listId: string; name: string }) => {
+    const label = await classifyQuietly(foodLabels, name);
+    await shopping.addManual(listId, name, label?.storeCategoryId ?? null);
+  });
 }
 
 export function useRemoveItem() {

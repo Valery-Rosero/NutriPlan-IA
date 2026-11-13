@@ -2,7 +2,7 @@
 
 Todas: Deno + TypeScript, validan entrada/salida con Zod, exigen `Authorization: Bearer <JWT>` (excepto `send-notifications` y `error-alert`, que solo invoca pg_cron con un secreto compartido y tienen `verify_jwt = false` en `config.toml`), responden JSON `{ ok: true, data } | { ok: false, error: { code, message } }`, no registran contenido de salud. Las fallas del servidor se registran con `_shared/report-error.ts` (ADR-026).
 
-**Estado (12-nov-2026):** construidas y desplegadas en staging: `assistant-chat`, `delete-account`, `send-notifications`, `error-alert`. `generate-plan` quedó reemplazada por la RPC `generate_plan` (ADR-023). Secretos: `backend/supabase/functions/.env.example` (los valores nunca van al repositorio).
+**Estado (12-nov-2026):** construidas y desplegadas en staging: `assistant-chat`, `delete-account`, `send-notifications`, `error-alert`. Nueva (13-nov-2026, por desplegar): `categorize-food`. `generate-plan` quedó reemplazada por la RPC `generate_plan` (ADR-023). Secretos: `backend/supabase/functions/.env.example` (los valores nunca van al repositorio).
 
 ## 1. `generate-plan`  (POST) — REEMPLAZADA por la RPC `generate_plan` (ADR-023)
 > Se conserva como referencia. El plan se genera con reglas en SQL (`generate_plan(p_start, p_days, p_slots)` + `save_generated_plan`). Si más adelante se agrega un LLM para redactar explicaciones, irá en una Edge Function aparte que no decide recetas.
@@ -33,3 +33,8 @@ Reconfirma contraseña o token reciente → registra evento mínimo de auditorí
 ## 6. `error-alert`  (POST, secreto compartido; sin JWT)
 **Construida** (ADR-026). La llama la base cada 5 minutos (`pg_cron` + `pg_net`) solo si hay fallas nuevas en `app_errors`, con un resumen ya limpio `{ total, groups: [{ source, error_name, message, times }] }`. Verifica el encabezado `x-alert-secret` contra `ALERT_SECRET` y envía el correo por Resend (`RESEND_API_KEY`, `ALERT_EMAIL`, `ALERT_FROM` opcional). Las demás funciones registran sus fallas con `_shared/report-error.ts`.
 
+## 7. `categorize-food`  (POST, JWT) — B3, ADR-027
+**Entrada:** `{ text: string }` (lo que escribió la persona; se normaliza a máximo 80 caracteres; menos de 2 letras → `invalid_input`).
+**Orden:** caché `food_labels` → ingrediente del catálogo con el mismo nombre normalizado → Gemini (listas cerradas de `food_groups` e `ingredient_categories`, validado; se guarda en la caché y se registra en `ai_generations` con `kind = 'label'`, cuota 100/día por persona) → reglas (`logic.ts`).
+**Salida:** `{ ok: true, data: { key, name, is_food, food_group_id, food_group, store_category_id, store_category, meal_slot, kcal_per_serving, protein_g_per_serving, source: 'cache' | 'catalog' | 'ai' | 'rules' } }`. Nunca falla por la IA: sin IA responde con reglas.
+**Sin datos de salud.** No se usa para filtrar alergias. Lógica pura probada con `npm run test:functions` (app/); el adaptador de Gemini es compartido (`_shared/gemini.ts`).

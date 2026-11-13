@@ -196,6 +196,12 @@ export function fakeServices(overrides: Partial<Services> = {}): Services {
     shopping: fakeShopping(),
     account: { exportData: jest.fn(async () => '{}'), deleteAccount: jest.fn(async () => {}) },
     assistant: fakeAssistant(),
+    foodLabels: {
+      classify: jest.fn(async (text: string) => ({
+        name: text, isFood: true, foodGroupId: 16, storeCategoryId: 3, mealSlot: null,
+        kcalPerServing: null, proteinPerServing: null, source: 'ai' as const,
+      })),
+    },
     support: { send: jest.fn(async () => {}) },
     spending: {
       monthly: jest.fn(async () => ({ monthStart: '2026-11-01', spent: 38200, purchases: 2, monthlyBudget: 60000, percent: 64 })),

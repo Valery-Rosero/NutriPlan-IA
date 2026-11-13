@@ -164,8 +164,12 @@ run('recorrido completo contra Supabase real', () => {
     await shopping.setChecked(toBuy.id, true);
     expect(await shopping.moveCheckedToPantry(listId)).toBe(1);
     await shopping.addManual(listId, 'Bolsas');
+    // B3: lo manual entra con la sección que sugiere la clasificación (aquí, Lácteos y huevos = 3)
+    await shopping.addManual(listId, 'Queso campesino', 3);
     const withManual = (await shopping.forPlan(planId))!;
     const manual = withManual.items.find((i) => i.name === 'Bolsas')!;
+    expect(manual.categoryName).toBeNull(); // sin sección → "Otros"
+    expect(withManual.items.find((i) => i.name === 'Queso campesino')?.categoryName).toBe('Lácteos y huevos');
     await shopping.remove(manual.id);
     expect((await shopping.forPlan(planId))!.items.some((i) => i.name === 'Bolsas')).toBe(false);
 

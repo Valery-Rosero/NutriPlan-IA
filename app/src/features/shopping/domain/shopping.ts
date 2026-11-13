@@ -24,7 +24,8 @@ export interface ShoppingRepository {
   /** Necesidades del plan menos la despensa; idempotente y respeta lo ya marcado (US-124, US-125). */
   generate(planId: string): Promise<string>;
   setChecked(itemId: string, checked: boolean): Promise<void>;
-  addManual(listId: string, name: string): Promise<void>;
+  /** `storeCategoryId`: sección sugerida por la clasificación (B3); null = "Otros". */
+  addManual(listId: string, name: string, storeCategoryId?: number | null): Promise<void>;
   remove(itemId: string): Promise<void>;
   /** Suma a la despensa lo marcado como comprado. Devuelve cuántos ítems pasaron. */
   moveCheckedToPantry(listId: string): Promise<number>;

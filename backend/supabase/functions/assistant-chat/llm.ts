@@ -1,19 +1,9 @@
-// Adaptador del LLM (ADR-025). Cambiar de proveedor solo toca este archivo.
-// Gemini con salida estructurada: el modelo devuelve JSON con el esquema de abajo, no texto libre.
+// Adaptador del LLM del asistente (ADR-025). La llamada a Gemini vive en _shared/gemini.ts; aquí solo
+// el esquema de respuesta del asistente y sus parámetros.
+import { askGeminiJson, DEFAULT_MODEL, type LlmAnswer, type LlmTurn } from '../_shared/gemini.ts';
 
-export type LlmTurn = { role: 'user' | 'assistant'; text: string };
-export type LlmAnswer = { raw: unknown; inputTokens: number | null; outputTokens: number | null; model: string };
-
-/**
- * Alias oficial que apunta siempre al Flash-Lite estable más reciente. Alias y no versión fija: Google
- * retira versiones (la familia 2.5 ya no se ofrece a cuentas nuevas). Flash-Lite y no Flash: elegir entre
- * ~12 candidatas y escribir 2–3 frases no necesita más, responde en ~2 s, y en pruebas (nov. 2026) el
- * Flash completo no respondía en la capa gratuita.
- */
-export const DEFAULT_MODEL = 'gemini-flash-lite-latest';
-
-/** Errores pasajeros de Google (saturación, límite por minuto): vale la pena un segundo intento. */
-const TRANSIENT = new Set([429, 500, 503]);
+export { DEFAULT_MODEL };
+export type { LlmAnswer, LlmTurn };
 
 const RESPONSE_SCHEMA = {
   type: 'OBJECT',
@@ -25,66 +15,14 @@ const RESPONSE_SCHEMA = {
   required: ['reply', 'pantry_only'],
 };
 
-class ModelNotFound extends Error {}
-class Transient extends Error {}
-
-export async function askGemini(system: string, turns: LlmTurn[], timeoutMs = 8000): Promise<LlmAnswer> {
-  const key = Deno.env.get('GEMINI_API_KEY');
-  if (!key) throw new Error('llm_not_configured');
-  const configured = Deno.env.get('GEMINI_MODEL')?.trim() || DEFAULT_MODEL;
-  const deadline = Date.now() + timeoutMs;
-  try {
-    try {
-      return await call(key, configured, system, turns, deadline - Date.now());
-    } catch (e) {
-      // Un reintento ante errores pasajeros, solo si queda al menos la mitad del tiempo.
-      if (e instanceof Transient && deadline - Date.now() > timeoutMs / 2) {
-        return await call(key, configured, system, turns, deadline - Date.now());
-      }
-      throw e;
-    }
-  } catch (e) {
-    // Si el modelo fijado en GEMINI_MODEL ya no existe, se sigue con el alias en vez de quedar sin asistente.
-    if (e instanceof ModelNotFound && configured !== DEFAULT_MODEL) {
-      console.warn(`assistant-chat: el modelo ${configured} no existe; usando ${DEFAULT_MODEL}`);
-      return await call(key, DEFAULT_MODEL, system, turns, timeoutMs);
-    }
-    throw e;
-  }
-}
-
-async function call(key: string, model: string, system: string, turns: LlmTurn[], timeoutMs: number): Promise<LlmAnswer> {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), timeoutMs);
-  try {
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
-      signal: controller.signal,
-      body: JSON.stringify({
-        systemInstruction: { parts: [{ text: system }] },
-        contents: turns.map((t) => ({ role: t.role === 'assistant' ? 'model' : 'user', parts: [{ text: t.text }] })),
-        generationConfig: {
-          temperature: 0.4,
-          maxOutputTokens: 400,
-          responseMimeType: 'application/json',
-          responseSchema: RESPONSE_SCHEMA,
-        },
-      }),
-    });
-    if (res.status === 404) throw new ModelNotFound(model);
-    if (TRANSIENT.has(res.status)) throw new Transient(`llm_http_${res.status}`);
-    if (!res.ok) throw new Error(`llm_http_${res.status}`);
-    const body = await res.json();
-    const text: string | undefined = body?.candidates?.[0]?.content?.parts?.[0]?.text;
-    if (!text) throw new Error('llm_empty');
-    return {
-      raw: JSON.parse(text),
-      inputTokens: body?.usageMetadata?.promptTokenCount ?? null,
-      outputTokens: body?.usageMetadata?.candidatesTokenCount ?? null,
-      model: body?.modelVersion ?? model, // el alias se resuelve: se registra la versión real usada
-    };
-  } finally {
-    clearTimeout(timer);
-  }
+export function askGemini(system: string, turns: LlmTurn[], timeoutMs = 8000): Promise<LlmAnswer> {
+  return askGeminiJson({
+    system,
+    turns,
+    schema: RESPONSE_SCHEMA,
+    temperature: 0.4,
+    maxOutputTokens: 400,
+    timeoutMs,
+    caller: 'assistant-chat',
+  });
 }

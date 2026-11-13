@@ -62,12 +62,24 @@ describe('ShoppingScreen (US-124, US-125, US-126, US-135)', () => {
     expect(await screen.findByRole('button', { name: 'Organizar mi semana' })).toBeOnTheScreen();
   });
 
-  it('agrega un ítem manual', async () => {
+  it('agrega un ítem manual en la sección que sugiere la clasificación (B3)', async () => {
     const shopping = fakeShopping();
-    await render(<ShoppingScreen />, { wrapper: withServices(fakeServices({ shopping })) });
+    const services = fakeServices({ shopping });
+    await render(<ShoppingScreen />, { wrapper: withServices(services) });
+    await fireEvent.changeText(await screen.findByLabelText('Agregar algo más'), 'Queso campesino');
+    await fireEvent.press(screen.getByRole('button', { name: 'Agregar a la lista' }));
+    await waitFor(() => expect(shopping.addManual).toHaveBeenCalledWith('list1', 'Queso campesino', 3));
+    expect(services.foodLabels.classify).toHaveBeenCalledWith('Queso campesino');
+  });
+
+  it('si la clasificación falla, el ítem se agrega igual (en "Otros")', async () => {
+    const shopping = fakeShopping();
+    const services = fakeServices({ shopping });
+    services.foodLabels.classify = jest.fn(async () => { throw new Error('sin red'); });
+    await render(<ShoppingScreen />, { wrapper: withServices(services) });
     await fireEvent.changeText(await screen.findByLabelText('Agregar algo más'), 'Café');
     await fireEvent.press(screen.getByRole('button', { name: 'Agregar a la lista' }));
-    expect(shopping.addManual).toHaveBeenCalledWith('list1', 'Café');
+    await waitFor(() => expect(shopping.addManual).toHaveBeenCalledWith('list1', 'Café', null));
   });
 
   it('US-147: reemplaza un ítem por su sustituto con un toque', async () => {

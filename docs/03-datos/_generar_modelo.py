@@ -26,17 +26,17 @@ domains = collections.OrderedDict([
     ("Catálogo y recetas", "ingredients ingredient_unit_weights ingredient_nutrition ingredient_allergens ingredient_substitutions ingredient_prices recipes recipe_meal_slots recipe_ingredients recipe_flex_groups recipe_flex_options recipe_steps recipe_diet_tags nutritionist_reviews".split()),
     ("Preferencias del usuario", "user_diets user_allergens user_conditions user_disliked_ingredients user_cuisines favorite_recipes user_section_order".split()),
     ("Despensa, planes y compras", "pantry_items meal_plans planned_meals planned_meal_choices meal_pantry_deductions shopping_lists shopping_list_items shopping_list_substitutions purchases purchase_items".split()),
-    ("Comunidad, asistente y soporte", "recipe_ratings recipe_rating_tag_links recipe_comments content_reports support_tickets assistant_conversations assistant_messages ai_generations notifications analytics_events".split()),
+    ("Comunidad, asistente y soporte", "recipe_ratings recipe_rating_tag_links recipe_comments content_reports support_tickets assistant_conversations assistant_messages ai_generations food_labels notifications analytics_events".split()),
 ])
 
 cols = q("""select c.table_name,c.column_name,
-  format_type(a.atttypid,a.atttypmod), c.is_nullable, coalesce(c.column_default,''), coalesce(col_description(a.attrelid,a.attnum),''), c.ordinal_position, coalesce(c.generation_expression,'')
+  format_type(a.atttypid,a.atttypmod), c.is_nullable, coalesce(c.column_default,''), regexp_replace(coalesce(col_description(a.attrelid,a.attnum),''), '\\s+', ' ', 'g'), c.ordinal_position, coalesce(c.generation_expression,'')
   from information_schema.columns c
   join pg_class k on k.relname=c.table_name and k.relnamespace='public'::regnamespace
   join pg_attribute a on a.attrelid=k.oid and a.attname=c.column_name
   where c.table_schema='public' order by c.table_name,c.ordinal_position""")
-tcom = dict((r[0], r[1] if len(r) > 1 else "") for r in q("select c.relname, coalesce(obj_description(c.oid),'') from pg_class c where c.relnamespace='public'::regnamespace and c.relkind='r'"))
-cons = q("""select conrelid::regclass::text, contype, pg_get_constraintdef(oid) from pg_constraint where connamespace='public'::regnamespace and contype in ('p','f','u','c','x') order by 1,2""")
+tcom = dict((r[0], r[1] if len(r) > 1 else "") for r in q("select c.relname, regexp_replace(coalesce(obj_description(c.oid),''), '\\s+', ' ', 'g') from pg_class c where c.relnamespace='public'::regnamespace and c.relkind='r'"))
+cons = q("""select conrelid::regclass::text, contype, regexp_replace(pg_get_constraintdef(oid), '\\s+', ' ', 'g') from pg_constraint where connamespace='public'::regnamespace and contype in ('p','f','u','c','x') order by 1,2""")
 
 real = set(tcom)
 declared = [t for tabs in domains.values() for t in tabs]
@@ -70,7 +70,7 @@ for dom, tabs in domains.items():
             out.append("\nRestricciones:\n" + "\n".join(ks))
 
 out.append("\n## Vistas\n")
-vc = {r[0]: (r[1] if len(r) > 1 else "") for r in q("select c.relname, coalesce(obj_description(c.oid),'') from pg_class c where c.relnamespace='public'::regnamespace and c.relkind='v'")}
+vc = {r[0]: (r[1] if len(r) > 1 else "") for r in q("select c.relname, regexp_replace(coalesce(obj_description(c.oid),''), '\\s+', ' ', 'g') from pg_class c where c.relnamespace='public'::regnamespace and c.relkind='v'")}
 for (v,) in q("select table_name from information_schema.views where table_schema='public' order by 1"):
     out.append(f"- `{v}`: {vc.get(v) or 'ver migración'}")
 out.append("\n## Enums\n")

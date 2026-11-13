@@ -10,6 +10,7 @@ App Android (Expo SDK 57, RN + TS)
   ├─ Auth (correo + contraseña, PKCE) ─────────► Supabase Auth ──► SMTP de Gmail (plantillas es-CO)
   ├─ functions.invoke ─────────────────────────► Edge Functions (Deno/TS)                  │   │
   │                                                 ├─ assistant-chat ─► Gemini Flash-Lite   │   │
+  │                                                 ├─ categorize-food ► caché → catálogo → Gemini → reglas
   │                                                 ├─ delete-account ─► auth.admin.deleteUser
   │                                                 ├─ error-alert ◄───────────────────────┘   │  ──► correo (Resend)
   │                                                 └─ send-notifications ◄────────────────────┘  ──► Expo Push ──► FCM

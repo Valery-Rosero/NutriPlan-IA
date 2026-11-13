@@ -3,6 +3,7 @@ import { createContext, useContext, type ReactNode } from 'react';
 import type { AccountRepository } from '@/features/account/domain/account';
 import type { AnalyticsRepository } from '@/features/analytics/domain/analytics';
 import type { AssistantRepository } from '@/features/assistant/domain/assistant';
+import type { FoodLabelRepository } from '@/features/food/domain/food-label';
 import type { AuthRepository } from '@/features/auth/domain/auth-repository';
 import type { LoginThrottle } from '@/features/auth/domain/login-throttle';
 import type { CookingRepository } from '@/features/cooking/domain/cooking';
@@ -32,6 +33,7 @@ export type Services = {
   shopping: ShoppingRepository;
   account: AccountRepository;
   assistant: AssistantRepository;
+  foodLabels: FoodLabelRepository;
   support: SupportRepository;
   spending: SpendingRepository;
   nutrition: NutritionRepository;

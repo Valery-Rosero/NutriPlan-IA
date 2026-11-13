@@ -9,6 +9,9 @@ Solo Android. Las compilaciones se hacen en la nube con EAS: no hace falta Andro
    npx supabase link --project-ref fiesvxiuxsllqcpxidap      # staging (para pruebas)
    npx supabase db push --remote --include-seed               # migraciones + catálogo de recetas y precios (CLI v3: --remote)
    npx supabase functions deploy delete-account               # US-133
+   npx supabase functions deploy assistant-chat               # US-157 (Gemini)
+   npx supabase functions deploy categorize-food              # B3: clasificación de alimentos (Gemini)
+   npx supabase functions deploy send-notifications error-alert  # avisos y alertas de fallas
    ```
    Para producción, lo mismo con `--project-ref drgzvvkkjxqvolcerpjx`.
 2. En el panel de Supabase de ese proyecto: SMTP (Gmail con contraseña de aplicación; o Resend con dominio verificado si más adelante hay dominio), plantillas en español de `backend/supabase/templates/`, *Site URL* `nutriplan://`, *Redirect URLs* `nutriplan://**` y `exp://**`, contraseña mínima 8 con mayúsculas, minúsculas y números.
