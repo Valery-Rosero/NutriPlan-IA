@@ -1,14 +1,19 @@
 import type { MealSlot } from '@/features/cooking/domain/cooking';
 
 /**
- * Asistente (US-157, US-160, US-173; ADR-025). La sugerencia es un dato tipado (receta + comida destino),
- * no texto libre: la base la valida al aplicarla igual que un cambio manual.
+ * Asistente (US-157, US-160, US-173; ADR-025, ADR-029). Cada sugerencia es un dato tipado (receta + comida
+ * destino), no texto libre: la base la valida al aplicarla igual que un cambio manual. Puede venir del
+ * recetario o haberla creado el asistente con lo que hay en la cocina (siempre validada por la base).
  */
 export type AssistantSuggestion = {
   recipeId: string;
   title: string;
   totalMinutes: number;
   coverage: number;
+  /** Lo que hay que comprar para hacerla. */
+  missing: string[];
+  /** true si la creó el asistente (borrador privado de la persona); false si es del recetario. */
+  byAssistant: boolean;
   /** Comida del plan que se reemplazaría; null si solo es una idea para cocinar ahora. */
   targetPlannedMealId: string | null;
 };
@@ -19,7 +24,8 @@ export type AssistantReply = {
   reply: string;
   /** true cuando respondió el respaldo sin modelo (sin conexión al LLM o sin clave). */
   fallback: boolean;
-  suggestion: AssistantSuggestion | null;
+  /** De 0 a 3 opciones, en el orden en que las propone. */
+  suggestions: AssistantSuggestion[];
 };
 
 export type AssistantRequest = { conversationId?: string; message: string; plannedMealId?: string };
@@ -27,13 +33,13 @@ export type AssistantRequest = { conversationId?: string; message: string; plann
 /** Puerto del asistente. Falla con AppError. */
 export interface AssistantRepository {
   send(request: AssistantRequest): Promise<AssistantReply>;
-  /** Reemplaza la comida destino por la receta sugerida (RPC apply_assistant_suggestion). */
-  apply(messageId: number): Promise<void>;
+  /** Reemplaza la comida destino por UNA de las recetas sugeridas (RPC apply_assistant_suggestion). */
+  apply(messageId: number, recipeId: string): Promise<void>;
 }
 
 export type ChatMessage =
   | { id: string; role: 'user'; text: string }
-  | { id: string; role: 'assistant'; text: string; messageId: number; suggestion: AssistantSuggestion | null; fallback: boolean };
+  | { id: string; role: 'assistant'; text: string; messageId: number; suggestions: AssistantSuggestion[]; fallback: boolean };
 
 /**
  * US-173: tres pedidos frecuentes como respuestas rápidas. Si se abre para cambiar una comida,

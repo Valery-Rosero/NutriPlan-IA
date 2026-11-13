@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { errorKey } from '@/core/errors/app-error';
 import { foodEmoji } from '@/core/food-emoji';
 import { HealthDisclaimerNote } from '@/features/legal/ui/health-disclaimer-note';
+import { useCurrentPlan } from '@/features/plan/application/plan-queries';
 import { useProfile } from '@/features/profile/application/profile-queries';
 import { useCookNow, useCookPlanned, useRecipe, useRecipePreview, useSubstitutes } from '@/features/recipes/application/recipe-queries';
 import {
@@ -24,6 +25,7 @@ import {
 } from '@/features/recipes/domain/recipe';
 import { CookResultPanel } from '@/features/recipes/ui/cook-result';
 import { formatQuantity } from '@/features/recipes/ui/format-quantity';
+import { useAddMissingToList, useShoppingList } from '@/features/shopping/application/shopping-queries';
 import { Spacing } from '@/shared/theme/colors';
 import { Radius } from '@/shared/theme/tokens';
 import { useTheme } from '@/shared/theme/use-theme';
@@ -92,6 +94,8 @@ export function RecipeScreen() {
             {recipe.data.keepsDays ? <Pill label={t('recipe.keeps', { count: recipe.data.keepsDays })} icon="snow-outline" /> : null}
           </View>
         </BrandHeader>
+        {/* ADR-029: lo que inventa el asistente se marca; la base ya la validó con tus alergias y tu dieta. */}
+        {recipe.data.byAssistant && <Banner tone="info" message={t('recipe.byAssistant')} />}
 
         <Card variant="filled" style={styles.row}>
           <IconBadge name="people-outline" />
@@ -219,6 +223,11 @@ function PreviewSections({ preview }: { preview: RecipePreview }) {
       <Card>
         <ProgressBar value={preview.lines.length ? have / preview.lines.length : 0} label={haveLabel} tone="accent" />
         <AppText variant="caption" secondary>{haveLabel}</AppText>
+        <AddMissingToList
+          items={preview.lines
+            .filter((l) => !l.in_pantry && !l.is_optional)
+            .map((l) => `${l.ingredient_name} (${formatQuantity(l.quantity, l.unit_code, t)})`)}
+        />
         {preview.lines.map((line) => {
           const amount = formatQuantity(line.quantity, line.unit_code, t);
           const status = line.in_pantry ? t('recipe.atHome') : t('recipe.toBuy');
@@ -263,6 +272,36 @@ function PreviewSections({ preview }: { preview: RecipePreview }) {
           </Card>
         </>
       )}
+    </>
+  );
+}
+
+/** Lo que falta para esta receta, a la lista de mercado de una vez (con su cantidad). */
+function AddMissingToList({ items }: { items: string[] }) {
+  const { t } = useTranslation();
+  const plan = useCurrentPlan();
+  const list = useShoppingList(plan.data?.id);
+  const add = useAddMissingToList();
+  if (items.length === 0) return null;
+  if (add.isSuccess) return <Banner tone="success" message={t('recipe.addedMissing')} />;
+  if (!list.data) {
+    // Sin plan no hay lista todavía: se explica en vez de mostrar un botón que no puede funcionar.
+    const loading = plan.isPending || (!!plan.data && list.isPending);
+    return loading ? null : <AppText variant="caption" secondary>{t('recipe.noListYet')}</AppText>;
+  }
+  const current = list.data;
+  return (
+    <>
+      <Button
+        label={t('recipe.addMissing', { count: items.length })}
+        icon="cart-outline"
+        variant="secondary"
+        flavor="mango"
+        size="sm"
+        loading={add.isPending}
+        onPress={() => add.mutate({ list: current, items })}
+      />
+      {add.error && <Banner tone="danger" message={t(errorKey(add.error))} />}
     </>
   );
 }

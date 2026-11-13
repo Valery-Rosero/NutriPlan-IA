@@ -5,17 +5,35 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
 import { errorKey } from '@/core/errors/app-error';
+import { foodEmoji } from '@/core/food-emoji';
 import { useApplySuggestion, useSendToAssistant } from '@/features/assistant/application/use-assistant';
 import { quickReplies, type AssistantSuggestion, type ChatMessage } from '@/features/assistant/domain/assistant';
 import { momentOfDay } from '@/features/cooking/domain/cooking';
 import { MinTouch, Spacing } from '@/shared/theme/colors';
 import { Radius, Typography } from '@/shared/theme/tokens';
 import { useTheme } from '@/shared/theme/use-theme';
-import { AppText, Banner, BrandHeader, Button, Card, Chip, ChipGroup, IconBadge, IconButton, Pill } from '@/shared/ui';
+import {
+  AppText,
+  Banner,
+  BrandHeader,
+  Button,
+  Card,
+  Chip,
+  ChipGroup,
+  FoodTile,
+  IconBadge,
+  IconButton,
+  MarkdownText,
+  Pill,
+} from '@/shared/ui';
+
+/** Ancho de cada tarjeta de opción: se ve la siguiente asomándose, para que se entienda que hay más. */
+const CARD_WIDTH = 264;
 
 /**
- * Asistente (US-157, US-160, US-173). Conversa sobre qué cocinar; cuando sugiere una receta, la muestra
- * como tarjeta con "Ver receta" y, si se abrió para cambiar una comida, "Aplicar" (sin salir del chat).
+ * Asistente (US-157, US-160, US-173, ADR-029). Conversa sobre qué cocinar y responde con formato (negritas,
+ * listas). Propone hasta tres opciones en tarjetas deslizables: del recetario o recetas que crea con lo que
+ * hay en la cocina. Cada tarjeta abre la receta y, si se abrió para cambiar una comida, la aplica.
  */
 export function AssistantScreen() {
   const { t } = useTranslation();
@@ -44,7 +62,7 @@ export function AssistantScreen() {
               role: 'assistant',
               text: reply.reply,
               messageId: reply.messageId,
-              suggestion: reply.suggestion,
+              suggestions: reply.suggestions,
               fallback: reply.fallback,
             },
           ]);
@@ -87,18 +105,21 @@ export function AssistantScreen() {
                 </View>
               ) : (
                 <View key={m.id} style={styles.theirsWrap}>
-                  <View style={[styles.bubble, styles.theirs, { backgroundColor: c.card, borderColor: c.divider }]}>
-                    <AppText accessibilityLiveRegion="polite">{m.text}</AppText>
+                  <View
+                    accessibilityLiveRegion="polite"
+                    style={[styles.bubble, styles.theirs, { backgroundColor: c.card, borderColor: c.divider }]}>
+                    {/* Responde con formato: **negritas** y listas (Markdown sencillo). */}
+                    <MarkdownText source={m.text} />
                     {m.fallback && <AppText variant="caption" secondary>{t('assistant.fallback')}</AppText>}
                   </View>
-                  {m.suggestion && <SuggestionCard messageId={m.messageId} suggestion={m.suggestion} />}
+                  {m.suggestions.length > 0 && <SuggestionList messageId={m.messageId} suggestions={m.suggestions} />}
                 </View>
               ),
             )}
 
             {send.isPending && (
               <View style={[styles.bubble, styles.theirs, styles.row, { backgroundColor: c.card, borderColor: c.divider }]}>
-                <ActivityIndicator color={c.primary} />
+                <ActivityIndicator color={c.berry} />
                 <AppText secondary>{t('assistant.thinking')}</AppText>
               </View>
             )}
@@ -139,35 +160,79 @@ export function AssistantScreen() {
   );
 }
 
-function SuggestionCard({ messageId, suggestion }: { messageId: number; suggestion: AssistantSuggestion }) {
+/** Las opciones de un mensaje, deslizables. Aplicar una (si hay comida que cambiar) cierra las demás. */
+function SuggestionList({ messageId, suggestions }: { messageId: number; suggestions: AssistantSuggestion[] }) {
+  const { t } = useTranslation();
+  const apply = useApplySuggestion();
+  const appliedId = apply.isSuccess ? apply.variables?.recipeId : undefined;
+  return (
+    <View style={styles.suggestions}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        accessibilityLabel={t('assistant.optionsLabel')}
+        contentContainerStyle={styles.cards}>
+        {suggestions.map((s) => (
+          <SuggestionCard
+            key={s.recipeId}
+            suggestion={s}
+            applied={appliedId === s.recipeId}
+            canApply={!!s.targetPlannedMealId && !apply.isSuccess}
+            applying={apply.isPending && apply.variables?.recipeId === s.recipeId}
+            onApply={() => apply.mutate({ messageId, recipeId: s.recipeId })}
+          />
+        ))}
+      </ScrollView>
+      {apply.isSuccess && <Banner tone="success" message={t('assistant.applied')} />}
+      {apply.error && <Banner tone="danger" message={t(errorKey(apply.error))} />}
+    </View>
+  );
+}
+
+function SuggestionCard({ suggestion, applied, canApply, applying, onApply }: {
+  suggestion: AssistantSuggestion;
+  applied: boolean;
+  canApply: boolean;
+  applying: boolean;
+  onApply: () => void;
+}) {
   const { t } = useTranslation();
   const c = useTheme();
   const router = useRouter();
-  const apply = useApplySuggestion();
+  const s = suggestion;
   return (
-    <Card variant="primary" style={[styles.suggestion, { backgroundColor: c.berryContainer }]}>
-      <AppText variant="subtitle">{suggestion.title}</AppText>
+    <Card style={[styles.card, { borderColor: applied ? c.berry : c.divider }]}>
+      <FoodTile emoji={foodEmoji(s.title)} flavor={s.byAssistant ? 'berry' : 'tomato'} size={88} wide />
       <View style={styles.pills}>
-        <Pill label={t('cook.minutes', { count: suggestion.totalMinutes })} icon="time-outline" />
-        <Pill label={t('cook.coverage', { percent: Math.round(suggestion.coverage * 100) })} icon="basket-outline" />
+        {s.byAssistant ? (
+          <Pill label={t('assistant.byAssistant')} tone="berry" icon="sparkles-outline" />
+        ) : (
+          <Pill label={t('assistant.fromCatalog')} icon="book-outline" />
+        )}
       </View>
-      {apply.isSuccess ? (
-        <Banner tone="success" message={t('assistant.applied')} />
-      ) : (
-        <View style={styles.actions}>
-          {suggestion.targetPlannedMealId && (
-            <Button label={t('assistant.apply')} icon="swap-horizontal" size="sm" flavor="berry" loading={apply.isPending} onPress={() => apply.mutate(messageId)} />
-          )}
-          <Button
-            label={t('assistant.seeRecipe')}
-            variant="outline"
-            flavor="berry"
-            size="sm"
-            onPress={() => router.push({ pathname: '/recipe/[id]', params: { id: suggestion.recipeId } })}
-          />
-        </View>
-      )}
-      {apply.error && <Banner tone="danger" message={t(errorKey(apply.error))} />}
+      <AppText variant="subtitle">{s.title}</AppText>
+      <View style={styles.pills}>
+        <Pill label={t('cook.minutes', { count: s.totalMinutes })} icon="time-outline" />
+        {s.missing.length === 0 ? (
+          <Pill label={t('assistant.haveAll')} tone="accent" icon="checkmark" />
+        ) : (
+          <Pill label={t('cook.coverage', { percent: Math.round(s.coverage * 100) })} tone="accent" icon="basket-outline" />
+        )}
+      </View>
+      {s.missing.length > 0 && <Pill label={t('assistant.toBuy', { list: s.missing.join(', ') })} tone="mango" icon="cart-outline" />}
+      {s.byAssistant && <AppText variant="caption" secondary>{t('assistant.reviewAi')}</AppText>}
+      <View style={styles.actions}>
+        {canApply && (
+          <Button label={t('assistant.apply')} icon="swap-horizontal" size="sm" flavor="berry" loading={applying} onPress={onApply} />
+        )}
+        <Button
+          label={t('assistant.seeRecipe')}
+          variant="outline"
+          flavor="berry"
+          size="sm"
+          onPress={() => router.push({ pathname: '/recipe/[id]', params: { id: s.recipeId } })}
+        />
+      </View>
     </Card>
   );
 }
@@ -176,13 +241,15 @@ const styles = StyleSheet.create({
   flex: { flex: 1 },
   content: { padding: Spacing.md, gap: Spacing.md, paddingBottom: Spacing.lg },
   row: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md },
-  bubble: { maxWidth: '85%', padding: Spacing.md, borderRadius: Radius.lg, gap: Spacing.xs },
+  bubble: { maxWidth: '88%', padding: Spacing.md, borderRadius: Radius.lg, gap: Spacing.xs },
   mine: { alignSelf: 'flex-end', borderBottomRightRadius: Radius.sm },
   theirsWrap: { gap: Spacing.sm },
   theirs: { alignSelf: 'flex-start', borderWidth: 1, borderBottomLeftRadius: Radius.sm },
-  suggestion: { marginLeft: Spacing.sm },
+  suggestions: { gap: Spacing.sm, marginHorizontal: -Spacing.md },
+  cards: { gap: Spacing.sm, paddingHorizontal: Spacing.md, paddingBottom: Spacing.xs },
+  card: { width: CARD_WIDTH, borderWidth: 1 },
   pills: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm },
-  actions: { gap: Spacing.sm },
+  actions: { gap: Spacing.sm, marginTop: 'auto' },
   composer: {
     flexDirection: 'row',
     alignItems: 'center',

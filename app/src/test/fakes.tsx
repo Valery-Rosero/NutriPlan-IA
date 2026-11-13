@@ -104,6 +104,7 @@ export const RECIPE: RecipeDetail = {
       { ingredientId: 'cerdo', name: 'Cerdo', inPantry: true, isDefault: false, selected: true },
     ],
   }],
+  byAssistant: false,
 };
 
 export function fakeRecipes(overrides: Partial<RecipeRepository> = {}): jest.Mocked<RecipeRepository> {
@@ -245,12 +246,18 @@ export function fakeAssistant(overrides: Partial<AssistantRepository> = {}): jes
     send: jest.fn(async ({ plannedMealId }) => ({
       conversationId: 'c1',
       messageId: 7,
-      reply: 'Te propongo un sudado con lo que tienes.',
+      reply: 'Te tengo dos ideas:\n- **Sudado de lo que haya**, con lo que tienes.\n- **Pollo salteado con papa**, una receta mía.',
       fallback: false,
-      suggestion: {
-        recipeId: 'r5', title: 'Sudado de lo que haya', totalMinutes: 40, coverage: 0.8,
-        targetPlannedMealId: plannedMealId ?? null,
-      },
+      suggestions: [
+        {
+          recipeId: 'r5', title: 'Sudado de lo que haya', totalMinutes: 40, coverage: 0.8, missing: [], byAssistant: false,
+          targetPlannedMealId: plannedMealId ?? null,
+        },
+        {
+          recipeId: 'ia1', title: 'Pollo salteado con papa', totalMinutes: 30, coverage: 0.67, missing: ['Pechuga de pollo'],
+          byAssistant: true, targetPlannedMealId: plannedMealId ?? null,
+        },
+      ],
     })),
     apply: jest.fn(async () => {}),
     ...overrides,

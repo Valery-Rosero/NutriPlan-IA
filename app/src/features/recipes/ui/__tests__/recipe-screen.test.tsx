@@ -1,8 +1,8 @@
-import { fireEvent, render, screen } from '@testing-library/react-native';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 import { useLocalSearchParams } from 'expo-router';
 
 import { RecipeScreen } from '@/features/recipes/ui/recipe-screen';
-import { fakeRecipes, fakeServices, withServices } from '@/test/fakes';
+import { fakePlans, fakeRecipes, fakeServices, RECIPE, withServices } from '@/test/fakes';
 
 describe('RecipeScreen (US-115, US-118, US-123, ADR-020)', () => {
   beforeEach(() => {
@@ -76,5 +76,27 @@ describe('RecipeScreen (US-115, US-118, US-123, ADR-020)', () => {
     expect(await screen.findByText('Puedes usar: Papa (lo tienes)')).toBeOnTheScreen();
     // solo se consultan los ingredientes que faltan (el cerdo ya está en la cocina)
     expect(recipes.substitutes).toHaveBeenCalledWith(['arroz']);
+  });
+
+  it('ADR-029: lo que falta va a la lista de mercado de una vez, con su cantidad', async () => {
+    const services = fakeServices();
+    await render(<RecipeScreen />, { wrapper: withServices(services) });
+
+    await fireEvent.press(await screen.findByRole('button', { name: 'Agregar lo que falta a mi lista (1)' }));
+    await waitFor(() => expect(services.shopping.addManual).toHaveBeenCalledWith('list1', 'Arroz blanco (300 g)', 3));
+    expect(await screen.findByText('Listo, quedó en tu lista de mercado.')).toBeOnTheScreen();
+  });
+
+  it('sin plan no hay lista: lo explica en vez de mostrar un botón que no sirve', async () => {
+    const services = fakeServices({ plans: fakePlans({ current: jest.fn(async () => null) }) });
+    await render(<RecipeScreen />, { wrapper: withServices(services) });
+    expect(await screen.findByText(/primero organiza tu semana/)).toBeOnTheScreen();
+    expect(screen.queryByRole('button', { name: /Agregar lo que falta/ })).not.toBeOnTheScreen();
+  });
+
+  it('una receta creada por el asistente lo dice', async () => {
+    const recipes = fakeRecipes({ getDetail: jest.fn(async () => ({ ...RECIPE, byAssistant: true })) });
+    await render(<RecipeScreen />, { wrapper: withServices(fakeServices({ recipes })) });
+    expect(await screen.findByText(/Receta creada por el asistente/)).toBeOnTheScreen();
   });
 });

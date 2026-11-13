@@ -20,7 +20,7 @@ export class SupabaseRecipeRepository implements RecipeRepository {
     const [recipe, menu] = await Promise.all([
       this.client
         .from('recipes')
-        .select('id, title, description, total_minutes, base_servings, keeps_days, recipe_meal_slots(slot), recipe_steps(step_number, instruction)')
+        .select('id, title, description, total_minutes, base_servings, keeps_days, created_by_assistant, recipe_meal_slots(slot), recipe_steps(step_number, instruction)')
         .eq('id', id)
         .single(),
       this.client.rpc('recipe_flex_menu', { p_recipe_id: id }),
@@ -48,6 +48,7 @@ export class SupabaseRecipeRepository implements RecipeRepository {
       slots: r.recipe_meal_slots.map((s) => s.slot),
       steps: [...r.recipe_steps].sort((a, b) => a.step_number - b.step_number).map((s) => s.instruction),
       groups: [...groups.values()],
+      byAssistant: r.created_by_assistant,
     };
   }
 

@@ -594,7 +594,12 @@
       "chooseAtLeast_one": "Elige al menos {{count}} opción de {{group}}.",
       "chooseAtLeast_other": "Elige al menos {{count}} opciones de {{group}}."
     },
-    "completeChoicesFirst": "Primero elige las opciones que faltan."
+    "completeChoicesFirst": "Primero elige las opciones que faltan.",
+    "byAssistant": "Receta creada por el asistente con lo que tienes. Revísala antes de cocinar; las calorías las calcula NutriPlan.",
+    "addMissing_one": "Agregar lo que falta a mi lista ({{count}})",
+    "addMissing_other": "Agregar lo que falta a mi lista ({{count}})",
+    "addedMissing": "Listo, quedó en tu lista de mercado.",
+    "noListYet": "Para agregar lo que falta, primero organiza tu semana: así se crea tu lista de mercado."
   },
   "units": {
     "kg": "kg",
@@ -722,7 +727,7 @@
     "askForMeal": "Pedir otra al asistente",
     "intro": "Hola, te ayudo a decidir qué cocinar con lo que tienes.",
     "introSwap": "¿Por qué cambiamos \"{{title}}\"? Dime qué te provoca o qué no quieres.",
-    "safety": "Solo te propongo recetas que respetan tus alergias y dietas. No doy consejo médico.",
+    "safety": "Solo uso ingredientes que respetan tus alergias y dietas, y te puedo inventar recetas con lo que tienes. No doy consejo médico.",
     "fallback": "Respuesta automática: el asistente inteligente no está disponible ahora.",
     "thinking": "Pensando…",
     "placeholder": "Ej.: algo rápido sin lentejas",
@@ -740,7 +745,13 @@
       "swapFaster": "Algo más rápido",
       "swapPantry": "Algo con lo que tengo"
     },
-    "headerCaption": "Te ayudo a decidir qué cocinar"
+    "headerCaption": "Te ayudo a decidir qué cocinar",
+    "byAssistant": "Receta del asistente",
+    "fromCatalog": "Del recetario",
+    "toBuy": "Para comprar: {{list}}",
+    "haveAll": "Lo tienes todo",
+    "reviewAi": "Creada por el asistente: revísala antes de cocinar.",
+    "optionsLabel": "Opciones del asistente"
   },
   "support": {
     "title": "Ayuda y sugerencias",

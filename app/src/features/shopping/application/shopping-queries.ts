@@ -115,6 +115,22 @@ export function useAddManualItem() {
   });
 }
 
+/**
+ * Lo que le falta a una receta, a la lista de una vez (ADR-029). Cada cosa se clasifica en su sección
+ * y lo que ya está en la lista (pendiente) no se repite.
+ */
+export function useAddMissingToList() {
+  const { shopping, foodLabels } = useServices();
+  return useListMutation(async ({ list, items }: { list: ShoppingList; items: string[] }) => {
+    const pending = new Set(list.items.filter((i) => !i.checked).map((i) => i.name.trim().toLowerCase()));
+    for (const name of items) {
+      if (pending.has(name.trim().toLowerCase())) continue;
+      const label = await classifyQuietly(foodLabels, name);
+      await shopping.addManual(list.id, name, label?.storeCategoryId ?? null);
+    }
+  });
+}
+
 export function useRemoveItem() {
   const { shopping } = useServices();
   return useListMutation((itemId: string) => shopping.remove(itemId));

@@ -16,6 +16,8 @@ export type RecipeDetail = {
   steps: string[];
   /** Solo opciones seguras para quien consulta (las filtra la base). */
   groups: FlexGroup[];
+  /** ADR-029: la creó el asistente (borrador privado, validado por la base). */
+  byAssistant: boolean;
 };
 
 export type Choice = { groupKey: number; ingredientId: string };

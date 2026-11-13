@@ -32,3 +32,4 @@ Estado: **Aceptada** = ya implementada o decidida con el usuario; **Propuesta** 
 | [026](ADR-026.md) | Registro de fallas propio en vez de Sentry | Aceptada (piloto) |
 | [027](ADR-027.md) | Clasificación de alimentos escritos libremente con IA, en listas cerradas | Aceptada (piloto) |
 | [028](ADR-028.md) | Platos adicionales del día: lo cocinado fuera del plan se suma, no reemplaza | Aceptada |
+| [029](ADR-029.md) | El asistente crea recetas con lo que hay en la cocina y propone hasta tres opciones | Aceptada |

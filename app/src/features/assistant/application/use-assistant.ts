@@ -16,7 +16,7 @@ export function useApplySuggestion() {
   const { assistant } = useServices();
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (messageId: number) => assistant.apply(messageId),
+    mutationFn: ({ messageId, recipeId }: { messageId: number; recipeId: string }) => assistant.apply(messageId, recipeId),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: planKeys.all });
       void queryClient.invalidateQueries({ queryKey: cookingKeys.all });

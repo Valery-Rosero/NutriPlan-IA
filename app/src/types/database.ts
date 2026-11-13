@@ -105,6 +105,44 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"assistant_message_suggestions": {
+                  Row: {
+                    "message_id": number,"position": number,"recipe_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "message_id": number,"position": number,"recipe_id": string
+                  }
+                  Update: {
+                    "message_id"?: number,"position"?: number,"recipe_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "assistant_message_suggestions_message_id_fkey"
+      columns: ["message_id"]
+isOneToOne: false
+      referencedRelation: "assistant_messages"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "assistant_message_suggestions_recipe_id_fkey"
+      columns: ["recipe_id"]
+isOneToOne: false
+      referencedRelation: "recipe_diets"
+      referencedColumns: ["recipe_id"]
+    },{
+      foreignKeyName: "assistant_message_suggestions_recipe_id_fkey"
+      columns: ["recipe_id"]
+isOneToOne: false
+      referencedRelation: "recipe_nutrition"
+      referencedColumns: ["recipe_id"]
+    },{
+      foreignKeyName: "assistant_message_suggestions_recipe_id_fkey"
+      columns: ["recipe_id"]
+isOneToOne: false
+      referencedRelation: "recipes"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"assistant_messages": {
                   Row: {
                     "applied_at": string | null,"content": string,"conversation_id": string,"created_at": string,"id": number,"role": Database["public"]['Enums']["chat_role"],"suggested_recipe_id": string | null,"target_planned_meal_id": string | null
@@ -1391,14 +1429,14 @@ isOneToOne: false
                   ]
                 },"recipes": {
                   Row: {
-                    "author_id": string | null,"base_servings": number,"cook_minutes": number,"created_at": string,"cuisine_id": number | null,"description": string | null,"difficulty": number,"id": string,"image_path": string | null,"keeps_days": number | null,"main_protein_id": number | null,"prep_minutes": number,"published_at": string | null,"search_tsv": unknown,"status": Database["public"]['Enums']["recipe_status"],"storage_notes": string | null,"title": string,"total_minutes": number | null,"updated_at": string
+                    "author_id": string | null,"base_servings": number,"cook_minutes": number,"created_at": string,"created_by_assistant": boolean,"cuisine_id": number | null,"description": string | null,"difficulty": number,"id": string,"image_path": string | null,"keeps_days": number | null,"main_protein_id": number | null,"prep_minutes": number,"published_at": string | null,"search_tsv": unknown,"status": Database["public"]['Enums']["recipe_status"],"storage_notes": string | null,"title": string,"total_minutes": number | null,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "author_id"?: string | null,"base_servings": number,"cook_minutes"?: number,"created_at"?: string,"cuisine_id"?: number | null,"description"?: string | null,"difficulty"?: number,"id"?: string,"image_path"?: string | null,"keeps_days"?: number | null,"main_protein_id"?: number | null,"prep_minutes": number,"published_at"?: string | null,"search_tsv"?: never,"status"?: Database["public"]['Enums']["recipe_status"],"storage_notes"?: string | null,"title": string,"total_minutes"?: never,"updated_at"?: string
+                    "author_id"?: string | null,"base_servings": number,"cook_minutes"?: number,"created_at"?: string,"created_by_assistant"?: boolean,"cuisine_id"?: number | null,"description"?: string | null,"difficulty"?: number,"id"?: string,"image_path"?: string | null,"keeps_days"?: number | null,"main_protein_id"?: number | null,"prep_minutes": number,"published_at"?: string | null,"search_tsv"?: never,"status"?: Database["public"]['Enums']["recipe_status"],"storage_notes"?: string | null,"title": string,"total_minutes"?: never,"updated_at"?: string
                   }
                   Update: {
-                    "author_id"?: string | null,"base_servings"?: number,"cook_minutes"?: number,"created_at"?: string,"cuisine_id"?: number | null,"description"?: string | null,"difficulty"?: number,"id"?: string,"image_path"?: string | null,"keeps_days"?: number | null,"main_protein_id"?: number | null,"prep_minutes"?: number,"published_at"?: string | null,"search_tsv"?: never,"status"?: Database["public"]['Enums']["recipe_status"],"storage_notes"?: string | null,"title"?: string,"total_minutes"?: never,"updated_at"?: string
+                    "author_id"?: string | null,"base_servings"?: number,"cook_minutes"?: number,"created_at"?: string,"created_by_assistant"?: boolean,"cuisine_id"?: number | null,"description"?: string | null,"difficulty"?: number,"id"?: string,"image_path"?: string | null,"keeps_days"?: number | null,"main_protein_id"?: number | null,"prep_minutes"?: number,"published_at"?: string | null,"search_tsv"?: never,"status"?: Database["public"]['Enums']["recipe_status"],"storage_notes"?: string | null,"title"?: string,"total_minutes"?: never,"updated_at"?: string
                   }
                   Relationships: [
                     {
@@ -1993,7 +2031,12 @@ isOneToOne: false
         isSetofReturn: false
       } },
 "apply_assistant_suggestion":
-{ Args: { "p_message_id": number }; Returns: string
+{ Args: { "p_message_id": number,"p_recipe_id"?: string }; Returns: string
+                           },
+"assistant_ingredients":
+{ Args: Record<PropertyKey, never>; Returns: {
+              "expiring": boolean,"in_pantry": boolean,"ingredient_id": string,"is_staple": boolean,"name": string
+            }[]
                            },
 "cook_now":
 { Args: { "p_choices"?: Json,"p_recipe_id": string,"p_servings": number,"p_slot": Database["public"]['Enums']["meal_slot"] }; Returns: Json
@@ -2006,6 +2049,9 @@ isOneToOne: false
               "coverage": number,"missing": Json,"missing_count": number,"recipe_id": string,"title": string,"total_minutes": number,"uses_expiring": boolean
             }[]
                            },
+"create_assistant_recipe":
+{ Args: { "p_recipe": Json }; Returns: string
+                           },
 "daily_nutrition":
 { Args: { "p_date"?: string }; Returns: {
               "carbs_g": number,"fat_g": number,"kcal": number,"planned_meal_id": string,"protein_g": number,"slot": Database["public"]['Enums']["meal_slot"],"status": Database["public"]['Enums']["meal_status"],"title": string
@@ -2017,6 +2063,7 @@ isOneToOne: false
 "base_servings": number,
 "cook_minutes": number,
 "created_at": string,
+"created_by_assistant": boolean,
 "cuisine_id": number | null,
 "description": string | null,
 "difficulty": number,
