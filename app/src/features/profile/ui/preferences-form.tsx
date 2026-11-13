@@ -20,7 +20,12 @@ const toggle = (list: number[], id: number) => (list.includes(id) ? list.filter(
  * y cocinas favoritas (US-138, preferencia blanda: suben en el plan, no excluyen nada).
  * Metas de proteína y kcal (US-136, US-159): datos sensibles, solo con la autorización vigente.
  */
-export function PreferencesForm({ submitLabel, onSaved }: { submitLabel: string; onSaved: () => void }) {
+export function PreferencesForm({ submitLabel, onSaved, inOnboarding = false }: {
+  submitLabel: string;
+  onSaved: () => void;
+  /** En el onboarding no hay Perfil › Privacidad a dónde ir: sin autorización, las metas no se muestran. */
+  inOnboarding?: boolean;
+}) {
   const { t } = useTranslation();
   const profile = useProfile();
   const cuisines = useCuisines();
@@ -100,43 +105,45 @@ export function PreferencesForm({ submitLabel, onSaved }: { submitLabel: string;
         </ChipGroup>
       </FormSection>
 
-      <FormSection icon="barbell-outline" title={t('profile.targets.title')} hint={t('profile.targets.hint')}>
-        {canSetTargets ? (
-          <>
-            <AppText variant="label">{t('profile.targets.protein')}</AppText>
-            <ChipGroup>
-              <Chip label={t('profile.targets.noGoal')} selected={selectedProtein === null} onPress={() => setProtein(null)} />
-              {PROTEIN_OPTIONS.map((p) => (
-                <Chip key={p} label={`${p} %`} selected={selectedProtein === p} onPress={() => setProtein(p)} />
-              ))}
-            </ChipGroup>
-            {split && (
-              <AppText variant="caption" secondary accessibilityLiveRegion="polite">
-                {t('profile.targets.split', split)}
-              </AppText>
-            )}
-            <TextField
-              label={t('profile.targets.kcal')}
-              icon="flame-outline"
-              value={kcalShown}
-              onChangeText={setKcalText}
-              keyboardType="number-pad"
-              placeholder="2000"
-              error={kcal.success ? undefined : kcal.error.issues[0]?.message}
-            />
-            <AppText variant="caption" secondary>{t('profile.targets.note')}</AppText>
-          </>
-        ) : (
-          <>
-            <AppText secondary>{t('profile.targets.needsAuthorization')}</AppText>
-            <TextLink
-              label={t('profile.targets.authorize')}
-              icon="shield-checkmark-outline"
-              onPress={() => router.push({ pathname: '/profile/[section]', params: { section: 'privacy' } })}
-            />
-          </>
-        )}
-      </FormSection>
+      {(canSetTargets || !inOnboarding) && (
+        <FormSection icon="barbell-outline" title={t('profile.targets.title')} hint={t('profile.targets.hint')}>
+          {canSetTargets ? (
+            <>
+              <AppText variant="label">{t('profile.targets.protein')}</AppText>
+              <ChipGroup>
+                <Chip label={t('profile.targets.noGoal')} selected={selectedProtein === null} onPress={() => setProtein(null)} />
+                {PROTEIN_OPTIONS.map((p) => (
+                  <Chip key={p} label={`${p} %`} selected={selectedProtein === p} onPress={() => setProtein(p)} />
+                ))}
+              </ChipGroup>
+              {split && (
+                <AppText variant="caption" secondary accessibilityLiveRegion="polite">
+                  {t('profile.targets.split', split)}
+                </AppText>
+              )}
+              <TextField
+                label={t('profile.targets.kcal')}
+                icon="flame-outline"
+                value={kcalShown}
+                onChangeText={setKcalText}
+                keyboardType="number-pad"
+                placeholder="2000"
+                error={kcal.success ? undefined : kcal.error.issues[0]?.message}
+              />
+              <AppText variant="caption" secondary>{t('profile.targets.note')}</AppText>
+            </>
+          ) : (
+            <>
+              <AppText secondary>{t('profile.targets.needsAuthorization')}</AppText>
+              <TextLink
+                label={t('profile.targets.authorize')}
+                icon="shield-checkmark-outline"
+                onPress={() => router.push({ pathname: '/profile/[section]', params: { section: 'privacy' } })}
+              />
+            </>
+          )}
+        </FormSection>
+      )}
 
       {error && <Banner tone="danger" message={t(errorKey(error))} />}
       <Button label={submitLabel} loading={saving} onPress={() => void save()} />

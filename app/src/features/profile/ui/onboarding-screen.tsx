@@ -4,9 +4,11 @@ import { useTranslation } from 'react-i18next';
 import { errorKey } from '@/core/errors/app-error';
 import { useUpdateProfile } from '@/features/profile/application/profile-queries';
 import { initialOnboarding, onboardingReducer, stepNumber, ONBOARDING_STEPS } from '@/features/profile/domain/onboarding';
+import { NotificationsForm } from '@/features/notifications/ui/notifications-form';
 import { QuickAdd } from '@/features/pantry/ui/quick-add';
 import { BudgetForm } from '@/features/profile/ui/budget-form';
 import { HouseholdForm } from '@/features/profile/ui/household-form';
+import { PreferencesForm } from '@/features/profile/ui/preferences-form';
 import { RestrictionsForm } from '@/features/profile/ui/restrictions-form';
 import { SensitiveStep } from '@/features/profile/ui/sensitive-step';
 import { Banner, BrandHeader, Button, Card, LoadingState, Screen, StepProgress, TextLink } from '@/shared/ui';
@@ -60,9 +62,19 @@ export function OnboardingScreen() {
       {state.step === 'budget' && (
         <BudgetForm submitLabel={next} onSaved={() => dispatch({ type: 'budget_saved' })} />
       )}
+      {state.step === 'preferences' && (
+        <PreferencesForm submitLabel={next} inOnboarding onSaved={() => dispatch({ type: 'preferences_saved' })} />
+      )}
+      {state.step === 'notifications' && (
+        <>
+          <NotificationsForm submitLabel={next} onSaved={() => dispatch({ type: 'notifications_done' })} />
+          {/* Saltar solo este paso (no todo el onboarding): los avisos se activan luego en Perfil. */}
+          <TextLink label={t('onboarding.notNow')} hint={t('onboarding.notNowHint')} onPress={() => dispatch({ type: 'notifications_done' })} />
+        </>
+      )}
       {state.step === 'kitchen' && (
         <>
-          <Card variant="primary">
+          <Card variant="filled">
             <QuickAdd />
           </Card>
           <Button label={t('onboarding.finish')} icon="restaurant-outline" onPress={() => dispatch({ type: 'kitchen_done' })} />

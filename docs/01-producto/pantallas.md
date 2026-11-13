@@ -5,7 +5,7 @@ Referencia visual original: `referencias/app-nutricion-ia-prototipo.html` (clica
 ## Navegación
 - **Acceso `(auth)`:** Bienvenida (`welcome`) · Registro (`sign-up`) · Inicio de sesión (`sign-in`) · Verificar correo (`verify-email`) · Recuperar contraseña (`forgot-password`). Fuera del grupo: `auth-callback` (enlace del correo) y `reset-password`.
 - **Puertas** (`_layout.tsx`, `core/startup/gates.ts`): sin sesión → acceso; documentos pendientes → `consents` (incluye el aviso de salud); perfil incompleto → `onboarding`; si no hay conexión al abrir, entra con la caché (US-150).
-- **Onboarding** (`onboarding`): Hogar (región y personas) → Autorización de datos sensibles → Alergias y dieta → Presupuesto → ¿Qué hay en tu cocina? (omitible: US-130).
+- **Onboarding** (`onboarding`): Hogar (región y personas) → Autorización de datos sensibles → Alergias y dieta → Presupuesto → Preferencias (tiempo, cocinas y metas; las metas solo con la autorización) → Notificaciones (el permiso se pide al tocar "Activar avisos"; "Ahora no" salta el paso) → ¿Qué hay en tu cocina? (omitible: US-130).
 - **Pestañas (ADR-024):** **Hoy** · **Mi cocina** · **Mi semana**. Perfil desde el ícono superior.
 - **Pilas y modales:** Receta (`recipe/[id]`), Cambiar comida (`plan/swap/[mealId]`, modal), Agregar a la despensa (`pantry/add`, modal), Asistente (`assistant`), Perfil (`profile/index`) y sus secciones (`profile/[section]`), Ayuda y reportes (`help`), Textos legales (`legal/[kind]`), Eliminar cuenta (`account/delete`). `design-system` solo en desarrollo.
 

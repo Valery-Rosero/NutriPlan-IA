@@ -495,7 +495,9 @@
       "restrictions": "¿Qué debemos evitar?",
       "budget": "Tu presupuesto",
       "done": "¡Listo!",
-      "kitchen": "¿Qué hay en tu cocina?"
+      "kitchen": "¿Qué hay en tu cocina?",
+      "preferences": "¿Cómo te gusta cocinar?",
+      "notifications": "¿Te avisamos?"
     },
     "finish": "Listo, ver qué cocino",
     "later": "Completar después",
@@ -506,8 +508,12 @@
       "restrictions": "Nunca te sugeriremos recetas con lo que marques aquí.",
       "budget": "Es opcional: te avisamos si un plan se pasa de lo que quieres gastar.",
       "kitchen": "Las recetas se adaptan a lo que tienes. Marca lo que hay hoy; puedes cambiarlo cuando quieras.",
-      "done": ""
-    }
+      "done": "",
+      "preferences": "Cuánto tiempo tienes y qué cocinas te gustan. Lo puedes cambiar cuando quieras.",
+      "notifications": "Te recordamos qué cocinar y lo que está por vencerse. Solo si tú quieres."
+    },
+    "notNow": "Ahora no",
+    "notNowHint": "Puedes activar los avisos después en Perfil › Notificaciones."
   },
   "recipe": {
     "meta": "{{minutes}} min",

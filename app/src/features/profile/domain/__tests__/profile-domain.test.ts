@@ -1,4 +1,11 @@
-import { initialOnboarding, onboardingReducer, type OnboardingEvent } from '@/features/profile/domain/onboarding';
+import {
+  initialOnboarding,
+  onboardingReducer,
+  ONBOARDING_STEPS,
+  stepNumber,
+  type OnboardingEvent,
+  type OnboardingState,
+} from '@/features/profile/domain/onboarding';
 import { budgetSchema, kcalTargetSchema, macroSplit, nextCookTime, parseCop } from '@/features/profile/domain/profile';
 
 const run = (authorized: boolean, events: OnboardingEvent[]) => events.reduce(onboardingReducer, initialOnboarding(authorized));
@@ -21,16 +28,31 @@ describe('onboarding (máquina de estados)', () => {
     ).toBe('restrictions');
   });
 
-  it('termina en done', () => {
-    const state = run(true, [
+  it('después del presupuesto pide preferencias y notificaciones, y termina en la cocina', () => {
+    const afterBudget = run(true, [
       { type: 'household_saved' },
       { type: 'sensitive_decided', authorized: true },
       { type: 'restrictions_saved' },
       { type: 'budget_saved' },
     ]);
-    expect(state.step).toBe('kitchen');
-    expect(onboardingReducer(state, { type: 'kitchen_done' }).step).toBe('done');
-    expect(onboardingReducer(state, { type: 'back' }).step).toBe('budget');
+    expect(afterBudget.step).toBe('preferences');
+    const afterPrefs = onboardingReducer(afterBudget, { type: 'preferences_saved' });
+    expect(afterPrefs.step).toBe('notifications');
+    const kitchen = onboardingReducer(afterPrefs, { type: 'notifications_done' });
+    expect(kitchen.step).toBe('kitchen');
+    expect(onboardingReducer(kitchen, { type: 'kitchen_done' }).step).toBe('done');
+  });
+
+  it('volver recorre los pasos nuevos en orden', () => {
+    const back = (step: OnboardingState['step']) => onboardingReducer({ step, sensitiveAuthorized: false }, { type: 'back' }).step;
+    expect(back('kitchen')).toBe('notifications');
+    expect(back('notifications')).toBe('preferences');
+    expect(back('preferences')).toBe('budget');
+  });
+
+  it('el avance cuenta siete pasos', () => {
+    expect(ONBOARDING_STEPS).toHaveLength(7);
+    expect(stepNumber('notifications')).toBe(6);
   });
 });
 

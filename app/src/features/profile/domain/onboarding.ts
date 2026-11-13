@@ -1,9 +1,18 @@
 /**
  * Máquina de estados del onboarding (US-106 a US-109, US-130). Pura y probada aparte de la UI.
- * hogar → autorización de datos sensibles → restricciones (solo si autorizó) → presupuesto → qué hay en la cocina → listo
+ * hogar → autorización de datos sensibles → restricciones (solo si autorizó) → presupuesto → preferencias
+ * (tiempo, cocinas y metas) → notificaciones (se puede saltar) → qué hay en la cocina → listo
  * El último paso es el que hace útil la app desde el primer minuto: las recetas dependen de lo que hay (ADR-024).
  */
-export type OnboardingStep = 'household' | 'sensitive' | 'restrictions' | 'budget' | 'kitchen' | 'done';
+export type OnboardingStep =
+  | 'household'
+  | 'sensitive'
+  | 'restrictions'
+  | 'budget'
+  | 'preferences'
+  | 'notifications'
+  | 'kitchen'
+  | 'done';
 
 export type OnboardingState = { step: OnboardingStep; sensitiveAuthorized: boolean };
 
@@ -12,6 +21,9 @@ export type OnboardingEvent =
   | { type: 'sensitive_decided'; authorized: boolean }
   | { type: 'restrictions_saved' }
   | { type: 'budget_saved' }
+  | { type: 'preferences_saved' }
+  /** Guardó sus avisos o tocó "Ahora no": en los dos casos sigue. */
+  | { type: 'notifications_done' }
   | { type: 'kitchen_done' }
   | { type: 'back' };
 
@@ -27,6 +39,10 @@ export function onboardingReducer(state: OnboardingState, event: OnboardingEvent
     case 'restrictions_saved':
       return { ...state, step: 'budget' };
     case 'budget_saved':
+      return { ...state, step: 'preferences' };
+    case 'preferences_saved':
+      return { ...state, step: 'notifications' };
+    case 'notifications_done':
       return { ...state, step: 'kitchen' };
     case 'kitchen_done':
       return { ...state, step: 'done' };
@@ -43,14 +59,26 @@ function previousStep({ step, sensitiveAuthorized }: OnboardingState): Onboardin
       return 'sensitive';
     case 'budget':
       return sensitiveAuthorized ? 'restrictions' : 'sensitive';
-    case 'kitchen':
+    case 'preferences':
       return 'budget';
+    case 'notifications':
+      return 'preferences';
+    case 'kitchen':
+      return 'notifications';
     default:
       return step;
   }
 }
 
-export const ONBOARDING_STEPS: OnboardingStep[] = ['household', 'sensitive', 'restrictions', 'budget', 'kitchen'];
+export const ONBOARDING_STEPS: OnboardingStep[] = [
+  'household',
+  'sensitive',
+  'restrictions',
+  'budget',
+  'preferences',
+  'notifications',
+  'kitchen',
+];
 
 /** Posición para el indicador "Paso 2 de 4". */
 export function stepNumber(step: OnboardingStep) {
