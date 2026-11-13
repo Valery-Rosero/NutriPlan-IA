@@ -668,7 +668,6 @@
     "expiring": "Vence pronto: {{list}}. Úsalo primero.",
     "openKitchen": "Ver mi cocina",
     "planned": "Lo que planeaste para hoy",
-    "suggestionsTitle": "¿Qué cocino para el {{moment}}?",
     "suggestionsHint": "Recetas que se adaptan a lo que tienes. Toca una para elegir con qué hacerla.",
     "weekTitle": "Tu semana",
     "weekPitch": "Organiza los desayunos, almuerzos y cenas de la semana con lo que tienes, y te armamos la lista de mercado con lo que falta.",
@@ -684,10 +683,19 @@
       "afternoon": "Buenas tardes",
       "evening": "Buenas noches"
     },
-    "heroHint": "Te proponemos recetas con lo que ya tienes en tu cocina.",
     "ideasTitle": "Ideas con lo que tienes",
     "statusTitle": "Tu cocina y tu semana",
-    "weekProgress": "Avance de la semana"
+    "weekProgress": "Avance de la semana",
+    "momentTitle": {
+      "breakfast": "¿Qué cocinamos para el desayuno?",
+      "lunch": "¿Qué cocinamos para el almuerzo?",
+      "dinner": "¿Qué cocinamos para la cena?",
+      "snack": "¿Qué preparamos de algo?"
+    },
+    "expiringCount_one": "{{count}} vence pronto",
+    "expiringCount_other": "{{count}} vencen pronto",
+    "cookThis": "Quiero cocinar esta",
+    "cookThisHint": "Abre {{title}} para elegir con qué hacerla"
   },
   "kitchen": {
     "title": "Mi cocina",

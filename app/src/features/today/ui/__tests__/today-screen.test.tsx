@@ -48,6 +48,46 @@ describe('Hoy (ADR-024): el flujo gira en torno a la cocina', () => {
   });
 });
 
+describe('Hoy "Cocina viva": la pregunta del momento y el plato al frente', () => {
+  afterEach(() => jest.restoreAllMocks());
+
+  const idea = (recipeId: string, title: string, extra = {}) => ({
+    recipeId, title, totalMinutes: 25, coverage: 0.9, missing: [{ ingredientId: 'i9', name: 'Cebolla', missingGrams: 50 }], usesExpiring: false, ...extra,
+  });
+
+  it('a la hora de la cena pregunta "para la cena" (concordancia por momento)', async () => {
+    jest.spyOn(Date.prototype, 'getHours').mockReturnValue(19);
+    await render(<TodayScreen />, { wrapper: withServices(fakeServices({ pantry: kitchenWith(['Papa']) })) });
+    expect(await screen.findByRole('header', { name: '¿Qué cocinamos para la cena?' })).toBeOnTheScreen();
+  });
+
+  it('resume la cocina en píldoras: cuántos ingredientes y cuántos vencen pronto', async () => {
+    const soon = new Date(Date.now() + 86_400_000).toISOString().slice(0, 10);
+    const pantry = fakePantry({
+      list: jest.fn(async () => [
+        { id: 'a', ingredientId: 'a', name: 'Espinaca', grams: 300, expiresOn: soon, custom: null },
+        { id: 'b', ingredientId: 'b', name: 'Papa', grams: 1000, expiresOn: null, custom: null },
+      ]),
+    });
+    await render(<TodayScreen />, { wrapper: withServices(fakeServices({ pantry })) });
+    expect(await screen.findByText('2 ingredientes')).toBeOnTheScreen();
+    expect(screen.getByText('1 vence pronto')).toBeOnTheScreen();
+  });
+
+  it('la mejor idea sale en grande con su botón; las demás, como tarjetas que abren la receta', async () => {
+    const cooking = { suggestions: jest.fn(async () => [idea('r1', 'Arroz salteado con lo que tengas'), idea('r2', 'Batido de fruta', { missing: [] })]) };
+    await render(<TodayScreen />, { wrapper: withServices({ ...fakeServices({ pantry: kitchenWith(['Papa']) }), cooking }) });
+
+    await fireEvent.press(await screen.findByRole('button', { name: 'Quiero cocinar esta' }));
+    expect(useRouter().push).toHaveBeenCalledWith({ pathname: '/recipe/[id]', params: { id: 'r1' } });
+    expect(screen.getAllByText('Tienes el 90 % de los ingredientes')[0]).toBeOnTheScreen();
+    expect(screen.getAllByText('Te falta: Cebolla')[0]).toBeOnTheScreen();
+
+    await fireEvent.press(screen.getByRole('button', { name: /^Batido de fruta\./ }));
+    expect(useRouter().push).toHaveBeenCalledWith({ pathname: '/recipe/[id]', params: { id: 'r2' } });
+  });
+});
+
 describe('Mi día (US-159)', () => {
   it('suma solo lo cocinado y muestra lo que falta como pendiente', async () => {
     await render(<TodayScreen />, { wrapper: withServices(fakeServices({ pantry: kitchenWith(['Papa']) })) });

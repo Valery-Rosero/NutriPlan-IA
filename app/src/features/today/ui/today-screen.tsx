@@ -3,10 +3,11 @@ import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { errorKey, toAppError } from '@/core/errors/app-error';
+import { foodEmoji } from '@/core/food-emoji';
 import { capitalize, formatDay } from '@/core/format';
 import { useCookingSuggestions } from '@/features/cooking/application/use-suggestions';
 import { momentOfDay } from '@/features/cooking/domain/cooking';
-import { SLOT_ICON } from '@/features/cooking/ui/slot-icon';
+import { SLOT_EMOJI } from '@/features/cooking/ui/slot-icon';
 import { SuggestionCard } from '@/features/cooking/ui/suggestion-card';
 import { HealthDisclaimerNote } from '@/features/legal/ui/health-disclaimer-note';
 import { DailyNutritionCard } from '@/features/nutrition/ui/daily-nutrition-card';
@@ -29,9 +30,8 @@ import {
   Card,
   EmptyState,
   ErrorState,
+  FoodTile,
   IconBadge,
-  ListGroup,
-  ListRow,
   LoadingState,
   Pill,
   ProgressBar,
@@ -43,8 +43,9 @@ import {
 const WEEK = { days: 7, slots: ['breakfast', 'lunch', 'dinner'] as const };
 
 /**
- * Hoy (ADR-024): responde "¿qué cocino?" con lo que hay en la cocina. Orden de lectura:
- * la pregunta del momento, lo planeado, ideas con lo que hay, y el estado de la cocina y la semana.
+ * Hoy (ADR-024, "Cocina viva" en tomate): responde "¿qué cocino?" con lo que hay en la cocina. Orden de
+ * lectura: la pregunta del momento con el estado de la cocina, lo planeado, la mejor idea en grande y otras
+ * más, Mi día, y la cocina y la semana. El asistente ya no va aquí: tiene su pestaña en la barra.
  */
 export function TodayScreen() {
   const { t } = useTranslation();
@@ -71,14 +72,21 @@ export function TodayScreen() {
 
   return (
     <Screen scroll>
-      {/* La pregunta del momento, en el bloque de marca */}
+      {/* La pregunta del momento, con el estado de la cocina de un vistazo */}
       <BrandHeader
         eyebrow={t(`today.greeting.${greetingFor(hour)}`)}
-        caption={formatDay(today)}
-        title={t('today.suggestionsTitle', { moment: t(`slots.${moment}`) })}
-        subtitle={t('today.heroHint')}
-        action={{ icon: 'person-circle-outline', label: t('profile.title'), onPress: () => router.push('/profile') }}
-      />
+        caption={capitalize(formatDay(today))}
+        title={t(`today.momentTitle.${moment}`)}
+        action={{ icon: 'person-circle-outline', label: t('profile.title'), onPress: () => router.push('/profile') }}>
+        {items.length > 0 && (
+          <View style={styles.pills}>
+            <Pill label={t('kitchen.count', { count: items.length })} tone="accent" icon="leaf-outline" />
+            {expiring.length > 0 && (
+              <Pill label={t('today.expiringCount', { count: expiring.length })} tone="mango" icon="alert-circle-outline" />
+            )}
+          </View>
+        )}
+      </BrandHeader>
 
       {restrictions.data?.allergenIds.length === 0 && (
         <View style={styles.block}>
@@ -90,17 +98,6 @@ export function TodayScreen() {
           />
         </View>
       )}
-
-      {/* Asistente (US-157, US-160): una idea conversada con lo que hay */}
-      <ListGroup>
-        <ListRow
-          icon="sparkles-outline"
-          tone="accent"
-          title={t('assistant.open')}
-          subtitle={t('assistant.openHint')}
-          onPress={() => router.push('/assistant')}
-        />
-      </ListGroup>
 
       {/* Sin cocina las recetas no se pueden adaptar: es lo primero que se pide */}
       {pantry.isSuccess && items.length === 0 && (
@@ -120,7 +117,7 @@ export function TodayScreen() {
           <Card>
             {todayMeals.map((meal) => (
               <View key={meal.id} style={styles.row}>
-                <IconBadge name={SLOT_ICON[meal.slot]} />
+                <FoodTile emoji={foodEmoji(meal.recipeTitle, SLOT_EMOJI[meal.slot])} size={48} />
                 <View style={styles.flex}>
                   <AppText variant="caption" secondary>{capitalize(t(`slots.${meal.slot}`))}</AppText>
                   <TextLink
@@ -143,10 +140,7 @@ export function TodayScreen() {
         </>
       )}
 
-      {/* Mi día (US-159): lo que ya se cocinó hoy, frente a la meta */}
-      <DailyNutritionCard date={today} />
-
-      {/* Ideas para este momento del día con lo que hay */}
+      {/* Ideas para este momento del día con lo que hay: la mejor, en grande */}
       <SectionHeader title={t('today.ideasTitle')} />
       <AppText variant="caption" secondary style={styles.hint}>{t('today.suggestionsHint')}</AppText>
       {suggestions.isPending ? (
@@ -159,8 +153,11 @@ export function TodayScreen() {
           <CookTimeNotice />
         </>
       ) : (
-        suggestions.data.slice(0, 4).map((s) => <SuggestionCard key={s.recipeId} suggestion={s} />)
+        suggestions.data.slice(0, 4).map((s, i) => <SuggestionCard key={s.recipeId} suggestion={s} hero={i === 0} />)
       )}
+
+      {/* Mi día (US-159): lo que ya se cocinó hoy, frente a la meta */}
+      <DailyNutritionCard date={today} />
 
       {/* La cocina y la semana */}
       <SectionHeader title={t('today.statusTitle')} />
@@ -182,7 +179,7 @@ export function TodayScreen() {
 
       <Card>
         <View style={styles.row}>
-          <IconBadge name="calendar-outline" />
+          <IconBadge name="calendar-outline" tone="mango" />
           <AppText variant="subtitle" style={styles.flex}>{t('today.weekTitle')}</AppText>
         </View>
         {plan.data ? (
@@ -229,4 +226,5 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md },
   flex: { flex: 1 },
   hint: { marginTop: -Spacing.sm },
+  pills: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm },
 });

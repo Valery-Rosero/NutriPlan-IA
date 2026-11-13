@@ -8,3 +8,11 @@ export const SLOT_ICON: Record<MealSlot, IconName> = {
   snack: 'nutrition-outline',
   dinner: 'moon-outline',
 };
+
+/** Emoji de respaldo de un plato cuando su nombre no dice qué es (ver `foodEmoji`). */
+export const SLOT_EMOJI: Record<MealSlot, string> = {
+  breakfast: '🍳',
+  lunch: '🍲',
+  snack: '🍎',
+  dinner: '🍽️',
+};
