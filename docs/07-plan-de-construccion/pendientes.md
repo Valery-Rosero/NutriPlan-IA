@@ -7,8 +7,10 @@ Se avanza **de a un ítem**, en este orden, y cada uno se cierra probado (prueba
 |---|---|---|
 | A1 | APK nuevo con los arreglos del 13-nov: teclado del asistente y formularios, lista de mercado al terminar la compra, textos legales sin marcadores, cierre de sesión con tiempo límite | Por probar en el teléfono |
 | A2 | Despliegue a staging de la migración `20261113000100_shopping_close_bought` (GitHub → Actions) | Por confirmar |
-| A3 | **Verificación por correo** en el APK: ¿no llega el correo, o llega y el enlace no abre la app? | Esperando detalle de la prueba |
-| A4 | **Cierre de sesión** en el APK: ¿qué pasó exactamente al tocarlo? | Esperando detalle de la prueba |
+| A3 | **Verificación por correo:** staging deja crear la cuenta sin verificar porque "Confirm email" está apagado en el panel de Supabase (en `config.toml` se apaga a propósito solo para local/CI) | Encender en el panel de staging y probar |
+| A4 | **Cierre de sesión** con diálogo del sistema → diálogo propio de la app (`ConfirmDialog`), también en quitar de la despensa y revocar la autorización | Hecho; probar en el APK |
+| A6 | Notificaciones en el APK (recordatorio de comida) | ✅ Probado el 13-nov |
+| A7 | Recuperar contraseña en el APK (Iniciar sesión → "¿Olvidaste tu contraseña?" → correo → nueva contraseña) | Por probar |
 | A5 | Importar el backlog a Jira (Sprint → "No asignar", validar, importar una vez; sprints y estados con las etiquetas) | En curso |
 
 ## B. Funciones nuevas (decisiones ya tomadas)

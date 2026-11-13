@@ -1,5 +1,6 @@
 import { useRouter } from 'expo-router';
-import { Alert, StyleSheet, Switch, View } from 'react-native';
+import { useState } from 'react';
+import { StyleSheet, Switch, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { errorKey } from '@/core/errors/app-error';
@@ -13,7 +14,7 @@ import {
 } from '@/features/profile/application/profile-queries';
 import { Spacing } from '@/shared/theme/colors';
 import { useTheme } from '@/shared/theme/use-theme';
-import { AppText, Banner, Button, FormSection, ListGroup, ListRow, LoadingState, Pill } from '@/shared/ui';
+import { AppText, Banner, Button, ConfirmDialog, FormSection, ListGroup, ListRow, LoadingState, Pill } from '@/shared/ui';
 
 /** Autorización de datos sensibles: se puede dar y revocar en cualquier momento (ADR-011). */
 export function PrivacySection({ onDone }: { onDone: () => void }) {
@@ -26,15 +27,12 @@ export function PrivacySection({ onDone }: { onDone: () => void }) {
   const profile = useProfile();
   const update = useUpdateProfile();
   const c = useTheme();
+  const [askRevoke, setAskRevoke] = useState(false);
 
   if (status.isPending) return <LoadingState />;
 
   // R4: revocar borra las alergias, así que los planes dejan de filtrarlas. Se pide confirmación explícita.
-  const confirmRevoke = () =>
-    Alert.alert(t('profile.privacy.revokeTitle'), t('profile.privacy.revokeWarning'), [
-      { text: t('common.cancel'), style: 'cancel' },
-      { text: t('profile.privacy.revokeConfirm'), style: 'destructive', onPress: () => revoke.mutate(undefined, { onSuccess: onDone }) },
-    ]);
+  const confirmRevoke = () => setAskRevoke(true);
 
   const error = grant.error ?? revoke.error ?? exportData.error ?? update.error;
   return (
@@ -82,6 +80,27 @@ export function PrivacySection({ onDone }: { onDone: () => void }) {
         <ListRow icon="trash-outline" title={t('account.deleteTitle')} danger onPress={() => router.push('/account/delete')} />
       </ListGroup>
       {exportData.isPending && <LoadingState />}
+
+      <ConfirmDialog
+        visible={askRevoke}
+        icon="shield-outline"
+        title={t('profile.privacy.revokeTitle')}
+        message={t('profile.privacy.revokeWarning')}
+        confirmLabel={t('profile.privacy.revokeConfirm')}
+        cancelLabel={t('common.cancel')}
+        danger
+        loading={revoke.isPending}
+        onConfirm={() =>
+          revoke.mutate(undefined, {
+            onSuccess: () => {
+              setAskRevoke(false);
+              onDone();
+            },
+            onError: () => setAskRevoke(false),
+          })
+        }
+        onCancel={() => setAskRevoke(false)}
+      />
     </>
   );
 }

@@ -15,7 +15,8 @@
     "cancel": "Cancelar",
     "save": "Guardar",
     "edit": "Editar",
-    "waitingConnection": "Sin conexión. Esto se cargará solo apenas vuelva internet."
+    "waitingConnection": "Sin conexión. Esto se cargará solo apenas vuelva internet.",
+    "understood": "Entendido"
   },
   "validation": {
     "required": "Este campo es obligatorio.",
@@ -383,7 +384,8 @@
       "hint": "Anónimas: solo contamos acciones como \"se generó un plan\", sin tu nombre, correo, alergias ni salud. Nos ayudan a decidir qué mejorar.",
       "label": "Compartir estadísticas anónimas"
     },
-    "signOutFailed": "No pudimos cerrar la sesión"
+    "signOutFailed": "No pudimos cerrar la sesión",
+    "signOutMessage": "Podrás volver a entrar con tu correo y contraseña. Este teléfono deja de recibir tus avisos."
   },
   "health": {
     "disclaimer": "NutriPlan no reemplaza el consejo de un médico o nutricionista.",

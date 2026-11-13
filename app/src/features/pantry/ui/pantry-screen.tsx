@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import { useState, type ReactNode } from 'react';
-import { Alert, ScrollView, SectionList, StyleSheet, View } from 'react-native';
+import { ScrollView, SectionList, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { errorKey } from '@/core/errors/app-error';
@@ -14,6 +14,7 @@ import {
   Banner,
   Button,
   Card,
+  ConfirmDialog,
   EmptyState,
   ErrorState,
   IconBadge,
@@ -34,11 +35,8 @@ export function PantryScreen({ embedded }: { embedded?: boolean }) {
   const add = () => router.push('/pantry/add');
   const Container = embedded ? EmbeddedContainer : Screen;
 
-  const confirmRemove = (item: PantryItem) =>
-    Alert.alert(t('pantry.removeTitle', { name: item.name }), undefined, [
-      { text: t('common.cancel'), style: 'cancel' },
-      { text: t('pantry.remove'), style: 'destructive', onPress: () => remove.mutate(item.id) },
-    ]);
+  const [toRemove, setToRemove] = useState<PantryItem | null>(null);
+  const confirmRemove = (item: PantryItem) => setToRemove(item);
 
   return (
     <Container>
@@ -76,6 +74,19 @@ export function PantryScreen({ embedded }: { embedded?: boolean }) {
           renderItem={({ item }) => <PantryRow item={item} onRemove={() => confirmRemove(item)} />}
         />
       )}
+      <ConfirmDialog
+        visible={!!toRemove}
+        icon="trash-outline"
+        title={t('pantry.removeTitle', { name: toRemove?.name ?? '' })}
+        confirmLabel={t('pantry.remove')}
+        cancelLabel={t('common.cancel')}
+        danger
+        onConfirm={() => {
+          if (toRemove) remove.mutate(toRemove.id);
+          setToRemove(null);
+        }}
+        onCancel={() => setToRemove(null)}
+      />
     </Container>
   );
 }

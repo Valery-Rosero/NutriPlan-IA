@@ -1,6 +1,7 @@
 import Constants from 'expo-constants';
 import { useRouter } from 'expo-router';
-import { Alert, StyleSheet, View } from 'react-native';
+import { useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { errorKey } from '@/core/errors/app-error';
@@ -21,7 +22,7 @@ import type { ProfileSection } from '@/features/profile/ui/edit-profile-screen';
 import { Spacing } from '@/shared/theme/colors';
 import { DisplayFont } from '@/shared/theme/tokens';
 import { useTheme } from '@/shared/theme/use-theme';
-import { AppText, Card, ListGroup, ListRow, Pill, Screen } from '@/shared/ui';
+import { AppText, Card, ConfirmDialog, ListGroup, ListRow, Pill, Screen } from '@/shared/ui';
 
 /** US-116: el perfil como un resumen de tu cocina; cada fila lleva a editar esa parte. */
 export function ProfileScreen() {
@@ -61,18 +62,21 @@ export function ProfileScreen() {
   const email = session?.email ?? '';
   const initial = (email.trim()[0] ?? 'N').toUpperCase();
 
-  const confirmSignOut = () =>
-    Alert.alert(t('profile.signOutTitle'), undefined, [
-      { text: t('common.cancel'), style: 'cancel' },
-      {
-        text: t('profile.signOut'),
-        style: 'destructive',
-        onPress: () =>
-          void unregisterPush().finally(() =>
-            signOut.mutate(undefined, { onError: (e) => Alert.alert(t('profile.signOutFailed'), t(errorKey(e))) }),
-          ),
-      },
-    ]);
+  const [askSignOut, setAskSignOut] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
+  const [signOutError, setSignOutError] = useState<string | null>(null);
+  const doSignOut = () => {
+    setSigningOut(true);
+    void unregisterPush().finally(() =>
+      signOut.mutate(undefined, {
+        onError: (e) => setSignOutError(t(errorKey(e))),
+        onSettled: () => {
+          setSigningOut(false);
+          setAskSignOut(false);
+        },
+      }),
+    );
+  };
 
   return (
     <Screen scroll>
@@ -142,7 +146,7 @@ export function ProfileScreen() {
 
       <ListGroup title={t('profile.groups.account')}>
         <ListRow icon="chatbubbles-outline" title={t('support.title')} subtitle={t('support.rowHint')} onPress={() => router.push('/help')} />
-        <ListRow icon="log-out-outline" title={t('profile.signOut')} danger onPress={confirmSignOut} />
+        <ListRow icon="log-out-outline" title={t('profile.signOut')} danger onPress={() => setAskSignOut(true)} />
         {__DEV__ ? (
           <ListRow icon="color-palette-outline" tone="neutral" title="Sistema de diseño (desarrollo)" onPress={() => router.push('/design-system')} />
         ) : null}
@@ -154,6 +158,28 @@ export function ProfileScreen() {
         </AppText>
         <AppText variant="caption" secondary style={styles.center}>{t('health.disclaimer')}</AppText>
       </View>
+
+      <ConfirmDialog
+        visible={askSignOut}
+        icon="log-out-outline"
+        title={t('profile.signOutTitle')}
+        message={t('profile.signOutMessage')}
+        confirmLabel={t('profile.signOut')}
+        cancelLabel={t('common.cancel')}
+        danger
+        loading={signingOut}
+        onConfirm={doSignOut}
+        onCancel={() => setAskSignOut(false)}
+      />
+      <ConfirmDialog
+        visible={!!signOutError}
+        icon="cloud-offline-outline"
+        title={t('profile.signOutFailed')}
+        message={signOutError ?? undefined}
+        confirmLabel={t('common.understood')}
+        onConfirm={() => setSignOutError(null)}
+        onCancel={() => setSignOutError(null)}
+      />
     </Screen>
   );
 }
