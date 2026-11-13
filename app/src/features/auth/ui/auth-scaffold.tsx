@@ -7,11 +7,11 @@ import { useTranslation } from 'react-i18next';
 import { MinTouch, Spacing } from '@/shared/theme/colors';
 import { Radius } from '@/shared/theme/tokens';
 import { useTheme } from '@/shared/theme/use-theme';
-import { AppText, Card, Screen, type IconName } from '@/shared/ui';
+import { AppText, Screen, type IconName } from '@/shared/ui';
 
 /**
- * Marco común de las pantallas de acceso: bloque de marca (Space Cadet + título serif en Tan)
- * con ícono, volver si hay historial, y el contenido debajo. Así todo el acceso se ve como una sola pieza.
+ * Marco común de las pantallas de acceso ("Cocina viva"): encabezado claro con volver si hay historial,
+ * el ícono en tomate suave, el título y la rayita de tomate. Así todo el acceso se ve como una sola pieza.
  */
 export function AuthScaffold({ icon, title, subtitle, children }: {
   icon: IconName;
@@ -26,7 +26,7 @@ export function AuthScaffold({ icon, title, subtitle, children }: {
 
   return (
     <Screen scroll>
-      <Card variant="brand" style={styles.hero}>
+      <View style={styles.hero}>
         <View style={styles.topRow}>
           {canGoBack ? (
             <Pressable
@@ -35,7 +35,7 @@ export function AuthScaffold({ icon, title, subtitle, children }: {
               hitSlop={8}
               onPress={() => router.back()}
               style={({ pressed }) => [styles.back, pressed && styles.pressed]}>
-              <Ionicons name="arrow-back" size={24} color={c.onBrand} />
+              <Ionicons name="arrow-back" size={24} color={c.text} />
             </Pressable>
           ) : (
             <View />
@@ -43,13 +43,14 @@ export function AuthScaffold({ icon, title, subtitle, children }: {
           <View
             importantForAccessibility="no-hide-descendants"
             accessibilityElementsHidden
-            style={[styles.icon, { backgroundColor: c.onBrand }]}>
-            <Ionicons name={icon} size={24} color={c.brand} />
+            style={[styles.icon, { backgroundColor: c.tomatoContainer }]}>
+            <Ionicons name={icon} size={24} color={c.onTomatoContainer} />
           </View>
         </View>
-        <AppText variant="title" tone="onBrand">{title}</AppText>
-        {typeof subtitle === 'string' ? <AppText tone="onBrandMuted">{subtitle}</AppText> : subtitle}
-      </Card>
+        <AppText variant="title" accessibilityRole="header">{title}</AppText>
+        <View style={[styles.accent, { backgroundColor: c.tomato }]} importantForAccessibility="no" accessibilityElementsHidden />
+        {typeof subtitle === 'string' ? <AppText secondary>{subtitle}</AppText> : subtitle}
+      </View>
       {children}
     </Screen>
   );
@@ -68,7 +69,8 @@ export function AuthDivider({ label }: { label: string }) {
 }
 
 const styles = StyleSheet.create({
-  hero: { padding: Spacing.lg, gap: Spacing.sm, marginBottom: Spacing.sm },
+  hero: { gap: Spacing.sm, paddingTop: Spacing.xs, marginBottom: Spacing.sm },
+  accent: { width: 44, height: 4, borderRadius: 2 },
   topRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: Spacing.sm },
   back: { minWidth: MinTouch, minHeight: MinTouch, justifyContent: 'center', marginLeft: -Spacing.sm, paddingLeft: Spacing.sm },
   pressed: { opacity: 0.6 },

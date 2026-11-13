@@ -8,6 +8,8 @@ Código en `app/src/shared/theme/` (tokens) y `app/src/shared/ui/` (componentes)
 - **Contraste**: `__tests__/contrast.test.ts` exige AA (≥ 4.5:1) en 78 combinaciones de texto y fondo en ambos modos (incluidos los cuatro sabores). Un color nuevo no entra sin pasarla.
 - **Tipografía** (`tokens.ts`): la del sistema (Roboto en Android, la misma familia que usan WhatsApp y Facebook), sin fuentes descargadas. `display 32 · title 28 · heading 20 · subtitle 18 · body 17 · label 15 · caption 14`. El cuerpo en 17 pensando en personas mayores. Crece con el tamaño de letra del teléfono.
 - **Íconos y emojis**: íconos de línea (Ionicons) para la interfaz; emojis solo para la comida.
+- **Imagen de bienvenida**: el chef de NutriPlan (`app/assets/images/chef-bienvenida.jpg`, 720 × 720, aportada por la dueña del producto), con descripción para el lector.
+- **Encabezados**: claros, del color del fondo (`BrandHeader`, `AuthScaffold` y los de pila). El sabor va en la rayita, los botones y los acentos, nunca en un bloque entero.
 - **Radios**: `sm 8 · md 12 · lg 16 · xl 20 · xxl 28 · pill`. **Espaciado**: múltiplos de 4 (`xxs 2` … `xxl 48`). **Sombras** cálidas: `elevation(1 | 2, c.shadow)`. Botones de 52 pt (`ButtonHeight`).
 - **Tema**: Perfil › Apariencia (como el teléfono / claro / oscuro), aplicado con `Appearance.setColorScheme`.
 
@@ -27,6 +29,8 @@ Código en `app/src/shared/theme/` (tokens) y `app/src/shared/ui/` (componentes)
 | `Chip` / `Stepper` / `TextField` / `Checkbox` | Formularios y selección |
 | `EmptyState` / `ErrorState` / `LoadingState` | Estados obligatorios de cada pantalla, con ícono |
 | `BrandHeader` | Encabezado claro que abre cada pestaña, la receta y el onboarding: antetítulo, título, barrita del sabor (`flavor`) y subtítulo; `action` a la derecha y `back` a la izquierda |
+| `FoodTile` + `foodEmoji` | El plato o ingrediente como emoji sobre el fondo suave del sabor (en lugar de la foto). `foodEmoji(nombre)` lo elige por palabras, platos antes que ingredientes; decorativo, el nombre siempre va al lado |
+| `SegmentedControl` / `Chip` / `Checkbox` `flavor` | La opción elegida se llena con el sabor de la sección (receta: "En tu cocina" albahaca, "Para comprar" mango) |
 | `FloatingTabBar` | Barra de pestañas flotante (Hoy, Mi cocina, Mi semana, Asistente): la activa se llena con su sabor, el nombre siempre visible y se esconde con el teclado |
 | `IconButton` | Botón de solo ícono de 44 pt con etiqueta para el lector (perfil, quitar, volver) |
 | `FormSection` | Tarjeta de una sola decisión: ícono, pregunta, ayuda y controles |

@@ -2,7 +2,7 @@ import { Stack } from 'expo-router';
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { Spacing } from '@/shared/theme/colors';
+import { Spacing, type FlavorName } from '@/shared/theme/colors';
 import {
   AppText,
   Banner,
@@ -12,6 +12,7 @@ import {
   ChipGroup,
   Divider,
   EmptyState,
+  FoodTile,
   IconBadge,
   Pill,
   ProgressBar,
@@ -19,6 +20,13 @@ import {
   SectionHeader,
   SegmentedControl,
 } from '@/shared/ui';
+
+const FLAVORS: { flavor: FlavorName; name: string; emoji: string }[] = [
+  { flavor: 'tomato', name: 'Tomate · Hoy', emoji: '🍅' },
+  { flavor: 'basil', name: 'Albahaca · Mi cocina', emoji: '🥬' },
+  { flavor: 'mango', name: 'Mango · Mi semana', emoji: '🥭' },
+  { flavor: 'berry', name: 'Mora · Asistente', emoji: '🫐' },
+];
 
 /** Vitrina del sistema de diseño (solo en desarrollo): para revisar tokens y componentes en claro y oscuro. */
 export function DesignSystemScreen() {
@@ -78,10 +86,16 @@ export function DesignSystemScreen() {
             ]}
           />
         </Card>
-        <Card variant="brand">
-          <AppText variant="label" tone="onBrandMuted">MARCA</AppText>
-          <AppText variant="title" tone="onBrand">Space Cadet con Tan</AppText>
-          <AppText tone="onBrandMuted">Bloque de marca, como la paleta.</AppText>
+        <Card>
+          <AppText variant="heading">{'Sabores "Cocina viva"'}</AppText>
+          {FLAVORS.map(({ flavor, name, emoji }) => (
+            <View key={flavor} style={styles.row}>
+              <FoodTile emoji={emoji} flavor={flavor} size={48} />
+              <View style={styles.flex}>
+                <Button label={name} flavor={flavor} size="sm" />
+              </View>
+            </View>
+          ))}
         </Card>
         <Card variant="filled">
           <AppText>Rellena</AppText>

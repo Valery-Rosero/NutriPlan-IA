@@ -112,9 +112,9 @@ function RootNavigator() {
     <Stack
       screenOptions={{
         headerShown: false,
-        // Encabezados de pantallas internas en Space Cadet con título Tan (paleta de marca).
-        headerStyle: { backgroundColor: c.brand },
-        headerTintColor: c.onBrand,
+        // "Cocina viva": encabezados internos claros, del color del fondo (el sabor va en el contenido).
+        headerStyle: { backgroundColor: c.background },
+        headerTintColor: c.text,
         headerTitleStyle: { fontSize: 20, fontWeight: '700' },
         headerShadowVisible: false,
       }}>

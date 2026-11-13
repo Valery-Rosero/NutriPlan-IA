@@ -35,25 +35,12 @@
   },
   "auth": {
     "welcome": {
-      "title": "¿Qué cocino hoy?",
-      "subtitle": "Para familias y estudiantes: te decimos qué cocinar con lo que ya tienes, sin riesgos para quien tiene alergias.",
-      "createAccount": "Crear cuenta",
+      "title": "Cocina rico con lo que ya tienes",
+      "subtitle": "Te decimos qué preparar hoy, cuidando tus alergias y tu bolsillo.",
+      "createAccount": "Crear mi cuenta",
       "signIn": "Ya tengo cuenta",
       "notConnected": "No pudimos conectar con el servidor. Revisa tu conexión.",
-      "benefits": {
-        "cook": {
-          "title": "Cocina con lo que tienes",
-          "body": "Recetas que se adaptan a lo que hay en tu cocina."
-        },
-        "week": {
-          "title": "Organiza tu semana",
-          "body": "Un plan de comidas a tu medida, en un toque."
-        },
-        "list": {
-          "title": "Tu lista de mercado lista",
-          "body": "Solo lo que te falta para cocinar la semana."
-        }
-      }
+      "chefAlt": "El chef de NutriPlan, un muñeco de felpa con gorro de chef y delantal, saludando en su cocina"
     },
     "signUp": {
       "title": "Crea tu cuenta",
