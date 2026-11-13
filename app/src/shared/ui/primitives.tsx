@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { MinTouch, Spacing, type ThemeColors } from '@/shared/theme/colors';
+import { ButtonHeight, flavorColors, MinTouch, Spacing, type FlavorName, type ThemeColors } from '@/shared/theme/colors';
 import { elevation, Radius, Typography, type TypographyVariant } from '@/shared/theme/tokens';
 import { useTheme } from '@/shared/theme/use-theme';
 
@@ -81,10 +81,14 @@ export function Screen({ children, scroll, refreshing, onRefresh }: {
 }
 
 // ---------------------------------------------------------------- Botones
-type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
+type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
 
-/** Botón de 48 pt (≥ 44 pt). `icon` opcional a la izquierda; `size="sm"` para acciones dentro de tarjetas. */
-export function Button({ label, onPress, variant = 'primary', size = 'md', icon, disabled, loading, hint }: {
+/**
+ * Botón "Cocina viva": 52 pt de alto (44 en `sm`), esquinas de 16.
+ * Tres niveles claros: `primary` lleno, `secondary` suave (fondo del sabor), `outline` con borde; `ghost` sin fondo.
+ * `flavor` lo pinta con el sabor de su sección (p. ej. albahaca en Mi cocina); sin él, tomate.
+ */
+export function Button({ label, onPress, variant = 'primary', size = 'md', icon, disabled, loading, hint, flavor }: {
   label: string;
   onPress?: () => void;
   variant?: ButtonVariant;
@@ -93,13 +97,16 @@ export function Button({ label, onPress, variant = 'primary', size = 'md', icon,
   disabled?: boolean;
   loading?: boolean;
   hint?: string;
+  flavor?: FlavorName;
 }) {
   const c = useTheme();
   const inactive = disabled || loading;
+  const f = flavorColors(c, flavor ?? 'tomato');
   const palette = {
-    primary: { bg: c.primary, fg: c.onPrimary, border: c.primary },
-    secondary: { bg: 'transparent', fg: c.primary, border: c.primary },
-    ghost: { bg: 'transparent', fg: c.primary, border: 'transparent' },
+    primary: { bg: f.fill, fg: f.onFill, border: f.fill },
+    secondary: { bg: f.container, fg: f.onContainer, border: f.container },
+    outline: { bg: 'transparent', fg: flavor ? f.onContainer : c.primary, border: flavor ? f.onContainer : c.primary },
+    ghost: { bg: 'transparent', fg: flavor ? f.onContainer : c.primary, border: 'transparent' },
     danger: { bg: c.dangerContainer, fg: c.onDangerContainer, border: c.dangerContainer },
   }[variant];
 
@@ -121,7 +128,7 @@ export function Button({ label, onPress, variant = 'primary', size = 'md', icon,
         <ActivityIndicator color={palette.fg} />
       ) : (
         <View style={styles.buttonRow}>
-          {icon && <Ionicons name={icon} size={size === 'sm' ? 18 : 20} color={palette.fg} />}
+          {icon && <Ionicons name={icon} size={size === 'sm' ? 18 : 22} color={palette.fg} />}
           <Text style={[Typography.label, size === 'md' && styles.buttonLabelMd, { color: palette.fg }]}>{label}</Text>
         </View>
       )}
@@ -135,8 +142,8 @@ export function TextLink({ label, onPress, hint, icon }: { label: string; onPres
   return (
     <Pressable accessibilityRole="link" accessibilityLabel={label} accessibilityHint={hint} onPress={onPress} hitSlop={8} style={styles.link}>
       <View style={styles.buttonRow}>
-        <Text style={[Typography.label, styles.linkLabel, { color: c.accent }]}>{label}</Text>
-        {icon && <Ionicons name={icon} size={16} color={c.accent} />}
+        <Text style={[Typography.label, styles.linkLabel, { color: c.primary }]}>{label}</Text>
+        {icon && <Ionicons name={icon} size={16} color={c.primary} />}
       </View>
     </Pressable>
   );
@@ -145,7 +152,10 @@ export function TextLink({ label, onPress, hint, icon }: { label: string; onPres
 // ---------------------------------------------------------------- Tarjetas
 type CardVariant = 'elevated' | 'outlined' | 'filled' | 'primary' | 'brand';
 
-/** Contenedor. `elevated` (por defecto); `filled` agrupa; `primary` destaca; `brand` = bloque Space Cadet con texto Tan. */
+/**
+ * Contenedor de esquinas de 20. `elevated` (por defecto): blanco con sombra cálida, sin borde duro;
+ * `outlined` con borde; `filled` agrupa sobre "avena"; `primary` destaca en tomate suave; `brand` = bloque tomate.
+ */
 export function Card({ children, accessibilityLabel, variant = 'elevated', style }: {
   children: ReactNode;
   accessibilityLabel?: string;
@@ -154,8 +164,8 @@ export function Card({ children, accessibilityLabel, variant = 'elevated', style
 }) {
   const c = useTheme();
   const look: Record<CardVariant, ViewStyle> = {
-    elevated: { backgroundColor: c.card, borderColor: c.divider, ...elevation(1, c.shadow) },
-    outlined: { backgroundColor: 'transparent', borderColor: c.border },
+    elevated: { backgroundColor: c.card, borderColor: 'transparent', ...elevation(1, c.shadow) },
+    outlined: { backgroundColor: c.card, borderColor: c.divider },
     filled: { backgroundColor: c.surface, borderColor: 'transparent' },
     primary: { backgroundColor: c.primaryContainer, borderColor: 'transparent' },
     brand: { backgroundColor: c.brand, borderColor: 'transparent', ...elevation(2, c.shadow) },
@@ -174,8 +184,8 @@ type BannerTone = 'info' | 'warning' | 'danger' | 'success';
 export function Banner({ message, tone = 'info' }: { message: string; tone?: BannerTone }) {
   const c = useTheme();
   const look = {
-    info: { bg: c.accentContainer, fg: c.onAccentContainer, icon: 'information-circle' as IconName },
-    success: { bg: c.primaryContainer, fg: c.onPrimaryContainer, icon: 'checkmark-circle' as IconName },
+    info: { bg: c.surface, fg: c.text, icon: 'information-circle' as IconName },
+    success: { bg: c.successContainer, fg: c.onSuccessContainer, icon: 'checkmark-circle' as IconName },
     warning: { bg: c.warningContainer, fg: c.onWarningContainer, icon: 'alert-circle' as IconName },
     danger: { bg: c.dangerContainer, fg: c.onDangerContainer, icon: 'close-circle' as IconName },
   }[tone];
@@ -192,8 +202,8 @@ export const styles = StyleSheet.create({
   content: { paddingHorizontal: Spacing.md, paddingTop: Spacing.md, gap: Spacing.md },
   scrollContent: { flexGrow: 1, padding: Spacing.md, gap: Spacing.md, paddingBottom: Spacing.xl },
   button: {
-    minHeight: 48,
-    borderRadius: Radius.md,
+    minHeight: ButtonHeight,
+    borderRadius: Radius.lg,
     borderWidth: 1.5,
     paddingHorizontal: Spacing.lg,
     alignItems: 'center',
@@ -201,11 +211,11 @@ export const styles = StyleSheet.create({
   },
   buttonSm: { minHeight: MinTouch, paddingHorizontal: Spacing.md, alignSelf: 'flex-start' },
   buttonRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
-  buttonLabelMd: { fontSize: 16 },
+  buttonLabelMd: { fontSize: 17, fontWeight: '700' },
   pressed: { transform: [{ scale: 0.98 }] },
   link: { minHeight: MinTouch, justifyContent: 'center', alignSelf: 'flex-start' },
   linkLabel: { fontSize: 15, textDecorationLine: 'underline' },
-  card: { borderRadius: Radius.lg, borderWidth: 1, padding: Spacing.md, gap: Spacing.sm },
-  banner: { flexDirection: 'row', alignItems: 'flex-start', gap: Spacing.sm, borderRadius: Radius.md, padding: Spacing.md },
+  card: { borderRadius: Radius.xl, borderWidth: 1, padding: Spacing.md, gap: Spacing.sm },
+  banner: { flexDirection: 'row', alignItems: 'flex-start', gap: Spacing.sm, borderRadius: Radius.lg, padding: Spacing.md },
   bannerText: { flex: 1 },
 });

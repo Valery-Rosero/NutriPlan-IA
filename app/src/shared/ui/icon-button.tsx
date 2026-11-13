@@ -5,7 +5,7 @@ import { MinTouch } from '@/shared/theme/colors';
 import { useTheme } from '@/shared/theme/use-theme';
 import type { IconName } from '@/shared/ui/primitives';
 
-type IconTone = 'default' | 'secondary' | 'primary' | 'danger' | 'onBrand';
+type IconTone = 'default' | 'secondary' | 'primary' | 'danger' | 'onBrand' | 'berry' | 'basil';
 
 /** Botón de solo ícono con área táctil de 44 pt; `label` es lo que anuncia el lector de pantalla. */
 export function IconButton({ icon, label, onPress, tone = 'secondary', size = 22, disabled }: {
@@ -23,6 +23,8 @@ export function IconButton({ icon, label, onPress, tone = 'secondary', size = 22
     primary: c.primary,
     danger: c.danger,
     onBrand: c.onBrand,
+    berry: c.berry,
+    basil: c.basil,
   }[tone];
   return (
     <Pressable

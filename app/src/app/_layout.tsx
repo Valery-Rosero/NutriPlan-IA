@@ -2,7 +2,6 @@
 import '@/infrastructure/polyfills/web-crypto';
 import '@/infrastructure/i18n';
 
-import { DMSerifDisplay_400Regular, useFonts } from '@expo-google-fonts/dm-serif-display';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { DarkTheme, DefaultTheme, Stack, ThemeProvider, type ErrorBoundaryProps } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -23,7 +22,6 @@ import { persister, queryClient, shouldPersistQuery } from '@/infrastructure/que
 import { Colors, type ThemeColors } from '@/shared/theme/colors';
 import { restoreThemePreference } from '@/shared/theme/theme-preference';
 import { useIsOnline } from '@/shared/hooks/use-is-online';
-import { DisplayFont } from '@/shared/theme/tokens';
 import { useTheme } from '@/shared/theme/use-theme';
 import { CrashState } from '@/shared/ui';
 
@@ -84,8 +82,6 @@ export default function RootLayout() {
 function RootNavigator() {
   const { session, loading } = useSession();
   const c = useTheme();
-  // Tipografía de títulos (serif de la marca). Si no carga, se sigue con la del sistema.
-  const [fontsLoaded, fontError] = useFonts({ DMSerifDisplay_400Regular });
   const online = useIsOnline();
   const consents = useRequiredConsents(session?.userId);
   const consentsOk = !!session && consents.isSuccess && (consents.data?.length ?? 0) === 0;
@@ -93,7 +89,7 @@ function RootNavigator() {
   const { ready, mustConsent, mustOnboard, inApp } = computeGates({
     hasSession: !!session,
     sessionLoading: loading,
-    fontsReady: fontsLoaded || !!fontError,
+    fontsReady: true, // letra del sistema (Roboto): no hay fuentes que esperar
     online,
     consents: { pending: consents.isPending, error: consents.isError, success: consents.isSuccess, toAccept: consents.data?.length ?? 0 },
     profile: {
@@ -119,7 +115,7 @@ function RootNavigator() {
         // Encabezados de pantallas internas en Space Cadet con título Tan (paleta de marca).
         headerStyle: { backgroundColor: c.brand },
         headerTintColor: c.onBrand,
-        headerTitleStyle: { fontFamily: DisplayFont, fontSize: 20 },
+        headerTitleStyle: { fontSize: 20, fontWeight: '700' },
         headerShadowVisible: false,
       }}>
       <Stack.Protected guard={inApp}>
@@ -131,7 +127,6 @@ function RootNavigator() {
         <Stack.Screen name="plan/swap/[mealId]" options={{ presentation: 'modal' }} />
         <Stack.Screen name="account/delete" />
         <Stack.Screen name="design-system" />
-        <Stack.Screen name="assistant" />
         <Stack.Screen name="help" />
       </Stack.Protected>
       <Stack.Protected guard={mustConsent}>

@@ -20,7 +20,6 @@ import {
 import { AppearanceSection } from '@/features/profile/ui/appearance-section';
 import type { ProfileSection } from '@/features/profile/ui/edit-profile-screen';
 import { Spacing } from '@/shared/theme/colors';
-import { DisplayFont } from '@/shared/theme/tokens';
 import { useTheme } from '@/shared/theme/use-theme';
 import { AppText, Card, ConfirmDialog, ListGroup, ListRow, Pill, Screen } from '@/shared/ui';
 
@@ -188,7 +187,7 @@ const styles = StyleSheet.create({
   hero: { padding: Spacing.lg, gap: Spacing.md },
   identity: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md },
   avatar: { width: 56, height: 56, borderRadius: 28, alignItems: 'center', justifyContent: 'center' },
-  initial: { fontFamily: DisplayFont, fontSize: 28, lineHeight: 34 },
+  initial: { fontSize: 26, lineHeight: 32, fontWeight: '700' },
   flex: { flex: 1, gap: Spacing.xxs },
   pills: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm },
   footer: { gap: Spacing.xs, paddingTop: Spacing.sm },

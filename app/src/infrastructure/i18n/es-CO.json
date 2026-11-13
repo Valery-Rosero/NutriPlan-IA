@@ -139,7 +139,8 @@
   "tabs": {
     "today": "Hoy",
     "kitchen": "Mi cocina",
-    "week": "Mi semana"
+    "week": "Mi semana",
+    "assistant": "Asistente"
   },
   "cook": {
     "title": "¿Qué cocino con lo que tengo?",
@@ -731,7 +732,8 @@
       "swapAnything": "Cámbiala por otra cosa",
       "swapFaster": "Algo más rápido",
       "swapPantry": "Algo con lo que tengo"
-    }
+    },
+    "headerCaption": "Te ayudo a decidir qué cocinar"
   },
   "support": {
     "title": "Ayuda y sugerencias",

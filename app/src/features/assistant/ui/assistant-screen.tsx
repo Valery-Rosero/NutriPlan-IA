@@ -1,4 +1,4 @@
-import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useRef, useState } from 'react';
 import { ActivityIndicator, KeyboardAvoidingView, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -11,7 +11,7 @@ import { momentOfDay } from '@/features/cooking/domain/cooking';
 import { MinTouch, Spacing } from '@/shared/theme/colors';
 import { Radius, Typography } from '@/shared/theme/tokens';
 import { useTheme } from '@/shared/theme/use-theme';
-import { AppText, Banner, Button, Card, Chip, ChipGroup, IconBadge, IconButton, Pill } from '@/shared/ui';
+import { AppText, Banner, BrandHeader, Button, Card, Chip, ChipGroup, IconBadge, IconButton, Pill } from '@/shared/ui';
 
 /**
  * Asistente (US-157, US-160, US-173). Conversa sobre qué cocinar; cuando sugiere una receta, la muestra
@@ -57,8 +57,8 @@ export function AssistantScreen() {
 
   return (
     <>
-      <Stack.Screen options={{ headerShown: true, title: t('assistant.title') }} />
-      <SafeAreaView style={[styles.flex, { backgroundColor: c.background }]} edges={['left', 'right', 'bottom']}>
+      {/* Pestaña propia (mora): la barra flotante va abajo, así que aquí solo se protege la parte de arriba. */}
+      <SafeAreaView style={[styles.flex, { backgroundColor: c.background }]} edges={['top', 'left', 'right']}>
         {/* Android es edge-to-edge (SDK 57): la ventana ya no se achica con el teclado, así que hay que
             empujar el contenido en las dos plataformas o la caja de texto queda debajo del teclado. */}
         <KeyboardAvoidingView style={styles.flex} behavior="padding">
@@ -67,9 +67,10 @@ export function AssistantScreen() {
             contentContainerStyle={styles.content}
             keyboardShouldPersistTaps="handled"
             onContentSizeChange={() => scroll.current?.scrollToEnd({ animated: true })}>
+            <BrandHeader title={t('assistant.title')} caption={t('assistant.headerCaption')} flavor="berry" />
             <Card variant="filled">
               <View style={styles.row}>
-                <IconBadge name="sparkles-outline" tone="accent" />
+                <IconBadge name="sparkles-outline" tone="berry" />
                 <View style={styles.flex}>
                   <AppText variant="subtitle">
                     {mealTitle ? t('assistant.introSwap', { title: mealTitle }) : t('assistant.intro')}
@@ -81,8 +82,8 @@ export function AssistantScreen() {
 
             {messages.map((m) =>
               m.role === 'user' ? (
-                <View key={m.id} style={[styles.bubble, styles.mine, { backgroundColor: c.brand }]}>
-                  <AppText tone="onBrand">{m.text}</AppText>
+                <View key={m.id} style={[styles.bubble, styles.mine, { backgroundColor: c.berry }]}>
+                  <AppText style={{ color: c.onBerry }}>{m.text}</AppText>
                 </View>
               ) : (
                 <View key={m.id} style={styles.theirsWrap}>
@@ -126,7 +127,7 @@ export function AssistantScreen() {
             />
             <IconButton
               icon="send"
-              tone="primary"
+              tone="berry"
               label={t('assistant.send')}
               disabled={!draft.trim() || send.isPending}
               onPress={() => ask(draft)}
@@ -140,10 +141,11 @@ export function AssistantScreen() {
 
 function SuggestionCard({ messageId, suggestion }: { messageId: number; suggestion: AssistantSuggestion }) {
   const { t } = useTranslation();
+  const c = useTheme();
   const router = useRouter();
   const apply = useApplySuggestion();
   return (
-    <Card variant="primary" style={styles.suggestion}>
+    <Card variant="primary" style={[styles.suggestion, { backgroundColor: c.berryContainer }]}>
       <AppText variant="subtitle">{suggestion.title}</AppText>
       <View style={styles.pills}>
         <Pill label={t('cook.minutes', { count: suggestion.totalMinutes })} icon="time-outline" />
@@ -154,11 +156,12 @@ function SuggestionCard({ messageId, suggestion }: { messageId: number; suggesti
       ) : (
         <View style={styles.actions}>
           {suggestion.targetPlannedMealId && (
-            <Button label={t('assistant.apply')} icon="swap-horizontal" size="sm" loading={apply.isPending} onPress={() => apply.mutate(messageId)} />
+            <Button label={t('assistant.apply')} icon="swap-horizontal" size="sm" flavor="berry" loading={apply.isPending} onPress={() => apply.mutate(messageId)} />
           )}
           <Button
             label={t('assistant.seeRecipe')}
-            variant="secondary"
+            variant="outline"
+            flavor="berry"
             size="sm"
             onPress={() => router.push({ pathname: '/recipe/[id]', params: { id: suggestion.recipeId } })}
           />

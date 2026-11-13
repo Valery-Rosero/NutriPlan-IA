@@ -15,7 +15,7 @@ function contrast(a: string, b: string) {
 }
 
 type Key = keyof ThemeColors;
-const TEXT: Key[] = ['text', 'textSecondary', 'primary', 'accent', 'danger', 'warning'];
+const TEXT: Key[] = ['text', 'textSecondary', 'primary', 'accent', 'success', 'danger', 'warning'];
 const BACKGROUNDS: Key[] = ['background', 'surface', 'card'];
 /** Cada contenedor de color con el texto que va encima. */
 const PAIRS: [Key, Key][] = [
@@ -27,6 +27,16 @@ const PAIRS: [Key, Key][] = [
   ['primary', 'card'],
   ['onBrand', 'brand'],
   ['onBrandMuted', 'brand'],
+  ['onSuccessContainer', 'successContainer'],
+  // Los cuatro sabores ("Cocina viva"): relleno con su texto y versión suave con el suyo.
+  ['onTomato', 'tomato'],
+  ['onTomatoContainer', 'tomatoContainer'],
+  ['onBasil', 'basil'],
+  ['onBasilContainer', 'basilContainer'],
+  ['onMango', 'mango'],
+  ['onMangoContainer', 'mangoContainer'],
+  ['onBerry', 'berry'],
+  ['onBerryContainer', 'berryContainer'],
 ];
 
 describe.each(['light', 'dark'] as const)('paleta %s', (mode) => {

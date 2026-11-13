@@ -6,7 +6,7 @@ import { Radius, Typography } from '@/shared/theme/tokens';
 import { useTheme } from '@/shared/theme/use-theme';
 import { AppText, TextLink, type IconName } from '@/shared/ui/primitives';
 
-export type Tone = 'neutral' | 'primary' | 'accent' | 'warning' | 'danger';
+export type Tone = 'neutral' | 'primary' | 'accent' | 'warning' | 'danger' | 'mango' | 'berry';
 
 /** Fondo y texto de cada tono (siempre un par con contraste AA). */
 export function toneColors(c: ThemeColors, tone: Tone) {
@@ -16,6 +16,8 @@ export function toneColors(c: ThemeColors, tone: Tone) {
     accent: { bg: c.accentContainer, fg: c.onAccentContainer },
     warning: { bg: c.warningContainer, fg: c.onWarningContainer },
     danger: { bg: c.dangerContainer, fg: c.onDangerContainer },
+    mango: { bg: c.mangoContainer, fg: c.onMangoContainer },
+    berry: { bg: c.berryContainer, fg: c.onBerryContainer },
   }[tone];
 }
 
