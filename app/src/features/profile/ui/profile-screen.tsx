@@ -79,33 +79,33 @@ export function ProfileScreen() {
 
   return (
     <Screen scroll>
-      {/* Tarjeta de identidad: quién eres y para quién cocinas */}
-      <Card variant="brand" style={styles.hero}>
+      {/* Tarjeta de identidad: quién eres y para quién cocinas. Perfil es neutro y calmado ("Cocina viva"). */}
+      <Card style={styles.hero}>
         <View style={styles.identity}>
           <View
             importantForAccessibility="no-hide-descendants"
             accessibilityElementsHidden
-            style={[styles.avatar, { backgroundColor: c.onBrand }]}>
+            style={[styles.avatar, { backgroundColor: c.tomatoContainer }]}>
             {/* Decorativa (oculta al lector) y el correo ya está escrito al lado: se limita su escala para que no desborde. */}
-            <AppText style={[styles.initial, { color: c.brand }]} maxFontSizeMultiplier={1.3}>{initial}</AppText>
+            <AppText style={[styles.initial, { color: c.onTomatoContainer }]} maxFontSizeMultiplier={1.3}>{initial}</AppText>
           </View>
           <View style={styles.flex}>
-            <AppText variant="label" tone="onBrandMuted">{t('profile.title').toUpperCase()}</AppText>
-            <AppText variant="subtitle" tone="onBrand" numberOfLines={2} ellipsizeMode="middle">{email || t('common.appName')}</AppText>
+            <AppText variant="label" secondary>{t('profile.title').toUpperCase()}</AppText>
+            <AppText variant="subtitle" numberOfLines={2} ellipsizeMode="middle">{email || t('common.appName')}</AppText>
           </View>
         </View>
         {p && (
           <View style={styles.pills}>
             <Pill label={t('profile.hero.people', { count: p.householdSize })} icon="people-outline" />
             {region && <Pill label={region} icon="location-outline" />}
-            {sensitive.data && !noAllergies && <Pill label={t('profile.hero.protected')} tone="primary" icon="shield-checkmark-outline" />}
+            {sensitive.data && !noAllergies && <Pill label={t('profile.hero.protected')} tone="accent" icon="shield-checkmark-outline" />}
             {noAllergies && <Pill label={t('profile.hero.noAllergies')} tone="warning" icon="alert-circle-outline" />}
           </View>
         )}
       </Card>
 
       <ListGroup title={t('profile.groups.kitchen')}>
-        <ListRow icon="home-outline" title={t('profile.sections.household')} subtitle={household} onPress={() => edit('household')} />
+        <ListRow icon="home-outline" tone="accent" title={t('profile.sections.household')} subtitle={household} onPress={() => edit('household')} />
         <ListRow
           icon="alert-circle-outline"
           tone={noAllergies ? 'warning' : 'primary'}
@@ -113,10 +113,11 @@ export function ProfileScreen() {
           subtitle={restrictionsSummary}
           onPress={() => edit('restrictions')}
         />
-        <ListRow icon="wallet-outline" title={t('profile.sections.budget')} subtitle={budget} onPress={() => edit('budget')} />
-        <ListRow icon="time-outline" title={t('profile.sections.preferences')} subtitle={preferences} onPress={() => edit('preferences')} />
+        <ListRow icon="wallet-outline" tone="mango" title={t('profile.sections.budget')} subtitle={budget} onPress={() => edit('budget')} />
+        <ListRow icon="time-outline" tone="berry" title={t('profile.sections.preferences')} subtitle={preferences} onPress={() => edit('preferences')} />
         <ListRow
           icon="notifications-outline"
+          tone="neutral"
           title={t('profile.sections.notifications')}
           subtitle={notificationPrefs.data ? t(`notifications.summary.${notificationPrefs.data.frequency}`) : undefined}
           onPress={() => edit('notifications')}
@@ -128,6 +129,7 @@ export function ProfileScreen() {
       <ListGroup title={t('profile.groups.privacy')}>
         <ListRow
           icon="shield-checkmark-outline"
+          tone="accent"
           title={t('profile.sections.privacy')}
           subtitle={sensitive.data ? t('profile.summary.privacyGranted') : t('profile.summary.privacyNotGranted')}
           onPress={() => edit('privacy')}
@@ -144,7 +146,7 @@ export function ProfileScreen() {
       </ListGroup>
 
       <ListGroup title={t('profile.groups.account')}>
-        <ListRow icon="chatbubbles-outline" title={t('support.title')} subtitle={t('support.rowHint')} onPress={() => router.push('/help')} />
+        <ListRow icon="chatbubbles-outline" tone="berry" title={t('support.title')} subtitle={t('support.rowHint')} onPress={() => router.push('/help')} />
         <ListRow icon="log-out-outline" title={t('profile.signOut')} danger onPress={() => setAskSignOut(true)} />
         {__DEV__ ? (
           <ListRow icon="color-palette-outline" tone="neutral" title="Sistema de diseño (desarrollo)" onPress={() => router.push('/design-system')} />
