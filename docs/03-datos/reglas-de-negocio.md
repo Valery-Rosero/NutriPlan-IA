@@ -23,7 +23,9 @@ Códigos de error: los `raise exception 'codigo: texto'` empiezan con un código
 ## Despensa, cocinar y compras
 - `add_to_pantry` suma al lote del mismo ingrediente/unidad o crea uno. Vencidos no cuentan para compras ni cocina.
 - `mark_meal_cooked`: marca `cooked`, descuenta despensa (FEFO: primero lo que vence antes) en `meal_pantry_deductions`, devuelve `{ deducted, short }`; `undo_meal_cooked` revierte dentro de 10 s.
-- `generate_shopping_list(plan)`: suma comidas **no cocinadas**, resta despensa vigente, devuelve id de lista; mantiene ítems manuales.
+- `generate_shopping_list(plan)`: suma comidas **no cocinadas**, resta despensa vigente, devuelve id de lista; mantiene ítems manuales. Si el plan pide un ingrediente agregado a mano y aún no comprado, el plan toma esa fila (ADR-033).
+- **La lista siempre está al día (ADR-033):** la app rehace la lista del plan vigente después de cualquier cambio a la despensa o al plan (agregar, quitar, cocinar, cambiar u omitir una comida, aplicar sugerencias o pasar lo comprado).
+- **Todo lo comprado llega a la cocina (ADR-033):** lo del catálogo con sus gramos; lo escrito a mano, buscado en el catálogo o como alimento propio; lo que no es comida solo se cierra.
 
 ## Presupuesto y precios
 - `plan_budget_status` requiere región (`region_required`); devuelve costo estimado, límite (plan o perfil), exceso, `missing_prices` (sin precio) y `estimated_prices` (precios estimados). Mostrar siempre la etiqueta "estimado".

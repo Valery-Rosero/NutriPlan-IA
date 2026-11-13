@@ -65,6 +65,15 @@ Se construye **una a la vez**: plan → aprobación → construir con pruebas �
 | 3 | Notas de voz. Decidido: primero solo la pista del micrófono del teclado; botón propio solo si no basta | ✅ Opción A hecha (13-nov): pista "¿Prefieres hablar? Toca el micrófono de tu teclado" en Agregar y en el asistente. Probar en el APK (sobre todo con personas mayores); si no basta, se planea la opción B (botón "Mantén para hablar", V-1 a V-4) |
 | — | Machine learning (predicción y agrupamiento) | **Descartado** por la dueña del producto (13-nov) |
 
+### B7. Revisión de Mi cocina (13-nov) · revisión: https://claude.ai/artifact/11mC5iX3fZi9jcWN1LbYJe
+Aprobada completa por la dueña del producto ("todo lo que recomiendas está bien"). Va **antes** del asistente v2 (https://claude.ai/artifact/PHLMTxbivbSzU4esswb4Q3).
+| Fase | Qué | Estado |
+|---|---|---|
+| 1 | Que el ciclo no se rompa: lo de recetas y sugerencias entra como ingrediente con gramos; lo escrito a mano llega a la despensa; la lista se rehace sola tras cualquier cambio (C1, C2, D3 · ADR-033) | ✅ Hecho (13-nov); probar en el APK: agregar lo que falta → comprar → pasar → aparece en "Lo que tengo" |
+| 2 | Editar lo que tengo: cantidad −/+, ¼ ½ ¾, "se acabó", vencimiento; agrupar lotes; deshacer los atajos; qué hacer con lo vencido; vencimiento por vida útil (C3, A5, A6, M1, M2) | Siguiente |
+| 3 | Lista de la casa sin plan; cantidades como se venden; presupuesto redondeado; deshacer al quitar (A1, A2, M3, M5) | Pendiente |
+| 4 | Encabezado compacto que se desplaza; Agregar de a un modo; despensa sin conexión; limpieza técnica (A3, A4, M4, D1, D2, D4) | Pendiente |
+
 ## C. Antes de usuarios reales (sin cambios)
 Revisión de un abogado de los textos legales · revisión de una nutricionista (US-121) · validación con 5 personas (US-101) · producción (`drgzvvkkjxqvolcerpjx`) · Google Play (US-158) · monitor de disponibilidad · Gemini en plan de pago con tope de gasto y clave rotada · renovar el token de Supabase del despliegue (cada 90 días).
 

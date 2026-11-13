@@ -49,7 +49,15 @@ export type UnderstoodPhoto = {
 };
 
 /** ADR-030: qué comprar para completar recetas (lo calcula la base con lo que le falta a cada una). */
-export type BuyNext = { ingredientId: string; name: string; completes: number; helps: number; recipes: string[] };
+export type BuyNext = {
+  ingredientId: string;
+  name: string;
+  completes: number;
+  helps: number;
+  recipes: string[];
+  /** Cuánto comprar (lo que más falta entre esas recetas), para llevarlo a la lista como ingrediente. */
+  grams: number;
+};
 
 export type Unit = { id: number; code: string; name: string; dimension: 'mass' | 'volume' | 'count' };
 

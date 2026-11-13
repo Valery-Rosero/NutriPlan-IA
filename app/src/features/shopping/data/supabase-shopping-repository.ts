@@ -58,6 +58,15 @@ export class SupabaseShoppingRepository implements ShoppingRepository {
     if (error) throw toAppError(error);
   }
 
+  async addIngredients(listId: string, items: { ingredientId: string; grams: number }[]) {
+    const { data, error } = await this.client.rpc('add_ingredients_to_list', {
+      p_list_id: listId,
+      p_items: items.map((i) => ({ ingredient_id: i.ingredientId, grams: Math.round(i.grams * 100) / 100 })),
+    });
+    if (error) throw toAppError(error);
+    return data;
+  }
+
   async remove(itemId: string) {
     const { error } = await this.client.from('shopping_list_items').delete().eq('id', itemId);
     if (error) throw toAppError(error);

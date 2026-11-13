@@ -225,8 +225,8 @@ function PreviewSections({ preview }: { preview: RecipePreview }) {
         <AppText variant="caption" secondary>{haveLabel}</AppText>
         <AddMissingToList
           items={preview.lines
-            .filter((l) => !l.in_pantry && !l.is_optional)
-            .map((l) => `${l.ingredient_name} (${formatQuantity(l.quantity, l.unit_code, t)})`)}
+            .filter((l) => !l.in_pantry && !l.is_optional && l.grams > 0)
+            .map((l) => ({ ingredientId: l.ingredient_id, grams: l.grams }))}
         />
         {preview.lines.map((line) => {
           const amount = formatQuantity(line.quantity, line.unit_code, t);
@@ -277,7 +277,7 @@ function PreviewSections({ preview }: { preview: RecipePreview }) {
 }
 
 /** Lo que falta para esta receta, a la lista de mercado de una vez (con su cantidad). */
-function AddMissingToList({ items }: { items: string[] }) {
+function AddMissingToList({ items }: { items: { ingredientId: string; grams: number }[] }) {
   const { t } = useTranslation();
   const plan = useCurrentPlan();
   const list = useShoppingList(plan.data?.id);

@@ -2014,6 +2014,9 @@ isOneToOne: false
             "accept_consent":
 { Args: { "p_document_id": number }; Returns: undefined
                            },
+"add_ingredients_to_list":
+{ Args: { "p_items": Json,"p_list_id": string }; Returns: number
+                           },
 "add_to_pantry":
 { Args: { "p_expires_on"?: string,"p_ingredient_id": string,"p_quantity": number,"p_unit_id": number }; Returns: {
               "created_at": string,
@@ -2228,7 +2231,7 @@ isOneToOne: false
                            },
 "what_to_buy_next":
 { Args: { "p_limit"?: number }; Returns: {
-              "completes": number,"helps": number,"ingredient_id": string,"name": string,"recipes": (string)[]
+              "completes": number,"grams": number,"helps": number,"ingredient_id": string,"name": string,"recipes": (string)[]
             }[]
                            }
           }

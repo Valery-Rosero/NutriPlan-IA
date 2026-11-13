@@ -78,12 +78,12 @@ describe('RecipeScreen (US-115, US-118, US-123, ADR-020)', () => {
     expect(recipes.substitutes).toHaveBeenCalledWith(['arroz']);
   });
 
-  it('ADR-029: lo que falta va a la lista de mercado de una vez, con su cantidad', async () => {
+  it('ADR-029/033: lo que falta va a la lista como ingrediente con sus gramos (al comprarlo llega a la despensa)', async () => {
     const services = fakeServices();
     await render(<RecipeScreen />, { wrapper: withServices(services) });
 
     await fireEvent.press(await screen.findByRole('button', { name: 'Agregar lo que falta a mi lista (1)' }));
-    await waitFor(() => expect(services.shopping.addManual).toHaveBeenCalledWith('list1', 'Arroz blanco (300 g)', 3));
+    await waitFor(() => expect(services.shopping.addIngredients).toHaveBeenCalledWith('list1', [{ ingredientId: 'arroz', grams: 300 }]));
     expect(await screen.findByText('Listo, quedó en tu lista de mercado.')).toBeOnTheScreen();
   });
 

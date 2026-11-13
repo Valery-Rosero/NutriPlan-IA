@@ -77,7 +77,7 @@ describe('ADR-030 · "Para completar más recetas"', () => {
     expect(await screen.findByRole('header', { name: 'Para completar más recetas' })).toBeOnTheScreen();
     expect(screen.getByText('Completa 2 recetas: Sudado de lo que haya, Arroz salteado con lo que tengas')).toBeOnTheScreen();
     await fireEvent.press(await screen.findByRole('button', { name: 'Agregar a mi lista' }));
-    await waitFor(() => expect(services.shopping.addManual).toHaveBeenCalledWith('list1', 'Cebolla cabezona', 3));
+    await waitFor(() => expect(services.shopping.addIngredients).toHaveBeenCalledWith('list1', [{ ingredientId: 'cebolla', grams: 120 }]));
     expect(await screen.findByText('Listo, en tu lista de mercado.')).toBeOnTheScreen();
   });
 

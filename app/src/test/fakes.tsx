@@ -91,7 +91,7 @@ export function fakePantry(overrides: Partial<PantryRepository> = {}): jest.Mock
       problem: null,
     })),
     buyNext: jest.fn(async () => [
-      { ingredientId: 'cebolla', name: 'Cebolla cabezona', completes: 2, helps: 3, recipes: ['Sudado de lo que haya', 'Arroz salteado con lo que tengas'] },
+      { ingredientId: 'cebolla', name: 'Cebolla cabezona', completes: 2, helps: 3, recipes: ['Sudado de lo que haya', 'Arroz salteado con lo que tengas'], grams: 120 },
     ]),
     foodGroups: jest.fn(async () => [
       { id: 2, code: 'poultry', name: 'Aves' },
@@ -226,6 +226,7 @@ export function fakeShopping(overrides: Partial<ShoppingRepository> = {}): jest.
     generate: jest.fn(async () => 'list1'),
     setChecked: jest.fn(async () => {}),
     addManual: jest.fn(async () => {}),
+    addIngredients: jest.fn(async () => 1),
     remove: jest.fn(async () => {}),
     moveCheckedToPantry: jest.fn(async () => 1),
     substitute: jest.fn(async () => {}),

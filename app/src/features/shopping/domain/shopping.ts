@@ -26,6 +26,8 @@ export interface ShoppingRepository {
   setChecked(itemId: string, checked: boolean): Promise<void>;
   /** `storeCategoryId`: sección sugerida por la clasificación (B3); null = "Otros". */
   addManual(listId: string, name: string, storeCategoryId?: number | null): Promise<void>;
+  /** ADR-033: ingredientes del catálogo con sus gramos (receta, sugerencias): al comprarlos pasan a la despensa. */
+  addIngredients(listId: string, items: { ingredientId: string; grams: number }[]): Promise<number>;
   remove(itemId: string): Promise<void>;
   /** Suma a la despensa lo marcado como comprado. Devuelve cuántos ítems pasaron. */
   moveCheckedToPantry(listId: string): Promise<number>;

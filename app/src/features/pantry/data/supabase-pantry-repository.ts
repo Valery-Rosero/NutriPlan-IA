@@ -126,7 +126,9 @@ export class SupabasePantryRepository implements PantryRepository {
   async buyNext(limit: number): Promise<BuyNext[]> {
     const { data, error } = await this.client.rpc('what_to_buy_next', { p_limit: limit });
     if (error) throw toAppError(error);
-    return data.map((r) => ({ ingredientId: r.ingredient_id, name: r.name, completes: r.completes, helps: r.helps, recipes: r.recipes }));
+    return data.map((r) => ({
+      ingredientId: r.ingredient_id, name: r.name, completes: r.completes, helps: r.helps, recipes: r.recipes, grams: Number(r.grams),
+    }));
   }
 
   async add({ ingredientId, quantity, unitId, expiresOn }: NewPantryItem) {

@@ -54,7 +54,7 @@ export function BuyNextCard() {
           flavor="mango"
           size="sm"
           loading={add.isPending}
-          onPress={() => add.mutate({ list: list.data!, items: items.map((i) => i.name) })}
+          onPress={() => add.mutate({ list: list.data!, items: items.map((i) => ({ ingredientId: i.ingredientId, grams: i.grams })) })}
         />
       ) : null}
       {add.error && <Banner tone="danger" message={t(errorKey(add.error))} />}

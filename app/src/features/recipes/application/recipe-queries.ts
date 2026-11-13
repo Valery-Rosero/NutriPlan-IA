@@ -2,11 +2,8 @@ import { keepPreviousData, useMutation, useQuery, useQueryClient, type QueryClie
 
 import { useServices } from '@/di/services';
 import { useTrack } from '@/features/analytics/application/use-track';
-import { cookingKeys } from '@/features/cooking/application/use-suggestions';
+import { useKitchenChanged } from '@/features/kitchen/application/kitchen-sync';
 import type { MealSlot } from '@/features/cooking/domain/cooking';
-import { nutritionKeys } from '@/features/nutrition/application/use-nutrition';
-import { pantryKeys } from '@/features/pantry/application/pantry-queries';
-import { planKeys } from '@/features/plan/application/plan-queries';
 import type { Choice, RatingTag } from '@/features/recipes/domain/recipe';
 
 export const recipeKeys = {
@@ -45,25 +42,24 @@ export function useSubstitutes(ingredientIds: string[]) {
 
 /** Cocinar cambia la despensa y por lo tanto las sugerencias. También es un evento de uso (US-131). */
 function useAfterCooking() {
-  const queryClient = useQueryClient();
+  const invalidate = useInvalidateAfterCooking();
   const track = useTrack();
   return () => {
     track('meal_cooked');
-    invalidateCooking(queryClient);
+    return invalidate();
   };
 }
 
 function useInvalidateAfterCooking() {
   const queryClient = useQueryClient();
-  return () => invalidateCooking(queryClient);
+  const kitchenChanged = useKitchenChanged();
+  return () => invalidateCooking(queryClient, kitchenChanged);
 }
 
-function invalidateCooking(queryClient: QueryClient) {
-  void queryClient.invalidateQueries({ queryKey: pantryKeys.all });
-  void queryClient.invalidateQueries({ queryKey: cookingKeys.all });
+/** Cocinar descuenta la despensa: "la cocina cambió" (lista al día, ADR-033) y las recetas se recalculan. */
+function invalidateCooking(queryClient: QueryClient, kitchenChanged: () => Promise<void>) {
   void queryClient.invalidateQueries({ queryKey: recipeKeys.all });
-  void queryClient.invalidateQueries({ queryKey: planKeys.all });
-  void queryClient.invalidateQueries({ queryKey: nutritionKeys.all });
+  return kitchenChanged();
 }
 
 export function useCookNow(id: string) {

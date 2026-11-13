@@ -2,10 +2,9 @@ import { useMutation, useQuery, useQueryClient, type QueryClient } from '@tansta
 
 import type { Services } from '@/di/services';
 import { useServices } from '@/di/services';
+import { useKitchenChanged } from '@/features/kitchen/application/kitchen-sync';
 import { useTrack } from '@/features/analytics/application/use-track';
-import { cookingKeys } from '@/features/cooking/application/use-suggestions';
 import { classifyQuietly } from '@/features/food/domain/food-label';
-import { pantryKeys } from '@/features/pantry/application/pantry-queries';
 import { applyChecked, type ShoppingList } from '@/features/shopping/domain/shopping';
 
 export const shoppingKeys = {
@@ -83,18 +82,9 @@ export function useToggleItem() {
   });
 }
 
-function useListMutation<T>(fn: (input: T) => Promise<unknown>, alsoInvalidatePantry = false) {
+function useListMutation<T>(fn: (input: T) => Promise<unknown>) {
   const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: fn,
-    onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: shoppingKeys.all });
-      if (alsoInvalidatePantry) {
-        void queryClient.invalidateQueries({ queryKey: pantryKeys.all });
-        void queryClient.invalidateQueries({ queryKey: cookingKeys.all });
-      }
-    },
-  });
+  return useMutation({ mutationFn: fn, onSuccess: () => queryClient.invalidateQueries({ queryKey: shoppingKeys.all }) });
 }
 
 export function useGenerateList() {
@@ -116,19 +106,14 @@ export function useAddManualItem() {
 }
 
 /**
- * Lo que le falta a una receta, a la lista de una vez (ADR-029). Cada cosa se clasifica en su sección
- * y lo que ya está en la lista (pendiente) no se repite.
+ * Lo que le falta a una receta o a una sugerencia, a la lista de una vez y como INGREDIENTES con sus gramos
+ * (ADR-033, C1): al comprarlos pasan a la despensa. Si ya estaban, la base suma; si el plan ya los pide, no duplica.
  */
 export function useAddMissingToList() {
-  const { shopping, foodLabels } = useServices();
-  return useListMutation(async ({ list, items }: { list: ShoppingList; items: string[] }) => {
-    const pending = new Set(list.items.filter((i) => !i.checked).map((i) => i.name.trim().toLowerCase()));
-    for (const name of items) {
-      if (pending.has(name.trim().toLowerCase())) continue;
-      const label = await classifyQuietly(foodLabels, name);
-      await shopping.addManual(list.id, name, label?.storeCategoryId ?? null);
-    }
-  });
+  const { shopping } = useServices();
+  return useListMutation(({ list, items }: { list: ShoppingList; items: { ingredientId: string; grams: number }[] }) =>
+    shopping.addIngredients(list.id, items),
+  );
 }
 
 export function useRemoveItem() {
@@ -136,7 +121,9 @@ export function useRemoveItem() {
   return useListMutation((itemId: string) => shopping.remove(itemId));
 }
 
+/** Lo comprado pasa a la despensa: "la cocina cambió" (despensa, sugerencias y lista al día). */
 export function useMoveToPantry() {
   const { shopping } = useServices();
-  return useListMutation((listId: string) => shopping.moveCheckedToPantry(listId), true);
+  const kitchenChanged = useKitchenChanged();
+  return useMutation({ mutationFn: (listId: string) => shopping.moveCheckedToPantry(listId), onSuccess: () => kitchenChanged() });
 }

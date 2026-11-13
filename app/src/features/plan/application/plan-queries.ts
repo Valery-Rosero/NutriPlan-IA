@@ -1,9 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { useServices } from '@/di/services';
+import { useKitchenChanged } from '@/features/kitchen/application/kitchen-sync';
 import { useTrack } from '@/features/analytics/application/use-track';
 import type { MealSlot } from '@/features/cooking/domain/cooking';
-import { nutritionKeys } from '@/features/nutrition/application/use-nutrition';
 import { todayIso } from '@/features/pantry/domain/pantry';
 import type { GeneratePlanInput, SavingSuggestion, WeekGoal } from '@/features/plan/domain/plan';
 
@@ -32,19 +32,12 @@ export function useWeekChanges(planId: string | undefined, goal: WeekGoal | null
  * Si rehacer la lista falla, los cambios ya quedaron: la lista se puede revisar desde Mi cocina.
  */
 export function useApplyWeekChanges() {
-  const { plans, shopping } = useServices();
-  const queryClient = useQueryClient();
+  const { plans } = useServices();
+  const kitchenChanged = useKitchenChanged();
   return useMutation({
-    mutationFn: async ({ planId, changes }: { planId: string; changes: { plannedMealId: string; recipeId: string }[] }) => {
-      const applied = await plans.applyWeekChanges(planId, changes);
-      await shopping.generate(planId).catch(() => undefined);
-      return applied;
-    },
-    onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: planKeys.all });
-      void queryClient.invalidateQueries({ queryKey: ['shopping'] });
-      void queryClient.invalidateQueries({ queryKey: nutritionKeys.all });
-    },
+    mutationFn: ({ planId, changes }: { planId: string; changes: { plannedMealId: string; recipeId: string }[] }) =>
+      plans.applyWeekChanges(planId, changes),
+    onSuccess: kitchenChanged,
   });
 }
 
@@ -65,15 +58,10 @@ export function useAlternatives(slot: MealSlot, excludeRecipeId: string) {
   return useQuery({ queryKey: planKeys.alternatives(slot, excludeRecipeId), queryFn: () => plans.alternatives(slot, excludeRecipeId) });
 }
 
+/** Cambiar u omitir una comida cambia lo que hay que comprar: "la cocina cambió" rehace la lista (ADR-033). */
 function usePlanMutation<T>(fn: (input: T) => Promise<unknown>) {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: fn,
-    onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: planKeys.all });
-      void queryClient.invalidateQueries({ queryKey: nutritionKeys.all }); // omitir o cambiar afecta Mi día
-    },
-  });
+  const kitchenChanged = useKitchenChanged();
+  return useMutation({ mutationFn: fn, onSuccess: kitchenChanged });
 }
 
 /** Organizar la semana deja lista también la lista de mercado (lo que falta según la cocina). */

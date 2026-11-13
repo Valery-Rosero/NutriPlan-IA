@@ -23,8 +23,18 @@ begin
 
   insert into public.shopping_list_items (list_id, custom_name, source, is_checked, checked_at)
     values (v_list, 'Bolsas de basura', 'manual', true, now()), (v_list, 'Servilletas', 'manual', false, null);
+  -- En la app, lo escrito a mano pasa por la clasificación (categorize-food): "bolsas de basura" no es comida.
+  -- (Solo la función escribe food_labels; aquí se hace como administradora.)
+  perform tt.reset();
+  insert into public.food_labels (key, name, is_food, store_category_id, model)
+  values ('bolsas de basura', 'Bolsas de basura', false, (select id from public.ingredient_categories where code = 'other'), 'test')
+  on conflict (key) do nothing;
+  perform tt.login(q);
   update public.shopping_list_items set is_checked = true, checked_at = now() where list_id = v_list and ingredient_id = v_huevo;
-  perform tt.ok(public.move_checked_to_pantry(v_list) = 1, 'lo comprado pasa a la despensa (lo manual no cuenta)');
+  perform tt.ok(public.move_checked_to_pantry(v_list) = 1, 'lo comprado pasa a la despensa (lo que no es comida no cuenta)');
+  perform tt.reset();
+  delete from public.food_labels where key = 'bolsas de basura' and model = 'test';   -- 99f la crea por su cuenta
+  perform tt.login(q);
   perform tt.ok((select moved_to_pantry_at is not null from public.shopping_list_items where list_id = v_list and custom_name = 'Bolsas de basura')
                 and (select moved_to_pantry_at is null from public.shopping_list_items where list_id = v_list and custom_name = 'Servilletas'),
                 'lo manual marcado se cierra con la compra; lo manual sin marcar sigue en la lista');

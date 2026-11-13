@@ -1,7 +1,7 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { useServices } from '@/di/services';
-import { cookingKeys } from '@/features/cooking/application/use-suggestions';
+import { useKitchenChanged } from '@/features/kitchen/application/kitchen-sync';
 import { classifyQuietly } from '@/features/food/domain/food-label';
 import {
   addDays,
@@ -96,14 +96,12 @@ export function usePantry() {
   return useQuery({ queryKey: pantryKeys.items(), queryFn: async () => sortPantry(await pantry.list()) });
 }
 
-/** Lo que hay en la despensa cambia qué se puede cocinar: se invalidan las sugerencias. */
+/**
+ * Lo que hay en la despensa cambia qué se puede cocinar y qué falta comprar: "la cocina cambió" rehace la lista
+ * de mercado y refresca sugerencias (ADR-033).
+ */
 function useInvalidatePantry() {
-  const queryClient = useQueryClient();
-  return () => {
-    void queryClient.invalidateQueries({ queryKey: pantryKeys.items() });
-    void queryClient.invalidateQueries({ queryKey: pantryKeys.buyNext() });
-    void queryClient.invalidateQueries({ queryKey: cookingKeys.all });
-  };
+  return useKitchenChanged();
 }
 
 export function useAddToPantry() {

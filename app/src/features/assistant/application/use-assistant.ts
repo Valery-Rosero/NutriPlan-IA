@@ -1,26 +1,20 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 
 import { useServices } from '@/di/services';
 import type { AssistantRequest } from '@/features/assistant/domain/assistant';
-import { cookingKeys } from '@/features/cooking/application/use-suggestions';
-import { planKeys } from '@/features/plan/application/plan-queries';
-import { shoppingKeys } from '@/features/shopping/application/shopping-queries';
+import { useKitchenChanged } from '@/features/kitchen/application/kitchen-sync';
 
 export function useSendToAssistant() {
   const { assistant } = useServices();
   return useMutation({ mutationFn: (request: AssistantRequest) => assistant.send(request) });
 }
 
-/** Aplicar cambia el plan: se recalculan el plan, la lista y las sugerencias. */
+/** Aplicar cambia una comida del plan: "la cocina cambió" (plan, lista y sugerencias al día, ADR-033). */
 export function useApplySuggestion() {
   const { assistant } = useServices();
-  const queryClient = useQueryClient();
+  const kitchenChanged = useKitchenChanged();
   return useMutation({
     mutationFn: ({ messageId, recipeId }: { messageId: number; recipeId: string }) => assistant.apply(messageId, recipeId),
-    onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: planKeys.all });
-      void queryClient.invalidateQueries({ queryKey: cookingKeys.all });
-      void queryClient.invalidateQueries({ queryKey: shoppingKeys.all });
-    },
+    onSuccess: kitchenChanged,
   });
 }
