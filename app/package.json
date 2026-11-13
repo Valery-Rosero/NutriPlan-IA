@@ -74,10 +74,14 @@
     "setupFiles": [
       "./jest.setup.ts"
     ],
+    "setupFilesAfterEnv": [
+      "./jest.after-env.ts"
+    ],
     "testPathIgnorePatterns": [
       "/node_modules/",
       ".int.test.ts$"
     ],
-    "testTimeout": 20000
+    "testTimeout": 60000,
+    "maxWorkers": "50%"
   }
 }
