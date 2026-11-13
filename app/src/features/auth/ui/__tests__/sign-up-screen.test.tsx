@@ -3,7 +3,7 @@ import { useRouter } from 'expo-router';
 
 import { AppError } from '@/core/errors/app-error';
 import { SignUpScreen } from '@/features/auth/ui/sign-up-screen';
-import { fakeAuth, fakeServices, withServices } from '@/test/fakes';
+import { fakeAuth, fakeLegal, fakeServices, withServices } from '@/test/fakes';
 
 async function fillForm() {
   await fireEvent.changeText(screen.getByLabelText('Correo electrónico'), 'ana@correo.com');
@@ -21,6 +21,26 @@ describe('SignUpScreen (US-104, US-113)', () => {
     for (const box of screen.getAllByRole('checkbox')) {
       expect(box).not.toBeChecked();
     }
+  });
+
+  it('los Términos y la Política se despliegan ahí mismo, sin salir del registro', async () => {
+    const legal = fakeLegal({ getText: jest.fn(async (doc) => (doc.kind === 'terms' ? '# Términos de NutriPlan' : '# Política de datos')) });
+    await render(<SignUpScreen />, { wrapper: withServices(fakeServices({ legal })) });
+    await fireEvent.changeText(screen.getByLabelText('Correo electrónico'), 'ana@correo.com');
+
+    const terms = screen.getByRole('button', { name: 'Leer los Términos y Condiciones' });
+    expect(terms).toBeCollapsed();
+    await fireEvent.press(terms);
+    expect(await screen.findByText('Términos de NutriPlan')).toBeOnTheScreen();
+    expect(terms).toBeExpanded();
+    expect(useRouter().push).not.toHaveBeenCalled();
+    expect(screen.getByLabelText('Correo electrónico')).toHaveDisplayValue('ana@correo.com');
+
+    await fireEvent.press(screen.getByRole('button', { name: 'Leer la Política de Tratamiento de Datos' }));
+    expect(await screen.findByText('Política de datos')).toBeOnTheScreen();
+
+    await fireEvent.press(terms);
+    expect(screen.queryByText('Términos de NutriPlan')).toBeNull();
   });
 
   it('sin aceptar los documentos no envía nada y explica qué falta', async () => {

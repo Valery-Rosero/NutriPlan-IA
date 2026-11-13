@@ -11,7 +11,7 @@ import { AuthScaffold } from '@/features/auth/ui/auth-scaffold';
 import { PasswordRules } from '@/features/auth/ui/password-rules';
 import { registrationNotice } from '@/features/legal/data/legal-drafts.generated';
 import { useCurrentDocuments } from '@/features/legal/application/legal-queries';
-import { legalHref } from '@/features/legal/ui/legal-href';
+import { LegalDisclosure } from '@/features/legal/ui/legal-disclosure';
 import { Spacing } from '@/shared/theme/colors';
 import { AppText, Banner, Button, Card, FormCheckbox, FormTextField, MarkdownText, TextLink } from '@/shared/ui';
 
@@ -62,16 +62,17 @@ export function SignUpScreen() {
       />
       <PasswordRules value={password} />
 
-      {/* El aviso de privacidad queda junto a las casillas que autoriza (US-113). */}
+      {/* El aviso de privacidad queda junto a las casillas que autoriza (US-113). Los documentos se
+          despliegan aquí mismo: se leen sin salir del registro ni perder lo escrito. */}
       <Card variant="filled" style={styles.legal}>
         <AppText variant="heading">{t('auth.signUp.legalTitle')}</AppText>
         <MarkdownText source={registrationNotice} />
         <FormCheckbox control={control} name="isAdult" label={t('auth.signUp.isAdult')} />
         <FormCheckbox control={control} name="acceptTerms" label={t('auth.signUp.acceptTerms')}>
-          <TextLink label={t('auth.signUp.readTerms')} onPress={() => router.push(legalHref('terms'))} />
+          <LegalDisclosure kind="terms" label={t('auth.signUp.readTerms')} />
         </FormCheckbox>
         <FormCheckbox control={control} name="acceptPrivacy" label={t('auth.signUp.acceptPrivacy')}>
-          <TextLink label={t('auth.signUp.readPrivacy')} onPress={() => router.push(legalHref('privacy_policy'))} />
+          <LegalDisclosure kind="privacy_policy" label={t('auth.signUp.readPrivacy')} />
         </FormCheckbox>
       </Card>
 
