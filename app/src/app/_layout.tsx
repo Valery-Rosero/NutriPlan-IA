@@ -125,6 +125,7 @@ function RootNavigator() {
         <Stack.Screen name="pantry/add" options={{ presentation: 'modal' }} />
         <Stack.Screen name="recipe/[id]" />
         <Stack.Screen name="plan/swap/[mealId]" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="plan/changes" />
         <Stack.Screen name="account/delete" />
         <Stack.Screen name="design-system" />
         <Stack.Screen name="help" />

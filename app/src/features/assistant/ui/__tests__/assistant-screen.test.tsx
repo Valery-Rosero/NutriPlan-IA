@@ -60,7 +60,9 @@ describe('Asistente (US-157, US-160, US-173, ADR-029)', () => {
   it('si el asistente no propone nada (p. ej. una pregunta de salud), no muestra tarjetas', async () => {
     jest.mocked(useLocalSearchParams).mockReturnValue({});
     const assistant = fakeAssistant({
-      send: jest.fn(async () => ({ conversationId: 'c1', messageId: 8, reply: 'Eso consúltalo con un profesional.', fallback: false, suggestions: [] })),
+      send: jest.fn(async () => ({
+        conversationId: 'c1', messageId: 8, reply: 'Eso consúltalo con un profesional.', fallback: false, suggestions: [], week: null, hasPlan: true,
+      })),
     });
     await render(<AssistantScreen />, { wrapper: withServices(fakeServices({ assistant })) });
     await fireEvent.changeText(screen.getByLabelText('Escribe tu pedido'), '¿puedo comer sal?');

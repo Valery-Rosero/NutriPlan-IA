@@ -46,6 +46,15 @@ const RESPONSE_SCHEMA = {
         required: ['kind'],
       },
     },
+    week: {
+      type: 'OBJECT',
+      nullable: true,
+      description: 'Solo si pide cambiar VARIAS comidas o la semana (US-174); si no, null.',
+      properties: {
+        goal: { type: 'STRING', nullable: true, enum: ['cheaper', 'faster', 'protein', 'variety', 'use_expiring'] },
+        avoid: { type: 'ARRAY', items: { type: 'STRING', description: 'Referencia exacta I… de lo que no quiere.' } },
+      },
+    },
   },
   required: ['reply', 'pantry_only', 'options'],
 };

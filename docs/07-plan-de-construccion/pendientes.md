@@ -56,6 +56,15 @@ Rediseñado con la dueña del producto: lo que se cocina fuera del plan (receta 
 - **Para que funcione en el APK** (lo corre la dueña del producto): migraciones a staging por GitHub Actions; luego
   `npx supabase functions deploy assistant-chat`, `categorize-food` y `understand-pantry` con `--project-ref fiesvxiuxsllqcpxidap`.
 
+### B6. IA paso a paso (plan aprobado el 14-nov) · propuesta: https://claude.ai/artifact/GZ9jErVbgwbPpHu8NZhNms
+Se construye **una a la vez**: plan → aprobación → construir con pruebas → APK → la siguiente.
+| # | Qué | Estado |
+|---|---|---|
+| 1 | Cambios a toda la semana con el asistente (US-174, ADR-031) | ✅ Hecho (14-nov); probar en el APK con Gemini en staging |
+| 2 | Foto de la nevera o del recibo (US-163, US-164). Decidido: el total del recibo va al gasto del mes **preguntando antes** | Pendiente: empieza después de revisar la 1 en el APK |
+| 3 | Notas de voz. Decidido: primero solo la pista del micrófono del teclado; botón propio solo si no basta | Pendiente |
+| — | Machine learning (predicción y agrupamiento) | **Descartado** por la dueña del producto (14-nov) |
+
 ## C. Antes de usuarios reales (sin cambios)
 Revisión de un abogado de los textos legales · revisión de una nutricionista (US-121) · validación con 5 personas (US-101) · producción (`drgzvvkkjxqvolcerpjx`) · Google Play (US-158) · monitor de disponibilidad · Gemini en plan de pago con tope de gasto y clave rotada · renovar el token de Supabase del despliegue (cada 90 días).
 

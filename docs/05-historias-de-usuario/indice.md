@@ -1,6 +1,6 @@
 # Índice de historias de usuario
 
-Fuente de verdad legible por máquina: `historias.json` (y `historias.csv`). 73 historias, 82 subtareas. El orden del backlog (#) es la prioridad de construcción dentro de cada fase.
+Fuente de verdad legible por máquina: `historias.json` (y `historias.csv`). 74 historias, 82 subtareas. El orden del backlog (#) es la prioridad de construcción dentro de cada fase.
 
 | # | ID | Título | Épica | Módulo | Fase | Prio | Tipo | Deps |
 |---|---|---|---|---|---|---|---|---|
@@ -77,3 +77,4 @@ Fuente de verdad legible por máquina: `historias.json` (y `historias.csv`). 73 
 | 71 | US-171 | Definir nivel de picante preferido | E1 | M02 | F3 | Low | historia | — |
 | 72 | US-172 | Ofrecer «versión rápida» de una receta | E2 | M03 | F3 | Low | historia | — |
 | 73 | US-173 | Respuestas rápidas en el chat del asistente | E2 | M05 | F3 | Low | historia | — |
+| 74 | US-174 | Pedir cambios a toda la semana (más barata, más rápida, sin un ingrediente) | E2 | M05 | F2 | Medium | historia | US-117, US-129, US-152, US-157 |

@@ -19,6 +19,8 @@ import {
   type Decision,
   type SafeIngredient,
   type Target,
+  type WeekRow,
+  weekSummary,
 } from './logic.ts';
 
 type ErrorCode = 'method_not_allowed' | 'not_authenticated' | 'invalid_input' | 'quota_exceeded' | 'meal_not_found' | 'unknown';
@@ -141,18 +143,23 @@ Deno.serve(async (req) => {
       .from('assistant_messages').insert({ conversation_id: conversationId, role: 'user', content: message });
     if (userMsgError) throw userMsgError;
 
-    // Recetario seguro para la persona (eligible_recipes adentro) e ingredientes que puede comer.
-    const [{ data: rows, error: candError }, { data: safe, error: ingError }, { data: me }] = await Promise.all([
+    // Recetario seguro para la persona (eligible_recipes adentro), ingredientes que puede comer y su plan vigente
+    // (el mismo criterio que la app: el primero no archivado que no ha terminado y tiene comidas planeadas).
+    const today = new Date(Date.now() - 5 * 3600_000).toISOString().slice(0, 10); // Colombia, UTC−5
+    const [{ data: rows, error: candError }, { data: safe, error: ingError }, { data: me }, { data: plans }] = await Promise.all([
       user.rpc('cook_with_what_i_have', { p_slot: slot, p_limit: 12 }),
       user.rpc('assistant_ingredients'),
       user.from('profiles').select('household_size').eq('id', userId).maybeSingle(),
+      user.from('meal_plans').select('id, planned_meals(is_extra)').neq('status', 'archived').gte('end_date', today)
+        .order('start_date').limit(5),
     ]);
     if (candError) throw candError;
     if (ingError) throw ingError;
     // Al cambiar una comida, la receta actual no es opción: "cámbiala" nunca devuelve la misma.
     const candidates = ((rows ?? []) as Candidate[]).filter((c) => c.recipe_id !== currentRecipeId);
     const ingredients = (safe ?? []) as SafeIngredient[];
-    const ctx: Context = { slot, candidates, ingredients, target, servings: me?.household_size ?? 2 };
+    const planId = (plans ?? []).find((p) => (p.planned_meals as { is_extra: boolean }[]).some((m) => !m.is_extra))?.id ?? null;
+    const ctx: Context = { slot, candidates, ingredients, target, servings: me?.household_size ?? 2, hasPlan: !!planId };
 
     // El modelo propone; si falla o nada de lo que propone sirve, respaldo determinista.
     const turns: LlmTurn[] = [
@@ -170,9 +177,30 @@ Deno.serve(async (req) => {
       console.warn('assistant-chat: llm no disponible', (e as Error).message); // sin contenido de la persona
     }
 
+    // US-174: cambio a la semana. La base calcula; aquí solo se resume con sus cifras.
+    let week: Record<string, unknown> | null = null;
+    if (decision?.week && planId) {
+      const { data: proposal, error: weekError } = await user.rpc('propose_week_changes', {
+        p_plan_id: planId,
+        p_goal: decision.week.goal,
+        p_avoid: decision.week.avoid.map((a) => a.id),
+        p_limit: 93,
+      });
+      if (weekError) throw weekError;
+      const summary = weekSummary((proposal ?? []) as WeekRow[]);
+      decision = { ...decision, reply: `${decision.reply}\n\n${summary.text}` };
+      week = {
+        goal: decision.week!.goal,
+        avoid: decision.week!.avoid,
+        changes: summary.changes,
+        saving: summary.saving,
+        unresolved: summary.unresolved,
+      };
+    }
+
     let suggestions = decision ? await materialize(decision, ctx) : [];
     // Propuso opciones pero la base no aceptó ninguna: no se muestra un texto que hable de platos inexistentes.
-    if (!decision || (decision.picks.length > 0 && suggestions.length === 0)) {
+    if (!decision || (!week && decision.picks.length > 0 && suggestions.length === 0)) {
       decision = fallbackDecision(candidates, target);
       suggestions = await materialize(decision, ctx);
     }
@@ -215,6 +243,9 @@ Deno.serve(async (req) => {
         fallback: decision.fallback,
         target_planned_meal_id: first && target ? target.planned_meal_id : null,
         suggestions,
+        // US-174: propuesta de cambios a la semana (la app la abre en "Revisa los cambios").
+        week,
+        has_plan: !!planId,
         // Compatibilidad con versiones anteriores de la app (una sola sugerencia).
         suggestion: first && {
           recipe_id: first.recipe_id,

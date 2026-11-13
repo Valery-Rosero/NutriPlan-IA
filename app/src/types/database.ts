@@ -2033,6 +2033,9 @@ isOneToOne: false
 "apply_assistant_suggestion":
 { Args: { "p_message_id": number,"p_recipe_id"?: string }; Returns: string
                            },
+"apply_week_changes":
+{ Args: { "p_changes": Json,"p_plan_id": string }; Returns: number
+                           },
 "assistant_ingredients":
 { Args: Record<PropertyKey, never>; Returns: {
               "expiring": boolean,"in_pantry": boolean,"ingredient_id": string,"is_staple": boolean,"name": string
@@ -2118,6 +2121,11 @@ isOneToOne: false
                            },
 "preview_recipe":
 { Args: { "p_choices"?: Json,"p_recipe_id": string,"p_servings": number }; Returns: Json
+                           },
+"propose_week_changes":
+{ Args: { "p_avoid"?: (string)[],"p_goal"?: string,"p_limit"?: number,"p_plan_id": string }; Returns: {
+              "current_cost": number,"current_minutes": number,"current_recipe_id": string,"current_title": string,"meal_date": string,"new_cost": number,"new_minutes": number,"new_recipe_id": string,"new_title": string,"planned_meal_id": string,"reason": string,"saving": number,"slot": Database["public"]['Enums']["meal_slot"]
+            }[]
                            },
 "rate_meal":
 { Args: { "p_comment"?: string,"p_planned_meal_id": string,"p_rating": number,"p_tags"?: (string)[] }; Returns: string

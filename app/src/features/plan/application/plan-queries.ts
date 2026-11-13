@@ -5,7 +5,7 @@ import { useTrack } from '@/features/analytics/application/use-track';
 import type { MealSlot } from '@/features/cooking/domain/cooking';
 import { nutritionKeys } from '@/features/nutrition/application/use-nutrition';
 import { todayIso } from '@/features/pantry/domain/pantry';
-import type { GeneratePlanInput, SavingSuggestion } from '@/features/plan/domain/plan';
+import type { GeneratePlanInput, SavingSuggestion, WeekGoal } from '@/features/plan/domain/plan';
 
 export const planKeys = {
   all: ['plan'] as const,
@@ -13,7 +13,40 @@ export const planKeys = {
   budget: (planId: string) => [...planKeys.all, 'budget', planId] as const,
   alternatives: (slot: MealSlot, exclude: string) => [...planKeys.all, 'alternatives', slot, exclude] as const,
   savings: (planId: string) => [...planKeys.all, 'savings', planId] as const,
+  weekChanges: (planId: string, goal: WeekGoal | null, avoid: string[]) =>
+    [...planKeys.all, 'week-changes', planId, goal, avoid.join(',')] as const,
 };
+
+/** US-174: propuesta de cambios a la semana (la calcula la base; nada cambia hasta aplicar). */
+export function useWeekChanges(planId: string | undefined, goal: WeekGoal | null, avoid: string[]) {
+  const { plans } = useServices();
+  return useQuery({
+    queryKey: planKeys.weekChanges(planId ?? '', goal, avoid),
+    queryFn: () => plans.proposeWeekChanges(planId!, goal, avoid),
+    enabled: !!planId && (!!goal || avoid.length > 0),
+  });
+}
+
+/**
+ * US-174: aplica lo marcado y rehace la lista de mercado (S-3: la lista y el presupuesto quedan al día).
+ * Si rehacer la lista falla, los cambios ya quedaron: la lista se puede revisar desde Mi cocina.
+ */
+export function useApplyWeekChanges() {
+  const { plans, shopping } = useServices();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ planId, changes }: { planId: string; changes: { plannedMealId: string; recipeId: string }[] }) => {
+      const applied = await plans.applyWeekChanges(planId, changes);
+      await shopping.generate(planId).catch(() => undefined);
+      return applied;
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: planKeys.all });
+      void queryClient.invalidateQueries({ queryKey: ['shopping'] });
+      void queryClient.invalidateQueries({ queryKey: nutritionKeys.all });
+    },
+  });
+}
 
 /** El plan vigente: se guarda en disco para consultarlo sin conexión (ADR-014). */
 export function useCurrentPlan() {

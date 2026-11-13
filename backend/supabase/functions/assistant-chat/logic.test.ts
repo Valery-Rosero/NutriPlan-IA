@@ -8,6 +8,7 @@ import {
   type Candidate,
   type Context,
   type SafeIngredient,
+  weekSummary,
 } from './logic.ts';
 
 const sudado: Candidate = {
@@ -180,6 +181,66 @@ describe('prompt (ADR-025: minimización de datos)', () => {
   it('pide responder bonito y sin palabras con género', () => {
     expect(prompt).toMatch(/Markdown/);
     expect(prompt).toMatch(/nada de "mijo"/);
+  });
+});
+
+describe('US-174 · cambios a toda la semana', () => {
+  const withPlan: Context = { ...ctx, hasPlan: true };
+
+  it('traduce la frase a meta + ingredientes a evitar (referencias I…), sin opciones de recetas', () => {
+    const d = validateAnswer({
+      reply: '¡Claro! Busco cómo abaratar tu semana.',
+      pantry_only: false,
+      options: [{ kind: 'catalog', ref: 'R3' }],
+      week: { goal: 'cheaper', avoid: ['I2', 'I99'] },
+    }, withPlan);
+    expect(d).toEqual({
+      reply: '¡Claro! Busco cómo abaratar tu semana.',
+      picks: [],
+      fallback: false,
+      week: { goal: 'cheaper', avoid: [{ id: 'i-pollo', name: 'Pechuga de pollo' }] }, // I99 no existe: se ignora
+    });
+  });
+
+  it('solo evitar algo, sin meta, también sirve', () => {
+    const d = validateAnswer({ reply: 'Listo.', pantry_only: false, options: [], week: { goal: null, avoid: ['I1'] } }, withPlan);
+    expect(d?.week).toEqual({ goal: null, avoid: [{ id: 'i-papa', name: 'Papa' }] });
+  });
+
+  it('sin plan, o cambiando una sola comida, se ignora el modo semana', () => {
+    const raw = { reply: 'Mira', pantry_only: false, options: [{ kind: 'catalog', ref: 'R3' }], week: { goal: 'cheaper', avoid: [] } };
+    expect(validateAnswer(raw, { ...ctx, hasPlan: false })?.week).toBeUndefined();
+    const swap = { ...withPlan, target: { planned_meal_id: 'm1', slot: 'lunch', current_title: 'Lentejas' } };
+    expect(validateAnswer(raw, swap)?.week).toBeUndefined();
+  });
+
+  it('una meta inventada invalida la respuesta (respaldo)', () => {
+    expect(validateAnswer({ reply: 'x', pantry_only: false, options: [], week: { goal: 'magia', avoid: [] } }, withPlan)).toBeNull();
+  });
+
+  it('el prompt explica el modo semana solo si hay plan', () => {
+    expect(systemPrompt(withPlan)).toContain('"week"');
+    expect(systemPrompt({ ...ctx, hasPlan: false })).toContain('primero organice su semana');
+  });
+
+  it('el resumen pone las cifras de la base: cambios, ahorro y lo que no se pudo', () => {
+    expect(weekSummary([
+      { new_recipe_id: 'a', saving: '5121', reason: 'cheaper' },
+      { new_recipe_id: 'b', saving: 3902, reason: 'avoid' },
+      { new_recipe_id: 'c', saving: null, reason: 'avoid' },
+      { new_recipe_id: null, saving: null, reason: 'avoid_unresolved' },
+    ])).toEqual({
+      text: '**3 cambios** en tu semana · ahorras **$9.023**. Revísalos antes de aplicar.\n\nPara 1 comida no encontré una receta segura sin lo que pediste evitar.',
+      changes: 3,
+      saving: 9023,
+      unresolved: 1,
+    });
+  });
+
+  it('S-6: sin nada que mejorar, lo dice claro', () => {
+    const s = weekSummary([]);
+    expect(s.changes).toBe(0);
+    expect(s.text).toMatch(/No encontré cambios/);
   });
 });
 

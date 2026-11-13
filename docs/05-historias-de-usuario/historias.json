@@ -3608,5 +3608,100 @@
   "notes": "",
   "tests": "",
   "subtasks": []
+ },
+ {
+  "id": 174,
+  "key": "US-174",
+  "title": "Pedir cambios a toda la semana (más barata, más rápida, sin un ingrediente)",
+  "epic_id": 2,
+  "epic": "Planificación inteligente de comidas",
+  "epic_code": "E2",
+  "module": "M05",
+  "module_name": "Asistente IA",
+  "phase": 2,
+  "phase_name": "F2 Mejora y retención",
+  "priority": "Medium",
+  "rank": 74,
+  "type": "historia",
+  "labels": [
+   "asistente-ia",
+   "plan",
+   "agregada-por-po"
+  ],
+  "ref": "HU-74",
+  "subarea": "Asistente IA",
+  "rol": "usuario con un plan semanal",
+  "quiero": "pedirle al asistente cambios a toda la semana en una frase (más barata, más rápida, sin un ingrediente) y revisar un antes y después",
+  "para": "ajustar el plan sin cambiar comida por comida",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que tengo un plan con comidas pendientes",
+     "Cuando le escribo al asistente \"hazme la semana más barata\"",
+     "Entonces me muestra una propuesta con cuántos cambios hay y cuánto bajaría el costo estimado, sin cambiar todavía mi plan."
+    ]
+   },
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que pido \"sin lentejas esta semana\"",
+     "Cuando veo la propuesta",
+     "Entonces ninguna comida pendiente queda con lentejas y cada cambio dice por qué se hizo (si para alguna no hay receta segura sin lentejas, me lo dice)."
+    ]
+   },
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que estoy revisando los cambios",
+     "Cuando desmarco uno y toco \"Aplicar\"",
+     "Entonces solo se aplican los marcados y Mi semana, la lista de mercado y el presupuesto se actualizan."
+    ]
+   },
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que tengo alergias o una dieta declaradas",
+     "Cuando recibo cualquier propuesta",
+     "Entonces ningún plato propuesto las incumple (la base lo verifica también al aplicar)."
+    ]
+   },
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que ya cociné u omití una comida",
+     "Cuando pido cambios a la semana",
+     "Entonces esa comida no aparece en la propuesta."
+    ]
+   },
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que no hay forma de cumplir lo que pedí",
+     "Cuando el asistente responde",
+     "Entonces me lo dice con claridad y no propone cambios vacíos."
+    ]
+   },
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que la IA no está disponible",
+     "Cuando pido un cambio a la semana",
+     "Entonces el asistente ofrece las metas fijas como botones (Más barata, Más rápida, Más proteína, Más variedad, Usar lo que vence) y la propuesta funciona igual."
+    ]
+   }
+  ],
+  "deps": [
+   117,
+   129,
+   152,
+   157
+  ],
+  "backend": "RPC `propose_week_changes(plan, meta, evitar)` (generaliza `plan_savings`; conjunto seguro de `eligible_recipes`) y `apply_week_changes(plan, cambios)`. En `assistant-chat` la IA solo traduce la frase a meta + ingredientes a evitar; las cifras las pone la base (ADR-031).",
+  "screens": "Asistente (tarjeta \"Cambios a tu semana\"), Mi semana (\"Mejorar mi semana\"), Revisa los cambios (/plan/changes)",
+  "notes": "Sugerir, no aplicar sin confirmación. Lo cocinado, omitido o adicional nunca se toca.",
+  "tests": "backend/supabase/tests/99k_week_changes.sql; functions/assistant-chat/logic.test.ts; app/src/features/plan/ui/__tests__/week-changes.test.tsx",
+  "subtasks": []
  }
 ]

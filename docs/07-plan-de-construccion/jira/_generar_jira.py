@@ -40,6 +40,7 @@ SPRINTS = {
     "Sprint 9": "Precios reales, gasto, nutrición y calidad",
     "Sprint 10": "Fallas, avisos y despliegue a staging",
     "Sprint 11": "APK, validación y piloto (en curso)",
+    "Sprint 12": "Cocina viva, IA en más lugares y cambios a la semana (en curso)",
 }
 SPRINT_DE = {}
 for sprint, ids in {
@@ -55,17 +56,18 @@ for sprint, ids in {
     "Sprint 9": [112, 131, 136, 140, 141, 152, 159],
     "Sprint 10": [122, 148, 149, 150, 153],
     "Sprint 11": [101, 121, 158],
+    "Sprint 12": [174],
 }.items():
     for i in ids:
         SPRINT_DE[i] = sprint
-ESTADO = {101: "To Do", 121: "In Progress", 158: "In Progress"}  # el resto con sprint: Done; sin sprint: To Do
+ESTADO = {101: "To Do", 121: "In Progress", 158: "In Progress", 174: "In Progress"}  # el resto con sprint: Done; sin sprint: To Do
 
 PUNTOS = {101: 5, 102: 8, 103: 5, 104: 8, 105: 3, 106: 3, 107: 5, 108: 2, 109: 2, 110: 13, 111: 8, 112: 5, 113: 5,
           114: 2, 115: 3, 116: 3, 117: 13, 118: 5, 119: 5, 120: 5, 121: 5, 122: 8, 123: 5, 124: 8, 125: 3, 126: 5,
           127: 3, 128: 3, 129: 5, 130: 2, 131: 5, 132: 2, 133: 5, 134: 3, 135: 3, 136: 5, 137: 3, 138: 3, 139: 2,
           140: 5, 141: 5, 142: 2, 143: 2, 144: 2, 145: 2, 146: 3, 147: 5, 148: 8, 149: 3, 150: 5, 151: 5, 152: 5,
           153: 5, 154: 3, 155: 3, 156: 3, 157: 8, 158: 5, 159: 5, 160: 3, 161: 13, 162: 8, 163: 13, 164: 13, 165: 8,
-          166: 13, 167: 8, 168: 5, 169: 8, 170: 5, 171: 2, 172: 5, 173: 2}
+          166: 13, 167: 8, 168: 5, 169: 8, 170: 5, 171: 2, 172: 5, 173: 2, 174: 8}
 
 COMO_QUEDO = {
     104: "En vez de bloquear 5 intentos por cuenta (Supabase no lo trae), se usan los límites de tasa de Supabase Auth (ADR-019).",
@@ -157,6 +159,7 @@ SUB = {
     171: ["Nivel de picante en Preferencias", "Filtrar por recipe_max_heat"],
     172: ["ADR y tabla recipe_variants", "Mostrar la versión rápida en la receta"],
     173: ["Respuestas rápidas sugeridas en el chat"],
+    174: ["RPC propose_week_changes y apply_week_changes con pruebas SQL", "Modo semana en assistant-chat (la IA traduce, la base calcula)", "Pantalla Revisa los cambios y Mejorar mi semana", "Probar en el APK con Gemini en staging"],
 }
 
 # --- Tareas técnicas y bugs (cuelgan de una épica). (id, tipo, épica, sprint, estado, puntos, título, descripción, módulo, subtareas)

@@ -72,3 +72,4 @@ US-170,Activar modo batch cooking,E1,M02,3,Low,70,historia,personalizacion,HU-70
 US-171,Definir nivel de picante preferido,E1,M02,3,Low,71,historia,personalizacion,HU-71,Personalización,,1,0
 US-172,Ofrecer «versión rápida» de una receta,E2,M03,3,Low,72,historia,recetas,HU-72,Recetas,,1,0
 US-173,Respuestas rápidas en el chat del asistente,E2,M05,3,Low,73,historia,asistente-ia,HU-73,Asistente IA,,1,0
+US-174,"Pedir cambios a toda la semana (más barata, más rápida, sin un ingrediente)",E2,M05,2,Medium,74,historia,asistente-ia plan agregada-por-po,HU-74,Asistente IA,117 129 152 157,7,0

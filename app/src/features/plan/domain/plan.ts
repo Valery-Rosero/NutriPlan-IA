@@ -71,6 +71,30 @@ export function horizonOf(days: number): Horizon {
   return days <= 7 ? 'week' : 'month';
 }
 
+/** US-174: metas para cambiar varias comidas de la semana a la vez. */
+export const WEEK_GOALS = ['cheaper', 'faster', 'protein', 'variety', 'use_expiring'] as const;
+export type WeekGoal = (typeof WEEK_GOALS)[number];
+
+/**
+ * Un cambio propuesto a una comida pendiente (lo calcula la base, propose_week_changes). `newRecipeId` null con
+ * `reason = 'avoid_unresolved'`: tenía algo a evitar y no hay receta segura sin eso (se avisa, no se calla).
+ */
+export type WeekChange = {
+  plannedMealId: string;
+  date: string;
+  slot: MealSlot;
+  currentRecipeId: string;
+  currentTitle: string;
+  currentCost: number | null;
+  currentMinutes: number;
+  newRecipeId: string | null;
+  newTitle: string | null;
+  newCost: number | null;
+  newMinutes: number | null;
+  saving: number | null;
+  reason: WeekGoal | 'avoid' | 'avoid_unresolved';
+};
+
 /** Puerto del plan semanal. Falla con AppError. */
 export interface PlanRepository {
   /** El plan vigente hoy o el próximo (sin archivados). */
@@ -83,6 +107,10 @@ export interface PlanRepository {
   swap(mealId: string, recipeId: string, previousRecipeId: string, reason?: SwapReason): Promise<void>;
   /** US-152: reemplazos más baratos para las comidas pendientes (sugiere, no aplica). */
   savings(planId: string): Promise<SavingSuggestion[]>;
+  /** US-174: cambios a toda la semana para una meta y/o ingredientes a evitar (sugiere, no aplica). */
+  proposeWeekChanges(planId: string, goal: WeekGoal | null, avoid: string[]): Promise<WeekChange[]>;
+  /** US-174: aplica los cambios elegidos de una vez (la base valida cada uno). Devuelve cuántos aplicó. */
+  applyWeekChanges(planId: string, changes: { plannedMealId: string; recipeId: string }[]): Promise<number>;
   skip(mealId: string): Promise<void>;
   confirm(planId: string): Promise<void>;
 }

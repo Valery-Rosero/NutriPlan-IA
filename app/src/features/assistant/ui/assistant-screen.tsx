@@ -6,9 +6,11 @@ import { useTranslation } from 'react-i18next';
 
 import { errorKey } from '@/core/errors/app-error';
 import { foodEmoji } from '@/core/food-emoji';
+import { formatCOP } from '@/core/format';
 import { useApplySuggestion, useSendToAssistant } from '@/features/assistant/application/use-assistant';
-import { quickReplies, type AssistantSuggestion, type ChatMessage } from '@/features/assistant/domain/assistant';
+import { quickReplies, type AssistantSuggestion, type ChatMessage, type WeekProposal } from '@/features/assistant/domain/assistant';
 import { momentOfDay } from '@/features/cooking/domain/cooking';
+import { WEEK_GOALS } from '@/features/plan/domain/plan';
 import { MinTouch, Spacing } from '@/shared/theme/colors';
 import { Radius, Typography } from '@/shared/theme/tokens';
 import { useTheme } from '@/shared/theme/use-theme';
@@ -64,6 +66,8 @@ export function AssistantScreen() {
               messageId: reply.messageId,
               suggestions: reply.suggestions,
               fallback: reply.fallback,
+              week: reply.week,
+              hasPlan: reply.hasPlan,
             },
           ]);
         },
@@ -113,6 +117,9 @@ export function AssistantScreen() {
                     {m.fallback && <AppText variant="caption" secondary>{t('assistant.fallback')}</AppText>}
                   </View>
                   {m.suggestions.length > 0 && <SuggestionList messageId={m.messageId} suggestions={m.suggestions} />}
+                  {m.week && m.week.changes > 0 && <WeekCard week={m.week} />}
+                  {/* S-7: sin IA no se entiende la frase; si tiene plan, las metas de la semana quedan a un toque. */}
+                  {m.fallback && m.hasPlan && <WeekGoalChips />}
                 </View>
               ),
             )}
@@ -157,6 +164,60 @@ export function AssistantScreen() {
         </KeyboardAvoidingView>
       </SafeAreaView>
     </>
+  );
+}
+
+/** US-174: el asistente entendió que quiere cambiar la semana. Las cifras vienen de la base. */
+function WeekCard({ week }: { week: WeekProposal }) {
+  const { t } = useTranslation();
+  const router = useRouter();
+  return (
+    <Card style={styles.week}>
+      <View style={styles.row}>
+        <IconBadge name="calendar-outline" tone="mango" />
+        <View style={styles.flex}>
+          <AppText variant="subtitle">{t('assistant.weekTitle')}</AppText>
+          <View style={styles.pills}>
+            <Pill label={t('assistant.weekChanges', { count: week.changes })} tone="mango" icon="swap-horizontal" />
+            {week.saving !== null && week.saving > 0 && (
+              <Pill label={t('assistant.weekSaving', { amount: formatCOP(week.saving) })} tone="accent" icon="trending-down-outline" />
+            )}
+          </View>
+        </View>
+      </View>
+      <Button
+        label={t('assistant.seeChanges')}
+        icon="eye-outline"
+        flavor="berry"
+        size="sm"
+        onPress={() =>
+          router.push({
+            pathname: '/plan/changes',
+            params: {
+              ...(week.goal ? { goal: week.goal } : {}),
+              ...(week.avoid.length
+                ? { avoid: week.avoid.map((a) => a.id).join(','), avoidNames: week.avoid.map((a) => a.name).join(',') }
+                : {}),
+            },
+          })
+        }
+      />
+    </Card>
+  );
+}
+
+function WeekGoalChips() {
+  const { t } = useTranslation();
+  const router = useRouter();
+  return (
+    <View style={styles.theirsWrap}>
+      <AppText variant="caption" secondary>{t('assistant.weekFallback')}</AppText>
+      <ChipGroup>
+        {WEEK_GOALS.map((g) => (
+          <Chip key={g} label={t(`plan.week.goals.${g}`)} selected={false} onPress={() => router.push({ pathname: '/plan/changes', params: { goal: g } })} />
+        ))}
+      </ChipGroup>
+    </View>
   );
 }
 
@@ -248,6 +309,7 @@ const styles = StyleSheet.create({
   suggestions: { gap: Spacing.sm, marginHorizontal: -Spacing.md },
   cards: { gap: Spacing.sm, paddingHorizontal: Spacing.md, paddingBottom: Spacing.xs },
   card: { width: CARD_WIDTH, borderWidth: 1 },
+  week: { alignSelf: 'stretch' },
   pills: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm },
   actions: { gap: Spacing.sm, marginTop: 'auto' },
   composer: {

@@ -34,3 +34,4 @@ Estado: **Aceptada** = ya implementada o decidida con el usuario; **Propuesta** 
 | [028](ADR-028.md) | Platos adicionales del día: lo cocinado fuera del plan se suma, no reemplaza | Aceptada |
 | [029](ADR-029.md) | El asistente crea recetas con lo que hay en la cocina y propone hasta tres opciones | Aceptada |
 | [030](ADR-030.md) | Sugerencias de alimentos: entender lo que se escribe (IA) y qué comprar para completar recetas (base) | Aceptada |
+| [031](ADR-031.md) | Cambios a toda la semana: la IA traduce la frase, la base calcula los cambios | Aceptada |

@@ -819,6 +819,24 @@ Ficha completa: docs/05-historias-de-usuario (US-172)."
 
 Ficha completa: docs/05-historias-de-usuario (US-173)."
 "1226","Sub-task","Respuestas rápidas sugeridas en el chat","173","Done","Done","","","","","M05 Asistente IA","estado-hecho","m05","","","","","","",""
+"174","Story","US-174 · Pedir cambios a toda la semana (más barata, más rápida, sin un ingrediente)","2","In Progress","","Medium","8","Sprint 12","v1.1 Mejora y retención","M05 Asistente IA","sprint-12","estado-en-curso","prioridad-media","v1.1","m05","F2","historia","asistente-ia","*Como* usuario con un plan semanal, *quiero* pedirle al asistente cambios a toda la semana en una frase (más barata, más rápida, sin un ingrediente) y revisar un antes y después, *para* ajustar el plan sin cambiar comida por comida.
+
+*Criterios de aceptación*
+# Dado que tengo un plan con comidas pendientes Cuando le escribo al asistente ""hazme la semana más barata"" Entonces me muestra una propuesta con cuántos cambios hay y cuánto bajaría el costo estimado, sin cambiar todavía mi plan.
+# Dado que pido ""sin lentejas esta semana"" Cuando veo la propuesta Entonces ninguna comida pendiente queda con lentejas y cada cambio dice por qué se hizo (si para alguna no hay receta segura sin lentejas, me lo dice).
+# Dado que estoy revisando los cambios Cuando desmarco uno y toco ""Aplicar"" Entonces solo se aplican los marcados y Mi semana, la lista de mercado y el presupuesto se actualizan.
+# Dado que tengo alergias o una dieta declaradas Cuando recibo cualquier propuesta Entonces ningún plato propuesto las incumple (la base lo verifica también al aplicar).
+# Dado que ya cociné u omití una comida Cuando pido cambios a la semana Entonces esa comida no aparece en la propuesta.
+# Dado que no hay forma de cumplir lo que pedí Cuando el asistente responde Entonces me lo dice con claridad y no propone cambios vacíos.
+# Dado que la IA no está disponible Cuando pido un cambio a la semana Entonces el asistente ofrece las metas fijas como botones (Más barata, Más rápida, Más proteína, Más variedad, Usar lo que vence) y la propuesta funciona igual.
+
+*Depende de:* US-117, US-129, US-152, US-157
+
+Ficha completa: docs/05-historias-de-usuario (US-174)."
+"1227","Sub-task","RPC propose_week_changes y apply_week_changes con pruebas SQL","174","In Progress","","","","","","M05 Asistente IA","estado-en-curso","m05","","","","","","",""
+"1228","Sub-task","Modo semana en assistant-chat (la IA traduce, la base calcula)","174","In Progress","","","","","","M05 Asistente IA","estado-en-curso","m05","","","","","","",""
+"1229","Sub-task","Pantalla Revisa los cambios y Mejorar mi semana","174","In Progress","","","","","","M05 Asistente IA","estado-en-curso","m05","","","","","","",""
+"1230","Sub-task","Probar en el APK con Gemini en staging","174","In Progress","","","","","","M05 Asistente IA","estado-en-curso","m05","","","","","","",""
 "201","Task","Monorepo app/backend/docs, AGENTS.md y unificar la copia de Supabase","6","Done","Done","Medium","3","Sprint 0","v1.0 MVP","M11 Plataforma, calidad y lanzamiento","sprint-0","estado-hecho","prioridad-media","v1.0","m11","tecnica","","","Una sola fuente para el backend (C4)."
 "202","Task","Migración de refuerzo (hardening R1–R9) y runner de pruebas SQL","5","Done","Done","Medium","5","Sprint 0","v1.0 MVP","M01 Cuenta, consentimientos y privacidad","sprint-0","estado-hecho","prioridad-media","v1.0","m01","tecnica","","","Dietas como filtro duro, guardado atómico del plan y runner multiplataforma run_local.sh."
 "203","Task","Recetas versátiles: base + grupos intercambiables (ADR-020)","2","Done","Done","Medium","8","Sprint 0","v1.0 MVP","M03 Catálogo de recetas e ingredientes","sprint-0","estado-hecho","prioridad-media","v1.0","m03","tecnica","","","Las opciones de cada grupo se resuelven con la despensa y nunca con un ingrediente prohibido."
@@ -826,15 +844,15 @@ Ficha completa: docs/05-historias-de-usuario (US-173)."
 "205","Task","Prueba de integración del recorrido completo contra Supabase real","6","Done","Done","Medium","5","Sprint 6","v1.0 MVP","M11 Plataforma, calidad y lanzamiento","sprint-6","estado-hecho","prioridad-media","v1.0","m11","tecnica","","","Registro → onboarding → plan → compras → cocinar, en CI."
 "206","Task","Flujo centrado en la cocina: Hoy · Mi cocina · Mi semana (ADR-024)","2","Done","Done","Medium","5","Sprint 7","v1.1 Mejora y retención","M04 Motor de planificación","sprint-7","estado-hecho","prioridad-media","v1.1","m04","tecnica","","","La pregunta principal es '¿qué cocino con lo que tengo?'."
 "207","Task","Rediseño visual de la app","6","Done","Done","Medium","13","Sprint 7","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-7","estado-hecho","prioridad-media","v1.1","m11","tecnica","","","Sistema de diseño con la paleta de marca, modo oscuro y componentes compartidos; luego cada pantalla."
-"1227","Sub-task","Sistema de diseño: tokens, tipografía y componentes","207","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
-"1228","Sub-task","Selector de tema: como el teléfono, claro u oscuro","207","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
-"1229","Sub-task","Pantallas de acceso","207","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
-"1230","Sub-task","Hoy","207","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
-"1231","Sub-task","Mi cocina","207","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
-"1232","Sub-task","Mi semana","207","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
-"1233","Sub-task","Detalle de receta","207","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
-"1234","Sub-task","Onboarding y consentimientos","207","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
-"1235","Sub-task","Perfil, privacidad y eliminar cuenta","207","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
+"1231","Sub-task","Sistema de diseño: tokens, tipografía y componentes","207","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
+"1232","Sub-task","Selector de tema: como el teléfono, claro u oscuro","207","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
+"1233","Sub-task","Pantallas de acceso","207","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
+"1234","Sub-task","Hoy","207","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
+"1235","Sub-task","Mi cocina","207","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
+"1236","Sub-task","Mi semana","207","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
+"1237","Sub-task","Detalle de receta","207","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
+"1238","Sub-task","Onboarding y consentimientos","207","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
+"1239","Sub-task","Perfil, privacidad y eliminar cuenta","207","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
 "208","Task","Correos de la cuenta en español con SMTP de Gmail","5","Done","Done","Medium","3","Sprint 10","v1.1 Mejora y retención","M01 Cuenta, consentimientos y privacidad","sprint-10","estado-hecho","prioridad-media","v1.1","m01","tecnica","","","Plantillas con la marca para confirmar, recuperar y cambiar correo; sin comprar dominio."
 "209","Task","Vincular el proyecto a EAS y Firebase (FCM) para el APK","6","Done","Done","Medium","3","Sprint 10","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-10","estado-hecho","prioridad-media","v1.1","m11","tecnica","","","projectId de EAS, llave FCM v1 en eas credentials."
 "210","Task","Desplegar todo a staging","6","Done","Done","Medium","5","Sprint 10","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-10","estado-hecho","prioridad-media","v1.1","m11","tecnica","","","Migraciones, catálogo con precios, Edge Functions, secretos, alertas y avisos."
@@ -842,10 +860,10 @@ Ficha completa: docs/05-historias-de-usuario (US-173)."
 "212","Task","Poner la documentación al día con F2","6","Done","Done","Medium","3","Sprint 10","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-10","estado-hecho","prioridad-media","v1.1","m11","tecnica","","","Modelo de datos regenerado, RPC, arquitectura, seguridad, pantallas y limitaciones."
 "220","Task","Compilar el APK de staging con EAS","6","In Progress","","Medium","2","Sprint 11","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-11","estado-en-curso","prioridad-media","v1.1","m11","tecnica","","","npx eas-cli build -p android --profile preview"
 "221","Task","Probar el APK en un teléfono real","6","To Do","","Medium","3","Sprint 11","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-11","estado-por-hacer","prioridad-media","v1.1","m11","tecnica","","","Arranque < 3 s, avisos, recorrido completo y checklist de accesibilidad."
-"1236","Sub-task","Arranque en menos de 3 s (US-150)","221","To Do","","","","","","M11 Plataforma, calidad y lanzamiento","estado-por-hacer","m11","","","","","","",""
-"1237","Sub-task","Activar avisos y recibir uno (US-148)","221","To Do","","","","","","M11 Plataforma, calidad y lanzamiento","estado-por-hacer","m11","","","","","","",""
-"1238","Sub-task","Recorrido completo de punta a punta","221","To Do","","","","","","M11 Plataforma, calidad y lanzamiento","estado-por-hacer","m11","","","","","","",""
-"1239","Sub-task","Letra al 200 % y TalkBack (US-140)","221","To Do","","","","","","M11 Plataforma, calidad y lanzamiento","estado-por-hacer","m11","","","","","","",""
+"1240","Sub-task","Arranque en menos de 3 s (US-150)","221","To Do","","","","","","M11 Plataforma, calidad y lanzamiento","estado-por-hacer","m11","","","","","","",""
+"1241","Sub-task","Activar avisos y recibir uno (US-148)","221","To Do","","","","","","M11 Plataforma, calidad y lanzamiento","estado-por-hacer","m11","","","","","","",""
+"1242","Sub-task","Recorrido completo de punta a punta","221","To Do","","","","","","M11 Plataforma, calidad y lanzamiento","estado-por-hacer","m11","","","","","","",""
+"1243","Sub-task","Letra al 200 % y TalkBack (US-140)","221","To Do","","","","","","M11 Plataforma, calidad y lanzamiento","estado-por-hacer","m11","","","","","","",""
 "222","Task","Completar los textos legales y pedir revisión de un abogado","5","To Do","","Medium","5","Sprint 11","v1.1 Mejora y retención","M01 Cuenta, consentimientos y privacidad","sprint-11","estado-por-hacer","prioridad-media","v1.1","m01","tecnica","","","Llenar los marcadores de los 6 borradores y nombrar a los encargados de datos."
 "223","Task","Pasar Gemini a plan de pago con tope de gasto y rotar su clave","6","To Do","","Medium","2","Sprint 11","v1.1 Mejora y retención","M05 Asistente IA","sprint-11","estado-por-hacer","prioridad-media","v1.1","m05","tecnica","","","El plan gratuito puede usar los datos para mejorar sus modelos."
 "224","Task","Configurar producción","6","To Do","","Medium","5","Sprint 11","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-11","estado-por-hacer","prioridad-media","v1.1","m11","tecnica","","","Migraciones, funciones, secretos, SMTP y plantillas en el proyecto de producción."

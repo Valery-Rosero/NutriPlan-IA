@@ -2,6 +2,7 @@ import { FunctionsHttpError, type SupabaseClient } from '@supabase/supabase-js';
 
 import { AppError, toAppError } from '@/core/errors/app-error';
 import type { AssistantReply, AssistantRepository, AssistantRequest } from '@/features/assistant/domain/assistant';
+import type { WeekGoal } from '@/features/plan/domain/plan';
 import type { Database } from '@/types/database';
 
 type RemoteSuggestion = {
@@ -23,6 +24,9 @@ type Payload = {
     target_planned_meal_id?: string | null;
     /** ADR-029: hasta tres opciones. Ausente si la función es anterior (solo `suggestion`). */
     suggestions?: RemoteSuggestion[];
+    /** US-174: propuesta de cambios a la semana. Ausente si la función es anterior. */
+    week?: { goal: WeekGoal | null; avoid: { id: string; name: string }[]; changes: number; saving: number | null; unresolved: number } | null;
+    has_plan?: boolean;
     suggestion: {
       recipe_id: string;
       title: string;
@@ -69,6 +73,8 @@ export class SupabaseAssistantRepository implements AssistantRepository {
         byAssistant: !!s.by_assistant,
         targetPlannedMealId: target,
       })),
+      week: d.week ?? null,
+      hasPlan: !!d.has_plan,
     };
   }
 

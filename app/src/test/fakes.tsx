@@ -7,7 +7,7 @@ import type { AuthRepository } from '@/features/auth/domain/auth-repository';
 import { createLoginThrottle } from '@/features/auth/domain/login-throttle';
 import type { LegalDocument, LegalRepository } from '@/features/legal/domain/legal';
 import type { PantryRepository } from '@/features/pantry/domain/pantry';
-import type { MealPlan, PlanRepository } from '@/features/plan/domain/plan';
+import type { MealPlan, PlanRepository, WeekChange } from '@/features/plan/domain/plan';
 import type { Profile, ProfileRepository } from '@/features/profile/domain/profile';
 import type { RecipeDetail, RecipeRepository } from '@/features/recipes/domain/recipe';
 import type { ShoppingList, ShoppingRepository } from '@/features/shopping/domain/shopping';
@@ -152,6 +152,24 @@ export const PLAN: MealPlan = {
   extras: [],
 };
 
+export const WEEK_CHANGES: WeekChange[] = [
+  {
+    plannedMealId: 'm1', date: '2026-11-17', slot: 'lunch', currentRecipeId: 'r3', currentTitle: 'Lentejas guisadas con lo que haya',
+    currentCost: 9000, currentMinutes: 50, newRecipeId: 'r7', newTitle: 'Sopa de verduras del día', newCost: 2800, newMinutes: 35,
+    saving: 6200, reason: 'avoid',
+  },
+  {
+    plannedMealId: 'm2', date: '2026-11-19', slot: 'dinner', currentRecipeId: 'r2', currentTitle: 'Sudado de lo que haya',
+    currentCost: 12000, currentMinutes: 40, newRecipeId: 'r6', newTitle: 'Huevos pericos con lo que tengas', newCost: 3100, newMinutes: 15,
+    saving: 8900, reason: 'cheaper',
+  },
+  {
+    plannedMealId: 'm3', date: '2026-11-21', slot: 'lunch', currentRecipeId: 'r4', currentTitle: 'Fríjoles con lo que haya',
+    currentCost: null, currentMinutes: 60, newRecipeId: null, newTitle: null, newCost: null, newMinutes: null,
+    saving: null, reason: 'avoid_unresolved',
+  },
+];
+
 export function fakePlans(overrides: Partial<PlanRepository> = {}): jest.Mocked<PlanRepository> {
   return {
     current: jest.fn(async () => PLAN),
@@ -173,6 +191,8 @@ export function fakePlans(overrides: Partial<PlanRepository> = {}): jest.Mocked<
     ]),
     skip: jest.fn(async () => {}),
     confirm: jest.fn(async () => {}),
+    proposeWeekChanges: jest.fn(async () => WEEK_CHANGES),
+    applyWeekChanges: jest.fn(async (_planId: string, changes: unknown[]) => changes.length),
     ...overrides,
   } as jest.Mocked<PlanRepository>;
 }
@@ -269,6 +289,8 @@ export function fakeAssistant(overrides: Partial<AssistantRepository> = {}): jes
           byAssistant: true, targetPlannedMealId: plannedMealId ?? null,
         },
       ],
+      week: null,
+      hasPlan: true,
     })),
     apply: jest.fn(async () => {}),
     ...overrides,

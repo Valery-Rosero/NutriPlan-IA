@@ -11,7 +11,7 @@ import { HealthDisclaimerNote } from '@/features/legal/ui/health-disclaimer-note
 import { todayIso } from '@/features/pantry/domain/pantry';
 import { useConfirmPlan, useCurrentPlan, useGeneratePlan, useSkipMeal } from '@/features/plan/application/plan-queries';
 import { calendarDays, calendarLayout, initialDayIndex, planDates, type CalendarDay } from '@/features/plan/domain/calendar';
-import { HORIZON_DAYS, horizonOf, type Horizon, type MealPlan, type PlannedMeal } from '@/features/plan/domain/plan';
+import { HORIZON_DAYS, horizonOf, WEEK_GOALS, type Horizon, type MealPlan, type PlannedMeal } from '@/features/plan/domain/plan';
 import { BudgetCard } from '@/features/plan/ui/budget-card';
 import { DayPager } from '@/features/plan/ui/day-pager';
 import { PlanCalendar } from '@/features/plan/ui/plan-calendar';
@@ -26,6 +26,8 @@ import {
   BrandHeader,
   Button,
   Card,
+  Chip,
+  ChipGroup,
   Divider,
   EmptyState,
   ErrorState,
@@ -170,9 +172,37 @@ function PlanView({ plan, onRegenerate, regenerating }: { plan: MealPlan; onRege
         )}
       />
 
+      {plan.meals.some((m) => m.status === 'planned') && <ImproveWeekCard />}
       <BudgetCard planId={plan.id} />
       <MonthlySpendCard />
     </>
+  );
+}
+
+/** US-174: cambios a toda la semana con una meta (también se le puede pedir al asistente con palabras). */
+function ImproveWeekCard() {
+  const { t } = useTranslation();
+  const router = useRouter();
+  return (
+    <Card variant="filled">
+      <View style={styles.row}>
+        <IconBadge name="sparkles-outline" tone="mango" />
+        <View style={styles.flex}>
+          <AppText variant="subtitle" accessibilityRole="header">{t('plan.week.improveTitle')}</AppText>
+          <AppText variant="caption" secondary>{t('plan.week.improveHint')}</AppText>
+        </View>
+      </View>
+      <ChipGroup>
+        {WEEK_GOALS.map((g) => (
+          <Chip
+            key={g}
+            label={t(`plan.week.goals.${g}`)}
+            selected={false}
+            onPress={() => router.push({ pathname: '/plan/changes', params: { goal: g } })}
+          />
+        ))}
+      </ChipGroup>
+    </Card>
   );
 }
 

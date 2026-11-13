@@ -2,7 +2,15 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 
 import { AppError, toAppError } from '@/core/errors/app-error';
 import type { MealSlot } from '@/features/cooking/domain/cooking';
-import type { GeneratePlanInput, MealPlan, PlannedMeal, PlanRepository, SwapReason } from '@/features/plan/domain/plan';
+import type {
+  GeneratePlanInput,
+  MealPlan,
+  PlannedMeal,
+  PlanRepository,
+  SwapReason,
+  WeekChange,
+  WeekGoal,
+} from '@/features/plan/domain/plan';
 import type { Database } from '@/types/database';
 
 export class SupabasePlanRepository implements PlanRepository {
@@ -84,6 +92,42 @@ export class SupabasePlanRepository implements PlanRepository {
       alternativeCost: Number(r.alternative_cost),
       saving: Number(r.saving),
     }));
+  }
+
+  async proposeWeekChanges(planId: string, goal: WeekGoal | null, avoid: string[]): Promise<WeekChange[]> {
+    const { data, error } = await this.client.rpc('propose_week_changes', {
+      p_plan_id: planId,
+      p_goal: goal ?? undefined,
+      p_avoid: avoid,
+      p_limit: 93,
+    });
+    if (error) throw toAppError(error);
+    // Costos y receta nueva pueden venir vacíos (precios incompletos; comida sin alternativa segura).
+    const num = (v: unknown) => (v === null || v === undefined ? null : Number(v));
+    return data.map((r) => ({
+      plannedMealId: r.planned_meal_id,
+      date: r.meal_date,
+      slot: r.slot,
+      currentRecipeId: r.current_recipe_id,
+      currentTitle: r.current_title,
+      currentCost: num(r.current_cost),
+      currentMinutes: r.current_minutes,
+      newRecipeId: (r.new_recipe_id as string | null) ?? null,
+      newTitle: (r.new_title as string | null) ?? null,
+      newCost: num(r.new_cost),
+      newMinutes: num(r.new_minutes),
+      saving: num(r.saving),
+      reason: r.reason as WeekChange['reason'],
+    }));
+  }
+
+  async applyWeekChanges(planId: string, changes: { plannedMealId: string; recipeId: string }[]) {
+    const { data, error } = await this.client.rpc('apply_week_changes', {
+      p_plan_id: planId,
+      p_changes: changes.map((c) => ({ planned_meal_id: c.plannedMealId, recipe_id: c.recipeId })),
+    });
+    if (error) throw toAppError(error);
+    return data;
   }
 
   async swap(mealId: string, recipeId: string, previousRecipeId: string, reason: SwapReason = 'user_request') {

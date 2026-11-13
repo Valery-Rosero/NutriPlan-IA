@@ -32,7 +32,15 @@ export type NewRecipe = {
 
 export type Pick = { kind: 'catalog'; recipeId: string } | { kind: 'new'; recipe: NewRecipe };
 
-export type Decision = { reply: string; picks: Pick[]; fallback: boolean };
+/** US-174: la persona pidió cambiar varias comidas o la semana. La IA solo traduce la frase; la base calcula. */
+export const WEEK_GOALS = ['cheaper', 'faster', 'protein', 'variety', 'use_expiring'] as const;
+export type WeekGoal = (typeof WEEK_GOALS)[number];
+export type WeekRequest = { goal: WeekGoal | null; avoid: { id: string; name: string }[] };
+
+export type Decision = { reply: string; picks: Pick[]; fallback: boolean; week?: WeekRequest | null };
+
+/** Una fila de propose_week_changes (lo que importa para el resumen). */
+export type WeekRow = { new_recipe_id: string | null; saving: number | string | null; reason: string };
 
 export type Context = {
   slot: string;
@@ -41,6 +49,8 @@ export type Context = {
   target: Target;
   /** Porciones por defecto (tamaño del hogar). */
   servings: number;
+  /** ¿Tiene un plan con comidas? Sin plan no hay semana que cambiar. */
+  hasPlan?: boolean;
 };
 
 export const MAX_OPTIONS = 3;
@@ -68,6 +78,10 @@ const answerSchema = z.object({
     .array(z.object({ kind: z.enum(['catalog', 'new']), ref: z.string().nullable().optional(), recipe: z.unknown().optional() }))
     .optional()
     .default([]),
+  week: z
+    .object({ goal: z.enum(WEEK_GOALS).nullable().optional(), avoid: z.array(z.string()).max(5).optional() })
+    .nullable()
+    .optional(),
 });
 
 const SLOT_NAMES: Record<string, string> = { breakfast: 'desayuno', lunch: 'almuerzo', dinner: 'cena', snack: 'algo' };
@@ -83,7 +97,8 @@ const ingredientRef = (i: number) => `I${i + 1}`;
  * Instrucciones del sistema. A propósito NO incluye alergias, dietas ni datos de salud (ADR-025): las recetas
  * y los ingredientes ya vienen filtrados por la base, así que el modelo no necesita conocerlos.
  */
-export function systemPrompt({ slot, candidates, ingredients, target, servings }: Context): string {
+export function systemPrompt(ctx: Context): string {
+  const { slot, candidates, ingredients, target, servings } = ctx;
   const recipes = candidates
     .map((c, i) => {
       const missing = missingNames(c);
@@ -118,6 +133,9 @@ export function systemPrompt({ slot, candidates, ingredients, target, servings }
     '- Si pide algo con un ingrediente que no está en la lista I, dile con cariño que no lo puedes usar y propón otra cosa.',
     '- Nunca inventes referencias ni ingredientes fuera de la lista.',
     '- No das consejo médico ni diagnósticos: si preguntan algo de salud, di que lo consulten con un profesional y no propongas opciones.',
+    ctx.hasPlan
+      ? '- Si pide cambiar VARIAS comidas o toda la semana o el plan ("hazme la semana más barata", "sin lentejas esta semana", "cosas más rápidas", "más proteína", "que no se repita", "usa lo que se me va a dañar"), llena "week" con goal (cheaper, faster, protein, variety, use_expiring o null) y avoid (referencias I… de lo que no quiere), deja "options" vacío y en "reply" escribe UNA frase corta y cálida SIN cifras ni nombres de platos: la app calcula y muestra los cambios.'
+      : '- Si pide cambiar la semana o el plan, dile con cariño que primero organice su semana en Mi semana; no llenes "week".',
   ]
     .filter(Boolean)
     .join('\n');
@@ -131,7 +149,16 @@ export function systemPrompt({ slot, candidates, ingredients, target, servings }
 export function validateAnswer(raw: unknown, ctx: Context): Decision | null {
   const parsed = answerSchema.safeParse(raw);
   if (!parsed.success) return null;
-  const { reply, pantry_only, options } = parsed.data;
+  const { reply, pantry_only, options, week } = parsed.data;
+  // US-174: pidió cambiar la semana. Las referencias I… se traducen; las inventadas se ignoran.
+  if (week && ctx.hasPlan && !ctx.target) {
+    const avoid = (week.avoid ?? [])
+      .map((ref) => ctx.ingredients[Number(ref.replace(/^I/i, '')) - 1])
+      .filter((g): g is SafeIngredient => !!g)
+      .map((g) => ({ id: g.ingredient_id, name: g.name }));
+    const goal = week.goal ?? null;
+    if (goal || avoid.length) return { reply, picks: [], fallback: false, week: { goal, avoid } };
+  }
   if (options.length === 0) return { reply, picks: [], fallback: false }; // p. ej. una pregunta de salud
 
   const picks: Pick[] = [];
@@ -223,6 +250,30 @@ export function fallbackDecision(candidates: Candidate[], target: Target): Decis
     picks: [{ kind: 'catalog', recipeId: best.recipe_id }],
     fallback: true,
   };
+}
+
+const cop = (n: number) => `$${Math.round(n).toLocaleString('es-CO')}`;
+
+/**
+ * US-174: el resumen con cifras lo arma esto, con lo que calculó la base (la IA nunca pone números).
+ * S-6: si no hay nada que cambiar, lo dice claro.
+ */
+export function weekSummary(rows: WeekRow[]): { text: string; changes: number; saving: number | null; unresolved: number } {
+  const changes = rows.filter((r) => r.new_recipe_id).length;
+  const unresolved = rows.filter((r) => r.reason === 'avoid_unresolved').length;
+  const savings = rows.filter((r) => r.new_recipe_id && r.saving !== null).map((r) => Number(r.saving));
+  const saving = savings.length ? savings.reduce((a, b) => a + b, 0) : null;
+  const parts: string[] = [];
+  if (changes === 0) {
+    parts.push('No encontré cambios que mejoren tu semana en eso: con las recetas que son seguras para ti, ya está en lo mejor posible.');
+  } else {
+    parts.push(`**${changes} ${changes === 1 ? 'cambio' : 'cambios'}** en tu semana` +
+      (saving !== null && saving > 0 ? ` · ahorras **${cop(saving)}**` : '') + '. Revísalos antes de aplicar.');
+  }
+  if (unresolved > 0) {
+    parts.push(`Para ${unresolved} ${unresolved === 1 ? 'comida' : 'comidas'} no encontré una receta segura sin lo que pediste evitar.`);
+  }
+  return { text: parts.join('\n\n'), changes, saving, unresolved };
 }
 
 /** Momento del día en Colombia (UTC−5, sin horario de verano), igual que momentOfDay en la app. */

@@ -4,7 +4,7 @@ Product Goal: Que cada usuario deje de improvisar qué cocinar y planifique su s
 
 Genera, ajusta y explica los planes de comidas diarios y semanales: motor de recomendación, escalado de porciones, adaptación de recetas, asistente conversacional y recordatorios.
 
-17 historias · 16 subtareas.
+18 historias · 16 subtareas.
 
 | ID | Título | Módulo | Fase | Prio |
 |---|---|---|---|---|
@@ -25,6 +25,7 @@ Genera, ajusta y explica los planes de comidas diarios y semanales: motor de rec
 | [US-160](#us-160) | Armar comida solo con ingredientes de la despensa (asistente) | M05 | F2 | Medium |
 | [US-172](#us-172) | Ofrecer «versión rápida» de una receta | M03 | F3 | Low |
 | [US-173](#us-173) | Respuestas rápidas en el chat del asistente | M05 | F3 | Low |
+| [US-174](#us-174) | Pedir cambios a toda la semana (más barata, más rápida, sin un ingrediente) | M05 | F2 | Medium |
 
 ---
 
@@ -867,5 +868,80 @@ Genera, ajusta y explica los planes de comidas diarios y semanales: motor de rec
 - [ ] Se respetan las reglas de AGENTS.md (alergias, cantidades en servidor, sin datos de salud en logs, accesibilidad).
 - [ ] Textos en es-CO; estados vacío, carga y error implementados.
 - [ ] Dependencias listadas resueltas.
+
+---
+
+<a id="us-174"></a>
+### US-174 · Pedir cambios a toda la semana (más barata, más rápida, sin un ingrediente)
+
+| Campo | Valor |
+|---|---|
+| ID | US-174 (id Jira 174) |
+| Épica | E2 · Planificación inteligente de comidas |
+| Módulo | [M05 · Asistente IA](../04-modulos/M05.md) |
+| Fase | F2 Mejora y retención |
+| Prioridad | Medium (orden en backlog: #74 de 74) |
+| Tipo | historia |
+| Etiquetas | asistente-ia, plan, agregada-por-po |
+| Ref. backlog | HU-74 · Subárea: Asistente IA |
+| Dependencias | US-117, US-129, US-152, US-157 |
+| Estado | Hecha (14-nov-2026) · por probar en el APK |
+
+**Historia de usuario**
+
+- **Como** usuario con un plan semanal
+- **quiero** pedirle al asistente cambios a toda la semana en una frase (más barata, más rápida, sin un ingrediente) y revisar un antes y después
+- **para** ajustar el plan sin cambiar comida por comida.
+
+**Criterios de aceptación**
+
+1. **Escenario 1**
+   - Dado que tengo un plan con comidas pendientes
+   - Cuando le escribo al asistente "hazme la semana más barata"
+   - Entonces me muestra una propuesta con cuántos cambios hay y cuánto bajaría el costo estimado, sin cambiar todavía mi plan.
+
+2. **Escenario 2**
+   - Dado que pido "sin lentejas esta semana"
+   - Cuando veo la propuesta
+   - Entonces ninguna comida pendiente queda con lentejas y cada cambio dice por qué se hizo (si para alguna no hay receta segura sin lentejas, me lo dice).
+
+3. **Escenario 3**
+   - Dado que estoy revisando los cambios
+   - Cuando desmarco uno y toco "Aplicar"
+   - Entonces solo se aplican los marcados y Mi semana, la lista de mercado y el presupuesto se actualizan.
+
+4. **Escenario 4**
+   - Dado que tengo alergias o una dieta declaradas
+   - Cuando recibo cualquier propuesta
+   - Entonces ningún plato propuesto las incumple (la base lo verifica también al aplicar).
+
+5. **Escenario 5**
+   - Dado que ya cociné u omití una comida
+   - Cuando pido cambios a la semana
+   - Entonces esa comida no aparece en la propuesta.
+
+6. **Escenario 6**
+   - Dado que no hay forma de cumplir lo que pedí
+   - Cuando el asistente responde
+   - Entonces me lo dice con claridad y no propone cambios vacíos.
+
+7. **Escenario 7**
+   - Dado que la IA no está disponible
+   - Cuando pido un cambio a la semana
+   - Entonces el asistente ofrece las metas fijas como botones (Más barata, Más rápida, Más proteína, Más variedad, Usar lo que vence) y la propuesta funciona igual.
+
+**Especificación técnica**
+
+- **Backend (qué existe y cómo usarlo):** RPC `propose_week_changes(plan, meta, evitar)` (generaliza `plan_savings`; conjunto seguro de `eligible_recipes`) y `apply_week_changes(plan, cambios)`. En `assistant-chat` la IA solo traduce la frase a meta + ingredientes a evitar; las cifras las pone la base (ADR-031).
+- **Pantallas / UI:** Asistente (tarjeta "Cambios a tu semana"), Mi semana ("Mejorar mi semana"), Revisa los cambios (/plan/changes)
+- **Reglas, límites y notas:** Sugerir, no aplicar sin confirmación. Lo cocinado, omitido o adicional nunca se toca.
+- **Pruebas existentes:** backend/supabase/tests/99k_week_changes.sql; functions/assistant-chat/logic.test.ts; app/src/features/plan/ui/__tests__/week-changes.test.tsx
+
+**Definición de hecho (además del DoD global)**
+
+- [x] Cada escenario y caso borde tiene una prueba automática (unitaria, de integración con la BD o Maestro E2E).
+- [x] Se respetan las reglas de AGENTS.md (alergias, cantidades en servidor, sin datos de salud en logs, accesibilidad).
+- [x] Textos en es-CO; estados vacío, carga y error implementados.
+- [x] Dependencias listadas resueltas.
 
 ---

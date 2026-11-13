@@ -1,4 +1,5 @@
 import type { MealSlot } from '@/features/cooking/domain/cooking';
+import type { WeekGoal } from '@/features/plan/domain/plan';
 
 /**
  * Asistente (US-157, US-160, US-173; ADR-025, ADR-029). Cada sugerencia es un dato tipado (receta + comida
@@ -26,6 +27,18 @@ export type AssistantReply = {
   fallback: boolean;
   /** De 0 a 3 opciones, en el orden en que las propone. */
   suggestions: AssistantSuggestion[];
+  /** US-174: pidió cambiar la semana; las cifras las calculó la base. */
+  week: WeekProposal | null;
+  /** ¿Tiene un plan? (para ofrecer las metas de la semana cuando la IA no está). */
+  hasPlan: boolean;
+};
+
+export type WeekProposal = {
+  goal: WeekGoal | null;
+  avoid: { id: string; name: string }[];
+  changes: number;
+  saving: number | null;
+  unresolved: number;
 };
 
 export type AssistantRequest = { conversationId?: string; message: string; plannedMealId?: string };
@@ -39,7 +52,16 @@ export interface AssistantRepository {
 
 export type ChatMessage =
   | { id: string; role: 'user'; text: string }
-  | { id: string; role: 'assistant'; text: string; messageId: number; suggestions: AssistantSuggestion[]; fallback: boolean };
+  | {
+      id: string;
+      role: 'assistant';
+      text: string;
+      messageId: number;
+      suggestions: AssistantSuggestion[];
+      fallback: boolean;
+      week: WeekProposal | null;
+      hasPlan: boolean;
+    };
 
 /**
  * US-173: tres pedidos frecuentes como respuestas rápidas. Si se abre para cambiar una comida,

@@ -232,6 +232,39 @@
       "title": "Adicionales",
       "hint": "Lo que cocinaste fuera del plan este día.",
       "badge": "Adicional"
+    },
+    "week": {
+      "title": "Revisa los cambios",
+      "goals": {
+        "cheaper": "Más barata",
+        "faster": "Más rápida",
+        "protein": "Más proteína",
+        "variety": "Más variedad",
+        "use_expiring": "Usar lo que vence"
+      },
+      "reasons": {
+        "cheaper": "más barata",
+        "faster": "más rápida",
+        "protein": "más proteína",
+        "variety": "para no repetir",
+        "use_expiring": "usa lo que vence"
+      },
+      "without": "sin {{list}}",
+      "before": "Antes: {{title}}",
+      "after": "Después: {{title}}",
+      "minutesLess": "{{count}} min menos",
+      "unresolved": "No encontré con qué cambiar {{title}} ({{day}}) sin {{list}}: ninguna receta segura para ti lo evita.",
+      "totalSaving": "Con lo marcado ahorras {{amount}}",
+      "apply_one": "Aplicar {{count}} cambio",
+      "apply_other": "Aplicar {{count}} cambios",
+      "hint": "Tu plan no cambia hasta que toques «Aplicar».",
+      "applied_one": "Listo: cambiamos {{count}} comida. Tu lista de mercado ya está al día.",
+      "applied_other": "Listo: cambiamos {{count}} comidas. Tu lista de mercado ya está al día.",
+      "seeWeek": "Ver mi semana",
+      "empty": "No encontré cambios que mejoren tu semana en eso: con las recetas que son seguras para ti, ya está en lo mejor posible. Prueba con otra meta.",
+      "noPlan": "Primero organiza tu semana: así tengo comidas que mejorar.",
+      "improveTitle": "Mejorar mi semana",
+      "improveHint": "Elige qué buscas y te muestro los cambios antes de aplicarlos. También se lo puedes pedir al asistente."
     }
   },
   "shopping": {
@@ -779,7 +812,13 @@
     "toBuy": "Para comprar: {{list}}",
     "haveAll": "Lo tienes todo",
     "reviewAi": "Creada por el asistente: revísala antes de cocinar.",
-    "optionsLabel": "Opciones del asistente"
+    "optionsLabel": "Opciones del asistente",
+    "weekTitle": "Cambios a tu semana",
+    "weekChanges_one": "{{count}} cambio",
+    "weekChanges_other": "{{count}} cambios",
+    "weekSaving": "ahorras {{amount}}",
+    "seeChanges": "Ver los cambios",
+    "weekFallback": "¿Querías cambiar tu semana? Elige qué buscas:"
   },
   "support": {
     "title": "Ayuda y sugerencias",
