@@ -201,6 +201,29 @@
       "accept": "Aceptar",
       "none": "No encontramos cambios que ahorren con los precios que tenemos. Prueba quitando alguna comida.",
       "note": "Solo comparamos recetas con todos sus precios conocidos, y respetan tus alergias y dietas."
+    },
+    "calendar": {
+      "label": "Días del plan",
+      "weekdays": [
+        "L",
+        "M",
+        "M",
+        "J",
+        "V",
+        "S",
+        "D"
+      ],
+      "state": {
+        "empty": "Sin comidas",
+        "pending": "Comidas pendientes",
+        "partial": "Algunas comidas cocinadas",
+        "done": "Todo cocinado"
+      },
+      "legendPending": "Pendiente",
+      "legendDone": "Hecho",
+      "prevDay": "Día anterior",
+      "nextDay": "Día siguiente",
+      "emptyDay": "No hay comidas planeadas este día."
     }
   },
   "shopping": {

@@ -16,7 +16,7 @@ Se avanza **de a un ítem**, en este orden, y cada uno se cierra probado (prueba
 ## B. Funciones nuevas (decisiones ya tomadas)
 Cada una lleva su ADR, migración (si aplica), pruebas y actualización de `docs/` antes de cerrarse.
 
-### B1. Calendario como libro (Mi semana) — solo app
+### B1. Calendario como libro (Mi semana) — solo app · ✅ hecho (13-nov), probar en el APK
 - Arriba, el calendario se adapta al plan: **tira de 7 días** si el plan es de 1 a 7 días; **cuadrícula del mes** si es más largo.
 - Al tocar un día se abre su **página**; se pasa de día **deslizando, como hoja de libro**. Sin scroll largo.
 - La página muestra las comidas del día (y, cuando exista B3, los extras), con el costo del día. El presupuesto queda como resumen arriba.

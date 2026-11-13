@@ -1,4 +1,5 @@
 import { useRouter } from 'expo-router';
+import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
@@ -8,8 +9,11 @@ import { SLOT_ICON } from '@/features/cooking/ui/slot-icon';
 import { HealthDisclaimerNote } from '@/features/legal/ui/health-disclaimer-note';
 import { todayIso } from '@/features/pantry/domain/pantry';
 import { useConfirmPlan, useCurrentPlan, useGeneratePlan, useSkipMeal } from '@/features/plan/application/plan-queries';
-import { groupByDay, type MealPlan, type PlannedMeal } from '@/features/plan/domain/plan';
+import { calendarDays, calendarLayout, initialDayIndex, type CalendarDay } from '@/features/plan/domain/calendar';
+import type { MealPlan, PlannedMeal } from '@/features/plan/domain/plan';
 import { BudgetCard } from '@/features/plan/ui/budget-card';
+import { DayPager } from '@/features/plan/ui/day-pager';
+import { PlanCalendar } from '@/features/plan/ui/plan-calendar';
 import { MonthlySpendCard } from '@/features/spending/ui/monthly-spend-card';
 import { CookTimeNotice } from '@/features/profile/ui/cook-time-notice';
 import { Spacing } from '@/shared/theme/colors';
@@ -23,6 +27,7 @@ import {
   EmptyState,
   ErrorState,
   IconBadge,
+  IconButton,
   LoadingState,
   Pill,
   ProgressBar,
@@ -70,7 +75,7 @@ export function PlanScreen() {
           }
         />
       ) : (
-        <PlanView plan={data} onRegenerate={generateWeek} regenerating={generate.isPending} />
+        <PlanView key={data.id} plan={data} onRegenerate={generateWeek} regenerating={generate.isPending} />
       )}
       <HealthDisclaimerNote />
     </Screen>
@@ -100,10 +105,13 @@ function PlanView({ plan, onRegenerate, regenerating }: { plan: MealPlan; onRege
   const { t } = useTranslation();
   const confirm = useConfirmPlan();
   const today = todayIso();
+  const days = calendarDays(plan, today);
+  const [index, setIndex] = useState(() => initialDayIndex(days, today));
+  const selected = days[Math.min(index, days.length - 1)];
 
   return (
     <>
-      {/* Un borrador se revisa y se confirma: la acción va arriba, no al final de la semana. */}
+      {/* Un borrador se revisa y se confirma: la acción va arriba. */}
       {plan.status === 'draft' && (
         <Card variant="primary">
           <View style={styles.row}>
@@ -119,29 +127,61 @@ function PlanView({ plan, onRegenerate, regenerating }: { plan: MealPlan; onRege
         </Card>
       )}
 
+      {/* B1: el calendario arriba y, debajo, un día por página (se pasa deslizando, como un libro). */}
+      <Card variant="outlined">
+        <PlanCalendar
+          days={days}
+          layout={calendarLayout(plan)}
+          selected={selected?.date ?? ''}
+          today={today}
+          onSelect={(date) => setIndex(Math.max(0, days.findIndex((d) => d.date === date)))}
+        />
+      </Card>
+      <DayPager
+        days={days}
+        index={index}
+        onIndexChange={setIndex}
+        renderDay={(day, i) => (
+          <DayPage day={day} hasPrev={i > 0} hasNext={i < days.length - 1} onPrev={() => setIndex(i - 1)} onNext={() => setIndex(i + 1)} />
+        )}
+      />
+
       <BudgetCard planId={plan.id} />
       <MonthlySpendCard />
-
-      {groupByDay(plan.meals).map((day) => {
-        const isToday = day.date === today;
-        return (
-          <View key={day.date} style={styles.day}>
-            <View style={styles.dayHeader}>
-              <SectionHeader title={capitalize(formatDay(day.date))} />
-              {isToday && <Pill label={t('plan.today')} tone="accent" icon="today-outline" />}
-            </View>
-            <Card variant={isToday ? 'elevated' : 'outlined'}>
-              {day.meals.map((meal, index) => (
-                <View key={meal.id}>
-                  {index > 0 && <Divider />}
-                  <MealRow meal={meal} />
-                </View>
-              ))}
-            </Card>
-          </View>
-        );
-      })}
     </>
+  );
+}
+
+/** Una página del libro: el día con sus comidas en orden. */
+function DayPage({ day, hasPrev, hasNext, onPrev, onNext }: {
+  day: CalendarDay;
+  hasPrev: boolean;
+  hasNext: boolean;
+  onPrev: () => void;
+  onNext: () => void;
+}) {
+  const { t } = useTranslation();
+  return (
+    <Card variant={day.isToday ? 'elevated' : 'outlined'}>
+      <View style={styles.dayHeader}>
+        <IconButton icon="chevron-back" label={t('plan.calendar.prevDay')} disabled={!hasPrev} onPress={onPrev} />
+        <View style={styles.dayTitle}>
+          <SectionHeader title={capitalize(formatDay(day.date))} />
+          {day.isToday && <Pill label={t('plan.today')} tone="accent" icon="today-outline" />}
+        </View>
+        <IconButton icon="chevron-forward" label={t('plan.calendar.nextDay')} disabled={!hasNext} onPress={onNext} />
+      </View>
+      {day.meals.length === 0 ? (
+        <AppText secondary>{t('plan.calendar.emptyDay')}</AppText>
+      ) : (
+        day.meals.map((meal, i) => (
+          <View key={meal.id}>
+            {i > 0 && <Divider />}
+            <MealRow meal={meal} />
+          </View>
+        ))
+      )}
+    </Card>
   );
 }
 
@@ -204,8 +244,8 @@ const styles = StyleSheet.create({
   pills: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm },
   row: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md },
   flex: { flex: 1 },
-  day: { gap: Spacing.sm },
-  dayHeader: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
+  dayHeader: { flexDirection: 'row', alignItems: 'center', gap: Spacing.xs },
+  dayTitle: { flex: 1, alignItems: 'center', gap: Spacing.xs },
   meal: { flexDirection: 'row', alignItems: 'flex-start', gap: Spacing.md, paddingVertical: Spacing.sm },
   done: { opacity: 0.75 },
   slotRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },

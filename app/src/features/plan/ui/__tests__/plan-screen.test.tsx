@@ -2,7 +2,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react-nativ
 import { useRouter } from 'expo-router';
 
 import { PlanScreen } from '@/features/plan/ui/plan-screen';
-import { fakePlans, fakeServices, withServices } from '@/test/fakes';
+import { fakePlans, fakeServices, PLAN, withServices } from '@/test/fakes';
 
 describe('PlanScreen (US-117, US-129, US-132, US-155)', () => {
   beforeEach(() => jest.clearAllMocks());
@@ -57,5 +57,36 @@ describe('PlanScreen (US-117, US-129, US-132, US-155)', () => {
   it('US-141: muestra el gasto del mes frente al presupuesto', async () => {
     await render(<PlanScreen />, { wrapper: withServices(fakeServices()) });
     expect(await screen.findByText('64 % — $ 38.200 de $ 60.000')).toBeOnTheScreen();
+  });
+
+  describe('B1: calendario como libro', () => {
+    it('plan de una semana: tira de 7 días; tocar un día lo abre en su página', async () => {
+      await render(<PlanScreen />, { wrapper: withServices(fakeServices()) });
+      const days = await screen.findAllByRole('tab');
+      expect(days).toHaveLength(7);
+      const tuesday13 = screen.getByRole('tab', { name: /^Martes, 13 de octubre/ });
+      await fireEvent.press(tuesday13);
+      expect(screen.getByRole('tab', { name: /^Martes, 13 de octubre/ })).toBeSelected();
+      expect(screen.getByRole('tab', { name: /^Martes, 13 de octubre.*Comidas pendientes/ })).toBeOnTheScreen();
+    });
+
+    it('cada página tiene "día anterior" y "día siguiente" (sin tener que deslizar)', async () => {
+      await render(<PlanScreen />, { wrapper: withServices(fakeServices()) });
+      // el plan de prueba ya pasó: abre en el último día, que no tiene comidas
+      expect((await screen.findAllByText('No hay comidas planeadas este día.')).length).toBeGreaterThan(0);
+      const prev = screen.getAllByRole('button', { name: 'Día anterior' });
+      expect(prev[0]).toBeDisabled(); // la primera página no tiene anterior
+      await fireEvent.press(prev[prev.length - 1]);
+      expect(screen.getByRole('tab', { name: /^Domingo, 18 de octubre/ })).toBeSelected();
+    });
+
+    it('plan de más de 7 días: cuadrícula del mes, con los días fuera del plan apagados', async () => {
+      const plans = fakePlans({ current: jest.fn(async () => ({ ...PLAN, endDate: '2026-11-01' })) });
+      await render(<PlanScreen />, { wrapper: withServices(fakeServices({ plans })) });
+      const tabs = await screen.findAllByRole('tab');
+      expect(tabs.length % 7).toBe(0); // semanas completas de lunes a domingo
+      expect(screen.getByRole('tab', { name: /^Lunes, 12 de octubre/ })).toBeDisabled(); // antes del plan
+      expect(screen.getByRole('tab', { name: /^Domingo, 1 de noviembre/ })).toBeEnabled();
+    });
   });
 });
