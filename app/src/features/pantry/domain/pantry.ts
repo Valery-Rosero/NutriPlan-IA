@@ -1,3 +1,5 @@
+import type { QuickItem } from '@/features/pantry/domain/quick-add';
+
 /** Unidades de un alimento propio (B3b): se guarda lo que escribió la persona, sin pasar a gramos. */
 export const CUSTOM_UNITS = ['g', 'kg', 'lb', 'ml', 'l', 'unit'] as const;
 export type CustomUnit = (typeof CUSTOM_UNITS)[number];
@@ -85,7 +87,6 @@ export type NewCustomPantryItem = {
   storeCategoryId: number | null;
 };
 
-export type IngredientRef = { id: string; name: string; shelfLifeDays: number | null };
 
 /** Puerto de la despensa. Falla con AppError. */
 export interface PantryRepository {
@@ -118,8 +119,8 @@ export interface PantryRepository {
   /** Alimento propio: cambia cuánto queda o la fecha. */
   updateCustom(id: string, patch: { quantity?: number; expiresOn?: string | null }): Promise<void>;
   search(query: string): Promise<IngredientOption[]>;
-  /** Ingredientes del catálogo por nombre exacto (agregado rápido). */
-  findByNames(names: string[]): Promise<IngredientRef[]>;
+  /** ADR-036: lo típico para agregar con un toque (quick_add_items, en orden). */
+  quickItems(): Promise<QuickItem[]>;
   listUnits(): Promise<Unit[]>;
 }
 
@@ -194,12 +195,19 @@ export const pantryKey = (item: PantryItem) => (item.ingredientId && item.lots ?
 
 export type ExpiryStatus = 'none' | 'expired' | 'soon' | 'ok';
 
-/** Por vencer = hoy o en los próximos 3 días (igual que las alertas del backend). Fechas ISO 'AAAA-MM-DD'. */
+/**
+ * D4 · la única regla de "vence pronto" en la app: hoy o en los próximos 3 días (igual que las alertas y
+ * recipes_using_expiring_ingredients en la base).
+ */
+export const SOON_DAYS = 3;
+export const isSoon = (daysLeft: number) => daysLeft >= 0 && daysLeft <= SOON_DAYS;
+
+/** Fechas ISO 'AAAA-MM-DD'. */
 export function expiryStatus(expiresOn: string | null, today: string): ExpiryStatus {
   if (!expiresOn) return 'none';
   const days = daysBetween(today, expiresOn);
   if (days < 0) return 'expired';
-  return days <= 3 ? 'soon' : 'ok';
+  return isSoon(days) ? 'soon' : 'ok';
 }
 
 export function daysBetween(fromIso: string, toIso: string) {

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { errorKey } from '@/core/errors/app-error';
-import { usePantry, useQuickAdd, useUndoQuickAdd, type QuickAdded } from '@/features/pantry/application/pantry-queries';
+import { usePantry, useQuickAdd, useQuickItems, useUndoQuickAdd, type QuickAdded } from '@/features/pantry/application/pantry-queries';
 import { missingQuickItems, type QuickItem } from '@/features/pantry/domain/quick-add';
 import { AppText, Banner, Chip, ChipGroup } from '@/shared/ui';
 
@@ -13,13 +13,16 @@ import { AppText, Banner, Chip, ChipGroup } from '@/shared/ui';
 export function QuickAdd() {
   const { t } = useTranslation();
   const pantry = usePantry();
+  const quickItems = useQuickItems();
   const quickAdd = useQuickAdd();
   const undo = useUndoQuickAdd();
   const [added, setAdded] = useState<QuickAdded[]>([]);
   const busy = quickAdd.isPending || undo.isPending;
 
   const addedNames = added.map((a) => a.name);
-  const pending = missingQuickItems((pantry.data ?? []).map((i) => i.name)).filter((i) => !addedNames.includes(i.name));
+  const pending = missingQuickItems(quickItems.data ?? [], (pantry.data ?? []).map((i) => i.ingredientId)).filter(
+    (i) => !addedNames.includes(i.name),
+  );
   const add = (item: QuickItem) => quickAdd.mutate(item, { onSuccess: (done) => setAdded((prev) => [...prev, done]) });
   const remove = (done: QuickAdded) =>
     undo.mutate(done, { onSuccess: () => setAdded((prev) => prev.filter((a) => a.name !== done.name)) });

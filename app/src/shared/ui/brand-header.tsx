@@ -11,7 +11,7 @@ import { AppText, type IconName } from '@/shared/ui/primitives';
  * sabor de la sección (Hoy tomate, Mi cocina albahaca, Mi semana mango, Asistente mora). Antes era un bloque
  * azul igual en todas las pantallas; ahora cada sección se reconoce por su color sin pintar todo el bloque.
  */
-export function BrandHeader({ eyebrow, caption, title, subtitle, action, back, flavor = 'tomato', children }: {
+export function BrandHeader({ eyebrow, caption, title, subtitle, action, back, flavor = 'tomato', compact, children }: {
   /** Texto corto en mayúsculas sobre el título (p. ej. el nombre de la app). */
   eyebrow?: string;
   /** Saludo o contexto ("Buenas tardes, Valery"). */
@@ -22,10 +22,24 @@ export function BrandHeader({ eyebrow, caption, title, subtitle, action, back, f
   /** Volver dentro de un flujo (p. ej. el paso anterior del onboarding). */
   back?: { label: string; onPress: () => void };
   flavor?: FlavorName;
+  /** Una sola fila (título y acción), sin frase: deja la pantalla para el contenido (como WhatsApp). */
+  compact?: boolean;
   children?: ReactNode;
 }) {
   const c = useTheme();
   const f = flavorColors(c, flavor);
+  if (compact) {
+    return (
+      <View style={styles.compact}>
+        <View style={styles.compactRow}>
+          <View style={[styles.dot, { backgroundColor: f.fill }]} importantForAccessibility="no" accessibilityElementsHidden />
+          <AppText variant="heading" accessibilityRole="header" style={styles.flex}>{title}</AppText>
+          {action && <IconButton icon={action.icon} label={action.label} onPress={action.onPress} tone="default" size={26} />}
+        </View>
+        {children}
+      </View>
+    );
+  }
   return (
     <View style={styles.header}>
       {(back || eyebrow || caption || action) && (
@@ -58,4 +72,7 @@ const styles = StyleSheet.create({
   back: { marginLeft: -Spacing.sm },
   eyebrow: { letterSpacing: 1, textTransform: 'uppercase' },
   accent: { width: 44, height: 4, borderRadius: 2 },
+  compact: { gap: Spacing.xs },
+  compactRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, minHeight: 44 },
+  dot: { width: 10, height: 10, borderRadius: 5 },
 });

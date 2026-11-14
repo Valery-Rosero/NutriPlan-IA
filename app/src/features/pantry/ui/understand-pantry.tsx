@@ -6,7 +6,7 @@ import { errorKey } from '@/core/errors/app-error';
 import { foodEmoji } from '@/core/food-emoji';
 import { formatCOP } from '@/core/format';
 import { useSaveUnderstood, useUnderstandPantry, useUnderstandPhoto, useUnits } from '@/features/pantry/application/pantry-queries';
-import type { ParsedPantryItem, PhotoKind } from '@/features/pantry/domain/pantry';
+import { isSoon, type ParsedPantryItem, type PhotoKind } from '@/features/pantry/domain/pantry';
 import { takePantryPhoto } from '@/features/pantry/ui/take-photo';
 import { useRecordPurchase } from '@/features/spending/application/use-spending';
 import { Spacing } from '@/shared/theme/colors';
@@ -39,7 +39,9 @@ const toRows = (items: ParsedPantryItem[]): Row[] =>
  * - ADR-030 · "Escríbelo como lo dirías".
  * Nada se guarda hasta revisar y tocar "Guardar". Del recibo, el total se suma al gasto del mes solo si se acepta.
  */
-export function UnderstandPantry({ onSaved, onReviewing }: {
+export function UnderstandPantry({ mode, onSaved, onReviewing }: {
+  /** A4 (ADR-036): Agregar muestra un camino a la vez. */
+  mode: 'text' | 'photo';
   onSaved: () => void;
   /** Mientras se revisa la lista, la pantalla esconde la búsqueda del catálogo. */
   onReviewing?: (reviewing: boolean) => void;
@@ -60,12 +62,7 @@ export function UnderstandPantry({ onSaved, onReviewing }: {
       />
     );
   }
-  return (
-    <>
-      <PhotoCard onUnderstood={setReview} />
-      <TextCard onUnderstood={setReview} />
-    </>
-  );
+  return mode === 'photo' ? <PhotoCard onUnderstood={setReview} /> : <TextCard onUnderstood={setReview} />;
 }
 
 /** ADR-032: foto de la nevera o del recibo. */
@@ -277,7 +274,7 @@ function ParsedRow({ row, onChange }: { row: Row; onChange: (patch: Partial<Row>
             <Pill
               label={row.expiresInDays === null ? t('pantry.understand.noExpiry') : t('pantry.understand.expiresIn', { count: row.expiresInDays })}
               icon="time-outline"
-              tone={row.expiresInDays !== null && row.expiresInDays <= 3 ? 'mango' : 'neutral'}
+              tone={row.expiresInDays !== null && isSoon(row.expiresInDays) ? 'mango' : 'neutral'}
             />
           </View>
           <TextField

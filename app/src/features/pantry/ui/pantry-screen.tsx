@@ -48,7 +48,6 @@ import {
   IconButton,
   LoadingState,
   Pill,
-  Screen,
   TextLink,
   type Tone,
 } from '@/shared/ui';
@@ -56,15 +55,15 @@ import {
 /**
  * US-119 / US-142: lo que hay en casa. Arriba lo urgente (vencido, úsalo primero); el resto, por grupo de
  * alimento (ADR-027). En los alimentos propios se ve el grupo que sugirió la IA y se puede cambiar.
+ * Vive dentro de Mi cocina (D1); `header` es el encabezado de Mi cocina, que se desplaza con la lista (A3).
  */
-export function PantryScreen({ embedded }: { embedded?: boolean }) {
+export function PantryScreen({ header }: { header?: ReactNode }) {
   const { t } = useTranslation();
   const router = useRouter();
   const pantry = usePantry();
   const groups = useFoodGroups().data ?? [];
   const remove = useRemovePantryItem();
   const add = () => router.push('/pantry/add');
-  const Container = embedded ? EmbeddedContainer : Screen;
 
   // M5: quitar es inmediato y se puede deshacer (igual que en la lista de mercado).
   const restore = useRestorePantryItem();
@@ -75,10 +74,11 @@ export function PantryScreen({ embedded }: { embedded?: boolean }) {
   const today = todayIso();
   const open = (item: PantryItem) => router.push({ pathname: '/pantry/item', params: { key: pantryKey(item) } });
 
-  return (
-    <Container>
-      {!embedded && <AppText variant="title">{t('pantry.title')}</AppText>}
-      {(remove.error ?? restore.error) && <Banner tone="danger" message={t(errorKey(remove.error ?? restore.error))} />}
+  const notices = (
+    <>
+      {(remove.error ?? restore.error ?? removeExpired.error) && (
+        <Banner tone="danger" message={t(errorKey(remove.error ?? restore.error ?? removeExpired.error))} />
+      )}
       {removed && (
         <Card variant="filled" style={styles.undo}>
           <AppText style={styles.flex} accessibilityLiveRegion="polite">{t('pantry.removed', { name: removed.name })}</AppText>
@@ -89,12 +89,25 @@ export function PantryScreen({ embedded }: { embedded?: boolean }) {
           />
         </Card>
       )}
+    </>
+  );
+
+  return (
+    <View style={styles.container}>
       {pantry.isPending ? (
-        <LoadingState />
+        <ScrollView contentContainerStyle={styles.list}>
+          {header}
+          <LoadingState />
+        </ScrollView>
       ) : pantry.isError ? (
-        <ErrorState message={t(errorKey(pantry.error))} onRetry={() => void pantry.refetch()} />
+        <ScrollView contentContainerStyle={styles.list}>
+          {header}
+          <ErrorState message={t(errorKey(pantry.error))} onRetry={() => void pantry.refetch()} />
+        </ScrollView>
       ) : pantry.data.length === 0 ? (
         <ScrollView contentContainerStyle={styles.list}>
+          {header}
+          {notices}
           <EmptyState message={t('pantry.empty')} icon="basket-outline" />
           <Card variant="filled">
             <QuickAdd />
@@ -109,8 +122,14 @@ export function PantryScreen({ embedded }: { embedded?: boolean }) {
           stickySectionHeadersEnabled={false}
           ListHeaderComponent={
             <View style={styles.header}>
-              <Button label={t('pantry.add')} icon="add" flavor="basil" onPress={add} />
-              <QuickAddCollapsible />
+              {header}
+              <Actions onAdd={add} />
+              {notices}
+            </View>
+          }
+          // "Para completar más recetas" va después de lo que tengo: la lista primero (A3).
+          ListFooterComponent={
+            <View style={styles.footer}>
               <BuyNextCard />
             </View>
           }
@@ -142,26 +161,24 @@ export function PantryScreen({ embedded }: { embedded?: boolean }) {
         onConfirm={() => removeExpired.mutate(undefined, { onSettled: () => setConfirmExpired(false) })}
         onCancel={() => setConfirmExpired(false)}
       />
-      {removeExpired.error && <Banner tone="danger" message={t(errorKey(removeExpired.error))} />}
-    </Container>
+    </View>
   );
 }
 
-function EmbeddedContainer({ children }: { children: ReactNode }) {
-  return <View style={styles.embedded}>{children}</View>;
-}
-
-/** Con la cocina llena, el agregado rápido queda plegado para no estorbar la lista. */
-function QuickAddCollapsible() {
+/** Agregar y "lo típico con un toque" en una sola fila; lo típico queda plegado para no estorbar la lista. */
+function Actions({ onAdd }: { onAdd: () => void }) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   return (
     <View style={styles.quick}>
-      <TextLink
-        label={open ? t('kitchen.quickHide') : t('kitchen.quickShow')}
-        icon={open ? 'chevron-up' : 'flash-outline'}
-        onPress={() => setOpen((o) => !o)}
-      />
+      <View style={styles.actionsRow}>
+        <Button label={t('pantry.add')} icon="add" flavor="basil" size="sm" onPress={onAdd} />
+        <TextLink
+          label={open ? t('kitchen.quickHide') : t('kitchen.quickShow')}
+          icon={open ? 'chevron-up' : 'flash-outline'}
+          onPress={() => setOpen((o) => !o)}
+        />
+      </View>
       {open && (
         <Card variant="filled">
           <QuickAdd />
@@ -282,8 +299,10 @@ function SuggestedGroup({ item, groups }: { item: PantryItem; groups: FoodGroup[
 
 const styles = StyleSheet.create({
   list: { gap: Spacing.sm, paddingBottom: Spacing.lg },
-  embedded: { flex: 1, gap: Spacing.md },
+  container: { flex: 1 },
   header: { gap: Spacing.sm },
+  footer: { paddingTop: Spacing.md },
+  actionsRow: { flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: Spacing.md },
   quick: { gap: Spacing.sm },
   sectionHead: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, marginTop: Spacing.md },
   flex: { flex: 1 },

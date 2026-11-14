@@ -11,7 +11,10 @@ import { UnderstandPantry } from '@/features/pantry/ui/understand-pantry';
 import { MinTouch, Spacing } from '@/shared/theme/colors';
 import { useTheme } from '@/shared/theme/use-theme';
 import { Radius } from '@/shared/theme/tokens';
-import { AppText, Banner, Button, Card, Chip, ChipGroup, IconBadge, IconButton, Screen, TextField } from '@/shared/ui';
+import { AppText, Banner, Button, Card, Chip, ChipGroup, IconBadge, IconButton, Screen, SegmentedControl, TextField } from '@/shared/ui';
+
+/** A4 (ADR-036): un camino a la vez; buscar primero (el más usado). */
+type AddMode = 'search' | 'text' | 'photo';
 
 /**
  * Agregar a la despensa. Dos caminos: escribirlo como se diría (IA, varias cosas a la vez; ADR-030) o buscar en
@@ -30,6 +33,7 @@ export function AddPantryItemScreen() {
   // A5: al elegir un ingrediente, la fecha ya viene propuesta según cuánto dura ("Lo normal: 21 días").
   const [expiry, setExpiry] = useState<ExpiryKey>('none');
   const [reviewing, setReviewing] = useState(false);
+  const [mode, setMode] = useState<AddMode>('search');
   const results = useIngredientSearch(selected || customName !== null ? '' : query);
   const units = useUnits();
   const add = useAddToPantry();
@@ -61,10 +65,22 @@ export function AddPantryItemScreen() {
           <CustomItemForm initialName={customName} onCancel={() => setCustomName(null)} onSaved={() => router.back()} />
         ) : !selected ? (
           <>
-            <UnderstandPantry onSaved={() => router.back()} onReviewing={setReviewing} />
             {!reviewing && (
+              <SegmentedControl
+                label={t('pantry.addModes.label')}
+                flavor="basil"
+                value={mode}
+                onChange={setMode}
+                options={[
+                  { value: 'search', label: t('pantry.addModes.search') },
+                  { value: 'text', label: t('pantry.addModes.text') },
+                  { value: 'photo', label: t('pantry.addModes.photo') },
+                ]}
+              />
+            )}
+            {mode !== 'search' && <UnderstandPantry mode={mode} onSaved={() => router.back()} onReviewing={setReviewing} />}
+            {mode === 'search' && (
               <>
-                <AppText variant="label" secondary style={styles.or}>{t('pantry.understand.or')}</AppText>
                 <TextField label={t('pantry.search')} icon="search" value={query} onChangeText={setQuery} autoCorrect={false} placeholder={t('pantry.searchPlaceholder')} />
                 {results.isError && <Banner tone="danger" message={t(errorKey(results.error))} />}
                 {query.trim().length >= 2 && results.data?.length === 0 && <AppText secondary>{t('pantry.noResults')}</AppText>}
@@ -209,5 +225,4 @@ const styles = StyleSheet.create({
   custom: { borderStyle: 'dashed' },
   selected: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md },
   labelRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.xs },
-  or: { textAlign: 'center' },
 });

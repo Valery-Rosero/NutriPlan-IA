@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { usePantry } from '@/features/pantry/application/pantry-queries';
-import { expiryStatus, todayIso } from '@/features/pantry/domain/pantry';
+import { expiryStatus, mergeLots, todayIso } from '@/features/pantry/domain/pantry';
 import { PantryScreen } from '@/features/pantry/ui/pantry-screen';
 import { ShoppingScreen } from '@/features/shopping/ui/shopping-screen';
 import { Spacing } from '@/shared/theme/colors';
@@ -13,7 +13,7 @@ type KitchenTab = 'have' | 'list';
 
 /**
  * Mi cocina (ADR-024): lo que tengo y lo que me falta son la misma cocina vista de dos lados.
- * Lo comprado pasa de la lista a "lo que tengo"; lo cocinado se descuenta de "lo que tengo".
+ * A3 (ADR-036): el encabezado es de una fila y se desplaza con el contenido, para que quepa la lista.
  */
 export function KitchenScreen() {
   const { t } = useTranslation();
@@ -22,15 +22,16 @@ export function KitchenScreen() {
   const tab: KitchenTab = useLocalSearchParams<{ tab?: KitchenTab }>().tab ?? 'have';
   const setTab = (next: KitchenTab) => router.setParams({ tab: next });
 
-  const items = usePantry().data ?? [];
   const today = todayIso();
+  // Una fila por alimento (A6), igual que en la lista.
+  const items = mergeLots(usePantry().data ?? [], today);
   const expiring = items.filter((i) => expiryStatus(i.expiresOn, today) === 'soon').length;
 
-  return (
-    <Screen>
+  const header = (
+    <View style={styles.header}>
       <BrandHeader
+        compact
         title={t('kitchen.title')}
-        subtitle={t('kitchen.subtitle')}
         flavor="basil"
         action={{ icon: 'person-circle-outline', label: t('profile.title'), onPress: () => router.push('/profile') }}>
         {items.length > 0 && (
@@ -50,11 +51,13 @@ export function KitchenScreen() {
           { value: 'list', label: t('kitchen.list') },
         ]}
       />
-      {tab === 'have' ? <PantryScreen embedded /> : <ShoppingScreen embedded />}
-    </Screen>
+    </View>
   );
+
+  return <Screen>{tab === 'have' ? <PantryScreen header={header} /> : <ShoppingScreen header={header} />}</Screen>;
 }
 
 const styles = StyleSheet.create({
-  pills: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm, marginTop: Spacing.xs },
+  header: { gap: Spacing.sm, paddingBottom: Spacing.xs },
+  pills: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm },
 });

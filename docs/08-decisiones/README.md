@@ -39,3 +39,4 @@ Estado: **Aceptada** = ya implementada o decidida con el usuario; **Propuesta** 
 | [033](ADR-033.md) | El ciclo de la cocina: lo que se agrega a la lista llega a la despensa y la lista siempre está al día | Aceptada |
 | [034](ADR-034.md) | Corregir lo que hay: cuánto queda, la fecha y lo vencido | Aceptada |
 | [035](ADR-035.md) | Una lista que se puede usar en el súper: lista de la casa, cantidades como se venden y deshacer | Aceptada |
+| [036](ADR-036.md) | Más pantalla, menos pasos en Mi cocina | Aceptada |

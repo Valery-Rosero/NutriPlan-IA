@@ -8,7 +8,9 @@ import { fakePantry, fakeServices, withServices } from '@/test/fakes';
 
 async function understand(services: ReturnType<typeof fakeServices>) {
   await render(<AddPantryItemScreen />, { wrapper: withServices(services) });
-  expect(screen.getByLabelText('¿Qué tienes?')).toBeOnTheScreen(); // la búsqueda del catálogo, debajo
+  await fireEvent.press(await screen.findByRole('radio', { name: 'Escribir' }));
+  // A4 (ADR-036): un camino a la vez; la búsqueda del catálogo no se apila debajo.
+  expect(screen.queryByLabelText('¿Qué tienes?')).not.toBeOnTheScreen();
   await fireEvent.changeText(screen.getByLabelText('Lo que compraste o tienes'), '2 libras de papa criolla y un queso crema');
   await fireEvent.press(screen.getByRole('button', { name: 'Entender' }));
   await screen.findByRole('header', { name: 'Revisa lo que entendí' });

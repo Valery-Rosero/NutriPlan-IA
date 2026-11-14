@@ -25,7 +25,14 @@ export const pantryKeys = {
   units: () => [...pantryKeys.all, 'units'] as const,
   foodGroups: () => [...pantryKeys.all, 'food-groups'] as const,
   buyNext: () => [...pantryKeys.all, 'buy-next'] as const,
+  quickItems: () => [...pantryKeys.all, 'quick-items'] as const,
 };
+
+/** ADR-036: lo típico para agregar con un toque (datos de referencia de la base). */
+export function useQuickItems() {
+  const { pantry } = useServices();
+  return useQuery({ queryKey: pantryKeys.quickItems(), queryFn: () => pantry.quickItems(), staleTime: Infinity, meta: { persist: true } });
+}
 
 /** ADR-030: qué comprar para completar recetas. Depende de la cocina: se invalida con ella (pantryKeys.all). */
 export function useBuyNext(enabled = true) {
@@ -78,7 +85,7 @@ export function useSaveUnderstood() {
 /** Grupos de alimento (datos de referencia: casi nunca cambian). */
 export function useFoodGroups() {
   const { pantry } = useServices();
-  return useQuery({ queryKey: pantryKeys.foodGroups(), queryFn: () => pantry.foodGroups(), staleTime: Infinity });
+  return useQuery({ queryKey: pantryKeys.foodGroups(), queryFn: () => pantry.foodGroups(), staleTime: Infinity, meta: { persist: true } });
 }
 
 /** Corrige el grupo que sugirió la IA para un alimento propio (ADR-027: es solo una sugerencia). */
@@ -91,9 +98,10 @@ export function useSetCustomGroup() {
   });
 }
 
+/** M4: "Lo que tengo" se guarda en el teléfono: en el supermercado sin señal se ve qué hay (ADR-014). */
 export function usePantry() {
   const { pantry } = useServices();
-  return useQuery({ queryKey: pantryKeys.items(), queryFn: async () => sortPantry(await pantry.list()) });
+  return useQuery({ queryKey: pantryKeys.items(), queryFn: async () => sortPantry(await pantry.list()), meta: { persist: true } });
 }
 
 /**
@@ -134,17 +142,15 @@ export function useQuickAdd() {
   const { pantry } = useServices();
   const invalidate = useInvalidatePantry();
   return useMutation({
+    // D2: una sola llamada por toque (el ingrediente y su unidad ya vienen de la base).
     mutationFn: async (item: QuickItem): Promise<QuickAdded> => {
-      const [[ingredient], units] = await Promise.all([pantry.findByNames([item.name]), pantry.listUnits()]);
-      const unit = units.find((u) => u.code === item.unitCode);
-      if (!ingredient || !unit) throw new Error('unknown');
       await pantry.add({
-        ingredientId: ingredient.id,
+        ingredientId: item.ingredientId,
         quantity: item.quantity,
-        unitId: unit.id,
-        expiresOn: ingredient.shelfLifeDays ? addDays(todayIso(), ingredient.shelfLifeDays) : null,
+        unitId: item.unitId,
+        expiresOn: item.shelfLifeDays ? addDays(todayIso(), item.shelfLifeDays) : null,
       });
-      return { name: item.name, ingredientId: ingredient.id, quantity: item.quantity, unitId: unit.id };
+      return { name: item.name, ingredientId: item.ingredientId, quantity: item.quantity, unitId: item.unitId };
     },
     onSuccess: invalidate,
   });

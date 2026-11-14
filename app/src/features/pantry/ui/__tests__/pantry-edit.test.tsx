@@ -120,6 +120,6 @@ describe('Mi cocina, fase 2: corregir lo que hay (ADR-034)', () => {
     await fireEvent.press(await screen.findByRole('checkbox', { name: 'Arroz blanco' }));
     await waitFor(() => expect(screen.getByRole('checkbox', { name: 'Arroz blanco' })).toBeChecked());
     await fireEvent.press(screen.getByRole('checkbox', { name: 'Arroz blanco' }));
-    await waitFor(() => expect(pantry.adjust).toHaveBeenCalledWith('Arroz blanco', -1, 2));
+    await waitFor(() => expect(pantry.adjust).toHaveBeenCalledWith('arroz', -1, 2));
   });
 });

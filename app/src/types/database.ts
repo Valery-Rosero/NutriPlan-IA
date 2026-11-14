@@ -1089,6 +1089,32 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"quick_add_items": {
+                  Row: {
+                    "ingredient_id": string,"position": number,"quantity": number,"unit_id": number
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "ingredient_id": string,"position"?: number,"quantity": number,"unit_id": number
+                  }
+                  Update: {
+                    "ingredient_id"?: string,"position"?: number,"quantity"?: number,"unit_id"?: number
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "quick_add_items_ingredient_id_fkey"
+      columns: ["ingredient_id"]
+isOneToOne: true
+      referencedRelation: "ingredients"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "quick_add_items_unit_id_fkey"
+      columns: ["unit_id"]
+isOneToOne: false
+      referencedRelation: "units"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"rating_tags": {
                   Row: {
                     "code": string,"id": number,"name": string

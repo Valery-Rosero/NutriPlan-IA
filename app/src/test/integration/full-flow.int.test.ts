@@ -105,9 +105,11 @@ run('recorrido completo contra Supabase real', () => {
     const [cerdo] = await pantry.search('cerdo');
     const g = units.find((u) => u.code === 'g')!;
     await pantry.add({ ingredientId: cerdo.id, quantity: 600, unitId: g.id, expiresOn: todayIso() });
-    const quick = await pantry.findByNames(['Arroz blanco', 'Huevo']);
-    expect(quick.map((i) => i.name).sort()).toEqual(['Arroz blanco', 'Huevo']);
-    expect(quick.every((i) => (i.shelfLifeDays ?? 0) > 0)).toBe(true);
+    // ADR-036: el agregado rápido viene de la base, en orden y con su unidad
+    const quick = await pantry.quickItems();
+    expect(quick).toHaveLength(16);
+    expect(quick.slice(0, 3).map((i) => i.name)).toEqual(['Arroz blanco', 'Papa', 'Huevo']);
+    expect(quick.every((i) => i.unitId > 0 && i.quantity > 0)).toBe(true);
     const items = await pantry.list();
     expect(items.find((i) => i.name === 'Papa')?.grams).toBe(1000);
     expect(items.find((i) => i.name === 'Cerdo')?.grams).toBe(600);

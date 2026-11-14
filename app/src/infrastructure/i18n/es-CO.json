@@ -466,7 +466,13 @@
     "removeExpired": "Quitar lo vencido",
     "removeExpiredTitle": "¿Quitar todo lo vencido?",
     "removeExpiredMessage": "Se quita de tu cocina. Lo que todavía sirva, márcalo antes con «Todavía sirve».",
-    "removed": "Quitaste {{name}} de tu cocina."
+    "removed": "Quitaste {{name}} de tu cocina.",
+    "addModes": {
+      "label": "¿Cómo quieres agregar?",
+      "search": "Buscar",
+      "text": "Escribir",
+      "photo": "Foto"
+    }
   },
   "profile": {
     "title": "Perfil",

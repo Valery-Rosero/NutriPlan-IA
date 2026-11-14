@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
@@ -36,7 +36,6 @@ import {
   IconButton,
   LoadingState,
   ProgressBar,
-  Screen,
   TextField,
   TextLink,
 } from '@/shared/ui';
@@ -45,7 +44,7 @@ import {
  * US-124 (desde el plan), US-125 (resta la despensa), US-126 (marcar, quitar, agregar), US-135 (secciones).
  * ADR-035: sin plan se usa la lista de la casa (A1); las cantidades van como se compran (A2); quitar se deshace (M5).
  */
-export function ShoppingScreen({ embedded }: { embedded?: boolean }) {
+export function ShoppingScreen({ header }: { header?: ReactNode }) {
   const { t } = useTranslation();
   const router = useRouter();
   const online = useIsOnline();
@@ -91,19 +90,14 @@ export function ShoppingScreen({ embedded }: { embedded?: boolean }) {
     );
   };
 
-  const content = (
-    <>
+  // Vive dentro de Mi cocina (D1); el encabezado de Mi cocina se desplaza con la lista (A3).
+  return (
+    <ScrollView contentContainerStyle={styles.embedded} keyboardShouldPersistTaps="handled">
+      {header}
       {!online && <Banner tone="warning" message={t('common.offline')} />}
       {generate.error && <Banner tone="danger" message={t(errorKey(generate.error))} />}
       {body()}
-    </>
-  );
-  if (embedded) return <ScrollView contentContainerStyle={styles.embedded}>{content}</ScrollView>;
-  return (
-    <Screen scroll>
-      <AppText variant="title">{t('shopping.title')}</AppText>
-      {content}
-    </Screen>
+    </ScrollView>
   );
 }
 
@@ -149,7 +143,6 @@ function ListView({ listKey, listId, items, onRefresh, refreshing = false, house
 
   return (
     <>
-      <MonthlySpendCard />
       <Card>
         {allBought ? (
           <>
@@ -269,6 +262,9 @@ function ListView({ listKey, listId, items, onRefresh, refreshing = false, house
       {(move.error ?? remove.error ?? restore.error ?? add.error) && (
         <Banner tone="danger" message={t(errorKey(move.error ?? remove.error ?? restore.error ?? add.error))} />
       )}
+
+      {/* El gasto del mes va al final: arriba, lo que hay que comprar (A3). */}
+      <MonthlySpendCard />
     </>
   );
 }

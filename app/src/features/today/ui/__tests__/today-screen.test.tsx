@@ -19,7 +19,7 @@ describe('Hoy (ADR-024): el flujo gira en torno a la cocina', () => {
 
     await fireEvent.press(await screen.findByRole('checkbox', { name: 'Arroz blanco' }));
     await waitFor(() =>
-      expect(pantry.add).toHaveBeenCalledWith(expect.objectContaining({ ingredientId: 'Arroz blanco', quantity: 1, unitId: 2 })),
+      expect(pantry.add).toHaveBeenCalledWith(expect.objectContaining({ ingredientId: 'arroz', quantity: 1, unitId: 2 })),
     );
   });
 

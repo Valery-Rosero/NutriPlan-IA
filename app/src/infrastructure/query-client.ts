@@ -17,7 +17,8 @@ export const persister = createAsyncStoragePersister({ storage: AsyncStorage, ke
 
 /**
  * Caché sin conexión (ADR-014): solo se guardan en disco las consultas marcadas con `meta: { persist: true }`
- * (plan y lista de compras). Nada con datos de salud o alergias se persiste sin cifrar.
+ * (plan, lista de compras, lo que hay en la cocina y datos de referencia). Nada con datos de salud o alergias
+ * se persiste sin cifrar.
  */
 export function shouldPersistQuery(query: Query) {
   return query.state.status === 'success' && query.meta?.persist === true;

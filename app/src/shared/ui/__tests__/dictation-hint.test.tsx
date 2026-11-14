@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react-native';
+import { fireEvent, render, screen } from '@testing-library/react-native';
 import { useLocalSearchParams } from 'expo-router';
 
 import { AssistantScreen } from '@/features/assistant/ui/assistant-screen';
@@ -10,6 +10,7 @@ const HINT = '¿Prefieres hablar? Toca el micrófono de tu teclado y díctalo.';
 describe('Notas de voz, opción A: dictar con el teclado (pendientes B6-3)', () => {
   it('se recuerda en "Escríbelo como lo dirías"', async () => {
     await render(<AddPantryItemScreen />, { wrapper: withServices(fakeServices()) });
+    await fireEvent.press(screen.getByRole('radio', { name: 'Escribir' }));
     expect(screen.getByText(HINT)).toBeOnTheScreen();
   });
 

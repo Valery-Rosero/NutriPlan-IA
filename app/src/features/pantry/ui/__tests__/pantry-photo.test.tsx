@@ -20,6 +20,7 @@ describe('ADR-032 · foto de la nevera o del recibo', () => {
   it('F-2/F-3: reconoce lo de la nevera; lo dudoso llega desmarcado y nada se guarda hasta "Guardar"', async () => {
     const services = fakeServices();
     await render(<AddPantryItemScreen />, { wrapper: withServices(services) });
+    await fireEvent.press(await screen.findByRole('radio', { name: 'Foto' }));
     expect(screen.getByText('La foto no se guarda: se usa una vez para reconocer los alimentos.')).toBeOnTheScreen();
 
     await fireEvent.press(screen.getByRole('button', { name: 'Tomar foto' }));
@@ -42,6 +43,7 @@ describe('ADR-032 · foto de la nevera o del recibo', () => {
   it('F-4: del recibo pregunta antes de sumar el total al gasto del mes', async () => {
     const services = fakeServices();
     await render(<AddPantryItemScreen />, { wrapper: withServices(services) });
+    await fireEvent.press(await screen.findByRole('radio', { name: 'Foto' }));
     await fireEvent.press(screen.getByRole('radio', { name: 'Del recibo' }));
     await fireEvent.press(screen.getByRole('button', { name: 'Elegir de la galería' }));
     expect(takePantryPhoto).toHaveBeenCalledWith('library');
@@ -59,6 +61,7 @@ describe('ADR-032 · foto de la nevera o del recibo', () => {
   it('F-4: si no quiere, el total no se suma', async () => {
     const services = fakeServices();
     await render(<AddPantryItemScreen />, { wrapper: withServices(services) });
+    await fireEvent.press(await screen.findByRole('radio', { name: 'Foto' }));
     await fireEvent.press(screen.getByRole('radio', { name: 'Del recibo' }));
     await fireEvent.press(screen.getByRole('button', { name: 'Tomar foto' }));
     await fireEvent.press(await screen.findByRole('button', { name: 'Guardar 1 cosa' }));
@@ -71,6 +74,7 @@ describe('ADR-032 · foto de la nevera o del recibo', () => {
     jest.mocked(takePantryPhoto).mockResolvedValueOnce({ kind: 'denied' });
     const services = fakeServices();
     await render(<AddPantryItemScreen />, { wrapper: withServices(services) });
+    await fireEvent.press(await screen.findByRole('radio', { name: 'Foto' }));
     await fireEvent.press(screen.getByRole('button', { name: 'Tomar foto' }));
     expect(await screen.findByText(/Sin permiso de cámara/)).toBeOnTheScreen();
     expect(services.pantry.understandPhoto).not.toHaveBeenCalled();
@@ -80,6 +84,7 @@ describe('ADR-032 · foto de la nevera o del recibo', () => {
   it('F-6: si la foto no sirve, lo dice y ofrece repetirla', async () => {
     const pantry = fakePantry({ understandPhoto: jest.fn(async () => ({ items: [], total: null, problem: 'unclear' as const })) });
     await render(<AddPantryItemScreen />, { wrapper: withServices(fakeServices({ pantry })) });
+    await fireEvent.press(await screen.findByRole('radio', { name: 'Foto' }));
     await fireEvent.press(screen.getByRole('button', { name: 'Tomar foto' }));
     expect(await screen.findByText(/muy oscura o borrosa/)).toBeOnTheScreen();
     expect(screen.getByRole('button', { name: 'Tomar otra foto' })).toBeOnTheScreen();
@@ -89,6 +94,7 @@ describe('ADR-032 · foto de la nevera o del recibo', () => {
   it('sin IA disponible, ofrece escribirlo o buscarlo', async () => {
     const pantry = fakePantry({ understandPhoto: jest.fn(async () => { throw new AppError('ai_unavailable'); }) });
     await render(<AddPantryItemScreen />, { wrapper: withServices(fakeServices({ pantry })) });
+    await fireEvent.press(await screen.findByRole('radio', { name: 'Foto' }));
     await fireEvent.press(screen.getByRole('button', { name: 'Tomar foto' }));
     expect(await screen.findByText(/No pude analizar la foto en este momento/)).toBeOnTheScreen();
   });
@@ -97,6 +103,7 @@ describe('ADR-032 · foto de la nevera o del recibo', () => {
     jest.mocked(takePantryPhoto).mockResolvedValueOnce({ kind: 'canceled' });
     const services = fakeServices();
     await render(<AddPantryItemScreen />, { wrapper: withServices(services) });
+    await fireEvent.press(await screen.findByRole('radio', { name: 'Foto' }));
     await fireEvent.press(screen.getByRole('button', { name: 'Tomar foto' }));
     await waitFor(() => expect(screen.getByRole('button', { name: 'Tomar foto' })).toBeEnabled());
     expect(services.pantry.understandPhoto).not.toHaveBeenCalled();

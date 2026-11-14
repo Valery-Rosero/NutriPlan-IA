@@ -222,10 +222,19 @@ export class SupabasePantryRepository implements PantryRepository {
     }));
   }
 
-  async findByNames(names: string[]) {
-    const { data, error } = await this.client.from('ingredients').select('id, name, shelf_life_days').in('name', names);
+  async quickItems() {
+    const { data, error } = await this.client
+      .from('quick_add_items')
+      .select('ingredient_id, quantity, unit_id, ingredients!inner(name, shelf_life_days)')
+      .order('position');
     if (error) throw toAppError(error);
-    return data.map((i) => ({ id: i.id, name: i.name, shelfLifeDays: i.shelf_life_days }));
+    return data.map((r) => ({
+      ingredientId: r.ingredient_id,
+      name: r.ingredients.name,
+      quantity: Number(r.quantity),
+      unitId: r.unit_id,
+      shelfLifeDays: r.ingredients.shelf_life_days,
+    }));
   }
 
   async listUnits() {
