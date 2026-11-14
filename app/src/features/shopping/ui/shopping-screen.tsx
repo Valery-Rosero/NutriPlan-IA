@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
-import { useState, type ReactNode } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { useRef, useState, type ReactNode } from 'react';
+import { KeyboardAvoidingView, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { errorKey } from '@/core/errors/app-error';
@@ -52,6 +52,9 @@ export function ShoppingScreen({ header }: { header?: ReactNode }) {
   const planId = plan.data?.id;
   const list = useShoppingList(planId, plan.isSuccess);
   const generate = useGenerateList();
+  // Al escribir abajo ("Agregar algo más", "¿Cuánto pagaste?"), el teclado no debe tapar el campo.
+  const scroll = useRef<ScrollView>(null);
+  const revealInput = () => setTimeout(() => scroll.current?.scrollToEnd({ animated: true }), 250);
 
   const body = () => {
     if (plan.isPending || list.isPending) return <LoadingState />;
@@ -66,7 +69,9 @@ export function ShoppingScreen({ header }: { header?: ReactNode }) {
             <AppText secondary>{t('shopping.house.note')}</AppText>
             <TextLink label={t('shopping.goToPlan')} icon="calendar-outline" onPress={() => router.navigate('/week')} />
           </Card>
-          {list.data && <ListView listKey={listKeyFor(undefined)} listId={list.data.id} items={list.data.items} house />}
+          {list.data && (
+            <ListView listKey={listKeyFor(undefined)} listId={list.data.id} items={list.data.items} onTyping={revealInput} house />
+          )}
         </>
       );
     }
@@ -86,22 +91,26 @@ export function ShoppingScreen({ header }: { header?: ReactNode }) {
         items={list.data.items}
         onRefresh={() => generate.mutate(planId)}
         refreshing={generate.isPending}
+        onTyping={revealInput}
       />
     );
   };
 
   // Vive dentro de Mi cocina (D1); el encabezado de Mi cocina se desplaza con la lista (A3).
+  // Igual que el asistente: la vista se encoge con el teclado ("padding", Android edge-to-edge).
   return (
-    <ScrollView contentContainerStyle={styles.embedded} keyboardShouldPersistTaps="handled">
-      {header}
-      {!online && <Banner tone="warning" message={t('common.offline')} />}
-      {generate.error && <Banner tone="danger" message={t(errorKey(generate.error))} />}
-      {body()}
-    </ScrollView>
+    <KeyboardAvoidingView style={styles.flex} behavior="padding">
+      <ScrollView ref={scroll} contentContainerStyle={styles.embedded} keyboardShouldPersistTaps="handled">
+        {header}
+        {!online && <Banner tone="warning" message={t('common.offline')} />}
+        {generate.error && <Banner tone="danger" message={t(errorKey(generate.error))} />}
+        {body()}
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
-function ListView({ listKey, listId, items, onRefresh, refreshing = false, house = false }: {
+function ListView({ listKey, listId, items, onRefresh, refreshing = false, house = false, onTyping }: {
   /** Clave de la lista en caché: el plan o 'house'. */
   listKey: string;
   listId: string;
@@ -109,6 +118,8 @@ function ListView({ listKey, listId, items, onRefresh, refreshing = false, house
   onRefresh?: () => void;
   refreshing?: boolean;
   house?: boolean;
+  /** Se empezó a escribir en un campo de abajo: hay que mostrarlo sobre el teclado. */
+  onTyping?: () => void;
 }) {
   const { t } = useTranslation();
   const toggle = useToggleItem();
@@ -129,16 +140,31 @@ function ListView({ listKey, listId, items, onRefresh, refreshing = false, house
   const substitutes = substitutesByIngredient(useSubstitutes(swappable.map((i) => i.ingredientId!)).data ?? []);
   const record = useRecordPurchase();
   const [paid, setPaid] = useState('');
+  // Los avisos ("Listo: 4 productos…", "sumamos la compra…", "Quitaste…") son de la última acción: con la
+  // siguiente (marcar, agregar, quitar) se limpian para no quedarse pegados.
+  const clearNotices = () => {
+    move.reset();
+    record.reset();
+    setRemoved(null);
+  };
+  // Lo pagado se puede anotar al pasar a la despensa o, si se olvidó, justo después (antes no había cómo).
+  const askPaidAfterMove = move.isSuccess && !record.isSuccess && toPantry === 0;
+  const recordPaid = () => {
+    const amount = parseCop(paid);
+    if (amount) record.mutate({ total: amount, listId }, { onSuccess: () => setPaid('') });
+  };
   const moveAndRecord = () =>
     move.mutate(listId, {
       onSuccess: () => {
-        const total = parseCop(paid);
-        if (total) record.mutate({ total, listId });
+        const amount = parseCop(paid);
+        if (amount) record.mutate({ total: amount, listId });
         setPaid('');
       },
     });
   const submitNew = () => {
-    if (newItem.trim()) add.mutate({ listId, name: newItem }, { onSuccess: () => setNewItem('') });
+    if (!newItem.trim()) return;
+    clearNotices();
+    add.mutate({ listId, name: newItem }, { onSuccess: () => setNewItem('') });
   };
 
   return (
@@ -192,6 +218,28 @@ function ListView({ listKey, listId, items, onRefresh, refreshing = false, house
             />
           </>
         )}
+        {askPaidAfterMove && (
+          <>
+            <TextField
+              label={t('spending.paidAfterLabel')}
+              icon="cash-outline"
+              value={paid}
+              onChangeText={setPaid}
+              keyboardType="number-pad"
+              placeholder="45000"
+            />
+            <Button
+              label={t('spending.addToMonth')}
+              icon="add"
+              variant="secondary"
+              flavor="basil"
+              size="sm"
+              disabled={!parseCop(paid)}
+              loading={record.isPending}
+              onPress={recordPaid}
+            />
+          </>
+        )}
         {record.isSuccess && <Banner tone="success" message={t('spending.recorded')} />}
         {record.error && <Banner tone="danger" message={t(errorKey(record.error))} />}
       </Card>
@@ -230,8 +278,14 @@ function ListView({ listKey, listId, items, onRefresh, refreshing = false, house
                 planId={listKey}
                 label={rowLabel(item, t)}
                 substitutes={item.ingredientId ? substitutes.get(item.ingredientId) : undefined}
-                onToggle={(checked) => toggle.mutate({ planId: listKey, itemId: item.id, checked })}
-                onRemove={() => remove.mutate(item.id, { onSuccess: () => setRemoved(item) })}
+                onToggle={(checked) => {
+                  clearNotices();
+                  toggle.mutate({ planId: listKey, itemId: item.id, checked });
+                }}
+                onRemove={() => {
+                  clearNotices();
+                  remove.mutate(item.id, { onSuccess: () => setRemoved(item) });
+                }}
               />
             ))}
           </Card>
@@ -247,6 +301,7 @@ function ListView({ listKey, listId, items, onRefresh, refreshing = false, house
           placeholder={t('shopping.addPlaceholder')}
           returnKeyType="done"
           onSubmitEditing={submitNew}
+          onFocus={onTyping}
         />
         <Button
           label={t('shopping.add')}

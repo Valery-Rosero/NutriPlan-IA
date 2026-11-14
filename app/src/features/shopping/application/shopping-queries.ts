@@ -5,7 +5,7 @@ import { useServices } from '@/di/services';
 import { useKitchenChanged } from '@/features/kitchen/application/kitchen-sync';
 import { useTrack } from '@/features/analytics/application/use-track';
 import { classifyQuietly } from '@/features/food/domain/food-label';
-import { applyChecked, type ShoppingList } from '@/features/shopping/domain/shopping';
+import { applyChecked, type ShoppingList, splitTyped } from '@/features/shopping/domain/shopping';
 
 export const shoppingKeys = {
   all: ['shopping'] as const,
@@ -106,11 +106,14 @@ export function useGenerateList() {
 }
 
 /** B3: lo escrito a mano va a su sección del supermercado (clasificación con IA); si no se puede, a "Otros". */
+/** Lo escrito a mano, cada cosa en su sección; "pollo, pan, yuca" son tres (splitTyped). */
 export function useAddManualItem() {
   const { shopping, foodLabels } = useServices();
   return useListMutation(async ({ listId, name }: { listId: string; name: string }) => {
-    const label = await classifyQuietly(foodLabels, name);
-    await shopping.addManual(listId, name, label?.storeCategoryId ?? null);
+    for (const one of splitTyped(name)) {
+      const label = await classifyQuietly(foodLabels, one);
+      await shopping.addManual(listId, one, label?.storeCategoryId ?? null);
+    }
   });
 }
 

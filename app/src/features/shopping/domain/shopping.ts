@@ -125,6 +125,19 @@ export function splitClosed(items: ShoppingItem[]) {
   return { open, closed: items.length - open.length };
 }
 
+/**
+ * Lo marcado que falta pasar a la despensa. Cuenta también lo escrito a mano ("Café", "Pollo"): desde ADR-033
+ * pasa a la cocina (como ingrediente del catálogo, alimento propio o, si no es comida, solo se cierra).
+ * Lo del plan que ya se tenía (nada que comprar) no cuenta.
+ */
 export function pendingToPantry(items: ShoppingItem[]) {
-  return items.filter((i) => i.checked && !i.movedToPantry && i.ingredientId !== null && (i.toBuyGrams ?? 0) > 0).length;
+  return items.filter((i) => i.checked && !i.movedToPantry && (i.ingredientId === null || (i.toBuyGrams ?? 0) > 0)).length;
+}
+
+/** "Pollo, pan, yuca" → tres cosas en la lista (comas, punto y coma o renglones). */
+export function splitTyped(text: string): string[] {
+  return text
+    .split(/[,;\n]+/)
+    .map((s) => s.trim().replace(/\s+/g, ' '))
+    .filter((s, i, all) => s.length > 0 && all.findIndex((o) => o.toLowerCase() === s.toLowerCase()) === i);
 }

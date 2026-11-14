@@ -283,7 +283,7 @@
     "units_other": "{{count}} unidades (≈ {{grams}})",
     "remove": "Quitar",
     "addLabel": "Agregar algo más",
-    "addPlaceholder": "Ej.: bolsas, café",
+    "addPlaceholder": "Ej.: bolsas, café (separa con comas)",
     "add": "Agregar a la lista",
     "moveToPantry_one": "Pasar {{count}} comprado a la despensa",
     "moveToPantry_other": "Pasar {{count}} comprados a la despensa",
@@ -941,7 +941,9 @@
     "purchases_other": "{{count}} compras registradas este mes",
     "setBudget": "Fijar un presupuesto",
     "paidLabel": "¿Cuánto pagaste? (opcional)",
-    "recorded": "Listo, sumamos la compra a tu gasto del mes."
+    "recorded": "Listo, sumamos la compra a tu gasto del mes.",
+    "paidAfterLabel": "¿Cuánto pagaste por esta compra? (opcional)",
+    "addToMonth": "Sumar al gasto del mes"
   },
   "nutrition": {
     "title": "Mi día",
