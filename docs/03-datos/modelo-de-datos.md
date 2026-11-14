@@ -1,6 +1,6 @@
 # Modelo de datos (generado desde las migraciones)
 
-> Fuente de verdad: `backend/supabase/migrations/`. Este archivo se generó leyendo la base real después de aplicar las 37 migraciones (67 tablas, todas con RLS). Si cambia una migración, regenerar: `python docs/03-datos/_generar_modelo.py` (con Supabase local encendido).
+> Fuente de verdad: `backend/supabase/migrations/`. Este archivo se generó leyendo la base real después de aplicar las 38 migraciones (68 tablas, todas con RLS). Si cambia una migración, regenerar: `python docs/03-datos/_generar_modelo.py` (con Supabase local encendido).
 
 Principios: 3FN; lo derivable no se guarda (alérgenos y dietas de una receta, nutrición por porción, picante y apto-batch); cantidades canónicas en gramos; RLS en todas las tablas; ver `reglas-de-negocio.md`.
 
@@ -807,6 +807,23 @@ Restricciones:
 - **FK**: `FOREIGN KEY (store_category_id) REFERENCES ingredient_categories(id)`
 - **FK**: `FOREIGN KEY (user_id) REFERENCES profiles(id) ON DELETE CASCADE`
 - **PK**: `PRIMARY KEY (id)`
+
+### `quick_add_items`
+
+ADR-036: lo típico de una cocina colombiana para agregar con un toque (cantidad típica de compra). Datos de referencia.
+
+| Columna | Tipo | Nulo | Default / generada | Nota |
+|---|---|---|---|---|
+| `ingredient_id` | uuid | no |  |  |
+| `quantity` | numeric(10,2) | no |  |  |
+| `unit_id` | smallint | no |  |  |
+| `position` | smallint | no | 0 |  |
+
+Restricciones:
+- **CHECK**: `CHECK ((quantity > (0)::numeric))`
+- **FK**: `FOREIGN KEY (ingredient_id) REFERENCES ingredients(id) ON DELETE CASCADE`
+- **FK**: `FOREIGN KEY (unit_id) REFERENCES units(id)`
+- **PK**: `PRIMARY KEY (ingredient_id)`
 
 ### `meal_plans`
 
