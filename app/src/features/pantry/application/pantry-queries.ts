@@ -173,6 +173,30 @@ export function useRemovePantryItem() {
 }
 
 /**
+ * M5: deshacer "quitar": vuelve a poner cada compra tal como estaba (gramos y fecha) o el alimento propio.
+ */
+export function useRestorePantryItem() {
+  const { pantry } = useServices();
+  const invalidate = useInvalidatePantry();
+  return useMutation({
+    mutationFn: async (item: PantryItem) => {
+      const grams = (await pantry.listUnits()).find((u) => u.code === 'g');
+      for (const lot of item.lots ?? [item]) {
+        if (lot.custom) {
+          await pantry.addCustom({
+            name: lot.name, quantity: lot.custom.quantity, unit: lot.custom.unit, expiresOn: lot.expiresOn,
+            foodGroupId: lot.foodGroupId ?? null, storeCategoryId: null,
+          });
+        } else if (lot.ingredientId && grams) {
+          await pantry.add({ ingredientId: lot.ingredientId, quantity: lot.grams, unitId: grams.id, expiresOn: lot.expiresOn });
+        }
+      }
+    },
+    onSuccess: invalidate,
+  });
+}
+
+/**
  * C3: cambiar cuánto queda (− / +, ¼ ½ ¾, "se acabó"). Se manda la diferencia: la base resta primero lo
  * que vence antes. Un alimento propio se corrige en su tabla; en 0 se quita.
  */

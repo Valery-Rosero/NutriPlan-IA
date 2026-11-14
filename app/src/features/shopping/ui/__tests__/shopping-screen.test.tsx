@@ -56,10 +56,45 @@ describe('ShoppingScreen (US-124, US-125, US-126, US-135)', () => {
     expect(shopping.generate).toHaveBeenCalledWith('plan1');
   });
 
-  it('sin plan pide armarlo primero', async () => {
+  it('A1 (ADR-035): sin plan hay lista de la casa: se anota igual y se ofrece organizar la semana', async () => {
     const plans = fakePlans({ current: jest.fn(async () => null) });
-    await render(<ShoppingScreen />, { wrapper: withServices(fakeServices({ plans })) });
-    expect(await screen.findByRole('button', { name: 'Organizar mi semana' })).toBeOnTheScreen();
+    const shopping = fakeShopping();
+    const services = fakeServices({ plans, shopping });
+    await render(<ShoppingScreen />, { wrapper: withServices(services) });
+
+    expect(await screen.findByText(/Aún no organizas tu semana/)).toBeOnTheScreen();
+    expect(screen.getByRole('link', { name: 'Organizar mi semana' })).toBeOnTheScreen();
+    expect(shopping.forHouse).toHaveBeenCalled();
+    await fireEvent.changeText(screen.getByLabelText('Agregar algo más'), 'aguacate');
+    await fireEvent.press(screen.getByRole('button', { name: 'Agregar a la lista' }));
+    await waitFor(() => expect(shopping.addManual).toHaveBeenCalledWith('house1', 'aguacate', 3));
+  });
+
+  it('A2 (ADR-035): dice cuánto comprar como se pide en la plaza', async () => {
+    const shopping = fakeShopping({
+      forPlan: jest.fn(async () => ({
+        ...SHOPPING,
+        items: [
+          { ...SHOPPING.items[0], id: 'a', name: 'Ahuyama', toBuyGrams: 38, approxUnits: null, buyKind: 'piece' as const, buyGrams: 250, buyUnits: null },
+          { ...SHOPPING.items[0], id: 'b', name: 'Pechuga de pollo', toBuyGrams: 600, approxUnits: null, buyKind: 'weight' as const, buyGrams: 750, buyUnits: null },
+          { ...SHOPPING.items[0], id: 'c', name: 'Leche', toBuyGrams: 300, approxUnits: null, buyKind: 'ml' as const, buyGrams: 500, buyUnits: null },
+        ],
+      })),
+    });
+    await render(<ShoppingScreen />, { wrapper: withServices(fakeServices({ shopping })) });
+    expect(await screen.findByRole('checkbox', { name: 'Ahuyama · un pedazo pequeño' })).toBeOnTheScreen();
+    expect(screen.getByRole('checkbox', { name: 'Pechuga de pollo · 1 libra y media' })).toBeOnTheScreen();
+    expect(screen.getByRole('checkbox', { name: 'Leche · medio litro' })).toBeOnTheScreen();
+  });
+
+  it('M5 (ADR-035): quitar de la lista se puede deshacer', async () => {
+    const shopping = fakeShopping();
+    await render(<ShoppingScreen />, { wrapper: withServices(fakeServices({ shopping })) });
+    await fireEvent.press(await screen.findByRole('button', { name: 'Quitar Tomate de la lista' }));
+    await waitFor(() => expect(shopping.remove).toHaveBeenCalledWith('i1'));
+    expect(await screen.findByText('Quitaste Tomate de la lista.')).toBeOnTheScreen();
+    await fireEvent.press(screen.getByRole('link', { name: 'Deshacer' }));
+    await waitFor(() => expect(shopping.restore).toHaveBeenCalledWith('i1'));
   });
 
   it('agrega un ítem manual en la sección que sugiere la clasificación (B3)', async () => {

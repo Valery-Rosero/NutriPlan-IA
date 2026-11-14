@@ -58,7 +58,7 @@ export function TodayScreen() {
   const plan = useCurrentPlan();
   const restrictions = useRestrictions();
   const suggestions = useCookingSuggestions(moment);
-  const list = useShoppingList(plan.data?.id);
+  const list = useShoppingList(plan.data?.id, plan.isSuccess);
   const generate = useGeneratePlan();
 
   const items = pantry.data ?? [];

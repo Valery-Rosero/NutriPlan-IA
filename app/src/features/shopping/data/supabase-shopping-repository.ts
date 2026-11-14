@@ -1,7 +1,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 import { toAppError } from '@/core/errors/app-error';
-import type { ShoppingList, ShoppingRepository } from '@/features/shopping/domain/shopping';
+import type { BuyKind, ShoppingItem, ShoppingList, ShoppingRepository } from '@/features/shopping/domain/shopping';
 import type { Database } from '@/types/database';
 
 export class SupabaseShoppingRepository implements ShoppingRepository {
@@ -15,12 +15,19 @@ export class SupabaseShoppingRepository implements ShoppingRepository {
     const list = await this.client.from('shopping_lists').select('id').eq('plan_id', planId).maybeSingle();
     if (list.error) throw toAppError(list.error);
     if (!list.data) return null;
+    return { id: list.data.id, items: await this.items(list.data.id) };
+  }
 
-    const { data, error } = await this.client.from('my_shopping_items').select('*').eq('list_id', list.data.id);
+  async forHouse(): Promise<ShoppingList> {
+    const { data: id, error } = await this.client.rpc('my_house_list');
     if (error) throw toAppError(error);
-    return {
-      id: list.data.id,
-      items: data.map((r) => ({
+    return { id, items: await this.items(id), house: true };
+  }
+
+  private async items(listId: string): Promise<ShoppingItem[]> {
+    const { data, error } = await this.client.from('my_shopping_items').select('*').eq('list_id', listId);
+    if (error) throw toAppError(error);
+    return data.map((r) => ({
         id: r.id!,
         ingredientId: r.ingredient_id,
         name: r.name ?? '',
@@ -33,8 +40,10 @@ export class SupabaseShoppingRepository implements ShoppingRepository {
         source: r.source ?? 'manual',
         movedToPantry: r.moved_to_pantry_at !== null,
         replacesName: r.replaces_name,
-      })),
-    };
+        buyKind: (r.buy_kind as BuyKind | null) ?? null,
+        buyGrams: r.buy_g === null ? null : Number(r.buy_g),
+        buyUnits: r.buy_units,
+      }));
   }
 
   async generate(planId: string) {
@@ -68,7 +77,12 @@ export class SupabaseShoppingRepository implements ShoppingRepository {
   }
 
   async remove(itemId: string) {
-    const { error } = await this.client.from('shopping_list_items').delete().eq('id', itemId);
+    const { error } = await this.client.from('shopping_list_items').update({ dismissed_at: new Date().toISOString() }).eq('id', itemId);
+    if (error) throw toAppError(error);
+  }
+
+  async restore(itemId: string) {
+    const { error } = await this.client.from('shopping_list_items').update({ dismissed_at: null }).eq('id', itemId);
     if (error) throw toAppError(error);
   }
 

@@ -17,7 +17,7 @@ export function BuyNextCard() {
   const { t } = useTranslation();
   const buyNext = useBuyNext();
   const plan = useCurrentPlan();
-  const list = useShoppingList(plan.data?.id);
+  const list = useShoppingList(plan.data?.id, plan.isSuccess);
   const add = useAddMissingToList();
   const items = buyNext.data ?? [];
   if (items.length === 0) return null;
@@ -46,7 +46,7 @@ export function BuyNextCard() {
       ))}
       {add.isSuccess ? (
         <Banner tone="success" message={t('pantry.buyNext.added')} />
-      ) : list.data ? (
+      ) : plan.isSuccess && !list.isPending ? (
         <Button
           label={t('pantry.buyNext.add')}
           icon="cart-outline"
@@ -54,7 +54,9 @@ export function BuyNextCard() {
           flavor="mango"
           size="sm"
           loading={add.isPending}
-          onPress={() => add.mutate({ list: list.data!, items: items.map((i) => ({ ingredientId: i.ingredientId, grams: i.grams })) })}
+          onPress={() =>
+            add.mutate({ list: list.data, planId: plan.data?.id, items: items.map((i) => ({ ingredientId: i.ingredientId, grams: i.grams })) })
+          }
         />
       ) : null}
       {add.error && <Banner tone="danger" message={t(errorKey(add.error))} />}

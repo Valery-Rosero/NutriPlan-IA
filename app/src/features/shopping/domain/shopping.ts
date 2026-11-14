@@ -14,13 +14,58 @@ export type ShoppingItem = {
   movedToPantry: boolean;
   /** US-147: si es un sustituto, el nombre de lo que reemplaza ("en lugar de pechuga"). */
   replacesName: string | null;
+  /**
+   * ADR-035 · A2: cómo se compra lo que falta (lo calcula la base): unidades, un poco, un pedazo pequeño,
+   * litros o libras; `buyGrams` es lo que se compra de verdad (y lo que pasa a la despensa).
+   */
+  buyKind?: BuyKind | null;
+  buyGrams?: number | null;
+  buyUnits?: number | null;
 };
 
-export type ShoppingList = { id: string; items: ShoppingItem[] };
+export type BuyKind = 'none' | 'unit' | 'pinch' | 'piece' | 'ml' | 'weight';
+
+/** `house`: la lista de la casa (sin plan, ADR-035). */
+export type ShoppingList = { id: string; items: ShoppingItem[]; house?: boolean };
+
+type T = (key: string, options?: Record<string, unknown>) => string;
+
+/**
+ * A2: "38 g de ahuyama" → "un pedazo pequeño"; "600 g de pollo" → "1 libra y media"; "300 ml de leche" →
+ * "medio litro". Se dice como se pide en la plaza (sin fracciones con símbolos: el lector las lee mal).
+ */
+export function buyLabel(item: Pick<ShoppingItem, 'buyKind' | 'buyGrams' | 'buyUnits' | 'toBuyGrams'>, t: T): string | null {
+  const grams = item.buyGrams ?? 0;
+  switch (item.buyKind) {
+    case 'unit':
+      return t('shopping.buy.units', { count: item.buyUnits ?? 1 });
+    case 'pinch':
+      return t('shopping.buy.pinch');
+    case 'piece':
+      return t('shopping.buy.piece');
+    case 'ml': {
+      if (grams <= 750) return t(grams <= 250 ? 'shopping.buy.quarterLiter' : grams <= 500 ? 'shopping.buy.halfLiter' : 'shopping.buy.threeQuarterLiter');
+      return halves(Math.ceil(grams / 500) / 2, 'liters', t);
+    }
+    case 'weight':
+      if (grams > 3000) return t('shopping.buy.kg', { amount: (Math.ceil(grams / 500) / 2).toLocaleString('es-CO') });
+      return grams <= 250 ? t('shopping.buy.halfPound') : halves(Math.ceil(grams / 250) / 2, 'pounds', t);
+    default:
+      return null;
+  }
+}
+
+/** 1 → "1 libra", 1,5 → "1 libra y media", 2 → "2 libras" (igual con litros). */
+function halves(n: number, unit: 'pounds' | 'liters', t: T) {
+  const whole = Math.floor(n);
+  return t(n - whole >= 0.5 ? `shopping.buy.${unit}Half` : `shopping.buy.${unit}`, { count: whole });
+}
 
 /** Puerto de la lista de compras. Falla con AppError. */
 export interface ShoppingRepository {
   forPlan(planId: string): Promise<ShoppingList | null>;
+  /** ADR-035 · A1: la lista de la casa (existe siempre; sin plan es la que se usa). */
+  forHouse(): Promise<ShoppingList>;
   /** Necesidades del plan menos la despensa; idempotente y respeta lo ya marcado (US-124, US-125). */
   generate(planId: string): Promise<string>;
   setChecked(itemId: string, checked: boolean): Promise<void>;
@@ -28,7 +73,9 @@ export interface ShoppingRepository {
   addManual(listId: string, name: string, storeCategoryId?: number | null): Promise<void>;
   /** ADR-033: ingredientes del catálogo con sus gramos (receta, sugerencias): al comprarlos pasan a la despensa. */
   addIngredients(listId: string, items: { ingredientId: string; grams: number }[]): Promise<number>;
+  /** M5: quitar se puede deshacer (la base solo la oculta). */
   remove(itemId: string): Promise<void>;
+  restore(itemId: string): Promise<void>;
   /** Suma a la despensa lo marcado como comprado. Devuelve cuántos ítems pasaron. */
   moveCheckedToPantry(listId: string): Promise<number>;
   /** US-147: comprar el sustituto en lugar del ingrediente del plan; se recuerda al actualizar la lista. */

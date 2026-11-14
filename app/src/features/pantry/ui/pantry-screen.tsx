@@ -11,6 +11,7 @@ import {
   usePantry,
   useRemoveExpired,
   useRemovePantryItem,
+  useRestorePantryItem,
   useSetCustomGroup,
   useSetPantryExpiry,
 } from '@/features/pantry/application/pantry-queries';
@@ -65,8 +66,10 @@ export function PantryScreen({ embedded }: { embedded?: boolean }) {
   const add = () => router.push('/pantry/add');
   const Container = embedded ? EmbeddedContainer : Screen;
 
-  const [toRemove, setToRemove] = useState<PantryItem | null>(null);
-  const confirmRemove = (item: PantryItem) => setToRemove(item);
+  // M5: quitar es inmediato y se puede deshacer (igual que en la lista de mercado).
+  const restore = useRestorePantryItem();
+  const [removed, setRemoved] = useState<PantryItem | null>(null);
+  const quitar = (item: PantryItem) => remove.mutate(item, { onSuccess: () => setRemoved(item) });
   const [confirmExpired, setConfirmExpired] = useState(false);
   const removeExpired = useRemoveExpired();
   const today = todayIso();
@@ -75,7 +78,17 @@ export function PantryScreen({ embedded }: { embedded?: boolean }) {
   return (
     <Container>
       {!embedded && <AppText variant="title">{t('pantry.title')}</AppText>}
-      {remove.error && <Banner tone="danger" message={t(errorKey(remove.error))} />}
+      {(remove.error ?? restore.error) && <Banner tone="danger" message={t(errorKey(remove.error ?? restore.error))} />}
+      {removed && (
+        <Card variant="filled" style={styles.undo}>
+          <AppText style={styles.flex} accessibilityLiveRegion="polite">{t('pantry.removed', { name: removed.name })}</AppText>
+          <TextLink
+            label={t('shopping.undo')}
+            icon="arrow-undo-outline"
+            onPress={() => restore.mutate(removed, { onSuccess: () => setRemoved(null) })}
+          />
+        </Card>
+      )}
       {pantry.isPending ? (
         <LoadingState />
       ) : pantry.isError ? (
@@ -113,23 +126,10 @@ export function PantryScreen({ embedded }: { embedded?: boolean }) {
             </View>
           )}
           renderItem={({ item }) => (
-            <PantryRow item={item} groups={groups} onOpen={() => open(item)} onRemove={() => confirmRemove(item)} />
+            <PantryRow item={item} groups={groups} onOpen={() => open(item)} onRemove={() => quitar(item)} />
           )}
         />
       )}
-      <ConfirmDialog
-        visible={!!toRemove}
-        icon="trash-outline"
-        title={t('pantry.removeTitle', { name: toRemove?.name ?? '' })}
-        confirmLabel={t('pantry.remove')}
-        cancelLabel={t('common.cancel')}
-        danger
-        onConfirm={() => {
-          if (toRemove) remove.mutate(toRemove);
-          setToRemove(null);
-        }}
-        onCancel={() => setToRemove(null)}
-      />
       <ConfirmDialog
         visible={confirmExpired}
         icon="trash-outline"
@@ -287,6 +287,7 @@ const styles = StyleSheet.create({
   quick: { gap: Spacing.sm },
   sectionHead: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, marginTop: Spacing.md },
   flex: { flex: 1 },
+  undo: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md },
   card: { paddingVertical: Spacing.sm },
   row: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md },
   info: { flex: 1, gap: Spacing.xxs, borderRadius: 8 },

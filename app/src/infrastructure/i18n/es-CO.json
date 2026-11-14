@@ -300,7 +300,32 @@
     "allBoughtBody": "Lo que compraste ya está en tu despensa. Si cambias el plan, revisa si falta algo.",
     "checkAgain": "Revisar si falta algo",
     "closed_one": "{{count}} producto ya pasó a tu despensa.",
-    "closed_other": "{{count}} productos ya pasaron a tu despensa."
+    "closed_other": "{{count}} productos ya pasaron a tu despensa.",
+    "house": {
+      "note": "Aún no organizas tu semana: anota aquí lo que necesites. Cuando la organices, esto pasa a la lista de la semana.",
+      "empty": "Tu lista está vacía. Anota lo que necesites comprar."
+    },
+    "removed": "Quitaste {{name}} de la lista.",
+    "undo": "Deshacer",
+    "buy": {
+      "units_one": "{{count}} unidad",
+      "units_other": "{{count}} unidades",
+      "pinch": "un poco",
+      "piece": "un pedazo pequeño",
+      "halfPound": "media libra",
+      "pounds_one": "{{count}} libra",
+      "pounds_other": "{{count}} libras",
+      "poundsHalf_one": "{{count}} libra y media",
+      "poundsHalf_other": "{{count}} libras y media",
+      "kg": "{{amount}} kg",
+      "quarterLiter": "un cuarto de litro",
+      "halfLiter": "medio litro",
+      "threeQuarterLiter": "tres cuartos de litro",
+      "liters_one": "{{count}} litro",
+      "liters_other": "{{count}} litros",
+      "litersHalf_one": "{{count}} litro y medio",
+      "litersHalf_other": "{{count}} litros y medio"
+    }
   },
   "pantry": {
     "title": "Despensa",
@@ -440,7 +465,8 @@
     "stillGoodHint": "Le damos 2 días más a {{name}}; luego puedes cambiar la fecha",
     "removeExpired": "Quitar lo vencido",
     "removeExpiredTitle": "¿Quitar todo lo vencido?",
-    "removeExpiredMessage": "Se quita de tu cocina. Lo que todavía sirva, márcalo antes con «Todavía sirve»."
+    "removeExpiredMessage": "Se quita de tu cocina. Lo que todavía sirva, márcalo antes con «Todavía sirve».",
+    "removed": "Quitaste {{name}} de tu cocina."
   },
   "profile": {
     "title": "Perfil",

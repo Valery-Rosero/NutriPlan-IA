@@ -280,16 +280,12 @@ function PreviewSections({ preview }: { preview: RecipePreview }) {
 function AddMissingToList({ items }: { items: { ingredientId: string; grams: number }[] }) {
   const { t } = useTranslation();
   const plan = useCurrentPlan();
-  const list = useShoppingList(plan.data?.id);
+  const list = useShoppingList(plan.data?.id, plan.isSuccess);
   const add = useAddMissingToList();
   if (items.length === 0) return null;
   if (add.isSuccess) return <Banner tone="success" message={t('recipe.addedMissing')} />;
-  if (!list.data) {
-    // Sin plan no hay lista todavía: se explica en vez de mostrar un botón que no puede funcionar.
-    const loading = plan.isPending || (!!plan.data && list.isPending);
-    return loading ? null : <AppText variant="caption" secondary>{t('recipe.noListYet')}</AppText>;
-  }
-  const current = list.data;
+  // A1 (ADR-035): siempre hay lista (la del plan o la de la casa); solo se espera a saber cuál es.
+  if (!plan.isSuccess || list.isPending) return null;
   return (
     <>
       <Button
@@ -299,7 +295,7 @@ function AddMissingToList({ items }: { items: { ingredientId: string; grams: num
         flavor="mango"
         size="sm"
         loading={add.isPending}
-        onPress={() => add.mutate({ list: current, items })}
+        onPress={() => add.mutate({ list: list.data, planId: plan.data?.id, items })}
       />
       {add.error && <Banner tone="danger" message={t(errorKey(add.error))} />}
     </>

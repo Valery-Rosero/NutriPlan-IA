@@ -7,16 +7,18 @@ import { errorKey } from '@/core/errors/app-error';
 import { formatGrams } from '@/core/format';
 import { useCurrentPlan } from '@/features/plan/application/plan-queries';
 import {
+  listKeyFor,
   useAddManualItem,
   useGenerateList,
   useMoveToPantry,
   useRemoveItem,
+  useRestoreItem,
   useShoppingList,
   useToggleItem,
 } from '@/features/shopping/application/shopping-queries';
 import { useSubstitutes } from '@/features/recipes/application/recipe-queries';
 import { substitutesByIngredient } from '@/features/recipes/domain/recipe';
-import { pendingToPantry, progress, splitClosed, toSections, type ShoppingItem } from '@/features/shopping/domain/shopping';
+import { buyLabel, pendingToPantry, progress, splitClosed, toSections, type ShoppingItem } from '@/features/shopping/domain/shopping';
 import { ShoppingRow } from '@/features/shopping/ui/shopping-row';
 import { parseCop } from '@/features/profile/domain/profile';
 import { useRecordPurchase } from '@/features/spending/application/use-spending';
@@ -36,25 +38,38 @@ import {
   ProgressBar,
   Screen,
   TextField,
+  TextLink,
 } from '@/shared/ui';
 
-/** US-124 (desde el plan), US-125 (resta la despensa), US-126 (marcar, quitar, agregar), US-135 (secciones). */
+/**
+ * US-124 (desde el plan), US-125 (resta la despensa), US-126 (marcar, quitar, agregar), US-135 (secciones).
+ * ADR-035: sin plan se usa la lista de la casa (A1); las cantidades van como se compran (A2); quitar se deshace (M5).
+ */
 export function ShoppingScreen({ embedded }: { embedded?: boolean }) {
   const { t } = useTranslation();
   const router = useRouter();
   const online = useIsOnline();
   const plan = useCurrentPlan();
   const planId = plan.data?.id;
-  const list = useShoppingList(planId);
+  const list = useShoppingList(planId, plan.isSuccess);
   const generate = useGenerateList();
 
   const body = () => {
-    if (plan.isPending || (planId && list.isPending)) return <LoadingState />;
+    if (plan.isPending || list.isPending) return <LoadingState />;
     if (plan.isError || list.isError) {
       return <ErrorState message={t(errorKey(plan.error ?? list.error))} onRetry={() => void list.refetch()} />;
     }
     if (!planId) {
-      return <EmptyState icon="calendar-outline" message={t('shopping.noPlan')} action={<Button label={t('shopping.goToPlan')} flavor="basil" onPress={() => router.navigate('/week')} />} />;
+      // A1: sin plan, la lista de la casa (se anota igual; al organizar la semana pasa a esa lista).
+      return (
+        <>
+          <Card variant="filled">
+            <AppText secondary>{t('shopping.house.note')}</AppText>
+            <TextLink label={t('shopping.goToPlan')} icon="calendar-outline" onPress={() => router.navigate('/week')} />
+          </Card>
+          {list.data && <ListView listKey={listKeyFor(undefined)} listId={list.data.id} items={list.data.items} house />}
+        </>
+      );
     }
     if (!list.data) {
       return (
@@ -65,7 +80,15 @@ export function ShoppingScreen({ embedded }: { embedded?: boolean }) {
         />
       );
     }
-    return <ListView planId={planId} listId={list.data.id} items={list.data.items} onRefresh={() => generate.mutate(planId)} refreshing={generate.isPending} />;
+    return (
+      <ListView
+        listKey={listKeyFor(planId)}
+        listId={list.data.id}
+        items={list.data.items}
+        onRefresh={() => generate.mutate(planId)}
+        refreshing={generate.isPending}
+      />
+    );
   };
 
   const content = (
@@ -84,16 +107,21 @@ export function ShoppingScreen({ embedded }: { embedded?: boolean }) {
   );
 }
 
-function ListView({ planId, listId, items, onRefresh, refreshing }: {
-  planId: string;
+function ListView({ listKey, listId, items, onRefresh, refreshing = false, house = false }: {
+  /** Clave de la lista en caché: el plan o 'house'. */
+  listKey: string;
   listId: string;
   items: ShoppingItem[];
-  onRefresh: () => void;
-  refreshing: boolean;
+  onRefresh?: () => void;
+  refreshing?: boolean;
+  house?: boolean;
 }) {
   const { t } = useTranslation();
   const toggle = useToggleItem();
   const remove = useRemoveItem();
+  const restore = useRestoreItem();
+  // M5: lo último que se quitó, para poder deshacerlo.
+  const [removed, setRemoved] = useState<ShoppingItem | null>(null);
   const add = useAddManualItem();
   const move = useMoveToPantry();
   const [newItem, setNewItem] = useState('');
@@ -132,7 +160,9 @@ function ListView({ planId, listId, items, onRefresh, refreshing }: {
                 <AppText variant="caption" secondary>{t('shopping.allBoughtBody')}</AppText>
               </View>
             </View>
-            <Button label={t('shopping.checkAgain')} icon="refresh" variant="secondary" flavor="basil" size="sm" loading={refreshing} onPress={onRefresh} />
+            {onRefresh && (
+              <Button label={t('shopping.checkAgain')} icon="refresh" variant="secondary" flavor="basil" size="sm" loading={refreshing} onPress={onRefresh} />
+            )}
           </>
         ) : (
           <>
@@ -141,7 +171,7 @@ function ListView({ planId, listId, items, onRefresh, refreshing }: {
               <AppText variant="subtitle" style={styles.flex} accessibilityLiveRegion="polite">
                 {t('shopping.progress', { done, total })}
               </AppText>
-              <IconButton icon="refresh" label={t('shopping.refresh')} tone="basil" disabled={refreshing} onPress={onRefresh} />
+              {onRefresh && <IconButton icon="refresh" label={t('shopping.refresh')} tone="basil" disabled={refreshing} onPress={onRefresh} />}
             </View>
             <ProgressBar value={total ? done / total : 0} label={t('shopping.progress', { done, total })} tone="accent" />
             {closed > 0 && <AppText variant="caption" secondary>{t('shopping.closed', { count: closed })}</AppText>}
@@ -173,6 +203,19 @@ function ListView({ planId, listId, items, onRefresh, refreshing }: {
         {record.error && <Banner tone="danger" message={t(errorKey(record.error))} />}
       </Card>
 
+      {removed && (
+        <Card variant="filled" style={styles.undo}>
+          <AppText style={styles.flex} accessibilityLiveRegion="polite">{t('shopping.removed', { name: removed.name })}</AppText>
+          <TextLink
+            label={t('shopping.undo')}
+            icon="arrow-undo-outline"
+            onPress={() => restore.mutate(removed.id, { onSuccess: () => setRemoved(null) })}
+          />
+        </Card>
+      )}
+
+      {house && open.length === 0 && <EmptyState icon="cart-outline" message={t('shopping.house.empty')} />}
+
       {toSections(open).map((section) =>
         section.kind === 'have' ? (
           <Card key={section.key} variant="filled">
@@ -191,11 +234,11 @@ function ListView({ planId, listId, items, onRefresh, refreshing }: {
               <ShoppingRow
                 key={item.id}
                 item={item}
-                planId={planId}
-                label={item.toBuyGrams ? `${item.name} · ${amount(item, t)}` : item.name}
+                planId={listKey}
+                label={rowLabel(item, t)}
                 substitutes={item.ingredientId ? substitutes.get(item.ingredientId) : undefined}
-                onToggle={(checked) => toggle.mutate({ planId, itemId: item.id, checked })}
-                onRemove={() => remove.mutate(item.id)}
+                onToggle={(checked) => toggle.mutate({ planId: listKey, itemId: item.id, checked })}
+                onRemove={() => remove.mutate(item.id, { onSuccess: () => setRemoved(item) })}
               />
             ))}
           </Card>
@@ -223,14 +266,20 @@ function ListView({ planId, listId, items, onRefresh, refreshing }: {
         />
       </Card>
 
-      {(move.error ?? remove.error ?? add.error) && <Banner tone="danger" message={t(errorKey(move.error ?? remove.error ?? add.error))} />}
+      {(move.error ?? remove.error ?? restore.error ?? add.error) && (
+        <Banner tone="danger" message={t(errorKey(move.error ?? remove.error ?? restore.error ?? add.error))} />
+      )}
     </>
   );
 }
 
-function amount(item: ShoppingItem, t: (k: string, o?: Record<string, unknown>) => string) {
-  const grams = formatGrams(item.toBuyGrams ?? 0);
-  return item.approxUnits ? t('shopping.units', { count: item.approxUnits, grams }) : grams;
+/** A2: "Ahuyama · un pedazo pequeño", "Pollo · 1 libra y media" (como se pide en la plaza). */
+function rowLabel(item: ShoppingItem, t: (k: string, o?: Record<string, unknown>) => string) {
+  if (!item.toBuyGrams) return item.name;
+  const buy = buyLabel(item, t);
+  if (buy) return `${item.name} · ${buy}`;
+  const grams = formatGrams(item.toBuyGrams);
+  return `${item.name} · ${item.approxUnits ? t('shopping.units', { count: item.approxUnits, grams }) : grams}`;
 }
 
 const styles = StyleSheet.create({
@@ -238,4 +287,5 @@ const styles = StyleSheet.create({
   progressRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md },
   sectionHead: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
   embedded: { gap: Spacing.md, paddingBottom: Spacing.lg },
+  undo: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md },
 });

@@ -46,8 +46,8 @@ begin
   where list_id = v_list and (ingredient_id = v_banano or custom_name in ('limones', 'Galletas de la tienda', 'Bolsas'));
   v_n := public.move_checked_to_pantry(v_list);
 
-  perform tt.ok((select sum(quantity_g) from public.pantry_items where user_id = u and ingredient_id = v_banano) = 340,
-                'C1 · al comprarlo, lo agregado desde la receta llega a la despensa');
+  perform tt.ok((select sum(quantity_g) from public.pantry_items where user_id = u and ingredient_id = v_banano) = 360,
+                'C1 · al comprarlo, lo agregado desde la receta llega a la despensa (340 g = 3 bananos = 360 g, ADR-035)');
   perform tt.ok((select sum(quantity_g) from public.pantry_items where user_id = u and ingredient_id = v_limon) = private.default_purchase_g(v_limon),
                 'lo escrito a mano que existe en el catálogo ("limones") llega como Limón');
   perform tt.ok(exists (select 1 from public.pantry_custom_items where user_id = u and name = 'Galletas de la tienda' and quantity = 1 and unit = 'unit'),

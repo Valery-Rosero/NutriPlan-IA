@@ -227,11 +227,13 @@ export const SHOPPING: ShoppingList = {
 export function fakeShopping(overrides: Partial<ShoppingRepository> = {}): jest.Mocked<ShoppingRepository> {
   return {
     forPlan: jest.fn(async () => SHOPPING),
+    forHouse: jest.fn(async () => ({ id: 'house1', items: [], house: true })),
     generate: jest.fn(async () => 'list1'),
     setChecked: jest.fn(async () => {}),
     addManual: jest.fn(async () => {}),
     addIngredients: jest.fn(async () => 1),
     remove: jest.fn(async () => {}),
+    restore: jest.fn(async () => {}),
     moveCheckedToPantry: jest.fn(async () => 1),
     substitute: jest.fn(async () => {}),
     undoSubstitution: jest.fn(async () => {}),

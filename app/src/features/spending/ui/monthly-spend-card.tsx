@@ -17,6 +17,8 @@ export function MonthlySpendCard() {
   if (!spend.data) return null; // mientras carga o sin conexión no estorba: es información secundaria
   const s = spend.data;
   const level = spendLevel(s);
+  // M3: el presupuesto del mes sale del semanal × 30/7 ("$857.143"): se muestra redondeado a miles.
+  const budget = s.monthlyBudget === null ? '' : roundedCOP(s.monthlyBudget);
 
   return (
     <Card>
@@ -27,7 +29,7 @@ export function MonthlySpendCard() {
           <AppText variant="subtitle">
             {s.monthlyBudget === null
               ? formatCOP(s.spent)
-              : t('spending.summary', { percent: s.percent, spent: formatCOP(s.spent), budget: formatCOP(s.monthlyBudget) })}
+              : t('spending.summary', { percent: s.percent, spent: formatCOP(s.spent), budget })}
           </AppText>
         </View>
       </View>
@@ -35,7 +37,7 @@ export function MonthlySpendCard() {
         <ProgressBar
           value={s.monthlyBudget > 0 ? s.spent / s.monthlyBudget : 0}
           tone={level === 'ok' ? 'primary' : 'warning'}
-          label={t('spending.summary', { percent: s.percent, spent: formatCOP(s.spent), budget: formatCOP(s.monthlyBudget) })}
+          label={t('spending.summary', { percent: s.percent, spent: formatCOP(s.spent), budget })}
         />
       )}
       {level === 'over' && <Banner tone="danger" message={t('spending.over')} />}
@@ -51,6 +53,12 @@ export function MonthlySpendCard() {
       )}
     </Card>
   );
+}
+
+/** "$857.143" → "≈ $857.000"; una cifra ya redonda queda igual. */
+export function roundedCOP(value: number) {
+  const rounded = Math.round(value / 1000) * 1000;
+  return rounded === value ? formatCOP(value) : `≈ ${formatCOP(rounded)}`;
 }
 
 const styles = StyleSheet.create({

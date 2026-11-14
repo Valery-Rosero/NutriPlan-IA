@@ -14,15 +14,24 @@ export const shoppingKeys = {
   toggle: ['shopping', 'toggle'] as const,
 };
 
+/** `planId`: la clave de la lista en caché (el plan, o 'house' para la lista de la casa). */
 type Toggle = { planId: string; itemId: string; checked: boolean };
 
-/** La lista se guarda en disco: se consulta en el supermercado aunque no haya señal (ADR-014). */
-export function useShoppingList(planId: string | undefined) {
+/** ADR-035: clave de la lista vigente: la del plan o, sin plan, la de la casa. */
+export const HOUSE_LIST = 'house';
+export const listKeyFor = (planId: string | undefined) => planId ?? HOUSE_LIST;
+
+/**
+ * La lista vigente: la del plan o, sin plan, la de la casa (A1: la lista existe siempre). `ready` = ya se
+ * sabe si hay plan (para no pedir la de la casa mientras carga el plan). Se guarda en disco: se consulta en
+ * el supermercado aunque no haya señal (ADR-014).
+ */
+export function useShoppingList(planId: string | undefined, ready = true) {
   const { shopping } = useServices();
   return useQuery({
-    queryKey: shoppingKeys.list(planId ?? ''),
-    queryFn: () => shopping.forPlan(planId!),
-    enabled: !!planId,
+    queryKey: shoppingKeys.list(listKeyFor(planId)),
+    queryFn: () => (planId ? shopping.forPlan(planId) : shopping.forHouse()),
+    enabled: ready,
     meta: { persist: true },
   });
 }
@@ -111,14 +120,24 @@ export function useAddManualItem() {
  */
 export function useAddMissingToList() {
   const { shopping } = useServices();
-  return useListMutation(({ list, items }: { list: ShoppingList; items: { ingredientId: string; grams: number }[] }) =>
-    shopping.addIngredients(list.id, items),
+  return useListMutation(
+    async ({ list, planId, items }: { list: ShoppingList | null | undefined; planId?: string; items: { ingredientId: string; grams: number }[] }) => {
+      // Siempre hay dónde anotarlo (A1): la lista vigente; si el plan aún no tiene lista, se arma; sin plan, la de la casa.
+      const listId = list?.id ?? (planId ? await shopping.generate(planId) : (await shopping.forHouse()).id);
+      return shopping.addIngredients(listId, items);
+    },
   );
 }
 
+/** M5: quitar de la lista se puede deshacer. */
 export function useRemoveItem() {
   const { shopping } = useServices();
   return useListMutation((itemId: string) => shopping.remove(itemId));
+}
+
+export function useRestoreItem() {
+  const { shopping } = useServices();
+  return useListMutation((itemId: string) => shopping.restore(itemId));
 }
 
 /** Lo comprado pasa a la despensa: "la cocina cambió" (despensa, sugerencias y lista al día). */

@@ -1501,14 +1501,14 @@ isOneToOne: false
                   ]
                 },"shopping_list_items": {
                   Row: {
-                    "checked_at": string | null,"created_at": string,"custom_name": string | null,"id": string,"ingredient_id": string | null,"is_checked": boolean,"list_id": string,"moved_to_pantry_at": string | null,"needed_g": number | null,"pantry_g": number,"source": Database["public"]['Enums']["shopping_item_source"],"store_category_id": number | null,"to_buy_g": number | null
+                    "checked_at": string | null,"created_at": string,"custom_name": string | null,"dismissed_at": string | null,"id": string,"ingredient_id": string | null,"is_checked": boolean,"list_id": string,"moved_to_pantry_at": string | null,"needed_g": number | null,"pantry_g": number,"source": Database["public"]['Enums']["shopping_item_source"],"store_category_id": number | null,"to_buy_g": number | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "checked_at"?: string | null,"created_at"?: string,"custom_name"?: string | null,"id"?: string,"ingredient_id"?: string | null,"is_checked"?: boolean,"list_id": string,"moved_to_pantry_at"?: string | null,"needed_g"?: number | null,"pantry_g"?: number,"source"?: Database["public"]['Enums']["shopping_item_source"],"store_category_id"?: number | null,"to_buy_g"?: never
+                    "checked_at"?: string | null,"created_at"?: string,"custom_name"?: string | null,"dismissed_at"?: string | null,"id"?: string,"ingredient_id"?: string | null,"is_checked"?: boolean,"list_id": string,"moved_to_pantry_at"?: string | null,"needed_g"?: number | null,"pantry_g"?: number,"source"?: Database["public"]['Enums']["shopping_item_source"],"store_category_id"?: number | null,"to_buy_g"?: never
                   }
                   Update: {
-                    "checked_at"?: string | null,"created_at"?: string,"custom_name"?: string | null,"id"?: string,"ingredient_id"?: string | null,"is_checked"?: boolean,"list_id"?: string,"moved_to_pantry_at"?: string | null,"needed_g"?: number | null,"pantry_g"?: number,"source"?: Database["public"]['Enums']["shopping_item_source"],"store_category_id"?: number | null,"to_buy_g"?: never
+                    "checked_at"?: string | null,"created_at"?: string,"custom_name"?: string | null,"dismissed_at"?: string | null,"id"?: string,"ingredient_id"?: string | null,"is_checked"?: boolean,"list_id"?: string,"moved_to_pantry_at"?: string | null,"needed_g"?: number | null,"pantry_g"?: number,"source"?: Database["public"]['Enums']["shopping_item_source"],"store_category_id"?: number | null,"to_buy_g"?: never
                   }
                   Relationships: [
                     {
@@ -1571,14 +1571,14 @@ isOneToOne: false
                   ]
                 },"shopping_lists": {
                   Row: {
-                    "created_at": string,"id": string,"name": string,"plan_id": string | null,"status": Database["public"]['Enums']["list_status"],"updated_at": string,"user_id": string
+                    "created_at": string,"id": string,"is_house": boolean,"name": string,"plan_id": string | null,"status": Database["public"]['Enums']["list_status"],"updated_at": string,"user_id": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "created_at"?: string,"id"?: string,"name"?: string,"plan_id"?: string | null,"status"?: Database["public"]['Enums']["list_status"],"updated_at"?: string,"user_id": string
+                    "created_at"?: string,"id"?: string,"is_house"?: boolean,"name"?: string,"plan_id"?: string | null,"status"?: Database["public"]['Enums']["list_status"],"updated_at"?: string,"user_id": string
                   }
                   Update: {
-                    "created_at"?: string,"id"?: string,"name"?: string,"plan_id"?: string | null,"status"?: Database["public"]['Enums']["list_status"],"updated_at"?: string,"user_id"?: string
+                    "created_at"?: string,"id"?: string,"is_house"?: boolean,"name"?: string,"plan_id"?: string | null,"status"?: Database["public"]['Enums']["list_status"],"updated_at"?: string,"user_id"?: string
                   }
                   Relationships: [
                     {
@@ -1914,7 +1914,7 @@ isOneToOne: false
                   ]
                 },"my_shopping_items": {
                   Row: {
-                    "approx_units": number | null,"category_id": number | null,"category_name": string | null,"category_position": number | null,"id": string,"ingredient_id": string | null,"is_checked": boolean,"list_id": string,"moved_to_pantry_at": string | null,"name": string | null,"needed_g": number | null,"pantry_g": number,"replaces_name": string | null,"source": Database["public"]['Enums']["shopping_item_source"],"to_buy_g": number | null
+                    "approx_units": number | null,"buy_g": number | null,"buy_kind": string | null,"buy_units": number | null,"category_id": number | null,"category_name": string | null,"category_position": number | null,"id": string,"ingredient_id": string | null,"is_checked": boolean,"list_id": string,"moved_to_pantry_at": string | null,"name": string | null,"needed_g": number | null,"pantry_g": number,"replaces_name": string | null,"source": Database["public"]['Enums']["shopping_item_source"],"to_buy_g": number | null
                   }
                   ComputedFields: never
                   Relationships: [
@@ -2114,6 +2114,9 @@ isOneToOne: false
                            },
 "move_checked_to_pantry":
 { Args: { "p_list_id": string }; Returns: number
+                           },
+"my_house_list":
+{ Args: Record<PropertyKey, never>; Returns: string
                            },
 "plan_budget_status":
 { Args: { "p_plan_id": string }; Returns: {

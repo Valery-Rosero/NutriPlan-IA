@@ -1,6 +1,6 @@
 # Modelo de datos (generado desde las migraciones)
 
-> Fuente de verdad: `backend/supabase/migrations/`. Este archivo se generó leyendo la base real después de aplicar las 36 migraciones (67 tablas, todas con RLS). Si cambia una migración, regenerar: `python docs/03-datos/_generar_modelo.py` (con Supabase local encendido).
+> Fuente de verdad: `backend/supabase/migrations/`. Este archivo se generó leyendo la base real después de aplicar las 37 migraciones (67 tablas, todas con RLS). Si cambia una migración, regenerar: `python docs/03-datos/_generar_modelo.py` (con Supabase local encendido).
 
 Principios: 3FN; lo derivable no se guarda (alérgenos y dietas de una receta, nutrición por porción, picante y apto-batch); cantidades canónicas en gramos; RLS en todas las tablas; ver `reglas-de-negocio.md`.
 
@@ -898,6 +898,7 @@ Restricciones:
 | `status` | list_status | no | 'active'::list_status |  |
 | `created_at` | timestamp with time zone | no | now() |  |
 | `updated_at` | timestamp with time zone | no | now() |  |
+| `is_house` | boolean | no | false | ADR-035: la lista de la casa (una por persona, sin plan). Lo pendiente pasa a la lista del plan al armarla. |
 
 Restricciones:
 - **CHECK**: `CHECK (((char_length(name) >= 1) AND (char_length(name) <= 80)))`
@@ -922,6 +923,7 @@ Restricciones:
 | `source` | shopping_item_source | no | 'manual'::shopping_item_source |  |
 | `created_at` | timestamp with time zone | no | now() |  |
 | `moved_to_pantry_at` | timestamp with time zone | sí |  | Cuándo se sumó a la despensa lo comprado (evita sumarlo dos veces). |
+| `dismissed_at` | timestamp with time zone | sí |  | ADR-035: quitada de la lista (se puede deshacer). El plan no la vuelve a poner al rehacer la lista. |
 
 Restricciones:
 - **CHECK**: `CHECK (((char_length(custom_name) >= 1) AND (char_length(custom_name) <= 80)))`

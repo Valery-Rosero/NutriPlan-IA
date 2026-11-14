@@ -87,11 +87,20 @@ describe('RecipeScreen (US-115, US-118, US-123, ADR-020)', () => {
     expect(await screen.findByText('Listo, quedó en tu lista de mercado.')).toBeOnTheScreen();
   });
 
-  it('sin plan no hay lista: lo explica en vez de mostrar un botón que no sirve', async () => {
+  it('A1 (ADR-035): sin plan, lo que falta va a la lista de la casa', async () => {
     const services = fakeServices({ plans: fakePlans({ current: jest.fn(async () => null) }) });
     await render(<RecipeScreen />, { wrapper: withServices(services) });
-    expect(await screen.findByText(/primero organiza tu semana/)).toBeOnTheScreen();
-    expect(screen.queryByRole('button', { name: /Agregar lo que falta/ })).not.toBeOnTheScreen();
+    await fireEvent.press(await screen.findByRole('button', { name: 'Agregar lo que falta a mi lista (1)' }));
+    await waitFor(() => expect(services.shopping.addIngredients).toHaveBeenCalledWith('house1', [{ ingredientId: 'arroz', grams: 300 }]));
+  });
+
+  it('con plan pero sin lista armada todavía, la arma y agrega', async () => {
+    const services = fakeServices();
+    jest.mocked(services.shopping.forPlan).mockResolvedValue(null);
+    await render(<RecipeScreen />, { wrapper: withServices(services) });
+    await fireEvent.press(await screen.findByRole('button', { name: 'Agregar lo que falta a mi lista (1)' }));
+    await waitFor(() => expect(services.shopping.generate).toHaveBeenCalledWith('plan1'));
+    expect(services.shopping.addIngredients).toHaveBeenCalledWith('list1', [{ ingredientId: 'arroz', grams: 300 }]);
   });
 
   it('una receta creada por el asistente lo dice', async () => {

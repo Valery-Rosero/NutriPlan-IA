@@ -60,7 +60,7 @@ describe('B3b: alimentos propios en la despensa', () => {
     expect(screen.getByRole('button', { name: 'Guardar en la despensa' })).toBeDisabled();
   });
 
-  it('en la despensa se ve con su unidad y la etiqueta "Propio"; quitarlo lo borra de su tabla', async () => {
+  it('en la despensa se ve con su unidad y la etiqueta "Propio"; quitarlo lo borra de su tabla (y se puede deshacer)', async () => {
     const pantry = fakePantry({ list: jest.fn(async () => [QUESO, ARROZ]) });
     await render(<PantryScreen />, { wrapper: withServices(fakeServices({ pantry })) });
 
@@ -69,8 +69,13 @@ describe('B3b: alimentos propios en la despensa', () => {
     expect(screen.getByLabelText('Galletas de la tienda (Propio), 2 unidades. Sin fecha de vencimiento.')).toBeOnTheScreen();
 
     await fireEvent.press(screen.getByRole('button', { name: 'Quitar Galletas de la tienda' }));
-    await fireEvent.press(await screen.findByRole('button', { name: 'Quitar' }));
     await waitFor(() => expect(pantry.remove).toHaveBeenCalledWith(QUESO));
+    // M5: igual que en la lista, se quita sin preguntar y se puede deshacer.
+    expect(await screen.findByText('Quitaste Galletas de la tienda de tu cocina.')).toBeOnTheScreen();
+    await fireEvent.press(screen.getByRole('link', { name: 'Deshacer' }));
+    await waitFor(() =>
+      expect(pantry.addCustom).toHaveBeenCalledWith(expect.objectContaining({ name: 'Galletas de la tienda', quantity: 2, unit: 'unit' })),
+    );
   });
 });
 

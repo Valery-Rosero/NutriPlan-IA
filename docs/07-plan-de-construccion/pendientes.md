@@ -71,8 +71,8 @@ Aprobada completa por la dueña del producto ("todo lo que recomiendas está bie
 |---|---|---|
 | 1 | Que el ciclo no se rompa: lo de recetas y sugerencias entra como ingrediente con gramos; lo escrito a mano llega a la despensa; la lista se rehace sola tras cualquier cambio (C1, C2, D3 · ADR-033) | ✅ Hecho (13-nov); probar en el APK: agregar lo que falta → comprar → pasar → aparece en "Lo que tengo" |
 | 2 | Editar lo que tengo: cantidad −/+, ¼ ½ ¾, "se acabó", vencimiento; agrupar lotes; deshacer los atajos; qué hacer con lo vencido; vencimiento por vida útil (C3, A5, A6, M1, M2 · ADR-034) | ✅ Hecho (13-nov); probar en el APK: tocar un alimento → "Queda la mitad" → Guardar; papa comprada dos veces = una fila |
-| 3 | Lista de la casa sin plan; cantidades como se venden; presupuesto redondeado; deshacer al quitar (A1, A2, M3, M5) | Siguiente |
-| 4 | Encabezado compacto que se desplaza; Agregar de a un modo; despensa sin conexión; limpieza técnica (A3, A4, M4, D1, D2, D4) | Pendiente |
+| 3 | Lista de la casa sin plan; cantidades como se venden; presupuesto redondeado; deshacer al quitar (A1, A2, M3, M5 · ADR-035) | ✅ Hecho (14-nov); probar en el APK: sin plan anotar "aguacate"; ver "Ahuyama · un pedazo pequeño"; quitar y "Deshacer" |
+| 4 | Encabezado compacto que se desplaza; Agregar de a un modo; despensa sin conexión; limpieza técnica (A3, A4, M4, D1, D2, D4) | Siguiente |
 
 ## C. Antes de usuarios reales (sin cambios)
 Revisión de un abogado de los textos legales · revisión de una nutricionista (US-121) · validación con 5 personas (US-101) · producción (`drgzvvkkjxqvolcerpjx`) · Google Play (US-158) · monitor de disponibilidad · Gemini en plan de pago con tope de gasto y clave rotada · renovar el token de Supabase del despliegue (cada 90 días).
