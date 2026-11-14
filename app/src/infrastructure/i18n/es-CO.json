@@ -283,7 +283,7 @@
     "units_other": "{{count}} unidades (≈ {{grams}})",
     "remove": "Quitar",
     "addLabel": "Agregar algo más",
-    "addPlaceholder": "Ej.: bolsas, café (separa con comas)",
+    "addPlaceholder": "Ej.: pollo, pan y yuca",
     "add": "Agregar a la lista",
     "moveToPantry_one": "Pasar {{count}} comprado a la despensa",
     "moveToPantry_other": "Pasar {{count}} comprados a la despensa",
@@ -325,7 +325,11 @@
       "liters_other": "{{count}} litros",
       "litersHalf_one": "{{count}} litro y medio",
       "litersHalf_other": "{{count}} litros y medio"
-    }
+    },
+    "addPreview_one": "Se agrega: {{list}}",
+    "addPreview_other": "Se agregan {{count}}: {{list}}",
+    "addMany_one": "Agregar {{count}} a la lista",
+    "addMany_other": "Agregar {{count}} a la lista"
   },
   "pantry": {
     "title": "Despensa",
@@ -1003,6 +1007,19 @@
       "daily": "Recordatorios diarios",
       "weekly_summary": "Solo resumen semanal",
       "none": "Sin avisos"
+    }
+  },
+  "voice": {
+    "start": "Dictar",
+    "stop": "Terminar de dictar",
+    "listening": "Te escucho… Habla y toca ■ cuando termines. Revisa el texto antes de enviarlo.",
+    "listeningShort": "Te escucho…",
+    "errors": {
+      "denied": "Sin permiso del micrófono no puedo escucharte. Puedes activarlo en los ajustes del teléfono.",
+      "unavailable": "Tu teléfono no tiene el reconocimiento de voz activo. Puedes usar el micrófono de tu teclado.",
+      "noSpeech": "No te escuché. Toca el micrófono e inténtalo otra vez.",
+      "network": "Sin conexión no pude entender la voz. Inténtalo de nuevo.",
+      "failed": "No pude entender la voz. Inténtalo otra vez."
     }
   }
 }

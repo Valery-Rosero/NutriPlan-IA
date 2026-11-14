@@ -19,7 +19,6 @@
       "package": "co.nutriplan.app",
       "permissions": [],
       "blockedPermissions": [
-        "android.permission.RECORD_AUDIO",
         "android.permission.SYSTEM_ALERT_WINDOW"
       ]
     },
@@ -44,7 +43,7 @@
         {
           "photosPermission": "NutriPlan usa una foto solo cuando la eliges: para agregar alimentos desde una foto de tu nevera o de un recibo, o para adjuntarla a un reporte.",
           "cameraPermission": "NutriPlan usa la cámara solo cuando tomas una foto de tu nevera o de un recibo para agregar alimentos. La foto no se guarda.",
-          "microphonePermission": false
+          "microphonePermission": "NutriPlan usa el micrófono solo mientras dictas. Tu voz se convierte en texto y no se guarda."
         }
       ],
       [
@@ -52,6 +51,16 @@
         {
           "color": "#25344F",
           "defaultChannel": "default"
+        }
+      ],
+      [
+        "expo-speech-recognition",
+        {
+          "microphonePermission": "NutriPlan usa el micrófono solo mientras dictas. Tu voz se convierte en texto y no se guarda.",
+          "speechRecognitionPermission": "NutriPlan convierte tu voz en texto solo mientras dictas. No se guarda.",
+          "androidSpeechServicePackages": [
+            "com.google.android.googlequicksearchbox"
+          ]
         }
       ]
     ],

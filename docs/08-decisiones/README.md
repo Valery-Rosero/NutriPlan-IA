@@ -41,3 +41,4 @@ Estado: **Aceptada** = ya implementada o decidida con el usuario; **Propuesta** 
 | [035](ADR-035.md) | Una lista que se puede usar en el súper: lista de la casa, cantidades como se venden y deshacer | Aceptada |
 | [036](ADR-036.md) | Más pantalla, menos pasos en Mi cocina | Aceptada |
 | [037](ADR-037.md) | Asistente "IA primero": lista de platos, receta completa y lo que la IA sabe de la persona | Aceptada |
+| [038](ADR-038.md) | Dictar con un botón propio, con el reconocimiento de voz del teléfono | Aceptada |

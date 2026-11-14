@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
@@ -9,6 +9,7 @@ import { useSaveUnderstood, useUnderstandPantry, useUnderstandPhoto, useUnits } 
 import { isSoon, type ParsedPantryItem, type PhotoKind } from '@/features/pantry/domain/pantry';
 import { takePantryPhoto } from '@/features/pantry/ui/take-photo';
 import { useRecordPurchase } from '@/features/spending/application/use-spending';
+import { dictationAvailable, joinDictation, useDictation } from '@/shared/voice/use-dictation';
 import { Spacing } from '@/shared/theme/colors';
 import {
   AppText,
@@ -18,7 +19,9 @@ import {
   Checkbox,
   Chip,
   ChipGroup,
+  DictateButton,
   DictationHint,
+  DictationStatus,
   FoodTile,
   IconBadge,
   Pill,
@@ -147,6 +150,9 @@ function TextCard({ onUnderstood }: { onUnderstood: (review: Review) => void }) 
   const { t } = useTranslation();
   const understand = useUnderstandPantry();
   const [text, setText] = useState('');
+  const beforeDictation = useRef('');
+  const dictation = useDictation((spoken) => setText(joinDictation(beforeDictation.current, spoken).slice(0, 300)));
+  const canDictate = dictationAvailable();
   const go = () =>
     understand.mutate(text.trim(), {
       onSuccess: (r) => onUnderstood({ rows: toRows(r.items), from: 'text', source: r.source, total: null }),
@@ -160,15 +166,29 @@ function TextCard({ onUnderstood }: { onUnderstood: (review: Review) => void }) 
           <AppText variant="caption" secondary>{t('pantry.understand.hint')}</AppText>
         </View>
       </View>
-      <TextField
-        label={t('pantry.understand.label')}
-        value={text}
-        onChangeText={setText}
-        multiline
-        maxLength={300}
-        placeholder="2 libras de papa criolla, 6 huevos y un queso"
-      />
-      <DictationHint />
+      <View style={styles.fieldRow}>
+        <View style={styles.flex}>
+          <TextField
+            label={t('pantry.understand.label')}
+            value={text}
+            onChangeText={setText}
+            multiline
+            maxLength={300}
+            placeholder="2 libras de papa criolla, 6 huevos y un queso"
+          />
+        </View>
+        {canDictate && (
+          <DictateButton
+            listening={dictation.listening}
+            onStart={() => {
+              beforeDictation.current = text;
+              void dictation.start();
+            }}
+            onStop={dictation.stop}
+          />
+        )}
+      </View>
+      {canDictate ? <DictationStatus listening={dictation.listening} error={dictation.error} /> : <DictationHint />}
       {understand.error && <Banner tone="danger" message={t(errorKey(understand.error))} />}
       <Button
         label={t('pantry.understand.go')}
@@ -296,6 +316,7 @@ function ParsedRow({ row, onChange }: { row: Row; onChange: (patch: Partial<Row>
 }
 
 const styles = StyleSheet.create({
+  fieldRow: { flexDirection: 'row', alignItems: 'flex-end', gap: Spacing.xs },
   wrap: { gap: Spacing.md },
   head: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md },
   flex: { flex: 1 },

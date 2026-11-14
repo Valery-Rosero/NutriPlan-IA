@@ -1,6 +1,6 @@
 # Política de Tratamiento de Datos Personales — NutriPlan AI
 
-> Versión 2 · Vigente desde el 13 de noviembre de 2026.
+> Versión 3 · Vigente desde el 14 de noviembre de 2026.
 
 ## 1. Responsable del tratamiento
 NutriPlan AI es un proyecto académico desarrollado en Pasto, Colombia (en adelante, "NutriPlan AI" o "nosotros"), y es el responsable del tratamiento de tus datos personales.
@@ -11,6 +11,7 @@ Las consultas y reclamos los atiende el equipo de NutriPlan AI, desde la app, en
 - **Datos sensibles (solo con tu autorización expresa, ver sección 4):** alergias, condiciones médicas que declares, estatura, peso, año de nacimiento, nivel de actividad, objetivo de salud y dietas (algunas, como halal, kosher o vegana, pueden revelar convicciones religiosas o filosóficas).
 - **Datos de uso:** planes de comidas, recetas favoritas y calificadas, despensa, listas de compras y compras registradas, comentarios que publiques y mensajes con el asistente.
 - **Fotos que decidas tomar** de tu nevera o de un recibo para agregar alimentos: se analizan en el momento y no se guardan (ver sección 5).
+- **Tu voz, solo mientras dictas** con el micrófono de la app: se convierte en texto y no se guarda (ver sección 5).
 - **Datos técnicos:** identificador del dispositivo para notificaciones, versión de la app y errores técnicos. La analítica de uso es anónima y puedes desactivarla en la app.
 
 ## 3. Para qué los usamos (finalidades)
@@ -29,11 +30,12 @@ Los datos sensibles afectan tu intimidad o su uso indebido puede generar discrim
 
 ## 5. Inteligencia artificial
 Para algunas funciones usamos modelos de inteligencia artificial de terceros (Google, Gemini). Solo les enviamos lo necesario para responder:
-- **Asistente:** tu mensaje, las recetas que ya son seguras para ti y los nombres de los ingredientes que puedes usar, con lo que tienes y lo que te falta en tu cocina.
+- **Asistente:** tu mensaje; los nombres de los ingredientes que puedes usar, con lo que tienes y lo que te falta en tu cocina; tus preferencias de cocina (para cuántos cocinas, tu tiempo máximo, el picante, si tu presupuesto es ajustado y las cocinas que te gustan), y una lista de ingredientes que **no debe usar**. Esa lista junta, sin decir por qué, lo que excluyen tus alergias y tus dietas y lo que no te gusta: el asistente no sabe si algo es una alergia, una dieta o un gusto.
 - **Agregar a tu cocina:** el texto que escribes (por ejemplo, "2 libras de papa") o la **foto** que decidas tomar de tu nevera o de un recibo. La foto se analiza en el momento y **no se guarda** en NutriPlan AI. De un recibo solo usamos los alimentos, sus cantidades y el total pagado; nunca el nombre de la tienda ni datos de pago. Te pedimos no fotografiar personas ni documentos.
 - **Clasificación de alimentos:** el nombre de un alimento que escribes a mano.
+- **Dictar con el micrófono:** si tocas el micrófono, el reconocimiento de voz de tu teléfono convierte tu voz en texto: en el mismo teléfono cuando lo permite y, si no, con el servicio de voz que trae tu teléfono (por lo general, de Google). NutriPlan AI no graba ni guarda tu voz: solo recibe el texto, que revisas antes de enviarlo. El micrófono se usa solo mientras dictas.
 
-Nunca les enviamos tu correo, tu nombre, tus alergias ni tus datos de salud. La inteligencia artificial propone; las reglas de seguridad de NutriPlan AI (alergias, dietas, cantidades) se verifican de forma independiente antes de mostrarte un resultado, y lo que la inteligencia artificial reconoce en un texto o una foto siempre lo revisas tú antes de guardarlo. Las sugerencias no reemplazan el criterio de un profesional de la salud.
+Nunca les enviamos tu correo, tu nombre, el nombre de tus alergias, condiciones o dietas, ni tus datos de salud (como tus metas de calorías o de proteína). La inteligencia artificial propone; las reglas de seguridad de NutriPlan AI (alergias, dietas, cantidades) se verifican de forma independiente antes de mostrarte un resultado, y lo que la inteligencia artificial reconoce en un texto o una foto siempre lo revisas tú antes de guardarlo. Las sugerencias no reemplazan el criterio de un profesional de la salud.
 
 ## 6. Encargados, transmisión y transferencia internacional
 Contamos con proveedores que tratan datos por nuestra cuenta, con contrato de transmisión de datos: alojamiento y base de datos (Supabase, región São Paulo, Brasil), inteligencia artificial del asistente, de la clasificación de alimentos y del análisis de fotos (Google, Gemini), correos de la cuenta (Google, Gmail), notificaciones (Expo y Google Firebase Cloud Messaging) y alertas internas de fallas al equipo (Resend). El registro de fallas de la app se guarda en nuestra propia base de datos, sin datos de salud. Algunos están fuera de Colombia. Al aceptar esta política autorizas de forma expresa e inequívoca esa transmisión y transferencia, y exigimos a cada proveedor medidas de seguridad equivalentes.
@@ -60,4 +62,4 @@ Conservamos tus datos mientras tengas cuenta. Al eliminarla, borramos tus datos 
 Si cambiamos esta política de forma sustancial te avisaremos en la app y pediremos de nuevo tu autorización cuando la ley lo exija.
 
 ## 13. Vigencia
-Esta política rige desde el 13 de noviembre de 2026 (versión 2: incluye las fotos de la nevera o del recibo y las recetas creadas por el asistente). La base de datos permanecerá vigente mientras dure la prestación del servicio.
+Esta política rige desde el 14 de noviembre de 2026 (versión 3: el asistente usa tus preferencias y una lista de ingredientes a evitar, sin el porqué, y puedes dictar con el micrófono; la versión 2 incluyó las fotos de la nevera o del recibo y las recetas creadas por el asistente). La base de datos permanecerá vigente mientras dure la prestación del servicio.

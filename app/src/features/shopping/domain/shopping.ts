@@ -134,10 +134,14 @@ export function pendingToPantry(items: ShoppingItem[]) {
   return items.filter((i) => i.checked && !i.movedToPantry && (i.ingredientId === null || (i.toBuyGrams ?? 0) > 0)).length;
 }
 
-/** "Pollo, pan, yuca" → tres cosas en la lista (comas, punto y coma o renglones). */
+/**
+ * "Pollo, pan, yuca" o "pollo, pan y yuca" → tres cosas en la lista (comas, punto y coma, renglones o "y" entre
+ * productos; también lo que llega dictado). "Café con leche" sigue siendo uno.
+ */
 export function splitTyped(text: string): string[] {
   return text
-    .split(/[,;\n]+/)
+    .replace(/[.]+$/, '')
+    .split(/[,;\n]+|\s+y\s+/i)
     .map((s) => s.trim().replace(/\s+/g, ' '))
     .filter((s, i, all) => s.length > 0 && all.findIndex((o) => o.toLowerCase() === s.toLowerCase()) === i);
 }

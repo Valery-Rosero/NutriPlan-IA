@@ -18,18 +18,21 @@ import {
 } from '@/features/shopping/application/shopping-queries';
 import { useSubstitutes } from '@/features/recipes/application/recipe-queries';
 import { substitutesByIngredient } from '@/features/recipes/domain/recipe';
-import { buyLabel, pendingToPantry, progress, splitClosed, toSections, type ShoppingItem } from '@/features/shopping/domain/shopping';
+import { buyLabel, pendingToPantry, progress, splitClosed, splitTyped, toSections, type ShoppingItem } from '@/features/shopping/domain/shopping';
 import { ShoppingRow } from '@/features/shopping/ui/shopping-row';
 import { parseCop } from '@/features/profile/domain/profile';
 import { useRecordPurchase } from '@/features/spending/application/use-spending';
 import { MonthlySpendCard } from '@/features/spending/ui/monthly-spend-card';
 import { useIsOnline } from '@/shared/hooks/use-is-online';
+import { dictationAvailable, joinDictation, useDictation } from '@/shared/voice/use-dictation';
 import { Spacing } from '@/shared/theme/colors';
 import {
   AppText,
   Banner,
   Button,
   Card,
+  DictateButton,
+  DictationStatus,
   EmptyState,
   ErrorState,
   IconBadge,
@@ -130,6 +133,11 @@ function ListView({ listKey, listId, items, onRefresh, refreshing = false, house
   const add = useAddManualItem();
   const move = useMoveToPantry();
   const [newItem, setNewItem] = useState('');
+  // Varios productos de una vez: "pollo, pan y yuca" (escrito o dictado) son tres.
+  const typed = splitTyped(newItem);
+  const beforeDictation = useRef('');
+  const dictation = useDictation((spoken) => setNewItem(joinDictation(beforeDictation.current, spoken)));
+  const canDictate = dictationAvailable();
   const { open, closed } = splitClosed(items);
   const { done, total } = progress(open);
   const toPantry = pendingToPantry(open);
@@ -293,22 +301,43 @@ function ListView({ listKey, listId, items, onRefresh, refreshing = false, house
       )}
 
       <Card variant="outlined">
-        <TextField
-          label={t('shopping.addLabel')}
-          icon="add-circle-outline"
-          value={newItem}
-          onChangeText={setNewItem}
-          placeholder={t('shopping.addPlaceholder')}
-          returnKeyType="done"
-          onSubmitEditing={submitNew}
-          onFocus={onTyping}
-        />
+        <View style={styles.fieldRow}>
+          <View style={styles.flex}>
+            <TextField
+              label={t('shopping.addLabel')}
+              icon="add-circle-outline"
+              value={newItem}
+              onChangeText={setNewItem}
+              placeholder={t('shopping.addPlaceholder')}
+              returnKeyType="done"
+              onSubmitEditing={submitNew}
+              onFocus={onTyping}
+            />
+          </View>
+          {canDictate && (
+            <DictateButton
+              listening={dictation.listening}
+              onStart={() => {
+                beforeDictation.current = newItem;
+                onTyping?.();
+                void dictation.start();
+              }}
+              onStop={dictation.stop}
+            />
+          )}
+        </View>
+        {canDictate && <DictationStatus listening={dictation.listening} error={dictation.error} />}
+        {typed.length > 1 && (
+          <AppText variant="caption" secondary accessibilityLiveRegion="polite">
+            {t('shopping.addPreview', { count: typed.length, list: typed.join(' · ') })}
+          </AppText>
+        )}
         <Button
-          label={t('shopping.add')}
           variant="secondary"
           flavor="basil"
           size="sm"
-          disabled={newItem.trim().length === 0}
+          label={typed.length > 1 ? t('shopping.addMany', { count: typed.length }) : t('shopping.add')}
+          disabled={typed.length === 0}
           loading={add.isPending}
           onPress={submitNew}
         />
@@ -339,4 +368,5 @@ const styles = StyleSheet.create({
   sectionHead: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
   embedded: { gap: Spacing.md, paddingBottom: Spacing.lg },
   undo: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md },
+  fieldRow: { flexDirection: 'row', alignItems: 'flex-end', gap: Spacing.xs },
 });

@@ -31,6 +31,8 @@ describe('lista de compras (US-125, US-135)', () => {
   it('lo escrito con comas son varias cosas', () => {
     expect(splitTyped('Pollo, pan,  yuca ;arepas')).toEqual(['Pollo', 'pan', 'yuca', 'arepas']);
     expect(splitTyped('café')).toEqual(['café']);
+    expect(splitTyped('pollo, pan y yuca.')).toEqual(['pollo', 'pan', 'yuca']); // dictado, con "y" y punto final
+    expect(splitTyped('café con leche')).toEqual(['café con leche']);
     expect(splitTyped(' , pan, Pan ,')).toEqual(['pan']);
   });
 

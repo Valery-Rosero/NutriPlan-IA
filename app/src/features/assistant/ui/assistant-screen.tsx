@@ -25,6 +25,7 @@ import { formatQuantity } from '@/features/recipes/ui/format-quantity';
 import { MinTouch, Spacing } from '@/shared/theme/colors';
 import { Radius, Typography } from '@/shared/theme/tokens';
 import { useTheme } from '@/shared/theme/use-theme';
+import { dictationAvailable, joinDictation, useDictation } from '@/shared/voice/use-dictation';
 import {
   AppText,
   Banner,
@@ -33,7 +34,9 @@ import {
   Card,
   Chip,
   ChipGroup,
+  DictateButton,
   DictationHint,
+  DictationStatus,
   FoodTile,
   IconBadge,
   IconButton,
@@ -58,6 +61,14 @@ export function AssistantScreen() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [draft, setDraft] = useState('');
   const scroll = useRef<ScrollView>(null);
+  // Entrega 2: dictar junto a enviar. Lo dictado se suma a lo escrito y se revisa antes de enviar.
+  const beforeDictation = useRef('');
+  const dictation = useDictation((text) => setDraft(joinDictation(beforeDictation.current, text)));
+  const startDictation = () => {
+    beforeDictation.current = draft;
+    void dictation.start();
+  };
+  const canDictate = dictationAvailable();
 
   const ask = (text: string) => {
     const message = text.trim();
@@ -113,7 +124,7 @@ export function AssistantScreen() {
                     {mealTitle ? t('assistant.introSwap', { title: mealTitle }) : t('assistant.intro')}
                   </AppText>
                   <AppText variant="caption" secondary>{t('assistant.safety')}</AppText>
-                  <DictationHint />
+                  {!canDictate && <DictationHint />}
                 </View>
               </View>
             </Card>
@@ -158,10 +169,11 @@ export function AssistantScreen() {
             )}
           </ScrollView>
 
+          <DictationStatus listening={dictation.listening} error={dictation.error} />
           <View style={[styles.composer, { borderColor: c.divider, backgroundColor: c.background }]}>
             <TextInput
               accessibilityLabel={t('assistant.inputLabel')}
-              placeholder={t('assistant.placeholder')}
+              placeholder={dictation.listening ? t('voice.listeningShort') : t('assistant.placeholder')}
               placeholderTextColor={c.textSecondary}
               value={draft}
               onChangeText={setDraft}
@@ -170,11 +182,19 @@ export function AssistantScreen() {
               returnKeyType="send"
               style={[styles.input, Typography.body, { color: c.text, backgroundColor: c.surface, borderColor: c.border }]}
             />
+            {canDictate && (
+              <DictateButton
+                listening={dictation.listening}
+                onStart={startDictation}
+                onStop={dictation.stop}
+                disabled={send.isPending}
+              />
+            )}
             <IconButton
               icon="send"
               tone="berry"
               label={t('assistant.send')}
-              disabled={!draft.trim() || send.isPending}
+              disabled={!draft.trim() || send.isPending || dictation.listening}
               onPress={() => ask(draft)}
             />
           </View>

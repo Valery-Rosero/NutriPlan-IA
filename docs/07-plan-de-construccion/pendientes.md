@@ -78,8 +78,8 @@ Aprobada completa por la dueña del producto ("todo lo que recomiendas está bie
 | Entrega | Qué | Estado |
 |---|---|---|
 | 1 | IA primero: lista de 4–5 platos → elegir → la IA llena la receta; usa preferencias, alergias y dietas ("qué evitar sí, por qué no"); ingredientes libres sin restricciones; recetario de respaldo; listas bien formateadas (ADR-037, planos: https://claude.ai/artifact/CgZGXGi3nddiLYGbG7WY1R) | ✅ Hecho (14-nov); desplegar `assistant-chat` y probar en el APK con Gemini. Pendiente: "Ponerla en mi semana" sin comida destino (elegir día y momento) |
-| 2 | Micrófono junto a enviar (voz del teléfono; permiso de micrófono, APK nuevo) | Siguiente |
-| 3 | Pantallas compactas en toda la app (Hoy, Mi semana, Asistente) | Pendiente |
+| 2 | Micrófono junto a enviar (voz del teléfono; permiso de micrófono, APK nuevo) · también en "Escríbelo" y en la lista (varios productos de una vez) · política v3 (ADR-038) | ✅ Hecho (14-nov); APK nuevo; probar en el Honor 200; aceptar la política v3 |
+| 3 | Pantallas compactas en toda la app (Hoy, Mi semana, Asistente) | Siguiente |
 
 ## C. Antes de usuarios reales (sin cambios)
 Revisión de un abogado de los textos legales · revisión de una nutricionista (US-121) · validación con 5 personas (US-101) · producción (`drgzvvkkjxqvolcerpjx`) · Google Play (US-158) · monitor de disponibilidad · Gemini en plan de pago con tope de gasto y clave rotada · renovar el token de Supabase del despliegue (cada 90 días).

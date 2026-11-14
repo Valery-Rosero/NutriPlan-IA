@@ -51,11 +51,12 @@ describe('Lista de mercado: arreglos tras probar en el teléfono', () => {
     expect(await screen.findByText('Listo, sumamos la compra a tu gasto del mes.')).toBeOnTheScreen();
   });
 
-  it('"Pollo, pan, yuca" se agrega como tres cosas, cada una en su sección', async () => {
+  it('"Pollo, pan y yuca" se agrega como tres cosas (avisa antes cuáles), cada una en su sección', async () => {
     const shopping = fakeShopping();
     await render(<ShoppingScreen />, { wrapper: withServices(fakeServices({ shopping })) });
-    await fireEvent.changeText(await screen.findByLabelText('Agregar algo más'), 'Pollo, pan, yuca');
-    await fireEvent.press(screen.getByRole('button', { name: 'Agregar a la lista' }));
+    await fireEvent.changeText(await screen.findByLabelText('Agregar algo más'), 'Pollo, pan y yuca');
+    expect(screen.getByText('Se agregan 3: Pollo · pan · yuca')).toBeOnTheScreen();
+    await fireEvent.press(screen.getByRole('button', { name: 'Agregar 3 a la lista' }));
     await waitFor(() => expect(shopping.addManual).toHaveBeenCalledTimes(3));
     expect(jest.mocked(shopping.addManual).mock.calls.map((c) => c[1])).toEqual(['Pollo', 'pan', 'yuca']);
   });
