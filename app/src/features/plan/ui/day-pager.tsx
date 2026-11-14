@@ -22,6 +22,14 @@ export function DayPager({ days, index, onIndexChange, renderDay }: {
   const list = useRef<FlatList<CalendarDay>>(null);
   const shown = useRef(index);
   const reduceMotion = useReduceMotion();
+  // Alto de cada página. Una lista horizontal toma el alto de la página MÁS alta: un día con pocas comidas
+  // dejaba un hueco enorme debajo. Se usa el alto del día que se ve.
+  const [heights, setHeights] = useState<Record<number, number>>({});
+  const measure = (i: number) => (e: LayoutChangeEvent) => {
+    const h = Math.ceil(e.nativeEvent.layout.height);
+    setHeights((prev) => (prev[i] === h ? prev : { ...prev, [i]: h }));
+  };
+  const height = heights[index];
 
   // El calendario (o un botón) cambió el día: pasar a esa página.
   useEffect(() => {
@@ -46,6 +54,9 @@ export function DayPager({ days, index, onIndexChange, renderDay }: {
         keyExtractor={(d) => d.date}
         horizontal
         pagingEnabled
+        testID="day-pager"
+        style={height ? { height } : undefined}
+        contentContainerStyle={styles.row}
         showsHorizontalScrollIndicator={false}
         // Pocas páginas (máximo un mes) y livianas: se dibujan todas para que pasar sea inmediato.
         initialNumToRender={days.length}
@@ -62,7 +73,9 @@ export function DayPager({ days, index, onIndexChange, renderDay }: {
         }}
         renderItem={({ item, index: i }) => (
           <Page width={width} position={i} scrollX={scrollX} flat={reduceMotion}>
-            {renderDay(item, i)}
+            <View testID={`day-page-${i}`} onLayout={measure(i)}>
+              {renderDay(item, i)}
+            </View>
           </Page>
         )}
       />
@@ -92,5 +105,7 @@ function Page({ width, position, scrollX, flat, children }: {
 
 const styles = StyleSheet.create({
   root: { alignSelf: 'stretch' },
+  // Cada página con su alto natural (sin estirarse al de la más alta), para poder medirla.
+  row: { alignItems: 'flex-start' },
   page: { transformOrigin: 'left center', paddingHorizontal: Spacing.xxs },
 });

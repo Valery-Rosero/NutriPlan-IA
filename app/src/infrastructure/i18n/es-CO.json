@@ -401,7 +401,8 @@
       "save_other": "Guardar {{count}} cosas",
       "again": "Escribir otra vez",
       "nothing": "No encontré alimentos en lo que escribiste. Prueba con «2 libras de papa».",
-      "or": "o búscalo en el catálogo"
+      "or": "o búscalo en el catálogo",
+      "expiresIn_zero": "vence hoy"
     },
     "buyNext": {
       "title": "Para completar más recetas",
@@ -472,7 +473,8 @@
       "search": "Buscar",
       "text": "Escribir",
       "photo": "Foto"
-    }
+    },
+    "expiresIn_zero": "Vence hoy"
   },
   "profile": {
     "title": "Perfil",
@@ -864,7 +866,8 @@
     "count_other": "{{count}} ingredientes",
     "expiring_one": "{{count}} vence pronto",
     "expiring_other": "{{count}} vencen pronto",
-    "quickUndoHint": "Ya está en tu cocina. Toca otra vez para quitarlo."
+    "quickUndoHint": "Ya está en tu cocina. Toca otra vez para quitarlo.",
+    "quickHave": "{{name}} · ya tienes"
   },
   "cookTime": {
     "noneFound": "No encontramos recetas de {{minutes}} min o menos con tus restricciones actuales. ¿Probamos con {{next}}?",

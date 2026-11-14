@@ -60,11 +60,12 @@ describe('Mi cocina, fase 4: más pantalla, menos pasos (ADR-036)', () => {
     expect(shouldPersistQuery(client.getQueryCache().find({ queryKey: ['pantry', 'items'] })!)).toBe(true);
   });
 
-  it('D2: lo típico viene de la base y no ofrece lo que ya está en la cocina (por ingrediente)', async () => {
+  it('D2: lo típico viene de la base y siempre se ve; lo que ya está en la cocina dice "ya tienes"', async () => {
     const pantry = fakePantry({ list: jest.fn(async () => [PAPA]) });
     await render(<QuickAdd />, { wrapper: withServices(fakeServices({ pantry })) });
     expect(await screen.findByRole('checkbox', { name: 'Arroz blanco' })).toBeOnTheScreen();
-    expect(screen.queryByRole('checkbox', { name: 'Papa' })).not.toBeOnTheScreen();
+    // Con la cocina llena no queda vacío: se puede reponer lo que ya hay.
+    expect(await screen.findByRole('checkbox', { name: 'Papa · ya tienes' })).toBeOnTheScreen();
     await fireEvent.press(screen.getByRole('checkbox', { name: 'Huevo' }));
     await waitFor(() => expect(pantry.add).toHaveBeenCalledWith(expect.objectContaining({ ingredientId: 'huevo', quantity: 6, unitId: 4 })));
   });

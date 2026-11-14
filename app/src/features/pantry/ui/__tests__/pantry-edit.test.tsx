@@ -93,6 +93,12 @@ describe('Mi cocina, fase 2: corregir lo que hay (ADR-034)', () => {
     await waitFor(() => expect(pantry.removeExpired).toHaveBeenCalled());
   });
 
+  it('lo que vence hoy dice "Vence hoy" (no "Vence en 0 días")', async () => {
+    const pantry = fakePantry({ list: jest.fn(async () => [{ ...HUEVO, expiresOn: today }]) });
+    await render(<PantryScreen />, { wrapper: withServices(fakeServices({ pantry })) });
+    expect(await screen.findByText('Vence hoy')).toBeOnTheScreen();
+  });
+
   it('si ya no está (se acabó en otro lado), lo dice en vez de quedarse en blanco', async () => {
     jest.mocked(useLocalSearchParams).mockReturnValue({ key: 'i:nada' });
     await render(<PantryItemScreen />, { wrapper: withServices(fakeServices()) });
