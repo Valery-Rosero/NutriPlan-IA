@@ -25,6 +25,7 @@ Códigos de error: los `raise exception 'codigo: texto'` empiezan con un código
 - `mark_meal_cooked`: marca `cooked`, descuenta despensa (FEFO: primero lo que vence antes) en `meal_pantry_deductions`, devuelve `{ deducted, short }`; `undo_meal_cooked` revierte dentro de 10 s.
 - `generate_shopping_list(plan)`: suma comidas **no cocinadas**, resta despensa vigente, devuelve id de lista; mantiene ítems manuales. Si el plan pide un ingrediente agregado a mano y aún no comprado, el plan toma esa fila (ADR-033).
 - **La lista siempre está al día (ADR-033):** la app rehace la lista del plan vigente después de cualquier cambio a la despensa o al plan (agregar, quitar, cocinar, cambiar u omitir una comida, aplicar sugerencias o pasar lo comprado).
+- **Corregir la despensa (ADR-034):** restar descuenta primero lo que vence antes (como cocinar) y no toca lo vencido; sumar va al lote vigente que más dura o, si no hay, a uno nuevo con la vida útil del ingrediente. Cambiar la fecha a la de otro lote los junta. "Todavía sirve" = 2 días más. En la app, los lotes vigentes de un ingrediente se ven como una fila (total y fecha más próxima).
 - **Todo lo comprado llega a la cocina (ADR-033):** lo del catálogo con sus gramos; lo escrito a mano, buscado en el catálogo o como alimento propio; lo que no es comida solo se cierra.
 
 ## Presupuesto y precios

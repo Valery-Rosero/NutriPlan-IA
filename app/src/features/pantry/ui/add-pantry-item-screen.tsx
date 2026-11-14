@@ -6,20 +6,12 @@ import { useTranslation } from 'react-i18next';
 
 import { errorKey } from '@/core/errors/app-error';
 import { useAddCustomToPantry, useAddToPantry, useIngredientSearch, useUnits } from '@/features/pantry/application/pantry-queries';
-import { addDays, CUSTOM_UNITS, todayIso, unitsFor, type CustomUnit, type IngredientOption } from '@/features/pantry/domain/pantry';
+import { CUSTOM_UNITS, EXPIRY_OPTIONS, expiryFor, unitsFor, type CustomUnit, type ExpiryKey, type IngredientOption } from '@/features/pantry/domain/pantry';
 import { UnderstandPantry } from '@/features/pantry/ui/understand-pantry';
 import { MinTouch, Spacing } from '@/shared/theme/colors';
 import { useTheme } from '@/shared/theme/use-theme';
 import { Radius } from '@/shared/theme/tokens';
 import { AppText, Banner, Button, Card, Chip, ChipGroup, IconBadge, IconButton, Screen, TextField } from '@/shared/ui';
-
-const EXPIRY_OPTIONS = [
-  { key: 'none', days: null },
-  { key: 'days3', days: 3 },
-  { key: 'week1', days: 7 },
-  { key: 'week2', days: 14 },
-  { key: 'month1', days: 30 },
-] as const;
 
 /**
  * Agregar a la despensa. Dos caminos: escribirlo como se diría (IA, varias cosas a la vez; ADR-030) o buscar en
@@ -35,7 +27,8 @@ export function AddPantryItemScreen() {
   const [customName, setCustomName] = useState<string | null>(null);
   const [quantity, setQuantity] = useState('');
   const [unitId, setUnitId] = useState<number | null>(null);
-  const [expiry, setExpiry] = useState<(typeof EXPIRY_OPTIONS)[number]['key']>('none');
+  // A5: al elegir un ingrediente, la fecha ya viene propuesta según cuánto dura ("Lo normal: 21 días").
+  const [expiry, setExpiry] = useState<ExpiryKey>('none');
   const [reviewing, setReviewing] = useState(false);
   const results = useIngredientSearch(selected || customName !== null ? '' : query);
   const units = useUnits();
@@ -46,11 +39,16 @@ export function AddPantryItemScreen() {
   const unit = unitId ?? options[0]?.id ?? null;
   const valid = !!selected && unit !== null && amount > 0;
 
+  const choose = (ingredient: IngredientOption) => {
+    setSelected(ingredient);
+    setExpiry(ingredient.shelfLifeDays ? 'auto' : 'none');
+  };
+  const expiryKeys: ExpiryKey[] = [...(selected?.shelfLifeDays ? (['auto'] as const) : []), ...EXPIRY_OPTIONS.map((o) => o.key)];
+
   const submit = () => {
     if (!selected || unit === null) return;
-    const days = EXPIRY_OPTIONS.find((o) => o.key === expiry)?.days ?? null;
     add.mutate(
-      { ingredientId: selected.id, quantity: amount, unitId: unit, expiresOn: days === null ? null : addDays(todayIso(), days) },
+      { ingredientId: selected.id, quantity: amount, unitId: unit, expiresOn: expiryFor(expiry, selected.shelfLifeDays) },
       { onSuccess: () => router.back() },
     );
   };
@@ -76,7 +74,7 @@ export function AddPantryItemScreen() {
                     accessibilityRole="button"
                     accessibilityLabel={ingredient.name}
                     accessibilityHint={t('pantry.selectHint')}
-                    onPress={() => setSelected(ingredient)}
+                    onPress={() => choose(ingredient)}
                     style={({ pressed }) => [
                       styles.result,
                       { borderColor: c.divider, backgroundColor: pressed ? c.surface : c.card },
@@ -127,8 +125,13 @@ export function AddPantryItemScreen() {
               <AppText variant="label">{t('pantry.expiry')}</AppText>
             </View>
             <ChipGroup>
-              {EXPIRY_OPTIONS.map((o) => (
-                <Chip key={o.key} label={t(`pantry.expiryOptions.${o.key}`)} selected={expiry === o.key} onPress={() => setExpiry(o.key)} />
+              {expiryKeys.map((k) => (
+                <Chip
+                  key={k}
+                  label={k === 'auto' ? t('pantry.expiryOptions.auto', { count: selected.shelfLifeDays ?? 0 }) : t(`pantry.expiryOptions.${k}`)}
+                  selected={expiry === k}
+                  onPress={() => setExpiry(k)}
+                />
               ))}
             </ChipGroup>
             {add.error && <Banner tone="danger" message={t(errorKey(add.error))} />}
@@ -148,14 +151,13 @@ function CustomItemForm({ initialName, onCancel, onSaved }: { initialName: strin
   const [name, setName] = useState(initialName);
   const [quantity, setQuantity] = useState('');
   const [unit, setUnit] = useState<CustomUnit>('unit');
-  const [expiry, setExpiry] = useState<(typeof EXPIRY_OPTIONS)[number]['key']>('none');
+  const [expiry, setExpiry] = useState<ExpiryKey>('none');
   const amount = Number(quantity.replace(',', '.'));
   const valid = name.trim().length > 0 && Number.isFinite(amount) && amount > 0 && amount <= 100000;
 
   const submit = () => {
-    const days = EXPIRY_OPTIONS.find((o) => o.key === expiry)?.days ?? null;
     add.mutate(
-      { name: name.trim(), quantity: amount, unit, expiresOn: days === null ? null : addDays(todayIso(), days) },
+      { name: name.trim(), quantity: amount, unit, expiresOn: expiryFor(expiry, null) },
       { onSuccess: onSaved },
     );
   };

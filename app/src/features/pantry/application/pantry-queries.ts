@@ -126,12 +126,15 @@ export function useAddCustomToPantry() {
   });
 }
 
+/** Lo que agregó un toque del agregado rápido, para poder deshacerlo (M1). */
+export type QuickAdded = { name: string; ingredientId: string; quantity: number; unitId: number };
+
 /** Un toque: agrega lo típico con vencimiento según la vida útil del ingrediente. */
 export function useQuickAdd() {
   const { pantry } = useServices();
   const invalidate = useInvalidatePantry();
   return useMutation({
-    mutationFn: async (item: QuickItem) => {
+    mutationFn: async (item: QuickItem): Promise<QuickAdded> => {
       const [[ingredient], units] = await Promise.all([pantry.findByNames([item.name]), pantry.listUnits()]);
       const unit = units.find((u) => u.code === item.unitCode);
       if (!ingredient || !unit) throw new Error('unknown');
@@ -141,15 +144,71 @@ export function useQuickAdd() {
         unitId: unit.id,
         expiresOn: ingredient.shelfLifeDays ? addDays(todayIso(), ingredient.shelfLifeDays) : null,
       });
+      return { name: item.name, ingredientId: ingredient.id, quantity: item.quantity, unitId: unit.id };
     },
     onSuccess: invalidate,
   });
 }
 
+/** M1: tocar otra vez lo que se agregó con un toque lo quita (resta exactamente lo que se sumó). */
+export function useUndoQuickAdd() {
+  const { pantry } = useServices();
+  const invalidate = useInvalidatePantry();
+  return useMutation({
+    mutationFn: (added: QuickAdded) => pantry.adjust(added.ingredientId, -added.quantity, added.unitId),
+    onSuccess: invalidate,
+  });
+}
+
+/** Quitar una fila: si junta varias compras (A6), se quitan todas. */
 export function useRemovePantryItem() {
   const { pantry } = useServices();
   const invalidate = useInvalidatePantry();
-  return useMutation({ mutationFn: (item: Pick<PantryItem, 'id' | 'ingredientId'>) => pantry.remove(item), onSuccess: invalidate });
+  return useMutation({
+    mutationFn: async (item: Pick<PantryItem, 'id' | 'ingredientId' | 'lots'>) => {
+      for (const lot of item.lots ?? [item]) await pantry.remove(lot);
+    },
+    onSuccess: invalidate,
+  });
+}
+
+/**
+ * C3: cambiar cuánto queda (− / +, ¼ ½ ¾, "se acabó"). Se manda la diferencia: la base resta primero lo
+ * que vence antes. Un alimento propio se corrige en su tabla; en 0 se quita.
+ */
+export function useSetPantryAmount() {
+  const { pantry } = useServices();
+  const invalidate = useInvalidatePantry();
+  return useMutation({
+    mutationFn: async ({ item, amount }: { item: PantryItem; amount: number }) => {
+      if (item.custom) {
+        if (amount <= 0) await pantry.remove(item);
+        else await pantry.updateCustom(item.id, { quantity: amount });
+        return;
+      }
+      const delta = Math.round((amount - item.grams) * 100) / 100;
+      if (item.ingredientId && delta !== 0) await pantry.adjust(item.ingredientId, delta);
+    },
+    onSuccess: invalidate,
+  });
+}
+
+/** C3 / M2: cambiar la fecha de un lote o de un alimento propio ("todavía sirve" incluido). */
+export function useSetPantryExpiry() {
+  const { pantry } = useServices();
+  const invalidate = useInvalidatePantry();
+  return useMutation({
+    mutationFn: ({ item, expiresOn }: { item: PantryItem; expiresOn: string | null }) =>
+      item.custom ? pantry.updateCustom(item.id, { expiresOn }) : pantry.setExpiry(item.id, expiresOn),
+    onSuccess: invalidate,
+  });
+}
+
+/** M2: "Quitar lo vencido" de una vez. */
+export function useRemoveExpired() {
+  const { pantry } = useServices();
+  const invalidate = useInvalidatePantry();
+  return useMutation({ mutationFn: () => pantry.removeExpired(), onSuccess: invalidate });
 }
 
 export function useIngredientSearch(query: string) {

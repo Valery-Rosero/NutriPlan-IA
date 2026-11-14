@@ -47,21 +47,32 @@ export class SupabasePantryRepository implements PantryRepository {
   /** Lo del catálogo y los alimentos propios (B3b), juntos. */
   async list(): Promise<PantryItem[]> {
     const [catalog, custom] = await Promise.all([
-      this.client.from('pantry_items').select('id, ingredient_id, quantity_g, expires_on, ingredients!inner(name, food_group_id)').gt('quantity_g', 0),
+      this.client
+        .from('pantry_items')
+        .select('id, ingredient_id, quantity_g, expires_on, ingredients!inner(name, food_group_id, shelf_life_days, ingredient_unit_weights(grams, units!inner(code, name)))')
+        .gt('quantity_g', 0),
       this.client.from('pantry_custom_items').select('id, name, quantity, unit, expires_on, food_group_id'),
     ]);
     if (catalog.error) throw toAppError(catalog.error);
     if (custom.error) throw toAppError(custom.error);
     return [
-      ...catalog.data.map((row) => ({
-        id: row.id,
-        ingredientId: row.ingredient_id,
-        name: row.ingredients.name,
-        grams: row.quantity_g,
-        expiresOn: row.expires_on,
-        custom: null,
-        foodGroupId: row.ingredients.food_group_id,
-      })),
+      ...catalog.data.map((row) => {
+        // − / + de a una unidad contable ("unidad" primero; si no, la que tenga: "diente", "taza"…).
+        const weights = row.ingredients.ingredient_unit_weights ?? [];
+        const unit = weights.find((w) => w.units.code === 'unit') ?? weights[0];
+        return {
+          id: row.id,
+          ingredientId: row.ingredient_id,
+          name: row.ingredients.name,
+          grams: Number(row.quantity_g),
+          expiresOn: row.expires_on,
+          custom: null,
+          foodGroupId: row.ingredients.food_group_id,
+          shelfLifeDays: row.ingredients.shelf_life_days,
+          unitGrams: unit ? Number(unit.grams) : null,
+          unitName: unit ? unit.units.name : null,
+        };
+      }),
       ...custom.data.map((row) => ({
         id: row.id,
         ingredientId: null,
@@ -72,6 +83,39 @@ export class SupabasePantryRepository implements PantryRepository {
         foodGroupId: row.food_group_id,
       })),
     ];
+  }
+
+  async adjust(ingredientId: string, quantity: number, unitId: number | null = null) {
+    const { data, error } = await this.client.rpc('adjust_pantry', {
+      p_ingredient_id: ingredientId,
+      p_quantity: Math.round(quantity * 100) / 100,
+      ...(unitId === null ? {} : { p_unit_id: unitId }),
+    });
+    if (error) throw toAppError(error);
+    return Number(data);
+  }
+
+  async setExpiry(lotId: string, expiresOn: string | null) {
+    // La base acepta null (sin fecha); el tipo generado no lo refleja.
+    const { error } = await this.client.rpc('set_pantry_expiry', { p_item_id: lotId, p_expires_on: expiresOn as string });
+    if (error) throw toAppError(error);
+  }
+
+  async removeExpired() {
+    const { data, error } = await this.client.rpc('remove_expired_pantry');
+    if (error) throw toAppError(error);
+    return data;
+  }
+
+  async updateCustom(id: string, patch: { quantity?: number; expiresOn?: string | null }) {
+    const { error } = await this.client
+      .from('pantry_custom_items')
+      .update({
+        ...(patch.quantity === undefined ? {} : { quantity: patch.quantity }),
+        ...(patch.expiresOn === undefined ? {} : { expires_on: patch.expiresOn }),
+      })
+      .eq('id', id);
+    if (error) throw toAppError(error);
   }
 
   async setCustomGroup(id: string, foodGroupId: number) {
@@ -173,6 +217,7 @@ export class SupabasePantryRepository implements PantryRepository {
     return data.map((ingredient) => ({
       id: ingredient.id,
       name: ingredient.name,
+      shelfLifeDays: ingredient.shelf_life_days,
       countUnits: weights.data.filter((w) => w.ingredient_id === ingredient.id).map((w) => w.units as Unit),
     }));
   }

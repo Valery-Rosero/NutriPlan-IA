@@ -2033,6 +2033,9 @@ isOneToOne: false
         isOneToOne: true
         isSetofReturn: false
       } },
+"adjust_pantry":
+{ Args: { "p_ingredient_id": string,"p_quantity": number,"p_unit_id"?: number }; Returns: number
+                           },
 "apply_assistant_suggestion":
 { Args: { "p_message_id": number,"p_recipe_id"?: string }; Returns: string
                            },
@@ -2159,6 +2162,9 @@ isOneToOne: false
 "register_push_device":
 { Args: { "p_token": string }; Returns: undefined
                            },
+"remove_expired_pantry":
+{ Args: Record<PropertyKey, never>; Returns: number
+                           },
 "report_app_error":
 { Args: { "p_anonymous_id"?: string,"p_app_version"?: string,"p_device_model"?: string,"p_error_name": string,"p_message": string,"p_screen"?: string,"p_stack"?: string }; Returns: undefined
                            },
@@ -2206,6 +2212,9 @@ isOneToOne: false
                            },
 "set_my_restrictions":
 { Args: { "p_allergen_ids": (number)[],"p_diet_ids": (number)[] }; Returns: undefined
+                           },
+"set_pantry_expiry":
+{ Args: { "p_expires_on": string,"p_item_id": string }; Returns: undefined
                            },
 "substitute_shopping_item":
 { Args: { "p_item_id": string,"p_substitute_id": string }; Returns: undefined

@@ -1,18 +1,29 @@
 import { useRouter } from 'expo-router';
 import { useState, type ReactNode } from 'react';
-import { ScrollView, SectionList, StyleSheet, View } from 'react-native';
+import { Pressable, ScrollView, SectionList, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { errorKey } from '@/core/errors/app-error';
 import { foodEmoji } from '@/core/food-emoji';
 import { formatGrams } from '@/core/format';
-import { useFoodGroups, usePantry, useRemovePantryItem, useSetCustomGroup } from '@/features/pantry/application/pantry-queries';
 import {
+  useFoodGroups,
+  usePantry,
+  useRemoveExpired,
+  useRemovePantryItem,
+  useSetCustomGroup,
+  useSetPantryExpiry,
+} from '@/features/pantry/application/pantry-queries';
+import {
+  addDays,
   daysBetween,
   expiryStatus,
   FOOD_GROUP_EMOJI,
   FOOD_GROUP_ORDER,
   groupPantry,
+  mergeLots,
+  pantryKey,
+  STILL_GOOD_DAYS,
   todayIso,
   type FoodGroup,
   type PantryItem,
@@ -21,6 +32,7 @@ import {
 import { BuyNextCard } from '@/features/pantry/ui/buy-next-card';
 import { QuickAdd } from '@/features/pantry/ui/quick-add';
 import { Spacing } from '@/shared/theme/colors';
+import { useTheme } from '@/shared/theme/use-theme';
 import {
   AppText,
   Banner,
@@ -55,6 +67,10 @@ export function PantryScreen({ embedded }: { embedded?: boolean }) {
 
   const [toRemove, setToRemove] = useState<PantryItem | null>(null);
   const confirmRemove = (item: PantryItem) => setToRemove(item);
+  const [confirmExpired, setConfirmExpired] = useState(false);
+  const removeExpired = useRemoveExpired();
+  const today = todayIso();
+  const open = (item: PantryItem) => router.push({ pathname: '/pantry/item', params: { key: pantryKey(item) } });
 
   return (
     <Container>
@@ -74,7 +90,7 @@ export function PantryScreen({ embedded }: { embedded?: boolean }) {
         </ScrollView>
       ) : (
         <SectionList
-          sections={groupPantry(pantry.data, todayIso(), groups)}
+          sections={groupPantry(mergeLots(pantry.data, today), today, groups)}
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.list}
           stickySectionHeadersEnabled={false}
@@ -86,11 +102,19 @@ export function PantryScreen({ embedded }: { embedded?: boolean }) {
             </View>
           }
           renderSectionHeader={({ section }) => (
-            <AppText variant="heading" accessibilityRole="header" style={styles.sectionTitle}>
-              {sectionTitle(section, t)}
-            </AppText>
+            <View style={styles.sectionHead}>
+              <AppText variant="heading" accessibilityRole="header" style={styles.flex}>
+                {sectionTitle(section, t)}
+              </AppText>
+              {/* M2: lo vencido tiene salida. */}
+              {section.key === 'expired' && (
+                <TextLink label={t('pantry.removeExpired')} icon="trash-outline" onPress={() => setConfirmExpired(true)} />
+              )}
+            </View>
           )}
-          renderItem={({ item }) => <PantryRow item={item} groups={groups} onRemove={() => confirmRemove(item)} />}
+          renderItem={({ item }) => (
+            <PantryRow item={item} groups={groups} onOpen={() => open(item)} onRemove={() => confirmRemove(item)} />
+          )}
         />
       )}
       <ConfirmDialog
@@ -106,6 +130,19 @@ export function PantryScreen({ embedded }: { embedded?: boolean }) {
         }}
         onCancel={() => setToRemove(null)}
       />
+      <ConfirmDialog
+        visible={confirmExpired}
+        icon="trash-outline"
+        title={t('pantry.removeExpiredTitle')}
+        message={t('pantry.removeExpiredMessage')}
+        confirmLabel={t('pantry.removeExpired')}
+        cancelLabel={t('common.cancel')}
+        danger
+        loading={removeExpired.isPending}
+        onConfirm={() => removeExpired.mutate(undefined, { onSettled: () => setConfirmExpired(false) })}
+        onCancel={() => setConfirmExpired(false)}
+      />
+      {removeExpired.error && <Banner tone="danger" message={t(errorKey(removeExpired.error))} />}
     </Container>
   );
 }
@@ -144,9 +181,12 @@ function sectionTitle(section: PantrySection, t: (k: string, o?: Record<string, 
 const sortGroups = (groups: FoodGroup[]) =>
   [...groups].sort((a, b) => (FOOD_GROUP_ORDER as readonly string[]).indexOf(a.code) - (FOOD_GROUP_ORDER as readonly string[]).indexOf(b.code));
 
-function PantryRow({ item, groups, onRemove }: { item: PantryItem; groups: FoodGroup[]; onRemove: () => void }) {
+function PantryRow({ item, groups, onOpen, onRemove }: { item: PantryItem; groups: FoodGroup[]; onOpen: () => void; onRemove: () => void }) {
   const { t } = useTranslation();
+  const c = useTheme();
   const today = todayIso();
+  const stillGood = useSetPantryExpiry();
+  const lots = item.lots?.length ?? 1;
   const status = expiryStatus(item.expiresOn, today);
   // El estado va escrito, no solo en color (accesibilidad).
   const expiry =
@@ -166,11 +206,16 @@ function PantryRow({ item, groups, onRemove }: { item: PantryItem; groups: FoodG
     <Card style={styles.card}>
       <View style={styles.row}>
         <FoodTile emoji={foodEmoji(item.name, '🥫')} flavor={status === 'expired' ? 'tomato' : status === 'soon' ? 'mango' : 'basil'} size={48} />
-        {/* La información se lee junta; el botón de quitar queda aparte para que el lector lo alcance. */}
-        <View style={styles.info} accessible accessibilityLabel={`${item.name}${item.custom ? ` (${t('pantry.custom.badge')})` : ''}, ${amount}. ${expiry}.`}>
+        {/* La información se lee junta y abre la edición (C3); quitar queda aparte para que el lector lo alcance. */}
+        <Pressable
+          accessibilityLabel={`${item.name}${item.custom ? ` (${t('pantry.custom.badge')})` : ''}, ${amount}. ${expiry}.`}
+          accessibilityRole="button"
+          accessibilityHint={t('pantry.edit.hint')}
+          style={({ pressed }) => [styles.info, pressed && { backgroundColor: c.surface }]}
+          onPress={onOpen}>
           <AppText variant="subtitle">{item.name}</AppText>
           <View style={styles.meta}>
-            <AppText variant="caption" secondary>{amount}</AppText>
+            <AppText variant="caption" secondary>{lots > 1 ? `${amount} · ${t('pantry.edit.lotsShort', { count: lots })}` : amount}</AppText>
             {item.custom && <Pill label={t('pantry.custom.badge')} tone="neutral" icon="create-outline" />}
             {status === 'none' ? (
               <AppText variant="caption" secondary>{`· ${expiry}`}</AppText>
@@ -178,9 +223,20 @@ function PantryRow({ item, groups, onRemove }: { item: PantryItem; groups: FoodG
               <Pill label={expiry} tone={tone} icon={status === 'expired' ? 'alert-circle-outline' : 'time-outline'} />
             )}
           </View>
-        </View>
+        </Pressable>
         <IconButton icon="trash-outline" label={t('pantry.removeLabel', { name: item.name })} onPress={onRemove} />
       </View>
+      {status === 'expired' && (
+        <View style={styles.suggested}>
+          <TextLink
+            label={t('pantry.stillGood')}
+            icon="checkmark"
+            hint={t('pantry.stillGoodHint', { name: item.name })}
+            onPress={() => stillGood.mutate({ item, expiresOn: addDays(today, STILL_GOOD_DAYS) })}
+          />
+          {stillGood.error && <Banner tone="danger" message={t(errorKey(stillGood.error))} />}
+        </View>
+      )}
       {item.custom && <SuggestedGroup item={item} groups={groups} />}
     </Card>
   );
@@ -229,10 +285,11 @@ const styles = StyleSheet.create({
   embedded: { flex: 1, gap: Spacing.md },
   header: { gap: Spacing.sm },
   quick: { gap: Spacing.sm },
-  sectionTitle: { marginTop: Spacing.md },
+  sectionHead: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, marginTop: Spacing.md },
+  flex: { flex: 1 },
   card: { paddingVertical: Spacing.sm },
   row: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md },
-  info: { flex: 1, gap: Spacing.xxs },
+  info: { flex: 1, gap: Spacing.xxs, borderRadius: 8 },
   meta: { flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: Spacing.sm },
   suggested: { gap: Spacing.sm, marginLeft: 48 + Spacing.md },
 });

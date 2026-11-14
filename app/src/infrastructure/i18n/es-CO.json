@@ -319,6 +319,8 @@
     "unit": "Unidad",
     "expiry": "¿Cuándo vence?",
     "expiryOptions": {
+      "auto_one": "Lo normal: {{count}} día",
+      "auto_other": "Lo normal: {{count}} días",
       "none": "No sé / no vence",
       "days3": "En 3 días",
       "week1": "En 1 semana",
@@ -406,7 +408,39 @@
       "spendNo": "No, gracias",
       "spendDone": "Listo, quedó en tu gasto del mes.",
       "take": "Tomar foto"
-    }
+    },
+    "edit": {
+      "title": "Lo que tengo",
+      "hint": "Toca para cambiar cuánto queda o la fecha",
+      "howMuch": "¿Cuánto queda?",
+      "lots_one": "Lo compraste en {{count}} fecha",
+      "lots_other": "Lo compraste en {{count}} fechas",
+      "lotsShort_one": "{{count}} compra",
+      "lotsShort_other": "{{count}} compras",
+      "approx": "≈ {{count}} {{unit}}",
+      "fractions": {
+        "q3": "Queda ¾",
+        "half": "Queda la mitad",
+        "q1": "Queda ¼",
+        "none": "Se acabó"
+      },
+      "decrease": "Quitar {{step}}",
+      "increase": "Sumar {{step}}",
+      "save": "Guardar",
+      "saveEmpty": "Se acabó: quitar de mi cocina",
+      "until": "¿Hasta cuándo sirve?",
+      "changeDate": "Cambiar fecha",
+      "changeDateHint": "Cambiar la fecha de {{amount}}",
+      "removeAll": "Quitar de mi cocina",
+      "gone": "Esto ya no está en tu cocina.",
+      "back": "Volver a Mi cocina",
+      "expiredNote": "Está vencido: no lo usaremos en recetas. Si todavía sirve, dale unos días más; si no, quítalo."
+    },
+    "stillGood": "Todavía sirve",
+    "stillGoodHint": "Le damos 2 días más a {{name}}; luego puedes cambiar la fecha",
+    "removeExpired": "Quitar lo vencido",
+    "removeExpiredTitle": "¿Quitar todo lo vencido?",
+    "removeExpiredMessage": "Se quita de tu cocina. Lo que todavía sirva, márcalo antes con «Todavía sirve»."
   },
   "profile": {
     "title": "Perfil",
@@ -797,7 +831,8 @@
     "count_one": "{{count}} ingrediente",
     "count_other": "{{count}} ingredientes",
     "expiring_one": "{{count}} vence pronto",
-    "expiring_other": "{{count}} vencen pronto"
+    "expiring_other": "{{count}} vencen pronto",
+    "quickUndoHint": "Ya está en tu cocina. Toca otra vez para quitarlo."
   },
   "cookTime": {
     "noneFound": "No encontramos recetas de {{minutes}} min o menos con tus restricciones actuales. ¿Probamos con {{next}}?",

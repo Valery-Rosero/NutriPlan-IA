@@ -101,6 +101,10 @@ export function fakePantry(overrides: Partial<PantryRepository> = {}): jest.Mock
       { id: 16, code: 'other', name: 'Otros' },
     ]),
     remove: jest.fn(async () => {}),
+    adjust: jest.fn(async () => 0),
+    setExpiry: jest.fn(async () => {}),
+    removeExpired: jest.fn(async () => 1),
+    updateCustom: jest.fn(async () => {}),
     search: jest.fn(async () => []),
     findByNames: jest.fn(async (names: string[]) => names.map((n) => ({ id: n, name: n, shelfLifeDays: 7 }))),
     listUnits: jest.fn(async () => [

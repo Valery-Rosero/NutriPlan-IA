@@ -37,3 +37,4 @@ Estado: **Aceptada** = ya implementada o decidida con el usuario; **Propuesta** 
 | [031](ADR-031.md) | Cambios a toda la semana: la IA traduce la frase, la base calcula los cambios | Aceptada |
 | [032](ADR-032.md) | Foto de la nevera o del recibo: la IA ve, la persona revisa, la foto no se guarda | Aceptada |
 | [033](ADR-033.md) | El ciclo de la cocina: lo que se agrega a la lista llega a la despensa y la lista siempre está al día | Aceptada |
+| [034](ADR-034.md) | Corregir lo que hay: cuánto queda, la fecha y lo vencido | Aceptada |

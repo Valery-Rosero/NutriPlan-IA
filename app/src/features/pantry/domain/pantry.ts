@@ -16,6 +16,16 @@ export type PantryItem = {
    * clasificación con IA (ADR-027) y la persona lo puede cambiar. Ausente o null = "Otros".
    */
   foodGroupId?: number | null;
+  /** Catálogo: gramos de una unidad contable ("1 huevo") para el − / + de a una; null = de a 100 g. */
+  unitGrams?: number | null;
+  unitName?: string | null;
+  /** Catálogo: cuánto dura normalmente (días), para proponer la fecha. */
+  shelfLifeDays?: number | null;
+  /**
+   * A6: el mismo ingrediente comprado en varias fechas se ve como UNA fila (total y fecha más próxima);
+   * aquí van los lotes de verdad (cada uno con su fecha), para cambiar la fecha de cada uno.
+   */
+  lots?: PantryItem[];
 };
 
 export type FoodGroup = { id: number; code: string; name: string };
@@ -61,7 +71,7 @@ export type BuyNext = {
 
 export type Unit = { id: number; code: string; name: string; dimension: 'mass' | 'volume' | 'count' };
 
-export type IngredientOption = { id: string; name: string; countUnits: Unit[] };
+export type IngredientOption = { id: string; name: string; countUnits: Unit[]; shelfLifeDays?: number | null };
 
 export type NewPantryItem = { ingredientId: string; quantity: number; unitId: number; expiresOn: string | null };
 
@@ -96,6 +106,17 @@ export interface PantryRepository {
   buyNext(limit: number): Promise<BuyNext[]>;
   /** Quita un lote del catálogo o un alimento propio (cada uno vive en su tabla). */
   remove(item: Pick<PantryItem, 'id' | 'ingredientId'>): Promise<void>;
+  /**
+   * ADR-034: suma (> 0) o resta (< 0) GRAMOS de un ingrediente; resta primero lo que vence antes.
+   * Con `unitId` la cantidad va en esa unidad (deshacer el agregado rápido). Devuelve el total vigente.
+   */
+  adjust(ingredientId: string, quantity: number, unitId?: number | null): Promise<number>;
+  /** Cambia la fecha de un lote (null = sin fecha); si ya hay uno con esa fecha, se juntan. */
+  setExpiry(lotId: string, expiresOn: string | null): Promise<void>;
+  /** "Quitar lo vencido" (catálogo y alimentos propios). Devuelve cuántos quitó. */
+  removeExpired(): Promise<number>;
+  /** Alimento propio: cambia cuánto queda o la fecha. */
+  updateCustom(id: string, patch: { quantity?: number; expiresOn?: string | null }): Promise<void>;
   search(query: string): Promise<IngredientOption[]>;
   /** Ingredientes del catálogo por nombre exacto (agregado rápido). */
   findByNames(names: string[]): Promise<IngredientRef[]>;
@@ -109,6 +130,67 @@ export function unitsFor(ingredient: IngredientOption, allUnits: Unit[]): Unit[]
     .filter((u): u is Unit => !!u);
   return [...ingredient.countUnits, ...mass];
 }
+
+/** Fechas que se ofrecen al agregar o corregir. `auto` = lo normal para ese alimento (A5). */
+export const EXPIRY_OPTIONS = [
+  { key: 'none', days: null },
+  { key: 'days3', days: 3 },
+  { key: 'week1', days: 7 },
+  { key: 'week2', days: 14 },
+  { key: 'month1', days: 30 },
+] as const;
+export type ExpiryKey = (typeof EXPIRY_OPTIONS)[number]['key'] | 'auto';
+
+/** Fecha ISO de una opción de vencimiento (null = sin fecha). */
+export function expiryFor(key: ExpiryKey, shelfLifeDays: number | null | undefined, today = todayIso()): string | null {
+  const days = key === 'auto' ? (shelfLifeDays ?? null) : (EXPIRY_OPTIONS.find((o) => o.key === key)?.days ?? null);
+  return days === null ? null : addDays(today, days);
+}
+
+/** "Todavía sirve" (M2): se le dan 2 días más desde hoy; se puede ajustar después. */
+export const STILL_GOOD_DAYS = 2;
+
+/**
+ * C3: de a cuánto suben y bajan − / +. Catálogo: una unidad si tiene ("1 huevo"), si no 100 g.
+ * Alimento propio: en su unidad (de a 100 en g y ml, de a 1 en lo demás).
+ */
+export function stepFor(item: PantryItem): number {
+  if (item.custom) return item.custom.unit === 'g' || item.custom.unit === 'ml' ? 100 : 1;
+  return item.unitGrams && item.unitGrams > 0 ? item.unitGrams : 100;
+}
+
+/** Cuánto hay, en la medida en que se corrige: gramos (catálogo) o la cantidad del alimento propio. */
+export const amountOf = (item: PantryItem) => (item.custom ? item.custom.quantity : item.grams);
+
+/**
+ * A6: un ingrediente del catálogo comprado en varias fechas → una sola fila con el total y la fecha más
+ * próxima. Lo vencido queda aparte (tiene sus propias acciones) y los alimentos propios no se juntan.
+ */
+export function mergeLots(items: PantryItem[], today: string): PantryItem[] {
+  const out: PantryItem[] = [];
+  const byIngredient = new Map<string, PantryItem>();
+  for (const item of items) {
+    if (!item.ingredientId || item.custom || expiryStatus(item.expiresOn, today) === 'expired') {
+      out.push(item);
+      continue;
+    }
+    const group = byIngredient.get(item.ingredientId);
+    if (!group) {
+      const first: PantryItem = { ...item, lots: [item] };
+      byIngredient.set(item.ingredientId, first);
+      out.push(first);
+      continue;
+    }
+    group.lots = [...(group.lots ?? []), item];
+    group.grams += item.grams;
+    // La fecha que manda es la más próxima (lo que hay que usar primero); sin fecha solo si ninguno tiene.
+    if (item.expiresOn && (!group.expiresOn || item.expiresOn < group.expiresOn)) group.expiresOn = item.expiresOn;
+  }
+  return out;
+}
+
+/** Clave estable de una fila (para abrir su edición): el ingrediente si es del catálogo, si no el id. */
+export const pantryKey = (item: PantryItem) => (item.ingredientId && item.lots ? `i:${item.ingredientId}` : `c:${item.id}`);
 
 export type ExpiryStatus = 'none' | 'expired' | 'soon' | 'ok';
 

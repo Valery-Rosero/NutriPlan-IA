@@ -80,8 +80,8 @@ describe('Clasificación visible en Mi cocina (ADR-027)', () => {
   it('lo que no vence pronto se agrupa por grupo de alimento, con su encabezado', async () => {
     const pantry = fakePantry({
       list: jest.fn(async () => [
-        { ...ARROZ, name: 'Papa', foodGroupId: 15 },
-        { ...ARROZ, id: 'p2', name: 'Pechuga de pollo', foodGroupId: 2 },
+        { ...ARROZ, ingredientId: 'i-papa', name: 'Papa', foodGroupId: 15 },
+        { ...ARROZ, id: 'p2', ingredientId: 'i-pollo', name: 'Pechuga de pollo', foodGroupId: 2 },
         { ...QUESO, foodGroupId: null },
       ]),
     });
