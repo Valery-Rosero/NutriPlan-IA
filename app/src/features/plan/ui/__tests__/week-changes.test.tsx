@@ -84,7 +84,7 @@ describe('US-174 · Por dónde se llega', () => {
     jest.mocked(useLocalSearchParams).mockReturnValue({});
     const assistant = fakeAssistant({
       send: jest.fn(async () => ({
-        conversationId: 'c1', messageId: 9, fallback: false, suggestions: [], hasPlan: true,
+        conversationId: 'c1', messageId: 9, fallback: false, ideas: [], targetPlannedMealId: null, suggestions: [], hasPlan: true,
         reply: '¡Claro! 💸\n\n**2 cambios** en tu semana · ahorras **$15.100**. Revísalos antes de aplicar.',
         week: { goal: 'cheaper' as const, avoid: [{ id: 'lentejas', name: 'Lentejas secas' }], changes: 2, saving: 15100, unresolved: 0 },
       })),
@@ -107,7 +107,7 @@ describe('US-174 · Por dónde se llega', () => {
     jest.mocked(useLocalSearchParams).mockReturnValue({});
     const assistant = fakeAssistant({
       send: jest.fn(async () => ({
-        conversationId: 'c1', messageId: 10, fallback: true, suggestions: [], hasPlan: true, week: null,
+        conversationId: 'c1', messageId: 10, fallback: true, ideas: [], targetPlannedMealId: null, suggestions: [], hasPlan: true, week: null,
         reply: 'Te propongo **Sudado de lo que haya** (40 min), y tienes todo lo necesario.',
       })),
     });

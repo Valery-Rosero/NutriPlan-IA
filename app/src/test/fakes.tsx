@@ -132,6 +132,7 @@ export const RECIPE: RecipeDetail = {
     ],
   }],
   byAssistant: false,
+  extras: [],
 };
 
 export function fakeRecipes(overrides: Partial<RecipeRepository> = {}): jest.Mocked<RecipeRepository> {
@@ -149,6 +150,7 @@ export function fakeRecipes(overrides: Partial<RecipeRepository> = {}): jest.Moc
     cookPlanned: jest.fn(async () => ({ plannedMealId: 'pm1', shortfall: [] })),
     undoCook: jest.fn(async () => {}),
     rate: jest.fn(async () => {}),
+    cost: jest.fn(async () => ({ cost: 14_830, missingPrices: 0 })),
     substitutes: jest.fn(async (ids: string[]) =>
       [
         { ingredientId: 'arroz', substituteId: 'papa', name: 'Papa', ratio: 1, note: null, inPantry: true },
@@ -293,23 +295,26 @@ export function fakeServices(overrides: Partial<Services> = {}): Services {
 
 export function fakeAssistant(overrides: Partial<AssistantRepository> = {}): jest.Mocked<AssistantRepository> {
   return {
+    // ADR-037: IA primero, una lista de platos; elegir uno la llena (fill).
     send: jest.fn(async ({ plannedMealId }) => ({
       conversationId: 'c1',
       messageId: 7,
-      reply: 'Te tengo dos ideas:\n- **Sudado de lo que haya**, con lo que tienes.\n- **Pollo salteado con papa**, una receta mía.',
+      reply: 'Con lo que tienes, mira:',
       fallback: false,
-      suggestions: [
-        {
-          recipeId: 'r5', title: 'Sudado de lo que haya', totalMinutes: 40, coverage: 0.8, missing: [], byAssistant: false,
-          targetPlannedMealId: plannedMealId ?? null,
-        },
-        {
-          recipeId: 'ia1', title: 'Pollo salteado con papa', totalMinutes: 30, coverage: 0.67, missing: ['Pechuga de pollo'],
-          byAssistant: true, targetPlannedMealId: plannedMealId ?? null,
-        },
+      ideas: [
+        { title: 'Sudado de pollo con papa', blurb: 'Jugoso, de una sola olla.', minutes: 40, fromCatalog: false },
+        { title: 'Arroz atollado', blurb: 'Cremoso y rendidor.', minutes: 45, fromCatalog: false },
+        { title: 'Tortilla de papa', blurb: 'Rápida y llenadora.', minutes: 25, fromCatalog: false },
+        { title: 'Lentejas con maduro', blurb: 'Dulce y salado.', minutes: 35, fromCatalog: false },
       ],
+      targetPlannedMealId: plannedMealId ?? null,
+      suggestions: [],
       week: null,
       hasPlan: true,
+    })),
+    fill: jest.fn(async () => ({
+      recipeId: 'ia1', title: 'Arroz atollado', totalMinutes: 45, coverage: 0.5, missing: ['Pechuga de pollo'], byAssistant: true,
+      targetPlannedMealId: null,
     })),
     apply: jest.fn(async () => {}),
     ...overrides,

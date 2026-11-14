@@ -122,12 +122,24 @@ export function useAddManualItem() {
  * (ADR-033, C1): al comprarlos pasan a la despensa. Si ya estaban, la base suma; si el plan ya los pide, no duplica.
  */
 export function useAddMissingToList() {
-  const { shopping } = useServices();
+  const { shopping, foodLabels } = useServices();
   return useListMutation(
-    async ({ list, planId, items }: { list: ShoppingList | null | undefined; planId?: string; items: { ingredientId: string; grams: number }[] }) => {
+    async ({ list, planId, items, extras = [] }: {
+      list: ShoppingList | null | undefined;
+      planId?: string;
+      items: { ingredientId: string; grams: number }[];
+      /** ADR-037: lo que la receta lleva fuera del catálogo ("chontaduro"): va por nombre, en su sección. */
+      extras?: string[];
+    }) => {
       // Siempre hay dónde anotarlo (A1): la lista vigente; si el plan aún no tiene lista, se arma; sin plan, la de la casa.
       const listId = list?.id ?? (planId ? await shopping.generate(planId) : (await shopping.forHouse()).id);
-      return shopping.addIngredients(listId, items);
+      const pending = new Set((list?.items ?? []).filter((i) => !i.checked).map((i) => i.name.trim().toLowerCase()));
+      if (items.length > 0) await shopping.addIngredients(listId, items);
+      for (const name of extras) {
+        if (pending.has(name.trim().toLowerCase())) continue;
+        const label = await classifyQuietly(foodLabels, name);
+        await shopping.addManual(listId, name, label?.storeCategoryId ?? null);
+      }
     },
   );
 }

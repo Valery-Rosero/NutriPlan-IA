@@ -1,49 +1,26 @@
-// Adaptador del LLM del asistente (ADR-025, ADR-029). La llamada a Gemini vive en _shared/gemini.ts; aquí solo
-// el esquema de respuesta del asistente y sus parámetros.
+// Adaptador del LLM del asistente (ADR-025, ADR-029, ADR-037). La llamada a Gemini vive en _shared/gemini.ts;
+// aquí solo los esquemas de respuesta de los dos pasos (lista de platos y receta) y sus parámetros.
 import { askGeminiJson, DEFAULT_MODEL, type LlmAnswer, type LlmTurn } from '../_shared/gemini.ts';
 
 export { DEFAULT_MODEL };
 export type { LlmAnswer, LlmTurn };
 
-const NEW_RECIPE = {
-  type: 'OBJECT',
-  nullable: true,
-  description: 'Solo si kind = "new": una receta inventada con ingredientes de la lista I.',
-  properties: {
-    title: { type: 'STRING' },
-    description: { type: 'STRING', nullable: true, description: 'Una frase que antoje.' },
-    servings: { type: 'INTEGER' },
-    prep_minutes: { type: 'INTEGER' },
-    cook_minutes: { type: 'INTEGER' },
-    ingredients: {
-      type: 'ARRAY',
-      items: {
-        type: 'OBJECT',
-        properties: { ref: { type: 'STRING', description: 'Referencia exacta I… de la lista.' }, grams: { type: 'NUMBER' } },
-        required: ['ref', 'grams'],
-      },
-    },
-    steps: { type: 'ARRAY', items: { type: 'STRING' } },
-  },
-  required: ['title', 'servings', 'prep_minutes', 'cook_minutes', 'ingredients', 'steps'],
-};
-
-const RESPONSE_SCHEMA = {
+/** Paso 1: una frase + 4–5 platos (o el modo semana). */
+const IDEAS_SCHEMA = {
   type: 'OBJECT',
   properties: {
-    reply: { type: 'STRING', description: 'Mensaje cálido en Markdown sencillo, máximo 120 palabras.' },
-    pantry_only: { type: 'BOOLEAN', description: 'true si la persona pidió usar SOLO lo que tiene en la cocina.' },
-    options: {
+    reply: { type: 'STRING', description: 'UNA frase corta y cálida que presente la lista (sin repetir los platos).' },
+    ideas: {
       type: 'ARRAY',
-      description: 'De 1 a 3 opciones (vacío solo si no corresponde proponer comida).',
+      description: 'De 4 a 5 platos distintos entre sí (vacío solo si no corresponde proponer comida).',
       items: {
         type: 'OBJECT',
         properties: {
-          kind: { type: 'STRING', enum: ['catalog', 'new'] },
-          ref: { type: 'STRING', nullable: true, description: 'Si kind = "catalog": referencia exacta R… del recetario.' },
-          recipe: NEW_RECIPE,
+          title: { type: 'STRING', description: 'Nombre corto y antojador.' },
+          blurb: { type: 'STRING', description: 'Una frase de máximo 90 caracteres.' },
+          minutes: { type: 'INTEGER', description: 'Minutos totales realistas.' },
         },
-        required: ['kind'],
+        required: ['title', 'blurb', 'minutes'],
       },
     },
     week: {
@@ -56,17 +33,46 @@ const RESPONSE_SCHEMA = {
       },
     },
   },
-  required: ['reply', 'pantry_only', 'options'],
+  required: ['reply', 'ideas'],
 };
 
-/** Con recetas nuevas la respuesta es más larga: más tokens y algo más de tiempo que antes. */
-export function askGemini(system: string, turns: LlmTurn[], timeoutMs = 15000): Promise<LlmAnswer> {
+/** Paso 2: la plantilla de la receta del plato elegido. */
+const RECIPE_SCHEMA = {
+  type: 'OBJECT',
+  properties: {
+    title: { type: 'STRING' },
+    description: { type: 'STRING', nullable: true, description: 'Una frase que antoje.' },
+    servings: { type: 'INTEGER' },
+    prep_minutes: { type: 'INTEGER' },
+    cook_minutes: { type: 'INTEGER' },
+    ingredients: {
+      type: 'ARRAY',
+      items: {
+        type: 'OBJECT',
+        properties: {
+          ref: { type: 'STRING', nullable: true, description: 'Referencia exacta I… si está en la lista.' },
+          name: { type: 'STRING', nullable: true, description: 'Nombre común, solo si no está en la lista.' },
+          grams: { type: 'NUMBER', description: 'Gramos totales para las porciones.' },
+        },
+        required: ['grams'],
+      },
+    },
+    steps: { type: 'ARRAY', items: { type: 'STRING' } },
+  },
+  required: ['title', 'servings', 'prep_minutes', 'cook_minutes', 'ingredients', 'steps'],
+};
+
+export function askIdeas(system: string, turns: LlmTurn[], timeoutMs = 15000): Promise<LlmAnswer> {
+  return askGeminiJson({ system, turns, schema: IDEAS_SCHEMA, temperature: 0.8, maxOutputTokens: 1200, timeoutMs, caller: 'assistant-chat' });
+}
+
+export function askRecipe(system: string, timeoutMs = 20000): Promise<LlmAnswer> {
   return askGeminiJson({
     system,
-    turns,
-    schema: RESPONSE_SCHEMA,
-    temperature: 0.6,
-    maxOutputTokens: 2500,
+    turns: [{ role: 'user', text: 'Arma la receta.' }],
+    schema: RECIPE_SCHEMA,
+    temperature: 0.5,
+    maxOutputTokens: 2000,
     timeoutMs,
     caller: 'assistant-chat',
   });

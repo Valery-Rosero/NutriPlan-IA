@@ -7,7 +7,6 @@ import { useTranslation } from 'react-i18next';
 import { errorKey } from '@/core/errors/app-error';
 import { foodEmoji } from '@/core/food-emoji';
 import { HealthDisclaimerNote } from '@/features/legal/ui/health-disclaimer-note';
-import { useCurrentPlan } from '@/features/plan/application/plan-queries';
 import { useProfile } from '@/features/profile/application/profile-queries';
 import { useCookNow, useCookPlanned, useRecipe, useRecipePreview, useSubstitutes } from '@/features/recipes/application/recipe-queries';
 import {
@@ -23,9 +22,9 @@ import {
   type RecipePreview,
   type Substitute,
 } from '@/features/recipes/domain/recipe';
+import { AddMissingToList } from '@/features/recipes/ui/add-missing-to-list';
 import { CookResultPanel } from '@/features/recipes/ui/cook-result';
 import { formatQuantity } from '@/features/recipes/ui/format-quantity';
-import { useAddMissingToList, useShoppingList } from '@/features/shopping/application/shopping-queries';
 import { Spacing } from '@/shared/theme/colors';
 import { Radius } from '@/shared/theme/tokens';
 import { useTheme } from '@/shared/theme/use-theme';
@@ -113,7 +112,10 @@ export function RecipeScreen() {
         {preview.isError ? (
           <ErrorState message={t(errorKey(preview.error))} onRetry={() => void preview.refetch()} />
         ) : preview.data ? (
-          <PreviewSections preview={preview.data} />
+          <PreviewSections
+            preview={preview.data}
+            extras={recipe.data.extras.map((e) => ({ name: e.name, grams: (e.grams * currentServings) / (recipe.data.baseServings || 1) }))}
+          />
         ) : (
           <LoadingState />
         )}
@@ -209,7 +211,7 @@ function FlexGroups({ detail, choices, onChange }: { detail: RecipeDetail; choic
   );
 }
 
-function PreviewSections({ preview }: { preview: RecipePreview }) {
+function PreviewSections({ preview, extras }: { preview: RecipePreview; extras: { name: string; grams: number }[] }) {
   const { t } = useTranslation();
   const n = preview.per_serving;
   const have = preview.lines.filter((l) => l.in_pantry).length;
@@ -227,6 +229,7 @@ function PreviewSections({ preview }: { preview: RecipePreview }) {
           items={preview.lines
             .filter((l) => !l.in_pantry && !l.is_optional && l.grams > 0)
             .map((l) => ({ ingredientId: l.ingredient_id, grams: l.grams }))}
+          extras={extras.map((e) => e.name)}
         />
         {preview.lines.map((line) => {
           const amount = formatQuantity(line.quantity, line.unit_code, t);
@@ -249,6 +252,20 @@ function PreviewSections({ preview }: { preview: RecipePreview }) {
             </View>
           );
         })}
+        {/* ADR-037: lo que la IA usó fuera del catálogo (sin nutrición ni precio). */}
+        {extras.map((e) => (
+          <View key={e.name} style={styles.line} accessible accessibilityLabel={`${e.name}, ${Math.round(e.grams)} g. ${t('recipe.toBuy')}. ${t('recipe.extraNote')}`}>
+            <FoodTile emoji={foodEmoji(e.name, '🛒')} flavor="mango" size={40} />
+            <View style={styles.flex}>
+              <AppText>{e.name}</AppText>
+              <View style={styles.status}>
+                <Pill label={t('recipe.toBuy')} tone="mango" icon="cart-outline" />
+              </View>
+            </View>
+            <AppText variant="label" secondary>{`${Math.round(e.grams)} g`}</AppText>
+          </View>
+        ))}
+        {extras.length > 0 && <AppText variant="caption" secondary>{t('recipe.extraNote')}</AppText>}
       </Card>
 
       {preview.allergens.length > 0 && (
@@ -272,32 +289,6 @@ function PreviewSections({ preview }: { preview: RecipePreview }) {
           </Card>
         </>
       )}
-    </>
-  );
-}
-
-/** Lo que falta para esta receta, a la lista de mercado de una vez (con su cantidad). */
-function AddMissingToList({ items }: { items: { ingredientId: string; grams: number }[] }) {
-  const { t } = useTranslation();
-  const plan = useCurrentPlan();
-  const list = useShoppingList(plan.data?.id, plan.isSuccess);
-  const add = useAddMissingToList();
-  if (items.length === 0) return null;
-  if (add.isSuccess) return <Banner tone="success" message={t('recipe.addedMissing')} />;
-  // A1 (ADR-035): siempre hay lista (la del plan o la de la casa); solo se espera a saber cuál es.
-  if (!plan.isSuccess || list.isPending) return null;
-  return (
-    <>
-      <Button
-        label={t('recipe.addMissing', { count: items.length })}
-        icon="cart-outline"
-        variant="secondary"
-        flavor="mango"
-        size="sm"
-        loading={add.isPending}
-        onPress={() => add.mutate({ list: list.data, planId: plan.data?.id, items })}
-      />
-      {add.error && <Banner tone="danger" message={t(errorKey(add.error))} />}
     </>
   );
 }

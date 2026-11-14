@@ -20,7 +20,7 @@ export class SupabaseRecipeRepository implements RecipeRepository {
     const [recipe, menu] = await Promise.all([
       this.client
         .from('recipes')
-        .select('id, title, description, total_minutes, base_servings, keeps_days, created_by_assistant, recipe_meal_slots(slot), recipe_steps(step_number, instruction)')
+        .select('id, title, description, total_minutes, base_servings, keeps_days, created_by_assistant, recipe_meal_slots(slot), recipe_steps(step_number, instruction), recipe_extra_ingredients(position, name, grams)')
         .eq('id', id)
         .single(),
       this.client.rpc('recipe_flex_menu', { p_recipe_id: id }),
@@ -49,7 +49,23 @@ export class SupabaseRecipeRepository implements RecipeRepository {
       steps: [...r.recipe_steps].sort((a, b) => a.step_number - b.step_number).map((s) => s.instruction),
       groups: [...groups.values()],
       byAssistant: r.created_by_assistant,
+      extras: [...(r.recipe_extra_ingredients ?? [])]
+        .sort((a, b) => a.position - b.position)
+        .map((e) => ({ name: e.name, grams: Number(e.grams) })),
     };
+  }
+
+  async cost(id: string, servings: number) {
+    const { data: session } = await this.client.auth.getSession();
+    const userId = session.session?.user.id;
+    if (!userId) return null;
+    const profile = await this.client.from('profiles').select('region_id').eq('id', userId).maybeSingle();
+    if (profile.error) throw toAppError(profile.error);
+    if (!profile.data?.region_id) return null;
+    const { data, error } = await this.client.rpc('recipe_cost', { p_recipe_id: id, p_region_id: profile.data.region_id, p_servings: servings });
+    if (error) throw toAppError(error);
+    const row = data?.[0];
+    return row ? { cost: Number(row.cost), missingPrices: row.missing_prices } : null;
   }
 
   async preview(id: string, servings: number, choices: Choice[]) {

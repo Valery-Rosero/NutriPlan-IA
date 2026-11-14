@@ -10,7 +10,7 @@ export const ERROR_CODES = [
   'undo_window_expired', 'already_rated', 'consent_outdated', 'plan_overlap_confirmed',
   'invalid_quantity', 'unit_incompatible', 'no_eligible_recipes', 'invalid_days', 'list_not_found', 'meal_not_cooked', 'not_substitutable',
   // asistente (Edge Function assistant-chat y apply_assistant_suggestion)
-  'invalid_amount', 'invalid_push_token', 'quota_exceeded', 'already_applied', 'no_suggestion', 'message_not_found', 'invalid_input',
+  'invalid_amount', 'invalid_push_token', 'quota_exceeded', 'already_applied', 'no_suggestion', 'message_not_found', 'invalid_input', 'recipe_not_created',
   'ai_unavailable',
   // autenticación
   'invalid_credentials', 'email_not_confirmed', 'email_taken', 'weak_password', 'rate_limited',

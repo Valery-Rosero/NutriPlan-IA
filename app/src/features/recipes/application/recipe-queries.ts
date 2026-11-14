@@ -10,6 +10,7 @@ export const recipeKeys = {
   all: ['recipes'] as const,
   detail: (id: string) => [...recipeKeys.all, 'detail', id] as const,
   substitutes: (ingredientIds: string[]) => [...recipeKeys.all, 'substitutes', [...ingredientIds].sort().join(',')] as const,
+  cost: (id: string, servings: number) => [...recipeKeys.all, 'cost', id, servings] as const,
   preview: (id: string, servings: number, choices: Choice[]) =>
     [...recipeKeys.all, 'preview', id, servings, choices.map((c) => `${c.groupKey}:${c.ingredientId}`).sort().join(',')] as const,
 };
@@ -27,6 +28,12 @@ export function useRecipePreview(id: string, servings: number, choices: Choice[]
     enabled: choices !== null,
     placeholderData: keepPreviousData, // al cambiar porciones u opciones no parpadea
   });
+}
+
+/** Lo que cuesta en la región de la persona (lo calcula la base con los precios del piloto). */
+export function useRecipeCost(id: string, servings: number, enabled = true) {
+  const { recipes } = useServices();
+  return useQuery({ queryKey: recipeKeys.cost(id, servings), queryFn: () => recipes.cost(id, servings), enabled: enabled && servings > 0 });
 }
 
 /** US-147: sustitutos de lo que falta (filtrados por alergias y dietas en la base). */

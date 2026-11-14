@@ -644,7 +644,8 @@
     "invalid_input": "Escribe un mensaje de hasta 1000 caracteres.",
     "invalid_amount": "Escribe cuánto pagaste, en pesos.",
     "invalid_push_token": "No pudimos registrar este teléfono. Inténtalo de nuevo.",
-    "ai_unavailable": "No pude analizar la foto en este momento. Escríbelo o búscalo en el catálogo."
+    "ai_unavailable": "No pude analizar la foto en este momento. Escríbelo o búscalo en el catálogo.",
+    "recipe_not_created": "No pude armar esa receta. Prueba con otro plato de la lista."
   },
   "onboarding": {
     "progress": "Paso {{step}} de {{total}}",
@@ -752,7 +753,8 @@
     "addMissing_one": "Agregar lo que falta a mi lista ({{count}})",
     "addMissing_other": "Agregar lo que falta a mi lista ({{count}})",
     "addedMissing": "Listo, quedó en tu lista de mercado.",
-    "noListYet": "Para agregar lo que falta, primero organiza tu semana: así se crea tu lista de mercado."
+    "noListYet": "Para agregar lo que falta, primero organiza tu semana: así se crea tu lista de mercado.",
+    "extraNote": "Lo que no está en nuestro catálogo no suma a la nutrición ni al costo."
   },
   "units": {
     "kg": "kg",
@@ -912,7 +914,18 @@
     "weekChanges_other": "{{count}} cambios",
     "weekSaving": "ahorras {{amount}}",
     "seeChanges": "Ver los cambios",
-    "weekFallback": "¿Querías cambiar tu semana? Elige qué buscas:"
+    "weekFallback": "¿Querías cambiar tu semana? Elige qué buscas:",
+    "ideas": {
+      "label": "Platos que te propongo",
+      "pickHint": "Toca para que arme la receta completa",
+      "filling": "Armando la receta…",
+      "meta_one": "{{count}} porción · {{minutes}} min",
+      "meta_other": "{{count}} porciones · {{minutes}} min",
+      "protein": "{{grams}} g proteína",
+      "cost": "≈ {{amount}}",
+      "steps": "Pasos",
+      "open": "Ver receta completa y cocinarla"
+    }
   },
   "support": {
     "title": "Ayuda y sugerencias",

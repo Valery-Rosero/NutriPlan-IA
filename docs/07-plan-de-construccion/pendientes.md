@@ -74,7 +74,12 @@ Aprobada completa por la dueña del producto ("todo lo que recomiendas está bie
 | 3 | Lista de la casa sin plan; cantidades como se venden; presupuesto redondeado; deshacer al quitar (A1, A2, M3, M5 · ADR-035) | ✅ Hecho (14-nov); probar en el APK: sin plan anotar "aguacate"; ver "Ahuyama · un pedazo pequeño"; quitar y "Deshacer" |
 | 4 | Encabezado compacto que se desplaza; Agregar de a un modo; despensa sin conexión; limpieza técnica (A3, A4, M4, D1, D2, D4 · ADR-036) | ✅ Hecho (14-nov); probar en el APK: en la lista se ven ≥ 5 productos; Agregar abre en "Buscar"; sin señal, "Lo que tengo" carga |
 
-**Siguiente:** el asistente v2 (propuesta aprobada: https://claude.ai/artifact/PHLMTxbivbSzU4esswb4Q3): lista de 4–5 platos de la IA → elegir → la IA llena la plantilla; ingredientes libres (opción A); micrófono junto a enviar; pantallas compactas en toda la app; listas bien formateadas.
+### B8. Asistente v2 (propuesta: https://claude.ai/artifact/PHLMTxbivbSzU4esswb4Q3)
+| Entrega | Qué | Estado |
+|---|---|---|
+| 1 | IA primero: lista de 4–5 platos → elegir → la IA llena la receta; usa preferencias, alergias y dietas ("qué evitar sí, por qué no"); ingredientes libres sin restricciones; recetario de respaldo; listas bien formateadas (ADR-037, planos: https://claude.ai/artifact/CgZGXGi3nddiLYGbG7WY1R) | ✅ Hecho (14-nov); desplegar `assistant-chat` y probar en el APK con Gemini. Pendiente: "Ponerla en mi semana" sin comida destino (elegir día y momento) |
+| 2 | Micrófono junto a enviar (voz del teléfono; permiso de micrófono, APK nuevo) | Siguiente |
+| 3 | Pantallas compactas en toda la app (Hoy, Mi semana, Asistente) | Pendiente |
 
 ## C. Antes de usuarios reales (sin cambios)
 Revisión de un abogado de los textos legales · revisión de una nutricionista (US-121) · validación con 5 personas (US-101) · producción (`drgzvvkkjxqvolcerpjx`) · Google Play (US-158) · monitor de disponibilidad · Gemini en plan de pago con tope de gasto y clave rotada · renovar el token de Supabase del despliegue (cada 90 días).

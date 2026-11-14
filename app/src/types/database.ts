@@ -145,14 +145,14 @@ isOneToOne: false
                   ]
                 },"assistant_messages": {
                   Row: {
-                    "applied_at": string | null,"content": string,"conversation_id": string,"created_at": string,"id": number,"role": Database["public"]['Enums']["chat_role"],"suggested_recipe_id": string | null,"target_planned_meal_id": string | null
+                    "applied_at": string | null,"content": string,"conversation_id": string,"created_at": string,"id": number,"ideas": Json | null,"role": Database["public"]['Enums']["chat_role"],"suggested_recipe_id": string | null,"target_planned_meal_id": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "applied_at"?: string | null,"content": string,"conversation_id": string,"created_at"?: string,"id"?: never,"role": Database["public"]['Enums']["chat_role"],"suggested_recipe_id"?: string | null,"target_planned_meal_id"?: string | null
+                    "applied_at"?: string | null,"content": string,"conversation_id": string,"created_at"?: string,"id"?: never,"ideas"?: Json | null,"role": Database["public"]['Enums']["chat_role"],"suggested_recipe_id"?: string | null,"target_planned_meal_id"?: string | null
                   }
                   Update: {
-                    "applied_at"?: string | null,"content"?: string,"conversation_id"?: string,"created_at"?: string,"id"?: never,"role"?: Database["public"]['Enums']["chat_role"],"suggested_recipe_id"?: string | null,"target_planned_meal_id"?: string | null
+                    "applied_at"?: string | null,"content"?: string,"conversation_id"?: string,"created_at"?: string,"id"?: never,"ideas"?: Json | null,"role"?: Database["public"]['Enums']["chat_role"],"suggested_recipe_id"?: string | null,"target_planned_meal_id"?: string | null
                   }
                   Relationships: [
                     {
@@ -1205,6 +1205,38 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"recipe_extra_ingredients": {
+                  Row: {
+                    "grams": number,"name": string,"position": number,"recipe_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "grams": number,"name": string,"position": number,"recipe_id": string
+                  }
+                  Update: {
+                    "grams"?: number,"name"?: string,"position"?: number,"recipe_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "recipe_extra_ingredients_recipe_id_fkey"
+      columns: ["recipe_id"]
+isOneToOne: false
+      referencedRelation: "recipe_diets"
+      referencedColumns: ["recipe_id"]
+    },{
+      foreignKeyName: "recipe_extra_ingredients_recipe_id_fkey"
+      columns: ["recipe_id"]
+isOneToOne: false
+      referencedRelation: "recipe_nutrition"
+      referencedColumns: ["recipe_id"]
+    },{
+      foreignKeyName: "recipe_extra_ingredients_recipe_id_fkey"
+      columns: ["recipe_id"]
+isOneToOne: false
+      referencedRelation: "recipes"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"recipe_flex_groups": {
                   Row: {
                     "group_key": number,"label": string,"max_choices": number,"min_choices": number,"recipe_id": string,"sort_order": number
@@ -2072,6 +2104,9 @@ isOneToOne: false
 { Args: Record<PropertyKey, never>; Returns: {
               "expiring": boolean,"in_pantry": boolean,"ingredient_id": string,"is_staple": boolean,"name": string
             }[]
+                           },
+"assistant_profile":
+{ Args: Record<PropertyKey, never>; Returns: Json
                            },
 "cook_now":
 { Args: { "p_choices"?: Json,"p_recipe_id": string,"p_servings": number,"p_slot": Database["public"]['Enums']["meal_slot"] }; Returns: Json

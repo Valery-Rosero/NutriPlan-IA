@@ -1,7 +1,7 @@
 import { FunctionsHttpError, type SupabaseClient } from '@supabase/supabase-js';
 
 import { AppError, toAppError } from '@/core/errors/app-error';
-import type { AssistantReply, AssistantRepository, AssistantRequest } from '@/features/assistant/domain/assistant';
+import type { AssistantReply, AssistantRepository, AssistantRequest, AssistantSuggestion } from '@/features/assistant/domain/assistant';
 import type { WeekGoal } from '@/features/plan/domain/plan';
 import type { Database } from '@/types/database';
 
@@ -27,6 +27,8 @@ type Payload = {
     /** US-174: propuesta de cambios a la semana. Ausente si la función es anterior. */
     week?: { goal: WeekGoal | null; avoid: { id: string; name: string }[]; changes: number; saving: number | null; unresolved: number } | null;
     has_plan?: boolean;
+    /** ADR-037: la lista de platos. Ausente si la función es anterior. */
+    ideas?: { title: string; blurb: string; minutes: number; from_catalog: boolean }[];
     suggestion: {
       recipe_id: string;
       title: string;
@@ -37,6 +39,28 @@ type Payload = {
   };
   error?: { code: string };
 };
+
+type FillPayload = {
+  ok: boolean;
+  data?: { suggestion: RemoteSuggestion & { target_planned_meal_id: string | null } };
+  error?: { code: string };
+};
+
+/** La función responde { ok:false, error:{ code } }: se traduce a un código de la app. */
+async function functionError(error: unknown) {
+  const body = error instanceof FunctionsHttpError ? await error.context.json().catch(() => null) : null;
+  return toAppError(body?.error?.code ?? error);
+}
+
+const toSuggestion = (s: RemoteSuggestion, target: string | null): AssistantSuggestion => ({
+  recipeId: s.recipe_id,
+  title: s.title,
+  totalMinutes: s.total_minutes,
+  coverage: s.coverage,
+  missing: s.missing ?? [],
+  byAssistant: !!s.by_assistant,
+  targetPlannedMealId: target,
+});
 
 export class SupabaseAssistantRepository implements AssistantRepository {
   private readonly client: SupabaseClient<Database>;
@@ -49,11 +73,7 @@ export class SupabaseAssistantRepository implements AssistantRepository {
     const { data, error } = await this.client.functions.invoke<Payload>('assistant-chat', {
       body: { conversation_id: conversationId, message, planned_meal_id: plannedMealId },
     });
-    if (error) {
-      // La función responde { ok:false, error:{ code } }: se traduce a un código de la app.
-      const body = error instanceof FunctionsHttpError ? await error.context.json().catch(() => null) : null;
-      throw toAppError(body?.error?.code ?? error);
-    }
+    if (error) throw await functionError(error);
     if (!data?.ok || !data.data) throw new AppError('unknown');
     const d = data.data;
     const target = d.target_planned_meal_id ?? d.suggestion?.target_planned_meal_id ?? null;
@@ -64,18 +84,22 @@ export class SupabaseAssistantRepository implements AssistantRepository {
       messageId: d.message_id,
       reply: d.reply,
       fallback: d.fallback,
-      suggestions: remote.map((s) => ({
-        recipeId: s.recipe_id,
-        title: s.title,
-        totalMinutes: s.total_minutes,
-        coverage: s.coverage,
-        missing: s.missing ?? [],
-        byAssistant: !!s.by_assistant,
-        targetPlannedMealId: target,
-      })),
+      ideas: (d.ideas ?? []).map((i) => ({ title: i.title, blurb: i.blurb, minutes: i.minutes, fromCatalog: !!i.from_catalog })),
+      targetPlannedMealId: target,
+      suggestions: remote.map((s) => toSuggestion(s, target)),
       week: d.week ?? null,
       hasPlan: !!d.has_plan,
     };
+  }
+
+  async fill(conversationId: string, messageId: number, idea: number) {
+    const { data, error } = await this.client.functions.invoke<FillPayload>('assistant-chat', {
+      body: { action: 'fill', conversation_id: conversationId, message_id: messageId, idea },
+    });
+    if (error) throw await functionError(error);
+    if (!data?.ok || !data.data) throw new AppError('unknown');
+    const s = data.data.suggestion;
+    return toSuggestion(s, s.target_planned_meal_id);
   }
 
   async apply(messageId: number, recipeId: string) {

@@ -18,7 +18,15 @@ export type RecipeDetail = {
   groups: FlexGroup[];
   /** ADR-029: la creó el asistente (borrador privado, validado por la base). */
   byAssistant: boolean;
+  /**
+   * ADR-037: ingredientes que la IA usó y no están en el catálogo (solo para quien no tiene alergias ni dietas).
+   * Gramos para las porciones base; sin nutrición ni precio.
+   */
+  extras: { name: string; grams: number }[];
 };
+
+/** Costo de la receta con los precios de la región (recipe_cost). `missingPrices`: ingredientes sin precio. */
+export type RecipeCost = { cost: number; missingPrices: number };
 
 export type Choice = { groupKey: number; ingredientId: string };
 
@@ -82,6 +90,8 @@ export interface RecipeRepository {
   rate(plannedMealId: string, rating: number, tags: RatingTag[], comment: string): Promise<void>;
   /** US-147: sustitutos de varios ingredientes en una sola llamada. */
   substitutes(ingredientIds: string[]): Promise<Substitute[]>;
+  /** Costo en la región de la persona; null si no tiene región. Lo calcula la base. */
+  cost(id: string, servings: number): Promise<RecipeCost | null>;
 }
 
 /** Etiquetas de calificación (tabla rating_tags); los textos están en i18n. */

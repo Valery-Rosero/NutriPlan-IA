@@ -1,6 +1,6 @@
 # Modelo de datos (generado desde las migraciones)
 
-> Fuente de verdad: `backend/supabase/migrations/`. Este archivo se generó leyendo la base real después de aplicar las 38 migraciones (68 tablas, todas con RLS). Si cambia una migración, regenerar: `python docs/03-datos/_generar_modelo.py` (con Supabase local encendido).
+> Fuente de verdad: `backend/supabase/migrations/`. Este archivo se generó leyendo la base real después de aplicar las 39 migraciones (69 tablas, todas con RLS). Si cambia una migración, regenerar: `python docs/03-datos/_generar_modelo.py` (con Supabase local encendido).
 
 Principios: 3FN; lo derivable no se guarda (alérgenos y dietas de una receta, nutrición por porción, picante y apto-batch); cantidades canónicas en gramos; RLS en todas las tablas; ver `reglas-de-negocio.md`.
 
@@ -575,6 +575,24 @@ Restricciones:
 - **FK**: `FOREIGN KEY (unit_id) REFERENCES units(id)`
 - **PK**: `PRIMARY KEY (recipe_id, ingredient_id)`
 
+### `recipe_extra_ingredients`
+
+ADR-037: ingredientes que la IA usó y no están en el catálogo (p. ej. "chontaduro"). Sin datos de nutrición ni precio. Solo en recetas del asistente de personas SIN alergias ni dietas.
+
+| Columna | Tipo | Nulo | Default / generada | Nota |
+|---|---|---|---|---|
+| `recipe_id` | uuid | no |  |  |
+| `position` | smallint | no |  |  |
+| `name` | text | no |  |  |
+| `grams` | numeric(8,1) | no |  |  |
+
+Restricciones:
+- **CHECK**: `CHECK ((("position" >= 1) AND ("position" <= 15)))`
+- **CHECK**: `CHECK (((char_length(btrim(name)) >= 2) AND (char_length(btrim(name)) <= 60)))`
+- **CHECK**: `CHECK (((grams >= (1)::numeric) AND (grams <= (3000)::numeric)))`
+- **FK**: `FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE`
+- **PK**: `PRIMARY KEY (recipe_id, "position")`
+
 ### `recipe_flex_groups`
 
 Grupo intercambiable de una receta. min_choices = 0: grupo opcional (se usa solo si lo tienes).
@@ -1135,6 +1153,7 @@ Restricciones:
 | `target_planned_meal_id` | uuid | sí |  |  |
 | `applied_at` | timestamp with time zone | sí |  |  |
 | `created_at` | timestamp with time zone | no | now() |  |
+| `ideas` | jsonb | sí |  | ADR-037: { target, slot, items: [{ title, blurb, minutes, recipe_id }] }. recipe_id solo si la idea es del recetario (respaldo). La escribe la Edge Function. |
 
 Restricciones:
 - **CHECK**: `CHECK (((role = 'assistant'::chat_role) OR ((suggested_recipe_id IS NULL) AND (target_planned_meal_id IS NULL) AND (applied_at IS NULL))))`
@@ -1155,7 +1174,7 @@ Hasta tres recetas que propuso el asistente en un mensaje (ADR-029): del recetar
 | `recipe_id` | uuid | no |  |  |
 
 Restricciones:
-- **CHECK**: `CHECK ((("position" >= 1) AND ("position" <= 3)))`
+- **CHECK**: `CHECK ((("position" >= 1) AND ("position" <= 5)))`
 - **FK**: `FOREIGN KEY (message_id) REFERENCES assistant_messages(id) ON DELETE CASCADE`
 - **FK**: `FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE`
 - **PK**: `PRIMARY KEY (message_id, recipe_id)`
