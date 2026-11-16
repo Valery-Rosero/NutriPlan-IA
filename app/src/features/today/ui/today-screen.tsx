@@ -74,8 +74,8 @@ export function TodayScreen() {
     <Screen scroll>
       {/* La pregunta del momento, con el estado de la cocina de un vistazo */}
       <BrandHeader
-        eyebrow={t(`today.greeting.${greetingFor(hour)}`)}
-        caption={capitalize(formatDay(today))}
+        logo
+        caption={`${t(`today.greeting.${greetingFor(hour)}`)} · ${capitalize(formatDay(today))}`}
         title={t(`today.momentTitle.${moment}`)}
         action={{ icon: 'person-circle-outline', label: t('profile.title'), onPress: () => router.push('/profile') }}>
         {items.length > 0 && (

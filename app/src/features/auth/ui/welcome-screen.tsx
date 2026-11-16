@@ -7,7 +7,7 @@ import { useCurrentDocuments } from '@/features/legal/application/legal-queries'
 import { Spacing } from '@/shared/theme/colors';
 import { Radius } from '@/shared/theme/tokens';
 import { useTheme } from '@/shared/theme/use-theme';
-import { AppText, Banner, Button, Screen } from '@/shared/ui';
+import { AppText, Banner, BrandLogo, Button, Screen } from '@/shared/ui';
 
 const CHEF = require('../../../../assets/images/chef-bienvenida.jpg');
 
@@ -29,7 +29,7 @@ export function WelcomeScreen() {
       />
 
       <View style={styles.copy}>
-        <AppText variant="label" style={[styles.eyebrow, { color: c.primary }]}>{t('common.appName').toUpperCase()}</AppText>
+        <BrandLogo size="md" />
         <AppText variant="display" accessibilityRole="header">{t('auth.welcome.title')}</AppText>
         <AppText secondary>{t('auth.welcome.subtitle')}</AppText>
       </View>
@@ -47,7 +47,6 @@ export function WelcomeScreen() {
 const styles = StyleSheet.create({
   chef: { width: '100%', aspectRatio: 1, borderRadius: Radius.xl, marginTop: Spacing.sm },
   copy: { gap: Spacing.sm },
-  eyebrow: { letterSpacing: 1 },
   actions: { gap: Spacing.sm, marginTop: 'auto' },
   center: { textAlign: 'center' },
 });

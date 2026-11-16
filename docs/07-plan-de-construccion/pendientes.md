@@ -83,6 +83,8 @@ Aprobada completa por la dueña del producto ("todo lo que recomiendas está bie
 
 **Arreglos (16-nov):** planear el mes daba "Algo salió mal" (generate_plan pasaba los 8 s de staging; ahora ~0,6 s) · "Omitir" se ve al instante y muestra el error si falla (antes no mostraba nada) · el teclado ya no tapa ningún campo en pantallas con desplazamiento (comentario de la calificación, lista de mercado).
 
+**Logo NutriPlan IA** (propuesta de la dueña del producto, 16-nov) · ✅ con los colores de la app (hoja en tomate claro #FF8A5C, puntos de la IA y "NutriPlan" en mora, "IA" en tomate, fondo harina; Manrope ExtraBold incrustada). Ícono de la app (mora con la hoja; adaptable y monocromo), arranque del sistema (el símbolo, claro y oscuro) + arranque con el logo principal y el lema, Hoy (logo pequeño), ingreso y registro (logo principal), bienvenida (logo). Requiere APK nuevo.
+
 **Semana y mes con IA** (ADR-039, propuesta aprobada: https://claude.ai/artifact/8zR7xTtTTrtsCwY6iDTK9Z) · ✅ Hecho (16-nov). Desplegar `plan-ai` (y `assistant-chat`, que ahora usa el módulo compartido) y probar en el APK con Gemini en staging.
 
 ## C. Antes de usuarios reales (sin cambios)

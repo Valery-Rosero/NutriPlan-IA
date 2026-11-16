@@ -40,7 +40,7 @@ export function SignUpScreen() {
   const error = signUp.error ? toAppError(signUp.error) : null;
 
   return (
-    <AuthScaffold icon="person-add-outline" title={t('auth.signUp.title')} subtitle={t('auth.signUp.subtitle')}>
+    <AuthScaffold brand icon="person-add-outline" title={t('auth.signUp.title')} subtitle={t('auth.signUp.subtitle')}>
       <FormTextField
         control={control}
         name="email"

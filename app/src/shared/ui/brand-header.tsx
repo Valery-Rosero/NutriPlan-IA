@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native';
 
 import { flavorColors, Spacing, type FlavorName } from '@/shared/theme/colors';
 import { useTheme } from '@/shared/theme/use-theme';
+import { BrandLogo } from '@/shared/ui/brand-logo';
 import { IconButton } from '@/shared/ui/icon-button';
 import { AppText, type IconName } from '@/shared/ui/primitives';
 
@@ -11,7 +12,7 @@ import { AppText, type IconName } from '@/shared/ui/primitives';
  * sabor de la sección (Hoy tomate, Mi cocina albahaca, Mi semana mango, Asistente mora). Antes era un bloque
  * azul igual en todas las pantallas; ahora cada sección se reconoce por su color sin pintar todo el bloque.
  */
-export function BrandHeader({ eyebrow, caption, title, subtitle, action, back, flavor = 'tomato', compact, children }: {
+export function BrandHeader({ eyebrow, caption, title, subtitle, action, back, flavor = 'tomato', compact, logo, children }: {
   /** Texto corto en mayúsculas sobre el título (p. ej. el nombre de la app). */
   eyebrow?: string;
   /** Saludo o contexto ("Buenas tardes, Valery"). */
@@ -24,6 +25,8 @@ export function BrandHeader({ eyebrow, caption, title, subtitle, action, back, f
   flavor?: FlavorName;
   /** Una sola fila (título y acción), sin frase: deja la pantalla para el contenido (como WhatsApp). */
   compact?: boolean;
+  /** El logo pequeño arriba, en lugar del texto en mayúsculas (pantalla principal). */
+  logo?: boolean;
   children?: ReactNode;
 }) {
   const c = useTheme();
@@ -42,7 +45,7 @@ export function BrandHeader({ eyebrow, caption, title, subtitle, action, back, f
   }
   return (
     <View style={styles.header}>
-      {(back || eyebrow || caption || action) && (
+      {(back || eyebrow || caption || action || logo) && (
         <View style={styles.top}>
           {back && (
             <View style={styles.back}>
@@ -50,6 +53,7 @@ export function BrandHeader({ eyebrow, caption, title, subtitle, action, back, f
             </View>
           )}
           <View style={styles.flex}>
+            {logo && <BrandLogo size="sm" />}
             {eyebrow && <AppText variant="label" style={[styles.eyebrow, { color: f.onContainer }]}>{eyebrow}</AppText>}
             {caption && <AppText variant="caption" secondary>{caption}</AppText>}
           </View>

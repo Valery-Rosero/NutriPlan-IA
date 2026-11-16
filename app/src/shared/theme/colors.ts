@@ -66,6 +66,7 @@ export const Colors = {
     berryContainer: '#F6E3F1',
     onBerryContainer: '#5E2853',
     shadow: '#5C3A24', // sombra cálida
+    logoLeaf: '#FF8A5C', // la hoja del logo: el tomate claro de la app (el más cercano al naranja de la propuesta)
   },
   dark: {
     // De noche la cocina no se vuelve azul: café tostado, y los sabores se aclaran (texto oscuro encima).
@@ -113,6 +114,7 @@ export const Colors = {
     berryContainer: '#40203A',
     onBerryContainer: '#F8D3EF',
     shadow: '#000000',
+    logoLeaf: '#FF8A5C',
   },
 } as const;
 

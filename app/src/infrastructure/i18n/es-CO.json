@@ -1048,5 +1048,9 @@
       "network": "Sin conexión no pude entender la voz. Inténtalo de nuevo.",
       "failed": "No pude entender la voz. Inténtalo otra vez."
     }
+  },
+  "brand": {
+    "name": "NutriPlan IA",
+    "tagline": "Alimenta tu mejor versión"
   }
 }

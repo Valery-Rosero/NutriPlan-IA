@@ -7,16 +7,18 @@ import { useTranslation } from 'react-i18next';
 import { MinTouch, Spacing } from '@/shared/theme/colors';
 import { Radius } from '@/shared/theme/tokens';
 import { useTheme } from '@/shared/theme/use-theme';
-import { AppText, Screen, type IconName } from '@/shared/ui';
+import { AppText, BrandLogo, Screen, type IconName } from '@/shared/ui';
 
 /**
  * Marco común de las pantallas de acceso ("Cocina viva"): encabezado claro con volver si hay historial,
  * el ícono en tomate suave, el título y la rayita de tomate. Así todo el acceso se ve como una sola pieza.
  */
-export function AuthScaffold({ icon, title, subtitle, children }: {
+export function AuthScaffold({ icon, title, subtitle, brand = false, children }: {
   icon: IconName;
   title: string;
   subtitle?: ReactNode;
+  /** El logo principal arriba (ingreso y registro): en lugar del ícono pequeño. */
+  brand?: boolean;
   children: ReactNode;
 }) {
   const { t } = useTranslation();
@@ -40,13 +42,20 @@ export function AuthScaffold({ icon, title, subtitle, children }: {
           ) : (
             <View />
           )}
-          <View
-            importantForAccessibility="no-hide-descendants"
-            accessibilityElementsHidden
-            style={[styles.icon, { backgroundColor: c.tomatoContainer }]}>
-            <Ionicons name={icon} size={24} color={c.onTomatoContainer} />
-          </View>
+          {!brand && (
+            <View
+              importantForAccessibility="no-hide-descendants"
+              accessibilityElementsHidden
+              style={[styles.icon, { backgroundColor: c.tomatoContainer }]}>
+              <Ionicons name={icon} size={24} color={c.onTomatoContainer} />
+            </View>
+          )}
         </View>
+        {brand && (
+          <View style={styles.brand}>
+            <BrandLogo variant="stacked" size="md" tagline />
+          </View>
+        )}
         <AppText variant="title" accessibilityRole="header">{title}</AppText>
         <View style={[styles.accent, { backgroundColor: c.tomato }]} importantForAccessibility="no" accessibilityElementsHidden />
         {typeof subtitle === 'string' ? <AppText secondary>{subtitle}</AppText> : subtitle}
@@ -69,6 +78,7 @@ export function AuthDivider({ label }: { label: string }) {
 }
 
 const styles = StyleSheet.create({
+  brand: { alignItems: 'center', paddingVertical: Spacing.md },
   hero: { gap: Spacing.sm, paddingTop: Spacing.xs, marginBottom: Spacing.sm },
   accent: { width: 44, height: 4, borderRadius: 2 },
   topRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: Spacing.sm },

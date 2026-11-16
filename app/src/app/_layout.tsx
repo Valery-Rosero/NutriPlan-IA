@@ -23,7 +23,7 @@ import { Colors, type ThemeColors } from '@/shared/theme/colors';
 import { restoreThemePreference } from '@/shared/theme/theme-preference';
 import { useIsOnline } from '@/shared/hooks/use-is-online';
 import { useTheme } from '@/shared/theme/use-theme';
-import { CrashState } from '@/shared/ui';
+import { CrashState, BrandSplash } from '@/shared/ui';
 
 SplashScreen.preventAutoHideAsync();
 installGlobalErrorHandler(); // US-122: errores JS fuera de React también se registran
@@ -102,11 +102,16 @@ function RootNavigator() {
 
   useNotificationTaps(inApp); // tocar un aviso abre la receta o la semana
 
+  // Arranque con el logo principal: el del sistema (solo el símbolo, Android 12+ lo recorta en círculo) se
+  // cambia apenas carga la app por BrandSplash, con el logo completo y el lema, mientras se abre la sesión.
+  const [introDone, setIntroDone] = useState(false);
   useEffect(() => {
-    if (ready) void SplashScreen.hideAsync();
-  }, [ready]);
+    void SplashScreen.hideAsync();
+    const timer = setTimeout(() => setIntroDone(true), 1200);
+    return () => clearTimeout(timer);
+  }, []);
 
-  if (!ready) return null;
+  if (!ready || !introDone) return <BrandSplash />;
 
   return (
     <Stack

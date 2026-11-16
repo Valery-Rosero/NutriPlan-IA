@@ -36,7 +36,7 @@ export function SignInScreen() {
   };
 
   return (
-    <AuthScaffold icon="log-in-outline" title={t('auth.signIn.title')} subtitle={t('auth.signIn.subtitle')}>
+    <AuthScaffold brand icon="log-in-outline" title={t('auth.signIn.title')} subtitle={t('auth.signIn.subtitle')}>
       <FormTextField
         control={control}
         name="email"

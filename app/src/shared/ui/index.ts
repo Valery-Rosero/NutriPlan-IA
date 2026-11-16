@@ -6,6 +6,8 @@ export { MarkdownText } from './markdown-text';
 export { Chip, ChipGroup, Stepper } from './choice';
 export { TabHeader } from './tab-header';
 export { BrandHeader } from './brand-header';
+export { BRAND_FONT, BrandLogo, BrandMark } from './brand-logo';
+export { BrandSplash } from './brand-splash';
 export { IconButton } from './icon-button';
 export { FormSection } from './form-section';
 export { StepProgress } from './step-progress';
