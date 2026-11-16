@@ -267,7 +267,31 @@
       "improveTitle": "Mejorar mi semana",
       "improveHint": "Elige qué buscas y te muestro los cambios antes de aplicarlos. También se lo puedes pedir al asistente."
     },
-    "regenerateMore": "Volver a generar…"
+    "regenerateMore": "Volver a generar…",
+    "ai": {
+      "generate": {
+        "day": "Planear hoy con IA",
+        "week": "Planear la semana con IA",
+        "month": "Planear el mes con IA"
+      },
+      "regenerate": {
+        "day": "Volver a generar con IA (hoy)",
+        "week": "Volver a generar con IA (semana)",
+        "month": "Volver a generar con IA (mes)"
+      },
+      "quick": "Plan rápido con el recetario",
+      "hint": "La IA usa tus gustos, lo que tienes y lo que vence. Toma unos segundos.",
+      "madeWithAi": "Hecho con IA",
+      "progressTitle": "Armando tu plan con IA…",
+      "steps": {
+        "menu": "Pensando platos para ti",
+        "recipes": "Escribiendo las recetas ({{done}} de {{total}})",
+        "save": "Repartiendo en los días y armando tu lista"
+      },
+      "leave": "Puedes ir a otra pestaña: sigo trabajando.",
+      "fellBack": "La IA no respondió a tiempo: armé tu plan con el recetario.",
+      "quota": "Ya hiciste 3 planes con IA hoy: este salió del recetario. Mañana puedes volver a usar la IA."
+    }
   },
   "shopping": {
     "title": "Lista de compras",
@@ -650,7 +674,8 @@
     "invalid_amount": "Escribe cuánto pagaste, en pesos.",
     "invalid_push_token": "No pudimos registrar este teléfono. Inténtalo de nuevo.",
     "ai_unavailable": "No pude analizar la foto en este momento. Escríbelo o búscalo en el catálogo.",
-    "recipe_not_created": "No pude armar esa receta. Prueba con otro plato de la lista."
+    "recipe_not_created": "No pude armar esa receta. Prueba con otro plato de la lista.",
+    "not_enough_dishes": "No alcancé a armar suficientes platos. Inténtalo de nuevo o usa el plan rápido."
   },
   "onboarding": {
     "progress": "Paso {{step}} de {{total}}",
@@ -807,7 +832,8 @@
     "cuisine_favorite": "De tus cocinas favoritas",
     "macro_fit": "Se ajusta a tu objetivo",
     "quick": "Rápida de hacer",
-    "user_request": "La elegiste tú"
+    "user_request": "La elegiste tú",
+    "ai_pick": "Plato pensado por la IA para ti"
   },
   "account": {
     "rightsTitle": "Tus datos",

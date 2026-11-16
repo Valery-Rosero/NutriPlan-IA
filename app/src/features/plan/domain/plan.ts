@@ -28,6 +28,8 @@ export type MealPlan = {
    * sugerencia de "¿Qué cocino?"). Siempre cocinados; no cuentan en el avance ni en el costo del plan.
    */
   extras: PlannedMeal[];
+  /** ADR-039: lo armó la IA (platos nuevos validados por la base). */
+  createdWithAi?: boolean;
 };
 
 export type BudgetStatus = {
@@ -96,6 +98,11 @@ export type WeekChange = {
 };
 
 /** Puerto del plan semanal. Falla con AppError. */
+/** ADR-039 · un plato del menú de la IA (paso 1). */
+export type AiDish = { title: string; blurb: string; kind: 'breakfast' | 'main'; minutes: number; usesExpiring: boolean };
+/** ADR-039 · un plato ya convertido en receta por la IA y validado por la base (paso 2). */
+export type AiRecipe = { title: string; recipeId: string | null; kind: 'breakfast' | 'main'; expiring: boolean; coverage: number };
+
 export interface PlanRepository {
   /** El plan vigente hoy o el próximo (sin archivados). */
   current(today: string): Promise<MealPlan | null>;
@@ -113,6 +120,20 @@ export interface PlanRepository {
   applyWeekChanges(planId: string, changes: { plannedMealId: string; recipeId: string }[]): Promise<number>;
   skip(mealId: string): Promise<void>;
   confirm(planId: string): Promise<void>;
+  /** ADR-039 · plan con IA, paso 1: los platos (falla con ai_unavailable, not_enough_dishes o quota_exceeded). */
+  aiMenu(days: number, slots: MealSlot[]): Promise<AiDish[]>;
+  /** Paso 2: las recetas de hasta 4 platos (las que la base no acepta vuelven sin recipeId). */
+  aiRecipes(slots: MealSlot[], dishes: AiDish[]): Promise<AiRecipe[]>;
+  /** Paso 3: repartir, guardar y armar la lista. Devuelve el id del plan. */
+  aiSave(input: GeneratePlanInput, recipes: AiRecipe[]): Promise<string>;
+}
+
+/** ¿Alcanza para un plan con IA? Al menos 1 desayuno y 2 platos fuertes (si se pidieron esos momentos). */
+export function aiRecipesAreEnough(recipes: AiRecipe[], slots: MealSlot[]) {
+  const made = recipes.filter((r) => r.recipeId);
+  const wantsBreakfast = slots.includes('breakfast');
+  const wantsMain = slots.some((s) => s === 'lunch' || s === 'dinner');
+  return (!wantsBreakfast || made.some((r) => r.kind === 'breakfast')) && (!wantsMain || made.filter((r) => r.kind === 'main').length >= 2);
 }
 
 export const SLOT_ORDER: MealSlot[] = ['breakfast', 'lunch', 'snack', 'dinner'];

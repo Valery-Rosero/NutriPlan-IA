@@ -1,8 +1,10 @@
-import type { SupabaseClient } from '@supabase/supabase-js';
+import { FunctionsHttpError, type SupabaseClient } from '@supabase/supabase-js';
 
 import { AppError, toAppError } from '@/core/errors/app-error';
 import type { MealSlot } from '@/features/cooking/domain/cooking';
 import type {
+  AiDish,
+  AiRecipe,
   GeneratePlanInput,
   MealPlan,
   PlannedMeal,
@@ -23,7 +25,7 @@ export class SupabasePlanRepository implements PlanRepository {
   async current(today: string): Promise<MealPlan | null> {
     const { data, error } = await this.client
       .from('meal_plans')
-      .select(`id, start_date, end_date, status, budget_limit, planned_meals(${MEAL_FIELDS})`)
+      .select(`id, start_date, end_date, status, budget_limit, created_with_ai, planned_meals(${MEAL_FIELDS})`)
       .neq('status', 'archived')
       .gte('end_date', today)
       .order('start_date')
@@ -51,6 +53,7 @@ export class SupabasePlanRepository implements PlanRepository {
       budgetLimit: plan.budget_limit,
       meals: plan.planned_meals.filter((m) => !m.is_extra).map(toMeal),
       extras: extras.data.map(toMeal),
+      createdWithAi: !!plan.created_with_ai,
     };
   }
 
@@ -143,6 +146,41 @@ export class SupabasePlanRepository implements PlanRepository {
   async skip(mealId: string) {
     const { error } = await this.client.from('planned_meals').update({ status: 'skipped' }).eq('id', mealId).eq('status', 'planned');
     if (error) throw toAppError(error);
+  }
+
+  async aiMenu(days: number, slots: MealSlot[]) {
+    const data = await this.planAi<{ dishes: { title: string; blurb: string; kind: 'breakfast' | 'main'; minutes: number; uses_expiring: boolean }[] }>({
+      action: 'menu', days, slots,
+    });
+    return data.dishes.map((d) => ({ title: d.title, blurb: d.blurb, kind: d.kind, minutes: d.minutes, usesExpiring: d.uses_expiring }));
+  }
+
+  async aiRecipes(slots: MealSlot[], dishes: AiDish[]) {
+    const data = await this.planAi<{ recipes: { title: string; recipe_id: string | null; kind: 'breakfast' | 'main'; expiring: boolean; coverage: number }[] }>({
+      action: 'recipes',
+      slots,
+      dishes: dishes.map((d) => ({ title: d.title, blurb: d.blurb, kind: d.kind, minutes: d.minutes, uses_expiring: d.usesExpiring })),
+    });
+    return data.recipes.map((r) => ({ title: r.title, recipeId: r.recipe_id, kind: r.kind, expiring: r.expiring, coverage: r.coverage }));
+  }
+
+  async aiSave({ start, days, slots }: GeneratePlanInput, recipes: AiRecipe[]) {
+    const data = await this.planAi<{ plan_id: string }>({
+      action: 'save', start, days, slots,
+      dishes: recipes.filter((r) => r.recipeId).map((r) => ({ recipe_id: r.recipeId, kind: r.kind, expiring: r.expiring, coverage: r.coverage })),
+    });
+    return data.plan_id;
+  }
+
+  /** La función responde { ok, data } o { ok:false, error:{ code } } (se traduce a un código de la app). */
+  private async planAi<T>(body: Record<string, unknown>): Promise<T> {
+    const { data, error } = await this.client.functions.invoke<{ ok: boolean; data?: T; error?: { code: string } }>('plan-ai', { body });
+    if (error) {
+      const payload = error instanceof FunctionsHttpError ? await error.context.json().catch(() => null) : null;
+      throw toAppError(payload?.error?.code ?? error);
+    }
+    if (!data?.ok || !data.data) throw new AppError('unknown');
+    return data.data;
   }
 
   async confirm(planId: string) {

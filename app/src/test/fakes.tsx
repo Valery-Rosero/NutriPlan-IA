@@ -208,6 +208,18 @@ export function fakePlans(overrides: Partial<PlanRepository> = {}): jest.Mocked<
       },
     ]),
     skip: jest.fn(async () => {}),
+    // ADR-039: plan con IA (platos → recetas → guardar)
+    aiMenu: jest.fn(async () => [
+      { title: 'Changua', blurb: 'Típica y calientita.', kind: 'breakfast' as const, minutes: 15, usesExpiring: false },
+      { title: 'Sudado de pollo', blurb: 'Usa tu pollo, que vence mañana.', kind: 'main' as const, minutes: 40, usesExpiring: true },
+      { title: 'Arroz atollado', blurb: 'Cremoso y rendidor.', kind: 'main' as const, minutes: 45, usesExpiring: false },
+      { title: 'Tortilla de papa', blurb: 'Rápida y llenadora.', kind: 'main' as const, minutes: 25, usesExpiring: false },
+      { title: 'Arepa con huevo', blurb: 'Para empezar con todo.', kind: 'breakfast' as const, minutes: 15, usesExpiring: false },
+    ]),
+    aiRecipes: jest.fn(async (_slots: unknown, dishes: { title: string; kind: 'breakfast' | 'main' }[]) =>
+      dishes.map((d, i) => ({ title: d.title, recipeId: `ia-${d.title}`, kind: d.kind, expiring: i === 1, coverage: 0.6 })),
+    ),
+    aiSave: jest.fn(async () => 'plan-ia'),
     confirm: jest.fn(async () => {}),
     proposeWeekChanges: jest.fn(async () => WEEK_CHANGES),
     applyWeekChanges: jest.fn(async (_planId: string, changes: unknown[]) => changes.length),

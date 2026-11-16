@@ -9,6 +9,26 @@
 // el porqué). El recetario queda como respaldo cuando la IA no responde.
 import { z } from 'npm:zod@4';
 
+import {
+  DEFAULT_PROFILE,
+  foodKey,
+  ingredientRule,
+  mentionsAvoided,
+  newRecipeSummary,
+  pantryLines,
+  profileLines,
+  STYLE,
+  validateRecipeAnswer,
+  type AssistantProfile,
+  type NewRecipe,
+  type RecipeLine,
+  type SafeIngredient,
+} from '../_shared/recipe-ai.ts';
+
+// Lo compartido con plan-ai (ADR-039) vive en _shared/recipe-ai.ts; se vuelve a exportar para quien lo usaba de aquí.
+export { DEFAULT_PROFILE, foodKey, mentionsAvoided, newRecipeSummary, profileLines };
+export type { AssistantProfile, NewRecipe, RecipeLine, SafeIngredient };
+
 /** Receta del recetario, ya segura para la persona (cook_with_what_i_have). Solo para el respaldo. */
 export type Candidate = {
   recipe_id: string;
@@ -19,28 +39,7 @@ export type Candidate = {
   uses_expiring: boolean;
 };
 
-/** Ingrediente del catálogo que la persona SÍ puede comer (assistant_ingredients). */
-export type SafeIngredient = { ingredient_id: string; name: string; in_pantry: boolean; expiring: boolean; is_staple: boolean };
-
 export type Target = { planned_meal_id: string; slot: string; current_title: string } | null;
-
-/** Lo que la IA sabe de la persona (assistant_profile). Sin nombres de alergias, dietas ni datos de salud. */
-export type AssistantProfile = {
-  servings: number;
-  max_minutes: number | null;
-  /** 0 nada de picante … 3 picante. */
-  spice: number;
-  budget: 'tight' | 'normal' | null;
-  cuisines: string[];
-  /** Alergias, dietas y lo que no le gusta, mezclado y sin el porqué. */
-  avoid: string[];
-  /** Tiene alergias o dietas: la receta solo puede llevar ingredientes del catálogo (la base los revisa). */
-  restricted: boolean;
-};
-
-export const DEFAULT_PROFILE: AssistantProfile = {
-  servings: 2, max_minutes: null, spice: 2, budget: null, cuisines: [], avoid: [], restricted: false,
-};
 
 /** Un plato de la lista. `recipe_id` solo si es del recetario (respaldo). */
 export type Idea = { title: string; blurb: string; minutes: number; recipe_id: string | null };
@@ -51,21 +50,6 @@ export type WeekGoal = (typeof WEEK_GOALS)[number];
 export type WeekRequest = { goal: WeekGoal | null; avoid: { id: string; name: string }[] };
 
 export type Decision = { reply: string; ideas: Idea[]; fallback: boolean; week?: WeekRequest | null };
-
-/** Una línea de ingrediente de la receta que se le pasa a create_assistant_recipe. */
-export type RecipeLine = { ingredient_id: string; grams: number } | { name: string; grams: number };
-
-/** Receta nueva tal como la recibe create_assistant_recipe. */
-export type NewRecipe = {
-  title: string;
-  description: string | null;
-  slot: string;
-  servings: number;
-  prep_minutes: number;
-  cook_minutes: number;
-  ingredients: RecipeLine[];
-  steps: string[];
-};
 
 /** Una fila de propose_week_changes (lo que importa para el resumen). */
 export type WeekRow = { new_recipe_id: string | null; saving: number | string | null; reason: string };
@@ -110,71 +94,10 @@ const ideasAnswerSchema = z.object({
     .optional(),
 });
 
-const fillAnswerSchema = z.object({
-  title: z.string().trim().min(3).max(120),
-  description: z.string().trim().max(300).nullable().optional(),
-  servings: z.number().int().min(1).max(12).optional(),
-  prep_minutes: z.number().int().min(0).max(180),
-  cook_minutes: z.number().int().min(0).max(240),
-  ingredients: z
-    .array(z.object({ ref: z.string().nullable().optional(), name: z.string().nullable().optional(), grams: z.number().min(1).max(3000) }))
-    .min(2)
-    .max(15),
-  steps: z.array(z.string().trim().min(3).max(400)).min(2).max(12),
-});
-
 const SLOT_NAMES: Record<string, string> = { breakfast: 'desayuno', lunch: 'almuerzo', dinner: 'cena', snack: 'algo' };
-const SPICE = ['nada de picante', 'picante suave', 'picante medio', 'le gusta el picante'];
 
 export const missingNames = (c: Candidate) =>
   (c.missing ?? []).map((m) => m.ingredient_name ?? m.name).filter((n): n is string => !!n);
-
-/** Referencias cortas para el modelo (I1…): no puede "acertar" un id largo de la base por casualidad. */
-const ingredientRef = (i: number) => `I${i + 1}`;
-
-/** Igual que food_key en la base: sin tildes, minúsculas, solo letras y números. */
-export const foodKey = (text: string) =>
-  text.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
-
-/** ¿El texto menciona algo de la lista "no usar"? ("Arroz con maní" con "Maní" → sí). Plural simple incluido. */
-export function mentionsAvoided(text: string, avoid: string[]): boolean {
-  const words = ` ${foodKey(text)} `;
-  return avoid.some((a) => {
-    const k = foodKey(a);
-    if (!k) return false;
-    const singular = k.replace(/(es|s)$/, '');
-    return words.includes(` ${k} `) || (singular.length > 2 && new RegExp(` ${singular}(es|s)? `).test(words));
-  });
-}
-
-/** Lo que la IA sabe de la persona, en frases (ADR-037). Nunca nombra alergias ni dietas. */
-export function profileLines(p: AssistantProfile): string[] {
-  return [
-    `Cocina para ${p.servings} ${p.servings === 1 ? 'persona' : 'personas'}.`,
-    p.max_minutes ? `Tiempo máximo por receta: ${p.max_minutes} minutos (en total).` : '',
-    `Picante: ${SPICE[p.spice] ?? SPICE[2]}.`,
-    p.budget === 'tight' ? 'Presupuesto ajustado: prefiere ingredientes económicos y rendidores.' : '',
-    p.cuisines.length ? `Cocinas que le gustan: ${p.cuisines.join(', ')} (que la mayoría vaya por ahí).` : '',
-    p.avoid.length
-      ? `NO USES NUNCA, ni en los platos ni en las recetas: ${p.avoid.join(', ')}. No expliques por qué ni lo menciones.`
-      : '',
-  ].filter(Boolean);
-}
-
-function pantryLines(ingredients: SafeIngredient[]) {
-  return ingredients
-    .map((g, i) =>
-      `${ingredientRef(i)} ${g.name} (` +
-      (g.is_staple ? 'básico de cocina' : g.in_pantry ? (g.expiring ? 'en su cocina, vence pronto' : 'en su cocina') : 'hay que comprarlo') +
-      ')')
-    .join('\n');
-}
-
-const STYLE = [
-  'Eres el asistente de cocina de NutriPlan, una app para familias y estudiantes de Pasto, Colombia.',
-  'Estilo: cálido, alegre y claro, en español de Colombia. Tuteas.',
-  'No sabes el género de la persona: no uses apodos ni palabras con género (nada de "mijo", "mija", "amigo", "amiga", "querida").',
-];
 
 /** Paso 1: la lista de platos (y el modo semana, US-174). */
 export function ideasPrompt(ctx: Context): string {
@@ -216,9 +139,7 @@ export function fillPrompt(ctx: Context, idea: Idea): string {
     `Es para ${SLOT_NAMES[slot] ?? slot}, para ${profile.servings} ${profile.servings === 1 ? 'porción' : 'porciones'}: los gramos van TOTALES para esas porciones.`,
     'LO QUE SABES DE LA PERSONA:',
     ...profileLines(profile),
-    profile.restricted
-      ? 'INGREDIENTES: usa SOLO los de esta lista, cada uno con su referencia exacta en "ref" (I…). Nada fuera de la lista.'
-      : 'INGREDIENTES: si el ingrediente está en esta lista, pon su referencia exacta en "ref" (I…). Si no está, deja "ref" vacío y escribe su nombre común en "name" (sin marcas). Al menos uno debe ser de la lista.',
+    ingredientRule(profile),
     pantryLines(ingredients) || '(ninguno)',
     'Plantilla: de 3 a 12 ingredientes con gramos realistas; de 3 a 8 pasos cortos, en imperativo y tuteando; prep_minutes y cook_minutes realistas' +
       (profile.max_minutes ? ` (la suma no pasa de ${profile.max_minutes}).` : '.'),
@@ -262,64 +183,9 @@ export function validateIdeas(raw: unknown, ctx: Context): Decision | null {
   return { reply: reply || 'Mira estas ideas:', ideas: out, fallback: false };
 }
 
-/**
- * Valida la receta del plato elegido y la traduce a lo que recibe create_assistant_recipe. null si no sirve:
- * referencia inventada, algo de "no usar", ingrediente libre con restricciones, repetidos o más tiempo del máximo.
- */
+/** Valida la receta del plato elegido (misma regla que plan-ai, ver _shared/recipe-ai.ts). */
 export function validateFill(raw: unknown, ctx: Context, idea: Idea): NewRecipe | null {
-  const parsed = fillAnswerSchema.safeParse(raw);
-  if (!parsed.success) return null;
-  const r = parsed.data;
-  const { profile } = ctx;
-  const lines: RecipeLine[] = [];
-  const seen = new Set<string>();
-  for (const line of r.ingredients) {
-    const byRef = line.ref ? ctx.ingredients[Number(line.ref.replace(/^I/i, '')) - 1] : undefined;
-    if (line.ref && !byRef) return null; // referencia inventada
-    // Un nombre que coincide con la lista cuenta como ese ingrediente (la base hace lo mismo con match_ingredient).
-    const byName = !byRef && line.name ? ctx.ingredients.find((g) => foodKey(g.name) === foodKey(line.name!)) : undefined;
-    const safe = byRef ?? byName;
-    const name = safe?.name ?? line.name?.trim() ?? '';
-    if (!name || mentionsAvoided(name, profile.avoid)) return null;
-    if (safe) {
-      if (seen.has(safe.ingredient_id)) return null;
-      seen.add(safe.ingredient_id);
-      lines.push({ ingredient_id: safe.ingredient_id, grams: Math.round(line.grams) });
-    } else {
-      if (profile.restricted) return null; // con alergias o dietas, nada fuera del catálogo
-      if (name.length < 2 || name.length > 60 || seen.has(foodKey(name))) return null;
-      seen.add(foodKey(name));
-      lines.push({ name, grams: Math.round(line.grams) });
-    }
-  }
-  if (!lines.some((l) => 'ingredient_id' in l)) return null;
-  if (r.prep_minutes + r.cook_minutes < 1) return null;
-  if (profile.max_minutes && r.prep_minutes + r.cook_minutes > profile.max_minutes) return null;
-  return {
-    title: idea.title,
-    description: r.description ?? (idea.blurb || null),
-    slot: ctx.target?.slot ?? ctx.slot,
-    servings: r.servings ?? profile.servings,
-    prep_minutes: r.prep_minutes,
-    cook_minutes: r.cook_minutes,
-    ingredients: lines,
-    steps: r.steps,
-  };
-}
-
-/** Lo que muestra la tarjeta de una receta nueva: cuánto hay en la cocina y qué falta (lo libre se compra). */
-export function newRecipeSummary(recipe: NewRecipe, ingredients: SafeIngredient[]) {
-  const names = recipe.ingredients.map((g) => {
-    if ('name' in g) return { name: g.name, have: false };
-    const safe = ingredients.find((s) => s.ingredient_id === g.ingredient_id);
-    return { name: safe?.name ?? '', have: !!safe?.in_pantry };
-  });
-  const have = names.filter((n) => n.have).length;
-  return {
-    totalMinutes: recipe.prep_minutes + recipe.cook_minutes,
-    coverage: names.length ? Math.round((have / names.length) * 100) / 100 : 0,
-    missing: names.filter((n) => !n.have && n.name).map((n) => n.name),
-  };
+  return validateRecipeAnswer(raw, ctx, { title: idea.title, blurb: idea.blurb, slot: ctx.target?.slot ?? ctx.slot });
 }
 
 /** Sin modelo (falla, sin clave o tiempo agotado) igual se responde: ideas del recetario (respaldo, ADR-037). */

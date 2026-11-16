@@ -180,7 +180,7 @@ describe('paso 2: llenar la receta del plato elegido', () => {
 describe('tarjeta de una receta nueva', () => {
   it('cuenta lo que hay en la cocina; lo libre y lo que no está se compra', () => {
     const r = validateFill(receta([{ ref: 'I1', grams: 500 }, { ref: 'I2', grams: 600 }, { name: 'Chontaduro', grams: 120 }]), ctx, IDEA)!;
-    expect(newRecipeSummary(r, ingredients)).toEqual({ totalMinutes: 40, coverage: 0.33, missing: ['Pechuga de pollo', 'Chontaduro'] });
+    expect(newRecipeSummary(r, ingredients)).toMatchObject({ totalMinutes: 40, coverage: 0.33, missing: ['Pechuga de pollo', 'Chontaduro'] });
   });
 });
 

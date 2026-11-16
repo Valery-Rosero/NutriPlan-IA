@@ -83,7 +83,7 @@ Aprobada completa por la dueña del producto ("todo lo que recomiendas está bie
 
 **Arreglos (16-nov):** planear el mes daba "Algo salió mal" (generate_plan pasaba los 8 s de staging; ahora ~0,6 s) · "Omitir" se ve al instante y muestra el error si falla (antes no mostraba nada) · el teclado ya no tapa ningún campo en pantallas con desplazamiento (comentario de la calificación, lista de mercado).
 
-**Por aprobar:** semana y mes con IA (propuesta: https://claude.ai/artifact/8zR7xTtTTrtsCwY6iDTK9Z).
+**Semana y mes con IA** (ADR-039, propuesta aprobada: https://claude.ai/artifact/8zR7xTtTTrtsCwY6iDTK9Z) · ✅ Hecho (16-nov). Desplegar `plan-ai` (y `assistant-chat`, que ahora usa el módulo compartido) y probar en el APK con Gemini en staging.
 
 ## C. Antes de usuarios reales (sin cambios)
 Revisión de un abogado de los textos legales · revisión de una nutricionista (US-121) · validación con 5 personas (US-101) · producción (`drgzvvkkjxqvolcerpjx`) · Google Play (US-158) · monitor de disponibilidad · Gemini en plan de pago con tope de gasto y clave rotada · renovar el token de Supabase del despliegue (cada 90 días).

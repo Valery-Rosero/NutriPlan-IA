@@ -1,6 +1,7 @@
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { errorKey, toAppError } from '@/core/errors/app-error';
@@ -9,7 +10,14 @@ import { capitalize, formatDay } from '@/core/format';
 import { SLOT_EMOJI } from '@/features/cooking/ui/slot-icon';
 import { HealthDisclaimerNote } from '@/features/legal/ui/health-disclaimer-note';
 import { todayIso } from '@/features/pantry/domain/pantry';
-import { useConfirmPlan, useCurrentPlan, useGeneratePlan, useSkipMeal } from '@/features/plan/application/plan-queries';
+import {
+  useConfirmPlan,
+  useCurrentPlan,
+  useGeneratePlan,
+  useGeneratePlanWithAi,
+  useSkipMeal,
+  type AiPlanProgress,
+} from '@/features/plan/application/plan-queries';
 import { calendarDays, calendarLayout, initialDayIndex, planDates, type CalendarDay } from '@/features/plan/domain/calendar';
 import { HORIZON_DAYS, horizonOf, WEEK_GOALS, type Horizon, type MealPlan, type PlannedMeal } from '@/features/plan/domain/plan';
 import { BudgetCard } from '@/features/plan/ui/budget-card';
@@ -65,11 +73,16 @@ export function PlanScreen() {
   const router = useRouter();
   const plan = useCurrentPlan();
   const generate = useGeneratePlan();
+  // ADR-039: lo principal es planear con IA; el recetario queda como plan rápido y de respaldo.
+  const ai = useGeneratePlanWithAi();
+  const busy = generate.isPending || ai.isPending;
 
   const data = plan.data;
   // B2: hoy, semana o mes. Con un plan en borrador, "volver a generar" parte de su misma duración.
   const [horizon, setHorizon] = useState<Horizon>('week');
-  const generateFor = (h: Horizon) => generate.mutate({ start: todayIso(), days: HORIZON_DAYS[h], slots: [...SLOTS] });
+  const input = (h: Horizon) => ({ start: todayIso(), days: HORIZON_DAYS[h], slots: [...SLOTS] });
+  const generateFor = (h: Horizon) => generate.mutate(input(h));
+  const generateWithAi = (h: Horizon) => ai.mutate(input(h));
 
   return (
     <Screen scroll>
@@ -82,6 +95,9 @@ export function PlanScreen() {
         {data ? <WeekSummary plan={data} /> : <AppText secondary>{t('plan.pitch')}</AppText>}
       </BrandHeader>
       {generate.error && <Banner tone="danger" message={t(errorKey(generate.error))} />}
+      {ai.error && <Banner tone="danger" message={t(errorKey(ai.error))} />}
+      {ai.isPending && <AiProgressCard progress={ai.progress} />}
+      {!ai.isPending && ai.isSuccess && ai.fallback && <Banner tone="warning" message={t(ai.fallback === 'quota' ? 'plan.ai.quota' : 'plan.ai.fellBack')} />}
       {generate.error && toAppError(generate.error).code === 'no_eligible_recipes' && <CookTimeNotice />}
       {plan.isPending ? (
         <LoadingState />
@@ -94,12 +110,14 @@ export function PlanScreen() {
           action={
             <View style={styles.actions}>
               <HorizonPicker value={horizon} onChange={setHorizon} />
-              <Button label={t(`plan.generate.${horizon}`)} icon="sparkles-outline" flavor="mango" loading={generate.isPending} onPress={() => generateFor(horizon)} />
+              <Button label={t(`plan.ai.generate.${horizon}`)} icon="sparkles-outline" flavor="mango" loading={ai.isPending} disabled={busy} onPress={() => generateWithAi(horizon)} />
+              <Button label={t('plan.ai.quick')} icon="book-outline" variant="ghost" flavor="mango" loading={generate.isPending} disabled={busy} onPress={() => generateFor(horizon)} />
+              <AppText variant="caption" secondary>{t('plan.ai.hint')}</AppText>
             </View>
           }
         />
       ) : (
-        <PlanView key={data.id} plan={data} onRegenerate={generateFor} regenerating={generate.isPending} />
+        <PlanView key={data.id} plan={data} onRegenerate={generateFor} onRegenerateAi={generateWithAi} regenerating={busy} />
       )}
       <HealthDisclaimerNote />
     </Screen>
@@ -114,6 +132,7 @@ function WeekSummary({ plan }: { plan: MealPlan }) {
     <View style={styles.summary}>
       <View style={styles.pills}>
         <Pill label={shortRange(plan.startDate, plan.endDate)} icon="calendar-outline" />
+        {plan.createdWithAi && <Pill label={t('plan.ai.madeWithAi')} tone="berry" icon="sparkles-outline" />}
         <Pill
           label={t(`plan.status.${plan.status}`)}
           tone={plan.status === 'draft' ? 'mango' : 'accent'}
@@ -126,7 +145,12 @@ function WeekSummary({ plan }: { plan: MealPlan }) {
   );
 }
 
-function PlanView({ plan, onRegenerate, regenerating }: { plan: MealPlan; onRegenerate: (h: Horizon) => void; regenerating: boolean }) {
+function PlanView({ plan, onRegenerate, onRegenerateAi, regenerating }: {
+  plan: MealPlan;
+  onRegenerate: (h: Horizon) => void;
+  onRegenerateAi: (h: Horizon) => void;
+  regenerating: boolean;
+}) {
   const { t } = useTranslation();
   const c = useTheme();
   const confirm = useConfirmPlan();
@@ -157,7 +181,8 @@ function PlanView({ plan, onRegenerate, regenerating }: { plan: MealPlan; onRege
           ) : (
             <>
               <HorizonPicker value={horizon} onChange={setHorizon} />
-              <Button label={t(`plan.regenerateFor.${horizon}`)} icon="refresh" variant="ghost" loading={regenerating} onPress={() => onRegenerate(horizon)} />
+              <Button label={t(`plan.ai.regenerate.${horizon}`)} icon="sparkles-outline" variant="secondary" flavor="mango" disabled={regenerating} onPress={() => onRegenerateAi(horizon)} />
+              <Button label={t('plan.ai.quick')} icon="book-outline" variant="ghost" flavor="mango" disabled={regenerating} onPress={() => onRegenerate(horizon)} />
             </>
           )}
         </Card>
@@ -349,6 +374,35 @@ const styles = StyleSheet.create({
   extras: { gap: Spacing.sm },
   extra: { borderWidth: 1.5, borderStyle: 'dashed', borderRadius: Radius.md, paddingHorizontal: Spacing.sm },
 });
+
+/** ADR-039 · el avance real del plan con IA: platos → recetas (de a 4) → repartir y lista. */
+function AiProgressCard({ progress }: { progress: AiPlanProgress }) {
+  const { t } = useTranslation();
+  const c = useTheme();
+  const stages = ['menu', 'recipes', 'save'] as const;
+  const current = progress ? stages.indexOf(progress.stage) : 0;
+  return (
+    <Card variant="filled" style={{ backgroundColor: c.berryContainer }}>
+      <View style={styles.row} accessibilityLiveRegion="polite">
+        <ActivityIndicator color={c.berry} />
+        <AppText variant="subtitle" style={styles.flex}>{t('plan.ai.progressTitle')}</AppText>
+      </View>
+      {stages.map((stage, i) => (
+        <View key={stage} style={styles.row}>
+          <Ionicons
+            name={i < current ? 'checkmark-circle' : i === current ? 'ellipse' : 'ellipse-outline'}
+            size={18}
+            color={i <= current ? c.berry : c.textSecondary}
+          />
+          <AppText secondary={i > current} style={styles.flex}>
+            {t(`plan.ai.steps.${stage}`, stage === 'recipes' && progress?.stage === 'recipes' ? { done: progress.done, total: progress.total } : { done: 0, total: '…' })}
+          </AppText>
+        </View>
+      ))}
+      <AppText variant="caption" secondary>{t('plan.ai.leave')}</AppText>
+    </Card>
+  );
+}
 
 /** "16 – 22 nov" (o "28 nov – 4 dic") para la píldora del plan. */
 function shortRange(start: string, end: string) {

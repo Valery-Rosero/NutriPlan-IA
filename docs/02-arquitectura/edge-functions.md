@@ -53,3 +53,10 @@ Reconfirma contraseña o token reciente → registra evento mínimo de auditorí
 **Salida:** `{ ok: true, data: { source: 'ai' | 'rules', items: [{ ingredient_id | null, name, quantity, unit, units, expires_in_days }] } }`. `units` = unidades válidas para guardarlo (catálogo: contables del ingrediente + masa; propio: las de un alimento propio). **No guarda nada:** la app muestra la lista para revisar y guarda lo marcado con `add_to_pantry` o como alimento propio.
 **Sin datos de salud.** Lógica pura probada con `npm run test:functions` (app/).
 
+## 9. `plan-ai`  (POST, JWT) — ADR-039
+Semana o mes con IA en tres pasos que la app llama en orden (avance real):
+- `{ action: 'menu', days, slots }` → `{ dishes: [{ title, blurb, kind: 'breakfast'|'main', minutes, uses_expiring }], counts }`. Cuota: 3 por persona y día (`ai_generations.kind = 'plan'`). Errores: `quota_exceeded` (429), `ai_unavailable` (503), `not_enough_dishes` (422).
+- `{ action: 'recipes', slots, dishes: [hasta 4] }` → `{ recipes: [{ title, recipe_id | null, kind, expiring, coverage }] }`. Cada receta pasa por `create_assistant_recipe` (como la persona); un plato fuerte queda para almuerzo y cena. Se registra como `plan_recipes`.
+- `{ action: 'save', start, days, slots, dishes: [{ recipe_id, kind, expiring, coverage }] }` → `{ plan_id, meals, dishes }`. Solo recetas del asistente de la persona; reparte (`schedule`), `save_generated_plan`, `created_with_ai`, `generate_shopping_list` + lo libre por nombre. Error: `plan_overlap_confirmed` (409).
+Al modelo: `assistant_profile()` y `assistant_ingredients()` (nunca nombres de alergias, dietas ni datos de salud). Lógica pura en `plan-ai/logic.ts` y `_shared/recipe-ai.ts`, probada con `npm run test:functions`.
+

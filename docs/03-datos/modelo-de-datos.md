@@ -1,6 +1,6 @@
 # Modelo de datos (generado desde las migraciones)
 
-> Fuente de verdad: `backend/supabase/migrations/`. Este archivo se generó leyendo la base real después de aplicar las 40 migraciones (69 tablas, todas con RLS). Si cambia una migración, regenerar: `python docs/03-datos/_generar_modelo.py` (con Supabase local encendido).
+> Fuente de verdad: `backend/supabase/migrations/`. Este archivo se generó leyendo la base real después de aplicar las 42 migraciones (69 tablas, todas con RLS). Si cambia una migración, regenerar: `python docs/03-datos/_generar_modelo.py` (con Supabase local encendido).
 
 Principios: 3FN; lo derivable no se guarda (alérgenos y dietas de una receta, nutrición por porción, picante y apto-batch); cantidades canónicas en gramos; RLS en todas las tablas; ver `reglas-de-negocio.md`.
 
@@ -855,6 +855,7 @@ Restricciones:
 | `budget_limit` | numeric(12,2) | sí |  | Instantánea del tope de gasto aplicable a ESTE plan, calculada al crearlo desde el perfil. Desnormalización intencional: el presupuesto del perfil puede cambiar y el historial no debe cambiar con él. |
 | `created_at` | timestamp with time zone | no | now() |  |
 | `updated_at` | timestamp with time zone | no | now() |  |
+| `created_with_ai` | boolean | no | false | ADR-039: plan armado por plan-ai (platos de la IA validados por la base). |
 
 Restricciones:
 - **CHECK**: `CHECK (((end_date >= start_date) AND ((end_date - start_date) <= 30)))`
@@ -1280,7 +1281,7 @@ Restricciones:
 ## Enums
 
 - `activity_level`: sedentary, light, moderate, active, very_active
-- `ai_kind`: plan, swap, chat, label, pantry
+- `ai_kind`: plan, swap, chat, label, pantry, plan_recipes
 - `analytics_event`: onboarding_completed, plan_generated, shopping_list_generated, meal_cooked
 - `app_role`: moderator, nutritionist, admin
 - `budget_period`: week, month

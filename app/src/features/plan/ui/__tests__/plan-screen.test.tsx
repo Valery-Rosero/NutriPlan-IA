@@ -12,12 +12,13 @@ describe('PlanScreen (US-117, US-129, US-132, US-155)', () => {
     await render(<PlanScreen />, { wrapper: withServices(fakeServices({ plans })) });
     expect(await screen.findByRole('radio', { name: 'Semana' })).toBeSelected();
 
+    expect(screen.getByRole('button', { name: 'Planear la semana con IA' })).toBeOnTheScreen();
     await fireEvent.press(screen.getByRole('radio', { name: 'Hoy' }));
-    await fireEvent.press(screen.getByRole('button', { name: 'Planear hoy' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Plan rápido con el recetario' }));
     expect(plans.generate).toHaveBeenLastCalledWith(expect.objectContaining({ days: 1, slots: ['breakfast', 'lunch', 'dinner'] }));
 
     await fireEvent.press(screen.getByRole('radio', { name: 'Mes' }));
-    await fireEvent.press(screen.getByRole('button', { name: 'Planear el mes' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Plan rápido con el recetario' }));
     expect(plans.generate).toHaveBeenLastCalledWith(expect.objectContaining({ days: 30 }));
   });
 
@@ -26,8 +27,11 @@ describe('PlanScreen (US-117, US-129, US-132, US-155)', () => {
     await render(<PlanScreen />, { wrapper: withServices(fakeServices({ plans })) });
     // Plegado para no ocupar pantalla: se abre y luego se elige.
     await fireEvent.press(await screen.findByRole('link', { name: 'Volver a generar…' }));
-    await fireEvent.press(screen.getByRole('button', { name: 'Volver a generar (semana)' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Plan rápido con el recetario' }));
     expect(plans.generate).toHaveBeenLastCalledWith(expect.objectContaining({ days: 7 }));
+    // Sigue abierto: también se puede volver a generar con IA
+    await fireEvent.press(await screen.findByRole('button', { name: 'Volver a generar con IA (semana)' }));
+    await waitFor(() => expect(plans.aiMenu).toHaveBeenCalledWith(7, ['breakfast', 'lunch', 'dinner']));
   });
 
   it('muestra las comidas con su motivo y alerta si el plan se pasa del presupuesto', async () => {
