@@ -1,5 +1,5 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useRef, type ComponentProps, type ReactNode } from 'react';
+import { use, useRef, type ComponentProps, type ReactNode } from 'react';
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -13,6 +13,7 @@ import {
   type TextProps,
   type ViewStyle,
 } from 'react-native';
+import { HeaderShownContext } from 'expo-router/react-navigation';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ButtonHeight, flavorColors, MinTouch, Spacing, type FlavorName, type ThemeColors } from '@/shared/theme/colors';
@@ -49,7 +50,11 @@ export function AppText({ variant = 'body', tone = 'default', secondary, style, 
 }
 
 // ---------------------------------------------------------------- Pantalla
-/** Pantalla base. `scroll` para contenido largo y formularios; `onRefresh` activa deslizar para actualizar. */
+/**
+ * Pantalla base. `scroll` para contenido largo y formularios; `onRefresh` activa deslizar para actualizar.
+ * Si la pantalla tiene el encabezado del sistema (flecha de volver), ese encabezado ya deja el espacio de la barra de
+ * estado: aquí no se repite, o quedaría una franja vacía arriba (Receta, Perfil, Ayuda…).
+ */
 export function Screen({ children, scroll, refreshing, onRefresh }: {
   children: ReactNode;
   scroll?: boolean;
@@ -59,6 +64,7 @@ export function Screen({ children, scroll, refreshing, onRefresh }: {
   const c = useTheme();
   const scrollRef = useRef<ScrollView>(null);
   const onScroll = useKeepFocusedInputVisible(scrollRef);
+  const underHeader = use(HeaderShownContext);
   const body = scroll ? (
     // Edge-to-edge en Android (SDK 57): la ventana no se achica con el teclado; "padding" en ambas plataformas.
     <KeyboardAvoidingView style={styles.flex} behavior="padding">
@@ -80,7 +86,10 @@ export function Screen({ children, scroll, refreshing, onRefresh }: {
     <View style={[styles.flex, styles.content]}>{children}</View>
   );
   return (
-    <SafeAreaView style={[styles.flex, { backgroundColor: c.background }]} edges={['top', 'left', 'right', 'bottom']}>
+    <SafeAreaView
+      testID="screen-root"
+      style={[styles.flex, { backgroundColor: c.background }]}
+      edges={underHeader ? ['left', 'right', 'bottom'] : ['top', 'left', 'right', 'bottom']}>
       {body}
     </SafeAreaView>
   );
