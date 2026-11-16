@@ -1,19 +1,19 @@
 # Backlog para Jira (Scrum)
 
-`nutriplan-jira-scrum.csv` trae todo el trabajo del proyecto con su jerarquía, su sprint y su estado real al 12-nov-2026. Se regenera con `python docs/07-plan-de-construccion/jira/_generar_jira.py` (lee `05-historias-de-usuario/historias.json`; los sprints, estados y subtareas están en el script).
+`nutriplan-jira-scrum.csv` trae todo el trabajo del proyecto con su jerarquía, su sprint y su estado real al 16-nov-2026. Se regenera con `python docs/07-plan-de-construccion/jira/_generar_jira.py` (lee `05-historias-de-usuario/historias.json`; los sprints, estados y subtareas están en el script).
 
 ## Jerarquía
 | Nivel | Tipo en Jira | Cuántos | Qué es aquí |
 |---|---|---|---|
 | 1 | **Epic** | 6 | Las grandes áreas del producto (E1–E6), con el Product Goal |
-| 2 | **Story** | 73 | Historias de usuario US-101 a US-173 (los *spikes* y *enablers* van como Story con su etiqueta) |
-| 2 | **Task** | 21 | Trabajo técnico que no es una historia: rediseño, despliegues, Firebase, documentación, producción |
-| 2 | **Bug** | 7 | Errores reales que se encontraron y corrigieron |
-| 3 | **Sub-task** | 239 | Los pasos de cada historia o tarea (base de datos, pantalla, pruebas…) |
+| 2 | **Story** | 86 | Historias de usuario US-101 a US-186 (los *spikes* y *enablers* van como Story con su etiqueta) |
+| 2 | **Task** | 35 | Trabajo técnico que no es una historia: rediseño, logo, despliegues, Firebase, documentación, producción |
+| 2 | **Bug** | 22 | Errores reales que se encontraron y corrigieron |
+| 3 | **Sub-task** | 306 | Los pasos de cada historia o tarea (base de datos, pantalla, pruebas…) |
 
 Por encima de la épica, Jira Premium tiene **Initiative** (iniciativa); en este proyecto su papel lo cumple el Product Goal, escrito en cada épica.
 
-Además de la jerarquía, el CSV llena: **Sprint** (0 a 11), **Fix Version** (`v1.0 MVP`, `v1.1 Mejora y retención`, `v2.0 Comunidad e integraciones`), **Component** (módulos M01–M12), **Labels** (sprint, fase F0–F3, tipo y tema), **Story Points** (Fibonacci) y **Priority**.
+Además de la jerarquía, el CSV llena: **Sprint** (0 a 14), **Fix Version** (`v1.0 MVP`, `v1.1 Mejora y retención`, `v2.0 Comunidad e integraciones`), **Component** (módulos M01–M12), **Labels** (sprint, fase F0–F3, tipo y tema), **Story Points** (Fibonacci) y **Priority**.
 
 ## Sprints
 | Sprint | Objetivo | Estado |
@@ -29,10 +29,16 @@ Además de la jerarquía, el CSV llena: **Sprint** (0 a 11), **Fix Version** (`v
 | Sprint 8 | Asistente con IA, sustitutos y soporte | Cerrado |
 | Sprint 9 | Precios reales, gasto, nutrición y calidad | Cerrado |
 | Sprint 10 | Fallas, avisos y despliegue a staging | Cerrado |
-| Sprint 11 | APK, validación y piloto | **En curso** |
+| Sprint 11 | APK, validación y piloto | En curso (quedan Google Play, la validación con usuarios y producción) |
+| Sprint 12 | Cocina viva, IA en más lugares y cambios a la semana | Cerrado (US-163 y US-164 pasan al 14 para medir su precisión) |
+| Sprint 13 | Mi cocina que no se rompe: lista → compra → despensa | Cerrado |
+| Sprint 14 | IA primero: asistente, voz, plan con IA y logo | **En curso** |
 | (Backlog) | F3: comunidad, hogares, foto/OCR, supermercados, batch, picante, variantes | Por hacer |
 
 El objetivo de cada sprint no viaja en el CSV: se escribe en Jira al editar el sprint (*Sprint goal*).
+
+## Qué cambió el 16-nov-2026
+Desde la versión del 12-nov se agregaron los sprints 12 a 14: 12 historias nuevas (US-175 a US-186, también en `05-historias-de-usuario`), 14 tareas (229–242) y 15 bugs (308–322). US-174 quedó hecha; US-163 y US-164 pasan al Sprint 14 para medir su precisión en el APK; la tarea 220 (compilar el APK) quedó hecha y la 221 (probarlo en un teléfono) en curso. Si el CSV anterior **no** se importó, basta con importar este. Si ya se importó, ver "No importes dos veces".
 
 ## Cómo importarlo
 1. Crear el proyecto en Jira con la plantilla **Scrum** y tipo **company-managed** (administrado por la empresa). Así se importan bien sprints, versiones, componentes y story points.
@@ -69,8 +75,8 @@ El importador solo ofrece Resumen, Tipo de incidencia, Descripción, Etiquetas, 
 | `prioridad-alta`, `prioridad-media`, `prioridad-baja` | Prioridad |
 | `v1.0`, `v1.1`, `v2.0` | Versión |
 | `m01` … `m12` | Módulo (componente) |
-| `sprint-0` … `sprint-11` | Sprint |
+| `sprint-0` … `sprint-14` | Sprint |
 
-Después de importar: buscar con JQL `project = <CLAVE> AND labels = estado-hecho`, seleccionar todo y usar **Cambio masivo → Transición → Listo**; lo mismo con `estado-en-curso`. Luego, en el backlog, completar los sprints 0 a 10.
+Después de importar: buscar con JQL `project = <CLAVE> AND labels = estado-hecho`, seleccionar todo y usar **Cambio masivo → Transición → Listo**; lo mismo con `estado-en-curso`. Luego, en el backlog, completar los sprints 0 a 10, 12 y 13.
 
 Al abrir el CSV en Excel las tildes pueden verse raras; es solo Excel (el archivo está en UTF-8). Jira lo lee bien.

@@ -2,7 +2,7 @@
 
     Épica  →  Historia / Tarea / Bug  →  Subtarea
 
-Fuente: docs/05-historias-de-usuario/historias.json (las 73 historias) + lo que se construyó de verdad
+Fuente: docs/05-historias-de-usuario/historias.json (las 86 historias) + lo que se construyó de verdad
 (sprints, estado y subtareas, según git y docs/07-plan-de-construccion/plan-de-arranque.md).
 Uso:  python docs/07-plan-de-construccion/jira/_generar_jira.py
 """
@@ -40,7 +40,9 @@ SPRINTS = {
     "Sprint 9": "Precios reales, gasto, nutrición y calidad",
     "Sprint 10": "Fallas, avisos y despliegue a staging",
     "Sprint 11": "APK, validación y piloto (en curso)",
-    "Sprint 12": "Cocina viva, IA en más lugares y cambios a la semana (en curso)",
+    "Sprint 12": "Cocina viva, IA en más lugares y cambios a la semana",
+    "Sprint 13": "Mi cocina que no se rompe: lista → compra → despensa",
+    "Sprint 14": "IA primero: asistente, voz, plan con IA y logo (en curso)",
 }
 SPRINT_DE = {}
 for sprint, ids in {
@@ -56,18 +58,21 @@ for sprint, ids in {
     "Sprint 9": [112, 131, 136, 140, 141, 152, 159],
     "Sprint 10": [122, 148, 149, 150, 153],
     "Sprint 11": [101, 121, 158],
-    "Sprint 12": [163, 164, 174],
+    "Sprint 12": [174, 175, 176, 177, 178],
+    "Sprint 13": [179, 180, 181, 182],
+    "Sprint 14": [163, 164, 183, 184, 185, 186],  # 163 y 164 se construyeron en el 12; pasan a medir su precisión en el APK
 }.items():
     for i in ids:
         SPRINT_DE[i] = sprint
-ESTADO = {101: "To Do", 121: "In Progress", 158: "In Progress", 163: "In Progress", 164: "In Progress", 174: "In Progress"}  # el resto con sprint: Done; sin sprint: To Do
+ESTADO = {101: "To Do", 121: "In Progress", 158: "In Progress", 163: "In Progress", 164: "In Progress", 186: "In Progress"}  # el resto con sprint: Done; sin sprint: To Do
 
 PUNTOS = {101: 5, 102: 8, 103: 5, 104: 8, 105: 3, 106: 3, 107: 5, 108: 2, 109: 2, 110: 13, 111: 8, 112: 5, 113: 5,
           114: 2, 115: 3, 116: 3, 117: 13, 118: 5, 119: 5, 120: 5, 121: 5, 122: 8, 123: 5, 124: 8, 125: 3, 126: 5,
           127: 3, 128: 3, 129: 5, 130: 2, 131: 5, 132: 2, 133: 5, 134: 3, 135: 3, 136: 5, 137: 3, 138: 3, 139: 2,
           140: 5, 141: 5, 142: 2, 143: 2, 144: 2, 145: 2, 146: 3, 147: 5, 148: 8, 149: 3, 150: 5, 151: 5, 152: 5,
           153: 5, 154: 3, 155: 3, 156: 3, 157: 8, 158: 5, 159: 5, 160: 3, 161: 13, 162: 8, 163: 13, 164: 13, 165: 8,
-          166: 13, 167: 8, 168: 5, 169: 8, 170: 5, 171: 2, 172: 5, 173: 2, 174: 8}
+          166: 13, 167: 8, 168: 5, 169: 8, 170: 5, 171: 2, 172: 5, 173: 2, 174: 8,
+          175: 8, 176: 8, 177: 5, 178: 8, 179: 8, 180: 5, 181: 8, 182: 5, 183: 8, 184: 5, 185: 2, 186: 13}
 
 COMO_QUEDO = {
     104: "En vez de bloquear 5 intentos por cuenta (Supabase no lo trae), se usan los límites de tasa de Supabase Auth (ADR-019).",
@@ -79,7 +84,22 @@ COMO_QUEDO = {
     144: "El comentario es privado y va con la calificación; los comentarios públicos son parte de la comunidad (F3).",
     145: "El generador siempre prioriza despensa y vencimientos; no hizo falta un interruptor.",
     157: "Gemini Flash-Lite con salida estructurada y sin datos de salud en el prompt (ADR-025).",
-    158: "Listos los perfiles de EAS y el APK en compilación; faltan la cuenta y la prueba cerrada en Google Play.",
+    158: "APK de staging compilado con EAS e instalado en un teléfono real (Honor 200, Android 16); faltan la cuenta y la prueba cerrada en Google Play.",
+    163: "Construida en el Sprint 12 (ADR-032); en el Sprint 14 se mide la precisión con fotos reales en el APK.",
+    164: "Construida en el Sprint 12 (ADR-032); en el Sprint 14 se mide la precisión con recibos reales de Pasto en el APK.",
+    174: "La IA solo traduce la frase a una meta; las cifras y la seguridad las pone la base (ADR-031).",
+    175: "B1 y B2: el mes de 30 días se generaba en ~4 s; en el Sprint 14 bajó a ~0,6 s (bug 320).",
+    176: "ADR-027 y ADR-030. Los alimentos propios no entran en recetas, plan, lista ni avisos (limitación documentada).",
+    177: "ADR-028. Antes, cocinar ahora pisaba la comida planeada (bug 312).",
+    178: "ADR-029. La receta del asistente es un borrador privado; la base la revalida antes de guardarla.",
+    179: "ADR-033. Nace de probar la app en el teléfono: el ciclo lista → compra → despensa se rompía.",
+    180: "ADR-034.",
+    181: "ADR-035.",
+    182: "ADR-036.",
+    183: "ADR-037: amplía la ADR-025 (la IA sabe qué evitar, nunca por qué). Política de datos v3.",
+    184: "ADR-038. Antes hubo una pista para dictar con el teclado (tarea 233); el botón propio se hizo al pedirlo la PO.",
+    185: "Pedida por la PO al probar la lista; también funciona dictando.",
+    186: "ADR-039. Probada en local (pruebas y humo); falta desplegar plan-ai a staging y probarla en el APK.",
 }
 
 # --- Subtareas por historia: (título, estado). Sin estado = el de la historia. ------------------------
@@ -143,13 +163,15 @@ SUB = {
     156: ["Exponente de escalado por ingrediente (sal, especias, aceite)", "Fórmula base × (porciones/base)^exponente en preview_recipe"],
     157: ["Edge Function assistant-chat con Gemini y responseSchema", "Candidatas seguras desde cook_with_what_i_have", "Respaldo determinista y cuota de 30 por día", "Pantalla del asistente y aplicar la sugerencia", "ADR-025: Gemini Flash-Lite sin datos de salud"],
     158: [("Perfiles de EAS (APK y paquete de tienda)", "Done"), ("Permisos mínimos y guía de publicación", "Done"),
-          ("Compilar y probar el APK de staging", "In Progress"), ("Cuenta de Google Play y ficha de la tienda", "To Do"), ("Prueba cerrada en Google Play", "To Do")],
+          ("Compilar y probar el APK de staging", "Done"), ("Cuenta de Google Play y ficha de la tienda", "To Do"), ("Prueba cerrada en Google Play", "To Do")],
     159: ["RPC daily_nutrition", "Tarjeta Mi día en Hoy", "Pruebas"],
     160: ["Modo 'solo con lo que tengo' (pantry_only)", "Decir qué falta si no alcanza"],
     161: ["ADR y migración de hogares y miembros con RLS", "Invitar a otra persona y compartir la lista", "Pruebas de RLS por hogar"],
     162: ["ADR y modelo de porciones sobrantes", "Sugerir recetas con las sobras", "Pruebas"],
-    163: ["Spike: modelo de visión y costo", "Reconocer ingredientes desde la cámara", "Confirmar antes de agregar a la despensa"],
-    164: ["Spike: OCR de recibos de Pasto", "Leer el recibo y registrar el gasto", "Confirmar ítems antes de guardar"],
+    163: [("Spike: modelo de visión y costo", "Done"), ("Reconocer ingredientes desde la cámara", "Done"),
+          ("Confirmar antes de agregar a la despensa", "Done"), ("Medir la precisión con fotos reales en el APK", "To Do")],
+    164: [("Spike: OCR de recibos de Pasto", "Done"), ("Leer el recibo y registrar el gasto", "Done"),
+          ("Confirmar ítems antes de guardar", "Done"), ("Medir la precisión con recibos reales en el APK", "To Do")],
     165: ["ADR y migración de precios por tienda", "Elegir supermercado en el perfil", "Pruebas de costo por tienda"],
     166: ["Spike: integraciones con supermercados", "Enviar la lista como pedido", "Pruebas"],
     167: ["Migración de recetas de la comunidad con RLS", "Pantalla para publicar una receta o adaptación", "Validar alérgenos antes de publicar"],
@@ -160,6 +182,20 @@ SUB = {
     172: ["ADR y tabla recipe_variants", "Mostrar la versión rápida en la receta"],
     173: ["Respuestas rápidas sugeridas en el chat"],
     174: ["RPC propose_week_changes y apply_week_changes con pruebas SQL", "Modo semana en assistant-chat (la IA traduce, la base calcula)", "Pantalla Revisa los cambios y Mejorar mi semana", "Probar en el APK con Gemini en staging"],
+    175: ["Calendario de 7 días o del mes con un punto por día", "Un día por página que gira como un libro (sin giro con reducir movimiento)", "generate_plan de 1 a 31 días", "Selector Hoy · Semana · Mes"],
+    176: ["Edge Function categorize-food: caché, catálogo, IA con listas cerradas y reglas", "Alimentos propios fuera del catálogo (pantry_custom_items)", "Edge Function understand-pantry: separar un texto libre en varias cosas", "Grupo sugerido visible y corregible en Lo que tengo"],
+    177: ["planned_meals.is_extra y una comida planeada por momento", "Cocinar ahora suma un plato adicional", "Sección Adicionales en Mi semana", "Opciones de la receta: En tu cocina / Para comprar"],
+    178: ["assistant_ingredients: solo lo que la persona puede comer", "create_assistant_recipe revalida y guarda un borrador privado", "Hasta tres opciones por mensaje", "Respuesta con formato y tarjetas deslizables"],
+    179: ["add_ingredients_to_list con gramos", "Reconocer lo escrito a mano al pasarlo a la despensa", "La cocina cambió (kitchen-sync): rehacer la lista y refrescar", "what_to_buy_next en gramos"],
+    180: ["adjust_pantry y set_pantry_expiry", "Una fila por alimento (total y fecha más próxima)", "Lo vencido: Todavía sirve / Quitar lo vencido", "Fecha propuesta según cuánto dura el alimento"],
+    181: ["Lista de la casa sin plan (my_house_list)", "Cantidades como se venden (private.purchase)", "Quitar con deshacer (dismissed_at)", "Presupuesto del mes redondeado"],
+    182: ["Encabezado de una fila en Mi cocina", "Agregar por Buscar, Escribir o Foto", "Lo que tengo carga sin señal", "Agregado rápido desde la base (quick_add_items)"],
+    183: ["Acción chat: 4–5 platos distintos", "Acción fill: la IA llena la receta y la base la valida", "assistant_profile y lista \"no usar\" sin el porqué", "Receta completa en el chat con kcal, proteína y costo de la base", "Ideas del recetario si la IA no responde"],
+    184: ["Botón de micrófono junto a enviar", "Reconocimiento de voz del teléfono en es-CO", "Permiso de micrófono (RECORD_AUDIO)", "Política de datos v3: la voz no se graba ni se guarda"],
+    185: ["Separar por comas y por \"y\"", "Aviso de cuáles se van a agregar", "Cada producto en su sección"],
+    186: [("Edge Function plan-ai: menú, recetas y guardado", "Done"), ("Reparto sin repetir plato en días seguidos, primero lo que vence", "Done"),
+          ("Mi semana: Planear con IA, avance real y Hecho con IA", "Done"), ("Desplegar plan-ai a staging", "To Do"),
+          ("Probar la semana y el mes con IA en el APK", "To Do")],
 }
 
 # --- Tareas técnicas y bugs (cuelgan de una épica). (id, tipo, épica, sprint, estado, puntos, título, descripción, módulo, subtareas)
@@ -177,9 +213,10 @@ OTROS = [
     (210, "Task", 6, "Sprint 10", "Done", 5, "Desplegar todo a staging", "Migraciones, catálogo con precios, Edge Functions, secretos, alertas y avisos.", "M11", []),
     (211, "Task", 5, "Sprint 10", "Done", 2, "Sacar google-services.json del repositorio público", "Ignorado por Git y guardado como variable secreta de tipo archivo en EAS (GOOGLE_SERVICES_JSON).", "M11", []),
     (212, "Task", 6, "Sprint 10", "Done", 3, "Poner la documentación al día con F2", "Modelo de datos regenerado, RPC, arquitectura, seguridad, pantallas y limitaciones.", "M11", []),
-    (220, "Task", 6, "Sprint 11", "In Progress", 2, "Compilar el APK de staging con EAS", "npx eas-cli build -p android --profile preview", "M11", []),
-    (221, "Task", 6, "Sprint 11", "To Do", 3, "Probar el APK en un teléfono real", "Arranque < 3 s, avisos, recorrido completo y checklist de accesibilidad.", "M11",
-     ["Arranque en menos de 3 s (US-150)", "Activar avisos y recibir uno (US-148)", "Recorrido completo de punta a punta", "Letra al 200 % y TalkBack (US-140)"]),
+    (220, "Task", 6, "Sprint 11", "Done", 2, "Compilar el APK de staging con EAS", "npx eas-cli build -p android --profile preview", "M11", []),
+    (221, "Task", 6, "Sprint 11", "In Progress", 3, "Probar el APK en un teléfono real", "Arranque < 3 s, avisos, recorrido completo y checklist de accesibilidad. La PO lo prueba en un Honor 200 (Android 16) desde el 13-nov.", "M11",
+     [("Arranque en menos de 3 s (US-150)", "To Do"), ("Activar avisos y recibir uno (US-148)", "To Do"),
+      ("Recorrido completo de punta a punta", "In Progress"), ("Letra al 200 % y TalkBack (US-140)", "To Do")]),
     (222, "Task", 5, "Sprint 11", "To Do", 5, "Completar los textos legales y pedir revisión de un abogado", "Llenar los marcadores de los 6 borradores y nombrar a los encargados de datos.", "M01", []),
     (223, "Task", 6, "Sprint 11", "To Do", 2, "Pasar Gemini a plan de pago con tope de gasto y rotar su clave", "El plan gratuito puede usar los datos para mejorar sus modelos.", "M05", []),
     (224, "Task", 6, "Sprint 11", "To Do", 5, "Configurar producción", "Migraciones, funciones, secretos, SMTP y plantillas en el proyecto de producción.", "M11", []),
@@ -187,6 +224,25 @@ OTROS = [
     (226, "Task", 6, "", "To Do", 1, "Renovar el token de acceso de Supabase del despliegue", "Vence cada 90 días; actualizar el secreto SUPABASE_ACCESS_TOKEN en GitHub.", "M11", []),
     (227, "Task", 5, "", "To Do", 5, "Evaluación de impacto de privacidad y contratos con proveedores", "Circular SIC 002/2024 (IA + salud); Supabase, Google, Expo y Resend.", "M01", []),
     (228, "Task", 4, "", "To Do", 2, "Pedir permiso escrito al ICBF para la tabla TCAC", "Mientras tanto se usa USDA (CC0).", "M03", []),
+    # Sprint 12
+    (229, "Task", 6, "Sprint 12", "Done", 13, "Rediseño «Cocina viva»", "Paleta de alimentos (tomate, mora, albahaca, mango), letra, componentes y barra flotante; luego cada pantalla.", "M11",
+     ["Paleta, letra y componentes", "Barra de pestañas flotante", "Hoy", "Mi cocina", "Mi semana", "Receta", "Perfil", "Bienvenida, acceso y onboarding"]),
+    (230, "Task", 1, "Sprint 12", "Done", 3, "Onboarding de 7 pasos: preferencias y avisos al crear la cuenta", "\"¿Cómo te gusta cocinar?\" y \"¿Te avisamos?\"; el permiso del teléfono solo se pide al tocar \"Activar avisos\".", "M02", []),
+    (231, "Task", 5, "Sprint 12", "Done", 2, "Términos y Política desplegables dentro del registro", "Se leen ahí mismo sin perder lo escrito; se anuncian al lector de pantalla.", "M01", []),
+    (232, "Task", 6, "Sprint 12", "Done", 2, "Diálogo de confirmación con el diseño de la app", "ConfirmDialog en lugar de la alerta del sistema: cerrar sesión, quitar de la despensa y revocar la autorización.", "M11", []),
+    (233, "Task", 2, "Sprint 12", "Done", 1, "Pista para dictar con el micrófono del teclado", "Primer paso de la voz: el teclado de Android ya dicta sin permisos ni costo.", "M05", []),
+    (234, "Task", 6, "Sprint 12", "Done", 2, "Pruebas estables con la caché fría", "Sin fallas al azar por tiempo: maxWorkers 50 % y esperas más largas; la suite baja de ~150 s a ~74 s.", "M11", []),
+    # Sprint 13
+    (235, "Task", 6, "Sprint 13", "Done", 2, "Documentación de Mi cocina al día", "ADR-033 a ADR-036, funciones RPC, reglas de negocio, pantallas y modelo de datos regenerado.", "M11", []),
+    # Sprint 14
+    (236, "Task", 6, "Sprint 14", "Done", 3, "Pantallas compactas: Asistente y Mi semana", "Encabezado de una fila (como en Hoy y Mi cocina); en Mi semana fechas cortas y \"Volver a generar\" plegado.", "M11", []),
+    (237, "Task", 5, "Sprint 14", "Done", 2, "Política de tratamiento de datos v3", "Voz y lo que sabe el asistente (preferencias y \"no usar\" sin el porqué); se vuelve a pedir la aceptación.", "M01", []),
+    (238, "Task", 6, "Sprint 14", "Done", 5, "Logo de NutriPlan IA con los colores de la app", "Propuesta de la PO llevada a la paleta «Cocina viva»: hoja en tomate, puntos de la IA en mora.", "M11",
+     ["Símbolo y palabra con los colores de la app (claro y oscuro)", "Ícono de la app: adaptable y monocromo de Android", "Arranque con el logo principal y el lema", "Logo en Hoy, bienvenida, ingreso y registro"]),
+    (239, "Task", 6, "Sprint 14", "In Progress", 1, "Compilar e instalar el APK con el logo y el plan con IA", "npx eas-cli build -p android --profile preview; instalar en el teléfono de prueba.", "M11", []),
+    (240, "Task", 6, "Sprint 14", "To Do", 1, "Desplegar plan-ai y assistant-chat v2 a staging", "supabase functions deploy con el proyecto de staging.", "M11", []),
+    (241, "Task", 6, "Sprint 14", "To Do", 2, "Logo en más lugares", "Ícono de las notificaciones, Perfil › Acerca de y el nombre \"NutriPlan IA\" bajo el ícono del teléfono.", "M11", []),
+    (242, "Task", 2, "Sprint 14", "To Do", 2, "Poner una receta en Mi semana eligiendo día y momento", "Para recetas que se abren sin una comida destino (por ejemplo, desde el asistente).", "M04", []),
     (301, "Bug", 1, "Sprint 7", "Done", None, "Los enlaces de correo fallaban: PKCE sin SHA-256 en React Native", "Verificar el correo y recuperar la contraseña no abrían la sesión.", "M01", []),
     (302, "Bug", 4, "Sprint 7", "Done", None, "El botón de enviar la calificación no se habilitaba y no decía por qué", "Ahora explica qué falta para poder enviar.", "M08", []),
     (303, "Bug", 2, "Sprint 8", "Done", None, "El asistente se quedaba esperando con el modelo Flash del plan gratuito", "Se usa el alias gemini-flash-lite-latest (~2 s), que además no se retira.", "M05", []),
@@ -194,6 +250,21 @@ OTROS = [
     (305, "Bug", 6, "Sprint 10", "Done", None, "Sin conexión la app se quedaba en la pantalla de carga", "Las puertas de arranque ahora entran con la caché (computeGates).", "M11", []),
     (306, "Bug", 6, "Sprint 10", "Done", None, "La CI fallaba desde el reporte de problemas", "El servicio de almacenamiento estaba excluido del Supabase local de CI.", "M11", []),
     (307, "Bug", 6, "Sprint 10", "Done", None, "El despliegue a staging nunca terminaba", "Faltaban secretos y la CLI v3 necesita --remote y --yes.", "M11", []),
+    (308, "Bug", 6, "Sprint 12", "Done", None, "En Android el teclado tapaba la caja del chat y los campos", "Android es edge-to-edge desde el SDK 57; KeyboardAvoidingView con padding en ambas plataformas.", "M11", []),
+    (309, "Bug", 3, "Sprint 12", "Done", None, "Al terminar la compra la lista no se vaciaba", "Lo que pasó a la despensa sale de la lista; si se compró todo, \"¡Compraste todo!\".", "M06", []),
+    (310, "Bug", 1, "Sprint 12", "Done", None, "Cerrar sesión se quedaba esperando", "La baja de avisos se abandona a los 4 s y, si cerrar falla, se avisa.", "M01", []),
+    (311, "Bug", 1, "Sprint 12", "Done", None, "El enlace de recuperar contraseña no abría «Nueva contraseña»", "Si Supabase vuelve sin pantalla, la app reescribe el enlace (+native-intent).", "M01", []),
+    (312, "Bug", 2, "Sprint 12", "Done", None, "«Cocinar ahora» reemplazaba la comida planeada o fallaba", "Ahora suma un plato adicional (US-177, ADR-028).", "M04", []),
+    (313, "Bug", 2, "Sprint 12", "Done", None, "Tocar una opción ya elegida de la receta no hacía nada", "Lo elegido lleva ✓ y ✕ y se puede quitar.", "M03", []),
+    (314, "Bug", 3, "Sprint 13", "Done", None, "Lo escrito a mano en la lista no ofrecía «Pasar a la despensa» ni el campo de lo pagado", "El contador lo dejaba fuera desde la ADR-033.", "M06", []),
+    (315, "Bug", 3, "Sprint 13", "Done", None, "Los avisos de la compra no se limpiaban", "Se limpian con lo siguiente que se hace en la lista.", "M06", []),
+    (316, "Bug", 3, "Sprint 13", "Done", None, "El teclado tapaba «Agregar algo más» en la lista", "La lista se encoge con el teclado y se desplaza hasta el campo.", "M06", []),
+    (317, "Bug", 2, "Sprint 13", "Done", None, "Mi semana dejaba un hueco grande antes de «Mejorar mi semana»", "El libro de días mide lo que mide el día que se ve.", "M04", []),
+    (318, "Bug", 3, "Sprint 13", "Done", None, "«Lo típico» desaparecía con la cocina llena", "Siempre se ve; lo que ya está dice \"ya tienes\".", "M06", []),
+    (319, "Bug", 3, "Sprint 13", "Done", None, "Decía «Vence en 0 días» en vez de «Vence hoy»", "", "M06", []),
+    (320, "Bug", 2, "Sprint 14", "Done", None, "Generar el mes fallaba en staging con «Algo salió mal»", "Pasaba el límite de 8 s; generate_plan calcula una vez por momento del día: de ~5 s a ~0,6 s.", "M04", []),
+    (321, "Bug", 2, "Sprint 14", "Done", None, "«Omitir» una comida no respondía", "Ahora es optimista y, si la base no lo acepta, vuelve y muestra el error.", "M04", []),
+    (322, "Bug", 4, "Sprint 14", "Done", None, "El teclado tapaba el comentario de la calificación", "Al abrir el teclado la pantalla baja lo justo hasta el campo (useKeepFocusedVisible).", "M08", []),
 ]
 
 VERSION = {0: "v1.0 MVP", 1: "v1.0 MVP", 2: "v1.1 Mejora y retención", 3: "v2.0 Comunidad e integraciones"}

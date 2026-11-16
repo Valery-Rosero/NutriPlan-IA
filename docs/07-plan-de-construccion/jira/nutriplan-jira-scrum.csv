@@ -659,12 +659,12 @@ Ficha completa: docs/05-historias-de-usuario (US-157)."
 
 *Depende de:* US-113, US-102
 
-*Cómo quedó:* Listos los perfiles de EAS y el APK en compilación; faltan la cuenta y la prueba cerrada en Google Play.
+*Cómo quedó:* APK de staging compilado con EAS e instalado en un teléfono real (Honor 200, Android 16); faltan la cuenta y la prueba cerrada en Google Play.
 
 Ficha completa: docs/05-historias-de-usuario (US-158)."
 "1182","Sub-task","Perfiles de EAS (APK y paquete de tienda)","158","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
 "1183","Sub-task","Permisos mínimos y guía de publicación","158","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
-"1184","Sub-task","Compilar y probar el APK de staging","158","In Progress","","","","","","M11 Plataforma, calidad y lanzamiento","estado-en-curso","m11","","","","","","",""
+"1184","Sub-task","Compilar y probar el APK de staging","158","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
 "1185","Sub-task","Cuenta de Google Play y ficha de la tienda","158","To Do","","","","","","M11 Plataforma, calidad y lanzamiento","estado-por-hacer","m11","","","","","","",""
 "1186","Sub-task","Prueba cerrada en Google Play","158","To Do","","","","","","M11 Plataforma, calidad y lanzamiento","estado-por-hacer","m11","","","","","","",""
 "159","Story","US-159 · Resumen nutricional diario vs. objetivos","4","Done","Done","Medium","5","Sprint 9","v1.1 Mejora y retención","M08 Nutrición y feedback","sprint-9","estado-hecho","prioridad-media","v1.1","m08","F2","historia","nutricion","*Como* usuario, *quiero* ver un resumen nutricional diario comparado contra mis objetivos, *para* saber si voy bien encaminado.
@@ -709,28 +709,34 @@ Ficha completa: docs/05-historias-de-usuario (US-162)."
 "1195","Sub-task","ADR y modelo de porciones sobrantes","162","To Do","","","","","","M06 Compras y despensa","estado-por-hacer","m06","","","","","","",""
 "1196","Sub-task","Sugerir recetas con las sobras","162","To Do","","","","","","M06 Compras y despensa","estado-por-hacer","m06","","","","","","",""
 "1197","Sub-task","Pruebas","162","To Do","","","","","","M06 Compras y despensa","estado-por-hacer","m06","","","","","","",""
-"163","Story","US-163 · Reconocer ingredientes desde una foto","3","In Progress","","Low","13","Sprint 12","v2.0 Comunidad e integraciones","M12 Integraciones futuras","sprint-12","estado-en-curso","prioridad-baja","v2.0","m12","F3","historia","foto-y-ocr","*Como* usuario, *quiero* tomar una foto de mi despensa o refrigerador, *para* que la app identifique automáticamente los ingredientes disponibles.
+"163","Story","US-163 · Reconocer ingredientes desde una foto","3","In Progress","","Low","13","Sprint 14","v2.0 Comunidad e integraciones","M12 Integraciones futuras","sprint-14","estado-en-curso","prioridad-baja","v2.0","m12","F3","historia","foto-y-ocr","*Como* usuario, *quiero* tomar una foto de mi despensa o refrigerador, *para* que la app identifique automáticamente los ingredientes disponibles.
 
 *Criterios de aceptación*
 # Dado que tomo una foto de mi refrigerador Cuando la app procesa la imagen Entonces identifica correctamente al menos el 70% de los ítems presentes sobre una lista de prueba de 20 alimentos comunes, y me permite corregir o eliminar cualquier ítem mal identificado antes de guardar.
 
 *Depende de:* US-119
 
+*Cómo quedó:* Construida en el Sprint 12 (ADR-032); en el Sprint 14 se mide la precisión con fotos reales en el APK.
+
 Ficha completa: docs/05-historias-de-usuario (US-163)."
-"1198","Sub-task","Spike: modelo de visión y costo","163","In Progress","","","","","","M12 Integraciones futuras","estado-en-curso","m12","","","","","","",""
-"1199","Sub-task","Reconocer ingredientes desde la cámara","163","In Progress","","","","","","M12 Integraciones futuras","estado-en-curso","m12","","","","","","",""
-"1200","Sub-task","Confirmar antes de agregar a la despensa","163","In Progress","","","","","","M12 Integraciones futuras","estado-en-curso","m12","","","","","","",""
-"164","Story","US-164 · Escanear recibo de compra con OCR","3","In Progress","","Low","13","Sprint 12","v2.0 Comunidad e integraciones","M12 Integraciones futuras","sprint-12","estado-en-curso","prioridad-baja","v2.0","m12","F3","historia","foto-y-ocr","*Como* usuario, *quiero* escanear el recibo de mi compra, *para* actualizar mi despensa y mi gasto real automáticamente.
+"1198","Sub-task","Spike: modelo de visión y costo","163","Done","Done","","","","","M12 Integraciones futuras","estado-hecho","m12","","","","","","",""
+"1199","Sub-task","Reconocer ingredientes desde la cámara","163","Done","Done","","","","","M12 Integraciones futuras","estado-hecho","m12","","","","","","",""
+"1200","Sub-task","Confirmar antes de agregar a la despensa","163","Done","Done","","","","","M12 Integraciones futuras","estado-hecho","m12","","","","","","",""
+"1201","Sub-task","Medir la precisión con fotos reales en el APK","163","To Do","","","","","","M12 Integraciones futuras","estado-por-hacer","m12","","","","","","",""
+"164","Story","US-164 · Escanear recibo de compra con OCR","3","In Progress","","Low","13","Sprint 14","v2.0 Comunidad e integraciones","M12 Integraciones futuras","sprint-14","estado-en-curso","prioridad-baja","v2.0","m12","F3","historia","foto-y-ocr","*Como* usuario, *quiero* escanear el recibo de mi compra, *para* actualizar mi despensa y mi gasto real automáticamente.
 
 *Criterios de aceptación*
 # Dado que subo la foto de un recibo de supermercado estándar Cuando se procesa con OCR Entonces se extraen correctamente ítem, cantidad y precio del 80% de las líneas en una muestra de prueba de 20 recibos; las líneas no reconocidas quedan marcadas para revisión manual, nunca se descartan silenciosamente.
 
 *Depende de:* US-119, US-141
 
+*Cómo quedó:* Construida en el Sprint 12 (ADR-032); en el Sprint 14 se mide la precisión con recibos reales de Pasto en el APK.
+
 Ficha completa: docs/05-historias-de-usuario (US-164)."
-"1201","Sub-task","Spike: OCR de recibos de Pasto","164","In Progress","","","","","","M12 Integraciones futuras","estado-en-curso","m12","","","","","","",""
-"1202","Sub-task","Leer el recibo y registrar el gasto","164","In Progress","","","","","","M12 Integraciones futuras","estado-en-curso","m12","","","","","","",""
-"1203","Sub-task","Confirmar ítems antes de guardar","164","In Progress","","","","","","M12 Integraciones futuras","estado-en-curso","m12","","","","","","",""
+"1202","Sub-task","Spike: OCR de recibos de Pasto","164","Done","Done","","","","","M12 Integraciones futuras","estado-hecho","m12","","","","","","",""
+"1203","Sub-task","Leer el recibo y registrar el gasto","164","Done","Done","","","","","M12 Integraciones futuras","estado-hecho","m12","","","","","","",""
+"1204","Sub-task","Confirmar ítems antes de guardar","164","Done","Done","","","","","M12 Integraciones futuras","estado-hecho","m12","","","","","","",""
+"1205","Sub-task","Medir la precisión con recibos reales en el APK","164","To Do","","","","","","M12 Integraciones futuras","estado-por-hacer","m12","","","","","","",""
 "165","Story","US-165 · Mostrar precios actualizados según supermercado elegido","3","To Do","","Low","8","","v2.0 Comunidad e integraciones","M12 Integraciones futuras","estado-por-hacer","prioridad-baja","v2.0","m12","F3","historia","supermercados","","*Como* usuario, *quiero* ver el precio actualizado de los ingredientes de mi lista según el supermercado que elijo, *para* presupuestar con precisión.
 
 *Criterios de aceptación*
@@ -740,9 +746,9 @@ Ficha completa: docs/05-historias-de-usuario (US-164)."
 *Depende de:* US-120
 
 Ficha completa: docs/05-historias-de-usuario (US-165)."
-"1204","Sub-task","ADR y migración de precios por tienda","165","To Do","","","","","","M12 Integraciones futuras","estado-por-hacer","m12","","","","","","",""
-"1205","Sub-task","Elegir supermercado en el perfil","165","To Do","","","","","","M12 Integraciones futuras","estado-por-hacer","m12","","","","","","",""
-"1206","Sub-task","Pruebas de costo por tienda","165","To Do","","","","","","M12 Integraciones futuras","estado-por-hacer","m12","","","","","","",""
+"1206","Sub-task","ADR y migración de precios por tienda","165","To Do","","","","","","M12 Integraciones futuras","estado-por-hacer","m12","","","","","","",""
+"1207","Sub-task","Elegir supermercado en el perfil","165","To Do","","","","","","M12 Integraciones futuras","estado-por-hacer","m12","","","","","","",""
+"1208","Sub-task","Pruebas de costo por tienda","165","To Do","","","","","","M12 Integraciones futuras","estado-por-hacer","m12","","","","","","",""
 "166","Story","US-166 · Enviar lista de compras como pedido al supermercado","3","To Do","","Low","13","","v2.0 Comunidad e integraciones","M12 Integraciones futuras","estado-por-hacer","prioridad-baja","v2.0","m12","F3","historia","supermercados","","*Como* usuario, *quiero* hacer el pedido de mi lista de compras directamente desde la app, *para* no tener que reingresarla en otra plataforma.
 
 *Criterios de aceptación*
@@ -751,9 +757,9 @@ Ficha completa: docs/05-historias-de-usuario (US-165)."
 *Depende de:* US-165, US-124
 
 Ficha completa: docs/05-historias-de-usuario (US-166)."
-"1207","Sub-task","Spike: integraciones con supermercados","166","To Do","","","","","","M12 Integraciones futuras","estado-por-hacer","m12","","","","","","",""
-"1208","Sub-task","Enviar la lista como pedido","166","To Do","","","","","","M12 Integraciones futuras","estado-por-hacer","m12","","","","","","",""
-"1209","Sub-task","Pruebas","166","To Do","","","","","","M12 Integraciones futuras","estado-por-hacer","m12","","","","","","",""
+"1209","Sub-task","Spike: integraciones con supermercados","166","To Do","","","","","","M12 Integraciones futuras","estado-por-hacer","m12","","","","","","",""
+"1210","Sub-task","Enviar la lista como pedido","166","To Do","","","","","","M12 Integraciones futuras","estado-por-hacer","m12","","","","","","",""
+"1211","Sub-task","Pruebas","166","To Do","","","","","","M12 Integraciones futuras","estado-por-hacer","m12","","","","","","",""
 "167","Story","US-167 · Publicar receta propia o adaptación","5","To Do","","Low","8","","v2.0 Comunidad e integraciones","M10 Comunidad y moderación","estado-por-hacer","prioridad-baja","v2.0","m10","F3","historia","comunidad","","*Como* usuario, *quiero* publicar una receta propia o una adaptación, *para* compartirla con otros usuarios.
 
 *Criterios de aceptación*
@@ -762,9 +768,9 @@ Ficha completa: docs/05-historias-de-usuario (US-166)."
 *Depende de:* US-104, US-154
 
 Ficha completa: docs/05-historias-de-usuario (US-167)."
-"1210","Sub-task","Migración de recetas de la comunidad con RLS","167","To Do","","","","","","M10 Comunidad y moderación","estado-por-hacer","m10","","","","","","",""
-"1211","Sub-task","Pantalla para publicar una receta o adaptación","167","To Do","","","","","","M10 Comunidad y moderación","estado-por-hacer","m10","","","","","","",""
-"1212","Sub-task","Validar alérgenos antes de publicar","167","To Do","","","","","","M10 Comunidad y moderación","estado-por-hacer","m10","","","","","","",""
+"1212","Sub-task","Migración de recetas de la comunidad con RLS","167","To Do","","","","","","M10 Comunidad y moderación","estado-por-hacer","m10","","","","","","",""
+"1213","Sub-task","Pantalla para publicar una receta o adaptación","167","To Do","","","","","","M10 Comunidad y moderación","estado-por-hacer","m10","","","","","","",""
+"1214","Sub-task","Validar alérgenos antes de publicar","167","To Do","","","","","","M10 Comunidad y moderación","estado-por-hacer","m10","","","","","","",""
 "168","Story","US-168 · Comentar y dejar tips en recetas de la comunidad","5","To Do","","Low","5","","v2.0 Comunidad e integraciones","M10 Comunidad y moderación","estado-por-hacer","prioridad-baja","v2.0","m10","F3","historia","comunidad","","*Como* usuario, *quiero* comentar y dejar tips en recetas de otros usuarios, *para* enriquecer la experiencia colectiva.
 
 *Criterios de aceptación*
@@ -773,9 +779,9 @@ Ficha completa: docs/05-historias-de-usuario (US-167)."
 *Depende de:* US-167
 
 Ficha completa: docs/05-historias-de-usuario (US-168)."
-"1213","Sub-task","Comentarios y tips públicos","168","To Do","","","","","","M10 Comunidad y moderación","estado-por-hacer","m10","","","","","","",""
-"1214","Sub-task","Reportar contenido","168","To Do","","","","","","M10 Comunidad y moderación","estado-por-hacer","m10","","","","","","",""
-"1215","Sub-task","Pruebas","168","To Do","","","","","","M10 Comunidad y moderación","estado-por-hacer","m10","","","","","","",""
+"1215","Sub-task","Comentarios y tips públicos","168","To Do","","","","","","M10 Comunidad y moderación","estado-por-hacer","m10","","","","","","",""
+"1216","Sub-task","Reportar contenido","168","To Do","","","","","","M10 Comunidad y moderación","estado-por-hacer","m10","","","","","","",""
+"1217","Sub-task","Pruebas","168","To Do","","","","","","M10 Comunidad y moderación","estado-por-hacer","m10","","","","","","",""
 "169","Story","US-169 · Moderar contenido publicado por usuarios","5","To Do","","Low","8","","v2.0 Comunidad e integraciones","M10 Comunidad y moderación","estado-por-hacer","prioridad-baja","v2.0","m10","F3","historia","comunidad","","*Como* administrador de la plataforma, *quiero* moderar el contenido publicado por usuarios, *para* evitar spam o consejos nutricionales peligrosos.
 
 *Criterios de aceptación*
@@ -784,42 +790,42 @@ Ficha completa: docs/05-historias-de-usuario (US-168)."
 *Depende de:* US-167
 
 Ficha completa: docs/05-historias-de-usuario (US-169)."
-"1216","Sub-task","Rol moderator y cola de reportes","169","To Do","","","","","","M10 Comunidad y moderación","estado-por-hacer","m10","","","","","","",""
-"1217","Sub-task","Acciones de moderación en Supabase Studio","169","To Do","","","","","","M10 Comunidad y moderación","estado-por-hacer","m10","","","","","","",""
-"1218","Sub-task","Pruebas de permisos","169","To Do","","","","","","M10 Comunidad y moderación","estado-por-hacer","m10","","","","","","",""
+"1218","Sub-task","Rol moderator y cola de reportes","169","To Do","","","","","","M10 Comunidad y moderación","estado-por-hacer","m10","","","","","","",""
+"1219","Sub-task","Acciones de moderación en Supabase Studio","169","To Do","","","","","","M10 Comunidad y moderación","estado-por-hacer","m10","","","","","","",""
+"1220","Sub-task","Pruebas de permisos","169","To Do","","","","","","M10 Comunidad y moderación","estado-por-hacer","m10","","","","","","",""
 "170","Story","US-170 · Activar modo batch cooking","1","To Do","","Low","5","","v2.0 Comunidad e integraciones","M02 Perfil y preferencias","estado-por-hacer","prioridad-baja","v2.0","m02","F3","historia","personalizacion","","*Como* usuario que cocina para varios días, *quiero* activar el modo 'batch cooking', *para* recibir recetas que rindan varias porciones y se conserven bien.
 
 *Criterios de aceptación*
 # Dado que activo el modo ""Batch cooking"" Cuando se genera una receta de almuerzo o cena Entonces solo se sugieren recetas etiquetadas con rendimiento ≥4 porciones y con indicación de conservación (refrigerador o congelador) visible en el detalle.
 
 Ficha completa: docs/05-historias-de-usuario (US-170)."
-"1219","Sub-task","Recetas aptas para batch cooking","170","To Do","","","","","","M02 Perfil y preferencias","estado-por-hacer","m02","","","","","","",""
-"1220","Sub-task","Modo batch en el plan","170","To Do","","","","","","M02 Perfil y preferencias","estado-por-hacer","m02","","","","","","",""
-"1221","Sub-task","Pruebas","170","To Do","","","","","","M02 Perfil y preferencias","estado-por-hacer","m02","","","","","","",""
+"1221","Sub-task","Recetas aptas para batch cooking","170","To Do","","","","","","M02 Perfil y preferencias","estado-por-hacer","m02","","","","","","",""
+"1222","Sub-task","Modo batch en el plan","170","To Do","","","","","","M02 Perfil y preferencias","estado-por-hacer","m02","","","","","","",""
+"1223","Sub-task","Pruebas","170","To Do","","","","","","M02 Perfil y preferencias","estado-por-hacer","m02","","","","","","",""
 "171","Story","US-171 · Definir nivel de picante preferido","1","To Do","","Low","2","","v2.0 Comunidad e integraciones","M02 Perfil y preferencias","estado-por-hacer","prioridad-baja","v2.0","m02","F3","historia","personalizacion","","*Como* usuario, *quiero* indicar mi nivel de picante preferido, *para* que las recetas se ajusten a mi tolerancia.
 
 *Criterios de aceptación*
 # Dado que fijo el nivel de picante en ""Ninguno"" Cuando se genera cualquier receta Entonces se excluyen recetas con ingredientes marcados como picantes (ají, chile, pimienta de cayena), salvo que yo los agregue manualmente como opcional.
 
 Ficha completa: docs/05-historias-de-usuario (US-171)."
-"1222","Sub-task","Nivel de picante en Preferencias","171","To Do","","","","","","M02 Perfil y preferencias","estado-por-hacer","m02","","","","","","",""
-"1223","Sub-task","Filtrar por recipe_max_heat","171","To Do","","","","","","M02 Perfil y preferencias","estado-por-hacer","m02","","","","","","",""
+"1224","Sub-task","Nivel de picante en Preferencias","171","To Do","","","","","","M02 Perfil y preferencias","estado-por-hacer","m02","","","","","","",""
+"1225","Sub-task","Filtrar por recipe_max_heat","171","To Do","","","","","","M02 Perfil y preferencias","estado-por-hacer","m02","","","","","","",""
 "172","Story","US-172 · Ofrecer «versión rápida» de una receta","2","To Do","","Low","5","","v2.0 Comunidad e integraciones","M03 Catálogo de recetas e ingredientes","estado-por-hacer","prioridad-baja","v2.0","m03","F3","historia","recetas","","*Como* usuario con poco tiempo, *quiero* pedir una 'versión rápida' de una receta, *para* reducir el tiempo de preparación.
 
 *Criterios de aceptación*
 # Dado que una receta tiene un tiempo estimado de 40 minutos Cuando toco ""Versión rápida"" Entonces se muestra una variante con tiempo estimado ≤25 minutos, señalando explícitamente qué pasos se combinaron o qué atajo se usó (ej. ""salsa de tomate en lata en vez de tomates frescos"").
 
 Ficha completa: docs/05-historias-de-usuario (US-172)."
-"1224","Sub-task","ADR y tabla recipe_variants","172","To Do","","","","","","M03 Catálogo de recetas e ingredientes","estado-por-hacer","m03","","","","","","",""
-"1225","Sub-task","Mostrar la versión rápida en la receta","172","To Do","","","","","","M03 Catálogo de recetas e ingredientes","estado-por-hacer","m03","","","","","","",""
+"1226","Sub-task","ADR y tabla recipe_variants","172","To Do","","","","","","M03 Catálogo de recetas e ingredientes","estado-por-hacer","m03","","","","","","",""
+"1227","Sub-task","Mostrar la versión rápida en la receta","172","To Do","","","","","","M03 Catálogo de recetas e ingredientes","estado-por-hacer","m03","","","","","","",""
 "173","Story","US-173 · Respuestas rápidas en el chat del asistente","2","Done","Done","Low","2","Sprint 8","v2.0 Comunidad e integraciones","M05 Asistente IA","sprint-8","estado-hecho","prioridad-baja","v2.0","m05","F3","historia","asistente-ia","*Como* usuario, *quiero* usar respuestas rápidas predefinidas en el chat, *para* no tener que escribir siempre mi pedido.
 
 *Criterios de aceptación*
 # Dado que abro el asistente por primera vez en el día Cuando se carga la pantalla Entonces se muestran exactamente 3 chips de pedidos frecuentes basados en mi historial de uso (ej. si suelo pedir ""menos calorías"", ese chip aparece primero).
 
 Ficha completa: docs/05-historias-de-usuario (US-173)."
-"1226","Sub-task","Respuestas rápidas sugeridas en el chat","173","Done","Done","","","","","M05 Asistente IA","estado-hecho","m05","","","","","","",""
-"174","Story","US-174 · Pedir cambios a toda la semana (más barata, más rápida, sin un ingrediente)","2","In Progress","","Medium","8","Sprint 12","v1.1 Mejora y retención","M05 Asistente IA","sprint-12","estado-en-curso","prioridad-media","v1.1","m05","F2","historia","asistente-ia","*Como* usuario con un plan semanal, *quiero* pedirle al asistente cambios a toda la semana en una frase (más barata, más rápida, sin un ingrediente) y revisar un antes y después, *para* ajustar el plan sin cambiar comida por comida.
+"1228","Sub-task","Respuestas rápidas sugeridas en el chat","173","Done","Done","","","","","M05 Asistente IA","estado-hecho","m05","","","","","","",""
+"174","Story","US-174 · Pedir cambios a toda la semana (más barata, más rápida, sin un ingrediente)","2","Done","Done","Medium","8","Sprint 12","v1.1 Mejora y retención","M05 Asistente IA","sprint-12","estado-hecho","prioridad-media","v1.1","m05","F2","historia","asistente-ia","*Como* usuario con un plan semanal, *quiero* pedirle al asistente cambios a toda la semana en una frase (más barata, más rápida, sin un ingrediente) y revisar un antes y después, *para* ajustar el plan sin cambiar comida por comida.
 
 *Criterios de aceptación*
 # Dado que tengo un plan con comidas pendientes Cuando le escribo al asistente ""hazme la semana más barata"" Entonces me muestra una propuesta con cuántos cambios hay y cuánto bajaría el costo estimado, sin cambiar todavía mi plan.
@@ -832,11 +838,209 @@ Ficha completa: docs/05-historias-de-usuario (US-173)."
 
 *Depende de:* US-117, US-129, US-152, US-157
 
+*Cómo quedó:* La IA solo traduce la frase a una meta; las cifras y la seguridad las pone la base (ADR-031).
+
 Ficha completa: docs/05-historias-de-usuario (US-174)."
-"1227","Sub-task","RPC propose_week_changes y apply_week_changes con pruebas SQL","174","In Progress","","","","","","M05 Asistente IA","estado-en-curso","m05","","","","","","",""
-"1228","Sub-task","Modo semana en assistant-chat (la IA traduce, la base calcula)","174","In Progress","","","","","","M05 Asistente IA","estado-en-curso","m05","","","","","","",""
-"1229","Sub-task","Pantalla Revisa los cambios y Mejorar mi semana","174","In Progress","","","","","","M05 Asistente IA","estado-en-curso","m05","","","","","","",""
-"1230","Sub-task","Probar en el APK con Gemini en staging","174","In Progress","","","","","","M05 Asistente IA","estado-en-curso","m05","","","","","","",""
+"1229","Sub-task","RPC propose_week_changes y apply_week_changes con pruebas SQL","174","Done","Done","","","","","M05 Asistente IA","estado-hecho","m05","","","","","","",""
+"1230","Sub-task","Modo semana en assistant-chat (la IA traduce, la base calcula)","174","Done","Done","","","","","M05 Asistente IA","estado-hecho","m05","","","","","","",""
+"1231","Sub-task","Pantalla Revisa los cambios y Mejorar mi semana","174","Done","Done","","","","","M05 Asistente IA","estado-hecho","m05","","","","","","",""
+"1232","Sub-task","Probar en el APK con Gemini en staging","174","Done","Done","","","","","M05 Asistente IA","estado-hecho","m05","","","","","","",""
+"175","Story","US-175 · Ver Mi semana como calendario y planear por día, semana o mes","2","Done","Done","Medium","8","Sprint 12","v1.1 Mejora y retención","M04 Motor de planificación","sprint-12","estado-hecho","prioridad-media","v1.1","m04","F2","historia","plan","*Como* usuario que planea sus comidas, *quiero* ver mi plan como un calendario, pasar de un día a otro y elegir si planeo hoy, la semana o el mes, *para* ubicarme rápido en el día que voy a cocinar sin desplazarme por una lista larga.
+
+*Criterios de aceptación*
+# Dado que tengo un plan de una semana Cuando abro Mi semana Entonces arriba veo los 7 días con un punto por día (pendiente, a medias, hecho) y la pantalla abre en hoy.
+# Dado que estoy viendo un día Cuando deslizo o toco ""Día siguiente"" Entonces paso al otro día; con ""reducir movimiento"" activo no hay animación de giro.
+# Dado que voy a planear Cuando elijo Hoy, Semana o Mes Entonces se genera un plan de 1, 7 o 30 días con las mismas reglas de seguridad, y con más de 7 días el calendario muestra el mes.
+
+*Depende de:* US-117
+
+*Cómo quedó:* B1 y B2: el mes de 30 días se generaba en ~4 s; en el Sprint 14 bajó a ~0,6 s (bug 320).
+
+Ficha completa: docs/05-historias-de-usuario (US-175)."
+"1233","Sub-task","Calendario de 7 días o del mes con un punto por día","175","Done","Done","","","","","M04 Motor de planificación","estado-hecho","m04","","","","","","",""
+"1234","Sub-task","Un día por página que gira como un libro (sin giro con reducir movimiento)","175","Done","Done","","","","","M04 Motor de planificación","estado-hecho","m04","","","","","","",""
+"1235","Sub-task","generate_plan de 1 a 31 días","175","Done","Done","","","","","M04 Motor de planificación","estado-hecho","m04","","","","","","",""
+"1236","Sub-task","Selector Hoy · Semana · Mes","175","Done","Done","","","","","M04 Motor de planificación","estado-hecho","m04","","","","","","",""
+"176","Story","US-176 · Agregar a la despensa lo que tengo escrito como lo diría, con ayuda de la IA","3","Done","Done","Medium","8","Sprint 12","v1.1 Mejora y retención","M06 Compras y despensa","sprint-12","estado-hecho","prioridad-media","v1.1","m06","F2","historia","despensa","*Como* usuario que llena su despensa, *quiero* escribir en una frase lo que compré, o un alimento que no está en el catálogo, y que la app lo entienda y lo clasifique, *para* no buscar ingrediente por ingrediente ni quedarme sin poder anotar algo.
+
+*Criterios de aceptación*
+# Dado que escribo ""2 libras de papa, un cartón de huevos y cilantro"" en ""Escríbelo como lo dirías"" Cuando la IA lo entiende Entonces veo tres cosas con cantidad, unidad y vencimiento sugeridos y las reviso antes de guardar.
+# Dado que busco un alimento que no está en el catálogo Cuando toco ""Agregar «…» como alimento propio"" Entonces se guarda con su cantidad, la etiqueta ""Propio"" y un grupo sugerido que puedo cambiar.
+# Dado que la IA no responde Cuando agrego algo escrito Entonces se guarda igual (con reglas o en ""Otros""), y la IA nunca decide sobre alergias.
+
+*Depende de:* US-119
+
+*Cómo quedó:* ADR-027 y ADR-030. Los alimentos propios no entran en recetas, plan, lista ni avisos (limitación documentada).
+
+Ficha completa: docs/05-historias-de-usuario (US-176)."
+"1237","Sub-task","Edge Function categorize-food: caché, catálogo, IA con listas cerradas y reglas","176","Done","Done","","","","","M06 Compras y despensa","estado-hecho","m06","","","","","","",""
+"1238","Sub-task","Alimentos propios fuera del catálogo (pantry_custom_items)","176","Done","Done","","","","","M06 Compras y despensa","estado-hecho","m06","","","","","","",""
+"1239","Sub-task","Edge Function understand-pantry: separar un texto libre en varias cosas","176","Done","Done","","","","","M06 Compras y despensa","estado-hecho","m06","","","","","","",""
+"1240","Sub-task","Grupo sugerido visible y corregible en Lo que tengo","176","Done","Done","","","","","M06 Compras y despensa","estado-hecho","m06","","","","","","",""
+"177","Story","US-177 · Sumar platos adicionales al día sin perder la comida planeada","2","Done","Done","Medium","5","Sprint 12","v1.1 Mejora y retención","M04 Motor de planificación","sprint-12","estado-hecho","prioridad-media","v1.1","m04","F2","historia","plan","*Como* usuario con un plan, *quiero* cocinar algo que no estaba en el plan (un batido, una receta del asistente) sin que reemplace lo que ya tenía planeado, *para* registrar todo lo que como y que la despensa quede al día.
+
+*Criterios de aceptación*
+# Dado que tengo el almuerzo planeado Cuando cocino ahora un batido que me sugirió el asistente Entonces se suma como plato adicional y mi almuerzo sigue en el plan.
+# Dado que acabo de cocinar un adicional Cuando toco ""Deshacer"" antes de 10 s Entonces el adicional se borra y la despensa vuelve a como estaba.
+# Dado que una receta tiene opciones (por ejemplo, la proteína) Cuando las veo Entonces se dividen en ""En tu cocina"" y ""Para comprar"", y puedo quitar la que elegí.
+
+*Depende de:* US-123, US-157
+
+*Cómo quedó:* ADR-028. Antes, cocinar ahora pisaba la comida planeada (bug 312).
+
+Ficha completa: docs/05-historias-de-usuario (US-177)."
+"1241","Sub-task","planned_meals.is_extra y una comida planeada por momento","177","Done","Done","","","","","M04 Motor de planificación","estado-hecho","m04","","","","","","",""
+"1242","Sub-task","Cocinar ahora suma un plato adicional","177","Done","Done","","","","","M04 Motor de planificación","estado-hecho","m04","","","","","","",""
+"1243","Sub-task","Sección Adicionales en Mi semana","177","Done","Done","","","","","M04 Motor de planificación","estado-hecho","m04","","","","","","",""
+"1244","Sub-task","Opciones de la receta: En tu cocina / Para comprar","177","Done","Done","","","","","M04 Motor de planificación","estado-hecho","m04","","","","","","",""
+"178","Story","US-178 · Recibir del asistente recetas propias con lo que hay en mi cocina","2","Done","Done","Medium","8","Sprint 12","v1.1 Mejora y retención","M05 Asistente IA","sprint-12","estado-hecho","prioridad-media","v1.1","m05","F2","historia","asistente-ia","*Como* usuario que le pregunta al asistente qué cocinar, *quiero* que el asistente me proponga hasta tres opciones, del recetario o creadas para mí con lo que tengo, *para* cocinar algo distinto sin comprar de más.
+
+*Criterios de aceptación*
+# Dado que tengo cosas en la despensa Cuando le pido al asistente algo para la cena Entonces recibo hasta tres opciones, del recetario o creadas por el asistente, con lo que falta comprar.
+# Dado que tengo alergias o una dieta Cuando el asistente crea una receta Entonces la base revalida alergias, dieta, tiempo y cantidades antes de guardarla; si no cumple, no se muestra.
+# Dado que elijo una receta del asistente Cuando la abro Entonces dice que la creó el asistente y puedo cocinarla, ponerla en mi plan o llevar lo que falta a la lista.
+
+*Depende de:* US-157, US-160
+
+*Cómo quedó:* ADR-029. La receta del asistente es un borrador privado; la base la revalida antes de guardarla.
+
+Ficha completa: docs/05-historias-de-usuario (US-178)."
+"1245","Sub-task","assistant_ingredients: solo lo que la persona puede comer","178","Done","Done","","","","","M05 Asistente IA","estado-hecho","m05","","","","","","",""
+"1246","Sub-task","create_assistant_recipe revalida y guarda un borrador privado","178","Done","Done","","","","","M05 Asistente IA","estado-hecho","m05","","","","","","",""
+"1247","Sub-task","Hasta tres opciones por mensaje","178","Done","Done","","","","","M05 Asistente IA","estado-hecho","m05","","","","","","",""
+"1248","Sub-task","Respuesta con formato y tarjetas deslizables","178","Done","Done","","","","","M05 Asistente IA","estado-hecho","m05","","","","","","",""
+"179","Story","US-179 · Que lo que compro llegue a la despensa sin perderse","3","Done","Done","High","8","Sprint 13","v1.1 Mejora y retención","M06 Compras y despensa","sprint-13","estado-hecho","prioridad-alta","v1.1","m06","F2","historia","compras","*Como* usuario que compra con la lista de mercado, *quiero* que lo que falta de una receta entre a la lista y, al comprarlo, llegue a mi despensa, *para* que la cocina, la lista y el plan digan siempre lo mismo.
+
+*Criterios de aceptación*
+# Dado que a una receta le falta algo Cuando toco ""Agregar lo que falta"" Entonces entra a la lista como ingrediente con sus gramos y, al comprarlo, llega a la despensa.
+# Dado que escribí ""pollo"" a mano en la lista Cuando lo paso a la despensa Entonces se reconoce en el catálogo (sin importar tildes ni plurales), como alimento propio o, si no es comida, se cierra.
+# Dado que cambia la despensa o el plan Cuando vuelvo a la lista, a Hoy o a Mi semana Entonces todo se ve al día sin recargar.
+
+*Depende de:* US-124, US-126
+
+*Cómo quedó:* ADR-033. Nace de probar la app en el teléfono: el ciclo lista → compra → despensa se rompía.
+
+Ficha completa: docs/05-historias-de-usuario (US-179)."
+"1249","Sub-task","add_ingredients_to_list con gramos","179","Done","Done","","","","","M06 Compras y despensa","estado-hecho","m06","","","","","","",""
+"1250","Sub-task","Reconocer lo escrito a mano al pasarlo a la despensa","179","Done","Done","","","","","M06 Compras y despensa","estado-hecho","m06","","","","","","",""
+"1251","Sub-task","La cocina cambió (kitchen-sync): rehacer la lista y refrescar","179","Done","Done","","","","","M06 Compras y despensa","estado-hecho","m06","","","","","","",""
+"1252","Sub-task","what_to_buy_next en gramos","179","Done","Done","","","","","M06 Compras y despensa","estado-hecho","m06","","","","","","",""
+"180","Story","US-180 · Corregir lo que hay en la despensa","3","Done","Done","Medium","5","Sprint 13","v1.1 Mejora y retención","M06 Compras y despensa","sprint-13","estado-hecho","prioridad-media","v1.1","m06","F2","historia","despensa","*Como* usuario con despensa, *quiero* ajustar cuánto me queda de algo, cambiar su fecha de vencimiento o quitar lo vencido, *para* que las recetas y la lista se basen en lo que de verdad tengo.
+
+*Criterios de aceptación*
+# Dado que toco un alimento de la despensa Cuando ajusto cuánto queda (−/+, ¾, ½, ¼ o ""Se acabó"") Entonces se guarda y las recetas lo tienen en cuenta.
+# Dado que compré lo mismo varias veces Cuando veo la despensa Entonces aparece en una sola fila con el total y la fecha más próxima, y cada compra se edita aparte.
+# Dado que algo está vencido Cuando lo veo en la despensa Entonces puedo decir ""Todavía sirve"" (2 días más) o ""Quitar lo vencido"".
+
+*Depende de:* US-119
+
+*Cómo quedó:* ADR-034.
+
+Ficha completa: docs/05-historias-de-usuario (US-180)."
+"1253","Sub-task","adjust_pantry y set_pantry_expiry","180","Done","Done","","","","","M06 Compras y despensa","estado-hecho","m06","","","","","","",""
+"1254","Sub-task","Una fila por alimento (total y fecha más próxima)","180","Done","Done","","","","","M06 Compras y despensa","estado-hecho","m06","","","","","","",""
+"1255","Sub-task","Lo vencido: Todavía sirve / Quitar lo vencido","180","Done","Done","","","","","M06 Compras y despensa","estado-hecho","m06","","","","","","",""
+"1256","Sub-task","Fecha propuesta según cuánto dura el alimento","180","Done","Done","","","","","M06 Compras y despensa","estado-hecho","m06","","","","","","",""
+"181","Story","US-181 · Usar la lista de mercado en el supermercado","3","Done","Done","High","8","Sprint 13","v1.1 Mejora y retención","M06 Compras y despensa","sprint-13","estado-hecho","prioridad-alta","v1.1","m06","F2","historia","compras","*Como* usuario que va a mercar, *quiero* una lista con cantidades como se venden, que exista aunque no tenga plan y donde quitar algo se pueda deshacer, *para* comprar sin hacer cuentas en el pasillo.
+
+*Criterios de aceptación*
+# Dado que no tengo un plan Cuando abro la lista de mercado Entonces igual tengo una lista de la casa donde anotar y agregar lo que falta.
+# Dado que la lista pide 350 g de cebolla Cuando la veo Entonces dice cuánto comprar como se vende (unidades, libras, litros o ""un poco""), y a la despensa pasa lo que compré.
+# Dado que quito algo de la lista Cuando toco ""Deshacer"" Entonces vuelve; si no lo deshago, el plan no lo vuelve a poner.
+
+*Depende de:* US-124, US-141
+
+*Cómo quedó:* ADR-035.
+
+Ficha completa: docs/05-historias-de-usuario (US-181)."
+"1257","Sub-task","Lista de la casa sin plan (my_house_list)","181","Done","Done","","","","","M06 Compras y despensa","estado-hecho","m06","","","","","","",""
+"1258","Sub-task","Cantidades como se venden (private.purchase)","181","Done","Done","","","","","M06 Compras y despensa","estado-hecho","m06","","","","","","",""
+"1259","Sub-task","Quitar con deshacer (dismissed_at)","181","Done","Done","","","","","M06 Compras y despensa","estado-hecho","m06","","","","","","",""
+"1260","Sub-task","Presupuesto del mes redondeado","181","Done","Done","","","","","M06 Compras y despensa","estado-hecho","m06","","","","","","",""
+"182","Story","US-182 · Agregar a la despensa con menos pasos","3","Done","Done","Medium","5","Sprint 13","v1.1 Mejora y retención","M06 Compras y despensa","sprint-13","estado-hecho","prioridad-media","v1.1","m06","F2","historia","despensa","*Como* usuario que acaba de mercar, *quiero* agregar a la despensa con un toque o con un solo camino a la vez, y ver lo que tengo aunque no haya señal, *para* mantener la cocina al día sin que me tome tiempo.
+
+*Criterios de aceptación*
+# Dado que abro Mi cocina Cuando veo la pantalla Entonces primero está lo que tengo y lo que falta, con un encabezado de una sola fila.
+# Dado que toco ""Agregar"" Cuando elijo Buscar, Escribir o Foto Entonces veo un camino a la vez, empezando por Buscar.
+# Dado que toco un agregado rápido (""Huevos"") Cuando lo toco otra vez Entonces se deshace; si ya lo tengo, dice ""ya tienes"".
+# Dado que no tengo señal Cuando abro ""Lo que tengo"" Entonces veo lo último que se guardó en el teléfono.
+
+*Depende de:* US-119
+
+*Cómo quedó:* ADR-036.
+
+Ficha completa: docs/05-historias-de-usuario (US-182)."
+"1261","Sub-task","Encabezado de una fila en Mi cocina","182","Done","Done","","","","","M06 Compras y despensa","estado-hecho","m06","","","","","","",""
+"1262","Sub-task","Agregar por Buscar, Escribir o Foto","182","Done","Done","","","","","M06 Compras y despensa","estado-hecho","m06","","","","","","",""
+"1263","Sub-task","Lo que tengo carga sin señal","182","Done","Done","","","","","M06 Compras y despensa","estado-hecho","m06","","","","","","",""
+"1264","Sub-task","Agregado rápido desde la base (quick_add_items)","182","Done","Done","","","","","M06 Compras y despensa","estado-hecho","m06","","","","","","",""
+"183","Story","US-183 · Pedirle ideas al asistente y que respete lo que no puedo comer","2","Done","Done","High","8","Sprint 14","v1.1 Mejora y retención","M05 Asistente IA","sprint-14","estado-hecho","prioridad-alta","v1.1","m05","F2","historia","asistente-ia","*Como* usuario que no sabe qué cocinar, *quiero* pedirle ideas al asistente en mis palabras, elegir una y ver la receta completa ahí mismo, *para* decidir rápido qué cocinar sin salir del chat.
+
+*Criterios de aceptación*
+# Dado que le pido al asistente ""algo rápido para la cena"" Cuando responde Entonces me da 4 o 5 platos distintos con nombre, una frase y los minutos.
+# Dado que elijo uno Cuando la IA llena la receta Entonces la veo completa en el chat: porciones, kcal, proteína y costo calculados por la base, lo que tengo, lo que falta y los pasos.
+# Dado que tengo alergias, una dieta o cosas que no me gustan Cuando el asistente propone Entonces nada las incumple; la IA recibe solo qué evitar, nunca el porqué.
+# Dado que la IA no responde Cuando pido ideas Entonces recibo ideas del recetario.
+
+*Depende de:* US-178
+
+*Cómo quedó:* ADR-037: amplía la ADR-025 (la IA sabe qué evitar, nunca por qué). Política de datos v3.
+
+Ficha completa: docs/05-historias-de-usuario (US-183)."
+"1265","Sub-task","Acción chat: 4–5 platos distintos","183","Done","Done","","","","","M05 Asistente IA","estado-hecho","m05","","","","","","",""
+"1266","Sub-task","Acción fill: la IA llena la receta y la base la valida","183","Done","Done","","","","","M05 Asistente IA","estado-hecho","m05","","","","","","",""
+"1267","Sub-task","assistant_profile y lista ""no usar"" sin el porqué","183","Done","Done","","","","","M05 Asistente IA","estado-hecho","m05","","","","","","",""
+"1268","Sub-task","Receta completa en el chat con kcal, proteína y costo de la base","183","Done","Done","","","","","M05 Asistente IA","estado-hecho","m05","","","","","","",""
+"1269","Sub-task","Ideas del recetario si la IA no responde","183","Done","Done","","","","","M05 Asistente IA","estado-hecho","m05","","","","","","",""
+"184","Story","US-184 · Dictar con el micrófono en vez de escribir","2","Done","Done","Medium","5","Sprint 14","v1.1 Mejora y retención","M05 Asistente IA","sprint-14","estado-hecho","prioridad-media","v1.1","m05","F2","historia","asistente-ia","*Como* usuario que cocina con las manos ocupadas, *quiero* tocar un micrófono y dictar lo que le pido al asistente o lo que voy a anotar, *para* no tener que escribir en el teléfono.
+
+*Criterios de aceptación*
+# Dado que estoy en el asistente, en ""Escríbelo como lo dirías"" o en la lista de mercado Cuando toco el micrófono y hablo Entonces el texto queda en la caja para revisarlo antes de enviar.
+# Dado que no he dado permiso de micrófono Cuando toco el botón Entonces se pide en ese momento; si lo niego, puedo seguir escribiendo.
+# Dado que dicto algo Cuando termino Entonces NutriPlan no graba ni guarda la voz.
+
+*Depende de:* US-183
+
+*Cómo quedó:* ADR-038. Antes hubo una pista para dictar con el teclado (tarea 233); el botón propio se hizo al pedirlo la PO.
+
+Ficha completa: docs/05-historias-de-usuario (US-184)."
+"1270","Sub-task","Botón de micrófono junto a enviar","184","Done","Done","","","","","M05 Asistente IA","estado-hecho","m05","","","","","","",""
+"1271","Sub-task","Reconocimiento de voz del teléfono en es-CO","184","Done","Done","","","","","M05 Asistente IA","estado-hecho","m05","","","","","","",""
+"1272","Sub-task","Permiso de micrófono (RECORD_AUDIO)","184","Done","Done","","","","","M05 Asistente IA","estado-hecho","m05","","","","","","",""
+"1273","Sub-task","Política de datos v3: la voz no se graba ni se guarda","184","Done","Done","","","","","M05 Asistente IA","estado-hecho","m05","","","","","","",""
+"185","Story","US-185 · Agregar varios productos a la lista de una vez","3","Done","Done","Medium","2","Sprint 14","v1.1 Mejora y retención","M06 Compras y despensa","sprint-14","estado-hecho","prioridad-media","v1.1","m06","F2","historia","compras","*Como* usuario que arma su lista de mercado, *quiero* escribir o dictar varios productos seguidos y que entren como productos separados, *para* no agregarlos uno por uno.
+
+*Criterios de aceptación*
+# Dado que escribo o dicto ""pollo, pan y yuca"" Cuando toco ""Agregar"" Entonces entran tres productos, cada uno en su sección del supermercado.
+# Dado que estoy escribiendo varios productos Cuando todavía no toco el botón Entonces la app me dice cuáles va a agregar.
+
+*Depende de:* US-124
+
+*Cómo quedó:* Pedida por la PO al probar la lista; también funciona dictando.
+
+Ficha completa: docs/05-historias-de-usuario (US-185)."
+"1274","Sub-task","Separar por comas y por ""y""","185","Done","Done","","","","","M06 Compras y despensa","estado-hecho","m06","","","","","","",""
+"1275","Sub-task","Aviso de cuáles se van a agregar","185","Done","Done","","","","","M06 Compras y despensa","estado-hecho","m06","","","","","","",""
+"1276","Sub-task","Cada producto en su sección","185","Done","Done","","","","","M06 Compras y despensa","estado-hecho","m06","","","","","","",""
+"186","Story","US-186 · Planear la semana o el mes con IA","2","In Progress","","High","13","Sprint 14","v1.1 Mejora y retención","M04 Motor de planificación","sprint-14","estado-en-curso","prioridad-alta","v1.1","m04","F2","historia","plan","*Como* usuario que planea sus comidas, *quiero* que la IA arme mi semana o mi mes con platos variados, según mis gustos y lo que tengo en la despensa, *para* tener un plan que se sienta hecho para mí y no siempre las mismas recetas.
+
+*Criterios de aceptación*
+# Dado que toco ""Planear la semana con IA"" Cuando termina Entonces tengo 7 días con platos variados, sin el mismo plato dos días seguidos, y el plan dice ""Hecho con IA"".
+# Dado que tengo alergias, una dieta o gustos declarados Cuando la IA arma el plan Entonces ningún plato los incumple: la base valida cada receta antes de guardarla.
+# Dado que tengo cosas por vencer en la despensa Cuando se arma el plan Entonces se usan primero, y lo que falta queda en la lista de mercado.
+# Dado que la IA no responde o ya usé los 3 planes con IA del día Cuando pido el plan Entonces se arma con el recetario y la app me lo dice.
+# Dado que pido el plan del mes Cuando se está generando Entonces veo el avance paso a paso.
+
+*Depende de:* US-117, US-175, US-183
+
+*Cómo quedó:* ADR-039. Probada en local (pruebas y humo); falta desplegar plan-ai a staging y probarla en el APK.
+
+Ficha completa: docs/05-historias-de-usuario (US-186)."
+"1277","Sub-task","Edge Function plan-ai: menú, recetas y guardado","186","Done","Done","","","","","M04 Motor de planificación","estado-hecho","m04","","","","","","",""
+"1278","Sub-task","Reparto sin repetir plato en días seguidos, primero lo que vence","186","Done","Done","","","","","M04 Motor de planificación","estado-hecho","m04","","","","","","",""
+"1279","Sub-task","Mi semana: Planear con IA, avance real y Hecho con IA","186","Done","Done","","","","","M04 Motor de planificación","estado-hecho","m04","","","","","","",""
+"1280","Sub-task","Desplegar plan-ai a staging","186","To Do","","","","","","M04 Motor de planificación","estado-por-hacer","m04","","","","","","",""
+"1281","Sub-task","Probar la semana y el mes con IA en el APK","186","To Do","","","","","","M04 Motor de planificación","estado-por-hacer","m04","","","","","","",""
 "201","Task","Monorepo app/backend/docs, AGENTS.md y unificar la copia de Supabase","6","Done","Done","Medium","3","Sprint 0","v1.0 MVP","M11 Plataforma, calidad y lanzamiento","sprint-0","estado-hecho","prioridad-media","v1.0","m11","tecnica","","","Una sola fuente para el backend (C4)."
 "202","Task","Migración de refuerzo (hardening R1–R9) y runner de pruebas SQL","5","Done","Done","Medium","5","Sprint 0","v1.0 MVP","M01 Cuenta, consentimientos y privacidad","sprint-0","estado-hecho","prioridad-media","v1.0","m01","tecnica","","","Dietas como filtro duro, guardado atómico del plan y runner multiplataforma run_local.sh."
 "203","Task","Recetas versátiles: base + grupos intercambiables (ADR-020)","2","Done","Done","Medium","8","Sprint 0","v1.0 MVP","M03 Catálogo de recetas e ingredientes","sprint-0","estado-hecho","prioridad-media","v1.0","m03","tecnica","","","Las opciones de cada grupo se resuelven con la despensa y nunca con un ingrediente prohibido."
@@ -844,26 +1048,26 @@ Ficha completa: docs/05-historias-de-usuario (US-174)."
 "205","Task","Prueba de integración del recorrido completo contra Supabase real","6","Done","Done","Medium","5","Sprint 6","v1.0 MVP","M11 Plataforma, calidad y lanzamiento","sprint-6","estado-hecho","prioridad-media","v1.0","m11","tecnica","","","Registro → onboarding → plan → compras → cocinar, en CI."
 "206","Task","Flujo centrado en la cocina: Hoy · Mi cocina · Mi semana (ADR-024)","2","Done","Done","Medium","5","Sprint 7","v1.1 Mejora y retención","M04 Motor de planificación","sprint-7","estado-hecho","prioridad-media","v1.1","m04","tecnica","","","La pregunta principal es '¿qué cocino con lo que tengo?'."
 "207","Task","Rediseño visual de la app","6","Done","Done","Medium","13","Sprint 7","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-7","estado-hecho","prioridad-media","v1.1","m11","tecnica","","","Sistema de diseño con la paleta de marca, modo oscuro y componentes compartidos; luego cada pantalla."
-"1231","Sub-task","Sistema de diseño: tokens, tipografía y componentes","207","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
-"1232","Sub-task","Selector de tema: como el teléfono, claro u oscuro","207","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
-"1233","Sub-task","Pantallas de acceso","207","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
-"1234","Sub-task","Hoy","207","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
-"1235","Sub-task","Mi cocina","207","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
-"1236","Sub-task","Mi semana","207","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
-"1237","Sub-task","Detalle de receta","207","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
-"1238","Sub-task","Onboarding y consentimientos","207","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
-"1239","Sub-task","Perfil, privacidad y eliminar cuenta","207","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
+"1282","Sub-task","Sistema de diseño: tokens, tipografía y componentes","207","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
+"1283","Sub-task","Selector de tema: como el teléfono, claro u oscuro","207","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
+"1284","Sub-task","Pantallas de acceso","207","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
+"1285","Sub-task","Hoy","207","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
+"1286","Sub-task","Mi cocina","207","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
+"1287","Sub-task","Mi semana","207","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
+"1288","Sub-task","Detalle de receta","207","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
+"1289","Sub-task","Onboarding y consentimientos","207","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
+"1290","Sub-task","Perfil, privacidad y eliminar cuenta","207","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
 "208","Task","Correos de la cuenta en español con SMTP de Gmail","5","Done","Done","Medium","3","Sprint 10","v1.1 Mejora y retención","M01 Cuenta, consentimientos y privacidad","sprint-10","estado-hecho","prioridad-media","v1.1","m01","tecnica","","","Plantillas con la marca para confirmar, recuperar y cambiar correo; sin comprar dominio."
 "209","Task","Vincular el proyecto a EAS y Firebase (FCM) para el APK","6","Done","Done","Medium","3","Sprint 10","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-10","estado-hecho","prioridad-media","v1.1","m11","tecnica","","","projectId de EAS, llave FCM v1 en eas credentials."
 "210","Task","Desplegar todo a staging","6","Done","Done","Medium","5","Sprint 10","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-10","estado-hecho","prioridad-media","v1.1","m11","tecnica","","","Migraciones, catálogo con precios, Edge Functions, secretos, alertas y avisos."
 "211","Task","Sacar google-services.json del repositorio público","5","Done","Done","Medium","2","Sprint 10","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-10","estado-hecho","prioridad-media","v1.1","m11","tecnica","","","Ignorado por Git y guardado como variable secreta de tipo archivo en EAS (GOOGLE_SERVICES_JSON)."
 "212","Task","Poner la documentación al día con F2","6","Done","Done","Medium","3","Sprint 10","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-10","estado-hecho","prioridad-media","v1.1","m11","tecnica","","","Modelo de datos regenerado, RPC, arquitectura, seguridad, pantallas y limitaciones."
-"220","Task","Compilar el APK de staging con EAS","6","In Progress","","Medium","2","Sprint 11","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-11","estado-en-curso","prioridad-media","v1.1","m11","tecnica","","","npx eas-cli build -p android --profile preview"
-"221","Task","Probar el APK en un teléfono real","6","To Do","","Medium","3","Sprint 11","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-11","estado-por-hacer","prioridad-media","v1.1","m11","tecnica","","","Arranque < 3 s, avisos, recorrido completo y checklist de accesibilidad."
-"1240","Sub-task","Arranque en menos de 3 s (US-150)","221","To Do","","","","","","M11 Plataforma, calidad y lanzamiento","estado-por-hacer","m11","","","","","","",""
-"1241","Sub-task","Activar avisos y recibir uno (US-148)","221","To Do","","","","","","M11 Plataforma, calidad y lanzamiento","estado-por-hacer","m11","","","","","","",""
-"1242","Sub-task","Recorrido completo de punta a punta","221","To Do","","","","","","M11 Plataforma, calidad y lanzamiento","estado-por-hacer","m11","","","","","","",""
-"1243","Sub-task","Letra al 200 % y TalkBack (US-140)","221","To Do","","","","","","M11 Plataforma, calidad y lanzamiento","estado-por-hacer","m11","","","","","","",""
+"220","Task","Compilar el APK de staging con EAS","6","Done","Done","Medium","2","Sprint 11","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-11","estado-hecho","prioridad-media","v1.1","m11","tecnica","","","npx eas-cli build -p android --profile preview"
+"221","Task","Probar el APK en un teléfono real","6","In Progress","","Medium","3","Sprint 11","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-11","estado-en-curso","prioridad-media","v1.1","m11","tecnica","","","Arranque < 3 s, avisos, recorrido completo y checklist de accesibilidad. La PO lo prueba en un Honor 200 (Android 16) desde el 13-nov."
+"1291","Sub-task","Arranque en menos de 3 s (US-150)","221","To Do","","","","","","M11 Plataforma, calidad y lanzamiento","estado-por-hacer","m11","","","","","","",""
+"1292","Sub-task","Activar avisos y recibir uno (US-148)","221","To Do","","","","","","M11 Plataforma, calidad y lanzamiento","estado-por-hacer","m11","","","","","","",""
+"1293","Sub-task","Recorrido completo de punta a punta","221","In Progress","","","","","","M11 Plataforma, calidad y lanzamiento","estado-en-curso","m11","","","","","","",""
+"1294","Sub-task","Letra al 200 % y TalkBack (US-140)","221","To Do","","","","","","M11 Plataforma, calidad y lanzamiento","estado-por-hacer","m11","","","","","","",""
 "222","Task","Completar los textos legales y pedir revisión de un abogado","5","To Do","","Medium","5","Sprint 11","v1.1 Mejora y retención","M01 Cuenta, consentimientos y privacidad","sprint-11","estado-por-hacer","prioridad-media","v1.1","m01","tecnica","","","Llenar los marcadores de los 6 borradores y nombrar a los encargados de datos."
 "223","Task","Pasar Gemini a plan de pago con tope de gasto y rotar su clave","6","To Do","","Medium","2","Sprint 11","v1.1 Mejora y retención","M05 Asistente IA","sprint-11","estado-por-hacer","prioridad-media","v1.1","m05","tecnica","","","El plan gratuito puede usar los datos para mejorar sus modelos."
 "224","Task","Configurar producción","6","To Do","","Medium","5","Sprint 11","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-11","estado-por-hacer","prioridad-media","v1.1","m11","tecnica","","","Migraciones, funciones, secretos, SMTP y plantillas en el proyecto de producción."
@@ -871,6 +1075,32 @@ Ficha completa: docs/05-historias-de-usuario (US-174)."
 "226","Task","Renovar el token de acceso de Supabase del despliegue","6","To Do","","Medium","1","","v2.0 Comunidad e integraciones","M11 Plataforma, calidad y lanzamiento","estado-por-hacer","prioridad-media","v2.0","m11","tecnica","","","","Vence cada 90 días; actualizar el secreto SUPABASE_ACCESS_TOKEN en GitHub."
 "227","Task","Evaluación de impacto de privacidad y contratos con proveedores","5","To Do","","Medium","5","","v2.0 Comunidad e integraciones","M01 Cuenta, consentimientos y privacidad","estado-por-hacer","prioridad-media","v2.0","m01","tecnica","","","","Circular SIC 002/2024 (IA + salud); Supabase, Google, Expo y Resend."
 "228","Task","Pedir permiso escrito al ICBF para la tabla TCAC","4","To Do","","Medium","2","","v2.0 Comunidad e integraciones","M03 Catálogo de recetas e ingredientes","estado-por-hacer","prioridad-media","v2.0","m03","tecnica","","","","Mientras tanto se usa USDA (CC0)."
+"229","Task","Rediseño «Cocina viva»","6","Done","Done","Medium","13","Sprint 12","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-12","estado-hecho","prioridad-media","v1.1","m11","tecnica","","","Paleta de alimentos (tomate, mora, albahaca, mango), letra, componentes y barra flotante; luego cada pantalla."
+"1295","Sub-task","Paleta, letra y componentes","229","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
+"1296","Sub-task","Barra de pestañas flotante","229","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
+"1297","Sub-task","Hoy","229","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
+"1298","Sub-task","Mi cocina","229","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
+"1299","Sub-task","Mi semana","229","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
+"1300","Sub-task","Receta","229","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
+"1301","Sub-task","Perfil","229","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
+"1302","Sub-task","Bienvenida, acceso y onboarding","229","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
+"230","Task","Onboarding de 7 pasos: preferencias y avisos al crear la cuenta","1","Done","Done","Medium","3","Sprint 12","v1.1 Mejora y retención","M02 Perfil y preferencias","sprint-12","estado-hecho","prioridad-media","v1.1","m02","tecnica","","","""¿Cómo te gusta cocinar?"" y ""¿Te avisamos?""; el permiso del teléfono solo se pide al tocar ""Activar avisos""."
+"231","Task","Términos y Política desplegables dentro del registro","5","Done","Done","Medium","2","Sprint 12","v1.1 Mejora y retención","M01 Cuenta, consentimientos y privacidad","sprint-12","estado-hecho","prioridad-media","v1.1","m01","tecnica","","","Se leen ahí mismo sin perder lo escrito; se anuncian al lector de pantalla."
+"232","Task","Diálogo de confirmación con el diseño de la app","6","Done","Done","Medium","2","Sprint 12","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-12","estado-hecho","prioridad-media","v1.1","m11","tecnica","","","ConfirmDialog en lugar de la alerta del sistema: cerrar sesión, quitar de la despensa y revocar la autorización."
+"233","Task","Pista para dictar con el micrófono del teclado","2","Done","Done","Medium","1","Sprint 12","v1.1 Mejora y retención","M05 Asistente IA","sprint-12","estado-hecho","prioridad-media","v1.1","m05","tecnica","","","Primer paso de la voz: el teclado de Android ya dicta sin permisos ni costo."
+"234","Task","Pruebas estables con la caché fría","6","Done","Done","Medium","2","Sprint 12","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-12","estado-hecho","prioridad-media","v1.1","m11","tecnica","","","Sin fallas al azar por tiempo: maxWorkers 50 % y esperas más largas; la suite baja de ~150 s a ~74 s."
+"235","Task","Documentación de Mi cocina al día","6","Done","Done","Medium","2","Sprint 13","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-13","estado-hecho","prioridad-media","v1.1","m11","tecnica","","","ADR-033 a ADR-036, funciones RPC, reglas de negocio, pantallas y modelo de datos regenerado."
+"236","Task","Pantallas compactas: Asistente y Mi semana","6","Done","Done","Medium","3","Sprint 14","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-14","estado-hecho","prioridad-media","v1.1","m11","tecnica","","","Encabezado de una fila (como en Hoy y Mi cocina); en Mi semana fechas cortas y ""Volver a generar"" plegado."
+"237","Task","Política de tratamiento de datos v3","5","Done","Done","Medium","2","Sprint 14","v1.1 Mejora y retención","M01 Cuenta, consentimientos y privacidad","sprint-14","estado-hecho","prioridad-media","v1.1","m01","tecnica","","","Voz y lo que sabe el asistente (preferencias y ""no usar"" sin el porqué); se vuelve a pedir la aceptación."
+"238","Task","Logo de NutriPlan IA con los colores de la app","6","Done","Done","Medium","5","Sprint 14","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-14","estado-hecho","prioridad-media","v1.1","m11","tecnica","","","Propuesta de la PO llevada a la paleta «Cocina viva»: hoja en tomate, puntos de la IA en mora."
+"1303","Sub-task","Símbolo y palabra con los colores de la app (claro y oscuro)","238","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
+"1304","Sub-task","Ícono de la app: adaptable y monocromo de Android","238","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
+"1305","Sub-task","Arranque con el logo principal y el lema","238","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
+"1306","Sub-task","Logo en Hoy, bienvenida, ingreso y registro","238","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
+"239","Task","Compilar e instalar el APK con el logo y el plan con IA","6","In Progress","","Medium","1","Sprint 14","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-14","estado-en-curso","prioridad-media","v1.1","m11","tecnica","","","npx eas-cli build -p android --profile preview; instalar en el teléfono de prueba."
+"240","Task","Desplegar plan-ai y assistant-chat v2 a staging","6","To Do","","Medium","1","Sprint 14","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-14","estado-por-hacer","prioridad-media","v1.1","m11","tecnica","","","supabase functions deploy con el proyecto de staging."
+"241","Task","Logo en más lugares","6","To Do","","Medium","2","Sprint 14","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-14","estado-por-hacer","prioridad-media","v1.1","m11","tecnica","","","Ícono de las notificaciones, Perfil › Acerca de y el nombre ""NutriPlan IA"" bajo el ícono del teléfono."
+"242","Task","Poner una receta en Mi semana eligiendo día y momento","2","To Do","","Medium","2","Sprint 14","v1.1 Mejora y retención","M04 Motor de planificación","sprint-14","estado-por-hacer","prioridad-media","v1.1","m04","tecnica","","","Para recetas que se abren sin una comida destino (por ejemplo, desde el asistente)."
 "301","Bug","Los enlaces de correo fallaban: PKCE sin SHA-256 en React Native","1","Done","Done","High","","Sprint 7","v1.1 Mejora y retención","M01 Cuenta, consentimientos y privacidad","sprint-7","estado-hecho","prioridad-alta","v1.1","m01","bug","","","Verificar el correo y recuperar la contraseña no abrían la sesión."
 "302","Bug","El botón de enviar la calificación no se habilitaba y no decía por qué","4","Done","Done","High","","Sprint 7","v1.1 Mejora y retención","M08 Nutrición y feedback","sprint-7","estado-hecho","prioridad-alta","v1.1","m08","bug","","","Ahora explica qué falta para poder enviar."
 "303","Bug","El asistente se quedaba esperando con el modelo Flash del plan gratuito","2","Done","Done","High","","Sprint 8","v1.1 Mejora y retención","M05 Asistente IA","sprint-8","estado-hecho","prioridad-alta","v1.1","m05","bug","","","Se usa el alias gemini-flash-lite-latest (~2 s), que además no se retira."
@@ -878,3 +1108,18 @@ Ficha completa: docs/05-historias-de-usuario (US-174)."
 "305","Bug","Sin conexión la app se quedaba en la pantalla de carga","6","Done","Done","High","","Sprint 10","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-10","estado-hecho","prioridad-alta","v1.1","m11","bug","","","Las puertas de arranque ahora entran con la caché (computeGates)."
 "306","Bug","La CI fallaba desde el reporte de problemas","6","Done","Done","High","","Sprint 10","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-10","estado-hecho","prioridad-alta","v1.1","m11","bug","","","El servicio de almacenamiento estaba excluido del Supabase local de CI."
 "307","Bug","El despliegue a staging nunca terminaba","6","Done","Done","High","","Sprint 10","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-10","estado-hecho","prioridad-alta","v1.1","m11","bug","","","Faltaban secretos y la CLI v3 necesita --remote y --yes."
+"308","Bug","En Android el teclado tapaba la caja del chat y los campos","6","Done","Done","High","","Sprint 12","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-12","estado-hecho","prioridad-alta","v1.1","m11","bug","","","Android es edge-to-edge desde el SDK 57; KeyboardAvoidingView con padding en ambas plataformas."
+"309","Bug","Al terminar la compra la lista no se vaciaba","3","Done","Done","High","","Sprint 12","v1.1 Mejora y retención","M06 Compras y despensa","sprint-12","estado-hecho","prioridad-alta","v1.1","m06","bug","","","Lo que pasó a la despensa sale de la lista; si se compró todo, ""¡Compraste todo!""."
+"310","Bug","Cerrar sesión se quedaba esperando","1","Done","Done","High","","Sprint 12","v1.1 Mejora y retención","M01 Cuenta, consentimientos y privacidad","sprint-12","estado-hecho","prioridad-alta","v1.1","m01","bug","","","La baja de avisos se abandona a los 4 s y, si cerrar falla, se avisa."
+"311","Bug","El enlace de recuperar contraseña no abría «Nueva contraseña»","1","Done","Done","High","","Sprint 12","v1.1 Mejora y retención","M01 Cuenta, consentimientos y privacidad","sprint-12","estado-hecho","prioridad-alta","v1.1","m01","bug","","","Si Supabase vuelve sin pantalla, la app reescribe el enlace (+native-intent)."
+"312","Bug","«Cocinar ahora» reemplazaba la comida planeada o fallaba","2","Done","Done","High","","Sprint 12","v1.1 Mejora y retención","M04 Motor de planificación","sprint-12","estado-hecho","prioridad-alta","v1.1","m04","bug","","","Ahora suma un plato adicional (US-177, ADR-028)."
+"313","Bug","Tocar una opción ya elegida de la receta no hacía nada","2","Done","Done","High","","Sprint 12","v1.1 Mejora y retención","M03 Catálogo de recetas e ingredientes","sprint-12","estado-hecho","prioridad-alta","v1.1","m03","bug","","","Lo elegido lleva ✓ y ✕ y se puede quitar."
+"314","Bug","Lo escrito a mano en la lista no ofrecía «Pasar a la despensa» ni el campo de lo pagado","3","Done","Done","High","","Sprint 13","v1.1 Mejora y retención","M06 Compras y despensa","sprint-13","estado-hecho","prioridad-alta","v1.1","m06","bug","","","El contador lo dejaba fuera desde la ADR-033."
+"315","Bug","Los avisos de la compra no se limpiaban","3","Done","Done","High","","Sprint 13","v1.1 Mejora y retención","M06 Compras y despensa","sprint-13","estado-hecho","prioridad-alta","v1.1","m06","bug","","","Se limpian con lo siguiente que se hace en la lista."
+"316","Bug","El teclado tapaba «Agregar algo más» en la lista","3","Done","Done","High","","Sprint 13","v1.1 Mejora y retención","M06 Compras y despensa","sprint-13","estado-hecho","prioridad-alta","v1.1","m06","bug","","","La lista se encoge con el teclado y se desplaza hasta el campo."
+"317","Bug","Mi semana dejaba un hueco grande antes de «Mejorar mi semana»","2","Done","Done","High","","Sprint 13","v1.1 Mejora y retención","M04 Motor de planificación","sprint-13","estado-hecho","prioridad-alta","v1.1","m04","bug","","","El libro de días mide lo que mide el día que se ve."
+"318","Bug","«Lo típico» desaparecía con la cocina llena","3","Done","Done","High","","Sprint 13","v1.1 Mejora y retención","M06 Compras y despensa","sprint-13","estado-hecho","prioridad-alta","v1.1","m06","bug","","","Siempre se ve; lo que ya está dice ""ya tienes""."
+"319","Bug","Decía «Vence en 0 días» en vez de «Vence hoy»","3","Done","Done","High","","Sprint 13","v1.1 Mejora y retención","M06 Compras y despensa","sprint-13","estado-hecho","prioridad-alta","v1.1","m06","bug","","",""
+"320","Bug","Generar el mes fallaba en staging con «Algo salió mal»","2","Done","Done","High","","Sprint 14","v1.1 Mejora y retención","M04 Motor de planificación","sprint-14","estado-hecho","prioridad-alta","v1.1","m04","bug","","","Pasaba el límite de 8 s; generate_plan calcula una vez por momento del día: de ~5 s a ~0,6 s."
+"321","Bug","«Omitir» una comida no respondía","2","Done","Done","High","","Sprint 14","v1.1 Mejora y retención","M04 Motor de planificación","sprint-14","estado-hecho","prioridad-alta","v1.1","m04","bug","","","Ahora es optimista y, si la base no lo acepta, vuelve y muestra el error."
+"322","Bug","El teclado tapaba el comentario de la calificación","4","Done","Done","High","","Sprint 14","v1.1 Mejora y retención","M08 Nutrición y feedback","sprint-14","estado-hecho","prioridad-alta","v1.1","m08","bug","","","Al abrir el teclado la pantalla baja lo justo hasta el campo (useKeepFocusedVisible)."

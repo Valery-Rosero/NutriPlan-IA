@@ -1,6 +1,6 @@
 # Índice de historias de usuario
 
-Fuente de verdad legible por máquina: `historias.json` (y `historias.csv`). 74 historias, 82 subtareas. El orden del backlog (#) es la prioridad de construcción dentro de cada fase.
+Fuente de verdad legible por máquina: `historias.json` (y `historias.csv`). 86 historias, 82 subtareas. El orden del backlog (#) es la prioridad de construcción dentro de cada fase.
 
 | # | ID | Título | Épica | Módulo | Fase | Prio | Tipo | Deps |
 |---|---|---|---|---|---|---|---|---|
@@ -78,3 +78,15 @@ Fuente de verdad legible por máquina: `historias.json` (y `historias.csv`). 74 
 | 72 | US-172 | Ofrecer «versión rápida» de una receta | E2 | M03 | F3 | Low | historia | — |
 | 73 | US-173 | Respuestas rápidas en el chat del asistente | E2 | M05 | F3 | Low | historia | — |
 | 74 | US-174 | Pedir cambios a toda la semana (más barata, más rápida, sin un ingrediente) | E2 | M05 | F2 | Medium | historia | US-117, US-129, US-152, US-157 |
+| 75 | US-175 | Ver Mi semana como calendario y planear por día, semana o mes | E2 | M04 | F2 | Medium | historia | US-117 |
+| 76 | US-176 | Agregar a la despensa lo que tengo escrito como lo diría, con ayuda de la IA | E3 | M06 | F2 | Medium | historia | US-119 |
+| 77 | US-177 | Sumar platos adicionales al día sin perder la comida planeada | E2 | M04 | F2 | Medium | historia | US-123, US-157 |
+| 78 | US-178 | Recibir del asistente recetas propias con lo que hay en mi cocina | E2 | M05 | F2 | Medium | historia | US-157, US-160 |
+| 79 | US-179 | Que lo que compro llegue a la despensa sin perderse | E3 | M06 | F2 | High | historia | US-124, US-126 |
+| 80 | US-180 | Corregir lo que hay en la despensa | E3 | M06 | F2 | Medium | historia | US-119 |
+| 81 | US-181 | Usar la lista de mercado en el supermercado | E3 | M06 | F2 | High | historia | US-124, US-141 |
+| 82 | US-182 | Agregar a la despensa con menos pasos | E3 | M06 | F2 | Medium | historia | US-119 |
+| 83 | US-183 | Pedirle ideas al asistente y que respete lo que no puedo comer | E2 | M05 | F2 | High | historia | US-178 |
+| 84 | US-184 | Dictar con el micrófono en vez de escribir | E2 | M05 | F2 | Medium | historia | US-183 |
+| 85 | US-185 | Agregar varios productos a la lista de una vez | E3 | M06 | F2 | Medium | historia | US-124 |
+| 86 | US-186 | Planear la semana o el mes con IA | E2 | M04 | F2 | High | historia | US-117, US-175, US-183 |

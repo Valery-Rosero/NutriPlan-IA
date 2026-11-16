@@ -4,7 +4,7 @@ Product Goal: Que cada usuario deje de improvisar qué cocinar y planifique su s
 
 Convierte el plan de comidas en una lista de compras accionable, controla el gasto frente al presupuesto declarado, reduce el desperdicio de alimentos y prepara el terreno para foto/OCR e integraciones con supermercados.
 
-19 historias · 8 subtareas.
+25 historias · 8 subtareas.
 
 | ID | Título | Módulo | Fase | Prio |
 |---|---|---|---|---|
@@ -27,6 +27,12 @@ Convierte el plan de comidas en una lista de compras accionable, controla el gas
 | [US-164](#us-164) | Escanear recibo de compra con OCR | M12 | F3 | Low |
 | [US-165](#us-165) | Mostrar precios actualizados según supermercado elegido | M12 | F3 | Low |
 | [US-166](#us-166) | Enviar lista de compras como pedido al supermercado | M12 | F3 | Low |
+| [US-176](#us-176) | Agregar a la despensa lo que tengo escrito como lo diría, con ayuda de la IA | M06 | F2 | Medium |
+| [US-179](#us-179) | Que lo que compro llegue a la despensa sin perderse | M06 | F2 | High |
+| [US-180](#us-180) | Corregir lo que hay en la despensa | M06 | F2 | Medium |
+| [US-181](#us-181) | Usar la lista de mercado en el supermercado | M06 | F2 | High |
+| [US-182](#us-182) | Agregar a la despensa con menos pasos | M06 | F2 | Medium |
+| [US-185](#us-185) | Agregar varios productos a la lista de una vez | M06 | F2 | Medium |
 
 ---
 
@@ -959,5 +965,335 @@ Convierte el plan de comidas en una lista de compras accionable, controla el gas
 - [ ] Se respetan las reglas de AGENTS.md (alergias, cantidades en servidor, sin datos de salud en logs, accesibilidad).
 - [ ] Textos en es-CO; estados vacío, carga y error implementados.
 - [ ] Dependencias listadas resueltas.
+
+---
+
+<a id="us-176"></a>
+### US-176 · Agregar a la despensa lo que tengo escrito como lo diría, con ayuda de la IA
+
+| Campo | Valor |
+|---|---|
+| ID | US-176 (id Jira 176) |
+| Épica | E3 · Compras, presupuesto y despensa |
+| Módulo | [M06 · Compras y despensa](../04-modulos/M06.md) |
+| Fase | F2 Mejora y retención |
+| Prioridad | Medium (orden en backlog: #76 de 86) |
+| Tipo | historia |
+| Etiquetas | despensa, asistente-ia, agregada-por-po |
+| Ref. backlog | HU-76 · Subárea: Compras |
+| Dependencias | US-119 |
+| Estado | Hecha (13-nov-2026) |
+
+**Historia de usuario**
+
+- **Como** usuario que llena su despensa
+- **quiero** escribir en una frase lo que compré, o un alimento que no está en el catálogo, y que la app lo entienda y lo clasifique
+- **para** no buscar ingrediente por ingrediente ni quedarme sin poder anotar algo.
+
+**Criterios de aceptación**
+
+1. **Escenario 1**
+   - Dado que escribo "2 libras de papa, un cartón de huevos y cilantro" en "Escríbelo como lo dirías"
+   - Cuando la IA lo entiende
+   - Entonces veo tres cosas con cantidad, unidad y vencimiento sugeridos y las reviso antes de guardar.
+
+2. **Escenario 2**
+   - Dado que busco un alimento que no está en el catálogo
+   - Cuando toco "Agregar «…» como alimento propio"
+   - Entonces se guarda con su cantidad, la etiqueta "Propio" y un grupo sugerido que puedo cambiar.
+
+3. **Escenario 3**
+   - Dado que la IA no responde
+   - Cuando agrego algo escrito
+   - Entonces se guarda igual (con reglas o en "Otros"), y la IA nunca decide sobre alergias.
+
+**Especificación técnica**
+
+- **Backend (qué existe y cómo usarlo):** Edge Functions `categorize-food` (caché `food_labels` → catálogo → Gemini con listas cerradas → reglas) y `understand-pantry`; tabla `pantry_custom_items` con RLS por dueño (ADR-027, ADR-030).
+- **Pantallas / UI:** Agregar a la despensa (Escribir), Lo que tengo ("Grupo sugerido" y "Cambiar")
+- **Reglas, límites y notas:** Los alimentos propios no entran en recetas, plan, lista ni avisos (limitación documentada). Sin datos de salud en el prompt.
+- **Pruebas existentes:** backend/supabase/tests/99f_food_labels.sql; backend/supabase/tests/99g_pantry_custom.sql; app/src/features/pantry/ui/__tests__/pantry-custom.test.tsx; app/src/features/pantry/ui/__tests__/understand-pantry.test.tsx
+
+**Definición de hecho (además del DoD global)**
+
+- [x] Cada escenario y caso borde tiene una prueba automática (unitaria, de integración con la BD o Maestro E2E).
+- [x] Se respetan las reglas de AGENTS.md (alergias, cantidades en servidor, sin datos de salud en logs, accesibilidad).
+- [x] Textos en es-CO; estados vacío, carga y error implementados.
+- [x] Dependencias listadas resueltas.
+
+---
+
+<a id="us-179"></a>
+### US-179 · Que lo que compro llegue a la despensa sin perderse
+
+| Campo | Valor |
+|---|---|
+| ID | US-179 (id Jira 179) |
+| Épica | E3 · Compras, presupuesto y despensa |
+| Módulo | [M06 · Compras y despensa](../04-modulos/M06.md) |
+| Fase | F2 Mejora y retención |
+| Prioridad | High (orden en backlog: #79 de 86) |
+| Tipo | historia |
+| Etiquetas | compras, despensa, agregada-por-po |
+| Ref. backlog | HU-79 · Subárea: Compras |
+| Dependencias | US-124, US-126 |
+| Estado | Hecha (14-nov-2026) |
+
+**Historia de usuario**
+
+- **Como** usuario que compra con la lista de mercado
+- **quiero** que lo que falta de una receta entre a la lista y, al comprarlo, llegue a mi despensa
+- **para** que la cocina, la lista y el plan digan siempre lo mismo.
+
+**Criterios de aceptación**
+
+1. **Escenario 1**
+   - Dado que a una receta le falta algo
+   - Cuando toco "Agregar lo que falta"
+   - Entonces entra a la lista como ingrediente con sus gramos y, al comprarlo, llega a la despensa.
+
+2. **Escenario 2**
+   - Dado que escribí "pollo" a mano en la lista
+   - Cuando lo paso a la despensa
+   - Entonces se reconoce en el catálogo (sin importar tildes ni plurales), como alimento propio o, si no es comida, se cierra.
+
+3. **Escenario 3**
+   - Dado que cambia la despensa o el plan
+   - Cuando vuelvo a la lista, a Hoy o a Mi semana
+   - Entonces todo se ve al día sin recargar.
+
+**Especificación técnica**
+
+- **Backend (qué existe y cómo usarlo):** `add_ingredients_to_list` (con gramos), reconocimiento de lo escrito al pasar a la despensa, `what_to_buy_next` en gramos (ADR-033).
+- **Pantallas / UI:** Receta ("Agregar lo que falta"), Lista de mercado, Mi cocina
+- **Reglas, límites y notas:** "La cocina cambió" (kitchen-sync): tras cualquier cambio a la despensa o al plan se rehace la lista y se refresca lo que depende de la cocina.
+- **Pruebas existentes:** backend/supabase/tests/99l_kitchen_cycle.sql; app/src/features/kitchen/application/__tests__/kitchen-sync.test.tsx
+
+**Definición de hecho (además del DoD global)**
+
+- [x] Cada escenario y caso borde tiene una prueba automática (unitaria, de integración con la BD o Maestro E2E).
+- [x] Se respetan las reglas de AGENTS.md (alergias, cantidades en servidor, sin datos de salud en logs, accesibilidad).
+- [x] Textos en es-CO; estados vacío, carga y error implementados.
+- [x] Dependencias listadas resueltas.
+
+---
+
+<a id="us-180"></a>
+### US-180 · Corregir lo que hay en la despensa
+
+| Campo | Valor |
+|---|---|
+| ID | US-180 (id Jira 180) |
+| Épica | E3 · Compras, presupuesto y despensa |
+| Módulo | [M06 · Compras y despensa](../04-modulos/M06.md) |
+| Fase | F2 Mejora y retención |
+| Prioridad | Medium (orden en backlog: #80 de 86) |
+| Tipo | historia |
+| Etiquetas | despensa, agregada-por-po |
+| Ref. backlog | HU-80 · Subárea: Compras |
+| Dependencias | US-119 |
+| Estado | Hecha (14-nov-2026) |
+
+**Historia de usuario**
+
+- **Como** usuario con despensa
+- **quiero** ajustar cuánto me queda de algo, cambiar su fecha de vencimiento o quitar lo vencido
+- **para** que las recetas y la lista se basen en lo que de verdad tengo.
+
+**Criterios de aceptación**
+
+1. **Escenario 1**
+   - Dado que toco un alimento de la despensa
+   - Cuando ajusto cuánto queda (−/+, ¾, ½, ¼ o "Se acabó")
+   - Entonces se guarda y las recetas lo tienen en cuenta.
+
+2. **Escenario 2**
+   - Dado que compré lo mismo varias veces
+   - Cuando veo la despensa
+   - Entonces aparece en una sola fila con el total y la fecha más próxima, y cada compra se edita aparte.
+
+3. **Escenario 3**
+   - Dado que algo está vencido
+   - Cuando lo veo en la despensa
+   - Entonces puedo decir "Todavía sirve" (2 días más) o "Quitar lo vencido".
+
+**Especificación técnica**
+
+- **Backend (qué existe y cómo usarlo):** `adjust_pantry`, `set_pantry_expiry` y `remove_expired_pantry` (ADR-034).
+- **Pantallas / UI:** Detalle del alimento (/pantry/item), Lo que tengo
+- **Reglas, límites y notas:** Al agregar a mano, la fecha viene propuesta según cuánto dura el alimento; el agregado rápido se deshace tocándolo otra vez.
+- **Pruebas existentes:** backend/supabase/tests/99m_pantry_edit.sql; app/src/features/pantry/ui/__tests__/pantry-edit.test.tsx; app/src/features/pantry/domain/__tests__/pantry-edit-domain.test.ts
+
+**Definición de hecho (además del DoD global)**
+
+- [x] Cada escenario y caso borde tiene una prueba automática (unitaria, de integración con la BD o Maestro E2E).
+- [x] Se respetan las reglas de AGENTS.md (alergias, cantidades en servidor, sin datos de salud en logs, accesibilidad).
+- [x] Textos en es-CO; estados vacío, carga y error implementados.
+- [x] Dependencias listadas resueltas.
+
+---
+
+<a id="us-181"></a>
+### US-181 · Usar la lista de mercado en el supermercado
+
+| Campo | Valor |
+|---|---|
+| ID | US-181 (id Jira 181) |
+| Épica | E3 · Compras, presupuesto y despensa |
+| Módulo | [M06 · Compras y despensa](../04-modulos/M06.md) |
+| Fase | F2 Mejora y retención |
+| Prioridad | High (orden en backlog: #81 de 86) |
+| Tipo | historia |
+| Etiquetas | compras, agregada-por-po |
+| Ref. backlog | HU-81 · Subárea: Compras |
+| Dependencias | US-124, US-141 |
+| Estado | Hecha (14-nov-2026) |
+
+**Historia de usuario**
+
+- **Como** usuario que va a mercar
+- **quiero** una lista con cantidades como se venden, que exista aunque no tenga plan y donde quitar algo se pueda deshacer
+- **para** comprar sin hacer cuentas en el pasillo.
+
+**Criterios de aceptación**
+
+1. **Escenario 1**
+   - Dado que no tengo un plan
+   - Cuando abro la lista de mercado
+   - Entonces igual tengo una lista de la casa donde anotar y agregar lo que falta.
+
+2. **Escenario 2**
+   - Dado que la lista pide 350 g de cebolla
+   - Cuando la veo
+   - Entonces dice cuánto comprar como se vende (unidades, libras, litros o "un poco"), y a la despensa pasa lo que compré.
+
+3. **Escenario 3**
+   - Dado que quito algo de la lista
+   - Cuando toco "Deshacer"
+   - Entonces vuelve; si no lo deshago, el plan no lo vuelve a poner.
+
+**Especificación técnica**
+
+- **Backend (qué existe y cómo usarlo):** `my_house_list`, `private.purchase` (cantidad comprable), `dismissed_at` y columnas `buy_kind`/`buy_g`/`buy_units` en `my_shopping_items` (ADR-035).
+- **Pantallas / UI:** Lista de mercado
+- **Reglas, límites y notas:** El presupuesto del mes se muestra redondeado ("≈ $857.000").
+- **Pruebas existentes:** backend/supabase/tests/99n_market_list.sql; app/src/features/shopping/domain/__tests__/buy-label.test.ts; app/src/features/shopping/ui/__tests__/shopping-screen.test.tsx
+
+**Definición de hecho (además del DoD global)**
+
+- [x] Cada escenario y caso borde tiene una prueba automática (unitaria, de integración con la BD o Maestro E2E).
+- [x] Se respetan las reglas de AGENTS.md (alergias, cantidades en servidor, sin datos de salud en logs, accesibilidad).
+- [x] Textos en es-CO; estados vacío, carga y error implementados.
+- [x] Dependencias listadas resueltas.
+
+---
+
+<a id="us-182"></a>
+### US-182 · Agregar a la despensa con menos pasos
+
+| Campo | Valor |
+|---|---|
+| ID | US-182 (id Jira 182) |
+| Épica | E3 · Compras, presupuesto y despensa |
+| Módulo | [M06 · Compras y despensa](../04-modulos/M06.md) |
+| Fase | F2 Mejora y retención |
+| Prioridad | Medium (orden en backlog: #82 de 86) |
+| Tipo | historia |
+| Etiquetas | despensa, agregada-por-po |
+| Ref. backlog | HU-82 · Subárea: Compras |
+| Dependencias | US-119 |
+| Estado | Hecha (14-nov-2026) |
+
+**Historia de usuario**
+
+- **Como** usuario que acaba de mercar
+- **quiero** agregar a la despensa con un toque o con un solo camino a la vez, y ver lo que tengo aunque no haya señal
+- **para** mantener la cocina al día sin que me tome tiempo.
+
+**Criterios de aceptación**
+
+1. **Escenario 1**
+   - Dado que abro Mi cocina
+   - Cuando veo la pantalla
+   - Entonces primero está lo que tengo y lo que falta, con un encabezado de una sola fila.
+
+2. **Escenario 2**
+   - Dado que toco "Agregar"
+   - Cuando elijo Buscar, Escribir o Foto
+   - Entonces veo un camino a la vez, empezando por Buscar.
+
+3. **Escenario 3**
+   - Dado que toco un agregado rápido ("Huevos")
+   - Cuando lo toco otra vez
+   - Entonces se deshace; si ya lo tengo, dice "ya tienes".
+
+4. **Escenario 4**
+   - Dado que no tengo señal
+   - Cuando abro "Lo que tengo"
+   - Entonces veo lo último que se guardó en el teléfono.
+
+**Especificación técnica**
+
+- **Backend (qué existe y cómo usarlo):** `quick_add_items` (agregado rápido por id de ingrediente, desde la base) (ADR-036).
+- **Pantallas / UI:** Mi cocina, Agregar a la despensa (Buscar / Escribir / Foto)
+- **Reglas, límites y notas:** Una sola regla de "vence pronto" en toda la app.
+- **Pruebas existentes:** backend/supabase/tests/catalog/50_quick_add.sql; app/src/features/kitchen/ui/__tests__/kitchen-compact.test.tsx
+
+**Definición de hecho (además del DoD global)**
+
+- [x] Cada escenario y caso borde tiene una prueba automática (unitaria, de integración con la BD o Maestro E2E).
+- [x] Se respetan las reglas de AGENTS.md (alergias, cantidades en servidor, sin datos de salud en logs, accesibilidad).
+- [x] Textos en es-CO; estados vacío, carga y error implementados.
+- [x] Dependencias listadas resueltas.
+
+---
+
+<a id="us-185"></a>
+### US-185 · Agregar varios productos a la lista de una vez
+
+| Campo | Valor |
+|---|---|
+| ID | US-185 (id Jira 185) |
+| Épica | E3 · Compras, presupuesto y despensa |
+| Módulo | [M06 · Compras y despensa](../04-modulos/M06.md) |
+| Fase | F2 Mejora y retención |
+| Prioridad | Medium (orden en backlog: #85 de 86) |
+| Tipo | historia |
+| Etiquetas | compras, agregada-por-po |
+| Ref. backlog | HU-85 · Subárea: Compras |
+| Dependencias | US-124 |
+| Estado | Hecha (15-nov-2026) |
+
+**Historia de usuario**
+
+- **Como** usuario que arma su lista de mercado
+- **quiero** escribir o dictar varios productos seguidos y que entren como productos separados
+- **para** no agregarlos uno por uno.
+
+**Criterios de aceptación**
+
+1. **Escenario 1**
+   - Dado que escribo o dicto "pollo, pan y yuca"
+   - Cuando toco "Agregar"
+   - Entonces entran tres productos, cada uno en su sección del supermercado.
+
+2. **Escenario 2**
+   - Dado que estoy escribiendo varios productos
+   - Cuando todavía no toco el botón
+   - Entonces la app me dice cuáles va a agregar.
+
+**Especificación técnica**
+
+- **Backend (qué existe y cómo usarlo):** Sin cambios en la base: cada producto se agrega y clasifica por separado.
+- **Pantallas / UI:** Lista de mercado ("Agregar algo más")
+- **Reglas, límites y notas:** Separa por comas y por "y".
+- **Pruebas existentes:** app/src/features/shopping/ui/__tests__/shopping-bugs.test.tsx; app/src/features/shopping/domain/__tests__/shopping-domain.test.ts
+
+**Definición de hecho (además del DoD global)**
+
+- [x] Cada escenario y caso borde tiene una prueba automática (unitaria, de integración con la BD o Maestro E2E).
+- [x] Se respetan las reglas de AGENTS.md (alergias, cantidades en servidor, sin datos de salud en logs, accesibilidad).
+- [x] Textos en es-CO; estados vacío, carga y error implementados.
+- [x] Dependencias listadas resueltas.
 
 ---

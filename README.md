@@ -9,7 +9,7 @@ App móvil (Android) para familias en Colombia que no saben qué cocinar: propon
 |---|---|
 | `app/` | App Expo SDK 57 (Expo Router en `src/app/`, TypeScript estricto) |
 | `backend/supabase/` | Migraciones, catálogo real (`catalog/`, es el seed), pruebas SQL (`tests/`, 230 verificaciones), borradores legales |
-| `docs/` | Especificación completa: visión, producto, arquitectura, datos, módulos, 73 historias, legal, plan, ADR, referencias |
+| `docs/` | Especificación completa: visión, producto, arquitectura, datos, módulos, 86 historias, legal, plan, ADR, referencias |
 | `.github/workflows/` | CI: pruebas de base de datos y de la app |
 
 ## Requisitos

@@ -73,3 +73,15 @@ US-171,Definir nivel de picante preferido,E1,M02,3,Low,71,historia,personalizaci
 US-172,Ofrecer «versión rápida» de una receta,E2,M03,3,Low,72,historia,recetas,HU-72,Recetas,,1,0
 US-173,Respuestas rápidas en el chat del asistente,E2,M05,3,Low,73,historia,asistente-ia,HU-73,Asistente IA,,1,0
 US-174,"Pedir cambios a toda la semana (más barata, más rápida, sin un ingrediente)",E2,M05,2,Medium,74,historia,asistente-ia plan agregada-por-po,HU-74,Asistente IA,117 129 152 157,7,0
+US-175,"Ver Mi semana como calendario y planear por día, semana o mes",E2,M04,2,Medium,75,historia,plan agregada-por-po,HU-75,Plan de comidas,117,3,0
+US-176,"Agregar a la despensa lo que tengo escrito como lo diría, con ayuda de la IA",E3,M06,2,Medium,76,historia,despensa asistente-ia agregada-por-po,HU-76,Compras,119,3,0
+US-177,Sumar platos adicionales al día sin perder la comida planeada,E2,M04,2,Medium,77,historia,plan agregada-por-po,HU-77,Plan de comidas,123 157,3,0
+US-178,Recibir del asistente recetas propias con lo que hay en mi cocina,E2,M05,2,Medium,78,historia,asistente-ia agregada-por-po,HU-78,Asistente IA,157 160,3,0
+US-179,Que lo que compro llegue a la despensa sin perderse,E3,M06,2,High,79,historia,compras despensa agregada-por-po,HU-79,Compras,124 126,3,0
+US-180,Corregir lo que hay en la despensa,E3,M06,2,Medium,80,historia,despensa agregada-por-po,HU-80,Compras,119,3,0
+US-181,Usar la lista de mercado en el supermercado,E3,M06,2,High,81,historia,compras agregada-por-po,HU-81,Compras,124 141,3,0
+US-182,Agregar a la despensa con menos pasos,E3,M06,2,Medium,82,historia,despensa agregada-por-po,HU-82,Compras,119,4,0
+US-183,Pedirle ideas al asistente y que respete lo que no puedo comer,E2,M05,2,High,83,historia,asistente-ia agregada-por-po,HU-83,Asistente IA,178,4,0
+US-184,Dictar con el micrófono en vez de escribir,E2,M05,2,Medium,84,historia,asistente-ia voz agregada-por-po,HU-84,Asistente IA,183,3,0
+US-185,Agregar varios productos a la lista de una vez,E3,M06,2,Medium,85,historia,compras agregada-por-po,HU-85,Compras,124,2,0
+US-186,Planear la semana o el mes con IA,E2,M04,2,High,86,historia,plan asistente-ia agregada-por-po,HU-86,Plan de comidas,117 175 183,5,0

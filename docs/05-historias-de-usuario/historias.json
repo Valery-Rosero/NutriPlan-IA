@@ -3703,5 +3703,747 @@
   "notes": "Sugerir, no aplicar sin confirmación. Lo cocinado, omitido o adicional nunca se toca.",
   "tests": "backend/supabase/tests/99k_week_changes.sql; functions/assistant-chat/logic.test.ts; app/src/features/plan/ui/__tests__/week-changes.test.tsx",
   "subtasks": []
+ },
+ {
+  "id": 175,
+  "key": "US-175",
+  "title": "Ver Mi semana como calendario y planear por día, semana o mes",
+  "epic_id": 2,
+  "epic": "Planificación inteligente de comidas",
+  "epic_code": "E2",
+  "module": "M04",
+  "module_name": "Motor de planificación",
+  "phase": 2,
+  "phase_name": "F2 Mejora y retención",
+  "priority": "Medium",
+  "rank": 75,
+  "type": "historia",
+  "labels": [
+   "plan",
+   "agregada-por-po"
+  ],
+  "ref": "HU-75",
+  "subarea": "Plan de comidas",
+  "rol": "usuario que planea sus comidas",
+  "quiero": "ver mi plan como un calendario, pasar de un día a otro y elegir si planeo hoy, la semana o el mes",
+  "para": "ubicarme rápido en el día que voy a cocinar sin desplazarme por una lista larga",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que tengo un plan de una semana",
+     "Cuando abro Mi semana",
+     "Entonces arriba veo los 7 días con un punto por día (pendiente, a medias, hecho) y la pantalla abre en hoy."
+    ]
+   },
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que estoy viendo un día",
+     "Cuando deslizo o toco \"Día siguiente\"",
+     "Entonces paso al otro día; con \"reducir movimiento\" activo no hay animación de giro."
+    ]
+   },
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que voy a planear",
+     "Cuando elijo Hoy, Semana o Mes",
+     "Entonces se genera un plan de 1, 7 o 30 días con las mismas reglas de seguridad, y con más de 7 días el calendario muestra el mes."
+    ]
+   }
+  ],
+  "deps": [
+   117
+  ],
+  "backend": "`generate_plan` acepta de 1 a 31 días y `meal_plans` permite planes de hasta 31 días (migración 20261113000200).",
+  "screens": "Mi semana: calendario (tira de 7 días o cuadrícula del mes), libro de días (DayPager) y selector Hoy · Semana · Mes",
+  "notes": "Sin desplazamiento largo: el presupuesto y el gasto del mes quedan debajo como resumen.",
+  "tests": "backend/supabase/tests/97_generate_plan.sql; app/src/features/plan/domain/__tests__/calendar.test.ts; app/src/features/plan/ui/__tests__/day-pager.test.tsx",
+  "subtasks": []
+ },
+ {
+  "id": 176,
+  "key": "US-176",
+  "title": "Agregar a la despensa lo que tengo escrito como lo diría, con ayuda de la IA",
+  "epic_id": 3,
+  "epic": "Compras, presupuesto y despensa",
+  "epic_code": "E3",
+  "module": "M06",
+  "module_name": "Compras y despensa",
+  "phase": 2,
+  "phase_name": "F2 Mejora y retención",
+  "priority": "Medium",
+  "rank": 76,
+  "type": "historia",
+  "labels": [
+   "despensa",
+   "asistente-ia",
+   "agregada-por-po"
+  ],
+  "ref": "HU-76",
+  "subarea": "Compras",
+  "rol": "usuario que llena su despensa",
+  "quiero": "escribir en una frase lo que compré, o un alimento que no está en el catálogo, y que la app lo entienda y lo clasifique",
+  "para": "no buscar ingrediente por ingrediente ni quedarme sin poder anotar algo",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que escribo \"2 libras de papa, un cartón de huevos y cilantro\" en \"Escríbelo como lo dirías\"",
+     "Cuando la IA lo entiende",
+     "Entonces veo tres cosas con cantidad, unidad y vencimiento sugeridos y las reviso antes de guardar."
+    ]
+   },
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que busco un alimento que no está en el catálogo",
+     "Cuando toco \"Agregar «…» como alimento propio\"",
+     "Entonces se guarda con su cantidad, la etiqueta \"Propio\" y un grupo sugerido que puedo cambiar."
+    ]
+   },
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que la IA no responde",
+     "Cuando agrego algo escrito",
+     "Entonces se guarda igual (con reglas o en \"Otros\"), y la IA nunca decide sobre alergias."
+    ]
+   }
+  ],
+  "deps": [
+   119
+  ],
+  "backend": "Edge Functions `categorize-food` (caché `food_labels` → catálogo → Gemini con listas cerradas → reglas) y `understand-pantry`; tabla `pantry_custom_items` con RLS por dueño (ADR-027, ADR-030).",
+  "screens": "Agregar a la despensa (Escribir), Lo que tengo (\"Grupo sugerido\" y \"Cambiar\")",
+  "notes": "Los alimentos propios no entran en recetas, plan, lista ni avisos (limitación documentada). Sin datos de salud en el prompt.",
+  "tests": "backend/supabase/tests/99f_food_labels.sql; backend/supabase/tests/99g_pantry_custom.sql; app/src/features/pantry/ui/__tests__/pantry-custom.test.tsx; app/src/features/pantry/ui/__tests__/understand-pantry.test.tsx",
+  "subtasks": []
+ },
+ {
+  "id": 177,
+  "key": "US-177",
+  "title": "Sumar platos adicionales al día sin perder la comida planeada",
+  "epic_id": 2,
+  "epic": "Planificación inteligente de comidas",
+  "epic_code": "E2",
+  "module": "M04",
+  "module_name": "Motor de planificación",
+  "phase": 2,
+  "phase_name": "F2 Mejora y retención",
+  "priority": "Medium",
+  "rank": 77,
+  "type": "historia",
+  "labels": [
+   "plan",
+   "agregada-por-po"
+  ],
+  "ref": "HU-77",
+  "subarea": "Plan de comidas",
+  "rol": "usuario con un plan",
+  "quiero": "cocinar algo que no estaba en el plan (un batido, una receta del asistente) sin que reemplace lo que ya tenía planeado",
+  "para": "registrar todo lo que como y que la despensa quede al día",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que tengo el almuerzo planeado",
+     "Cuando cocino ahora un batido que me sugirió el asistente",
+     "Entonces se suma como plato adicional y mi almuerzo sigue en el plan."
+    ]
+   },
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que acabo de cocinar un adicional",
+     "Cuando toco \"Deshacer\" antes de 10 s",
+     "Entonces el adicional se borra y la despensa vuelve a como estaba."
+    ]
+   },
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que una receta tiene opciones (por ejemplo, la proteína)",
+     "Cuando las veo",
+     "Entonces se dividen en \"En tu cocina\" y \"Para comprar\", y puedo quitar la que elegí."
+    ]
+   }
+  ],
+  "deps": [
+   123,
+   157
+  ],
+  "backend": "`planned_meals.is_extra` y una sola comida planeada por momento (índice único parcial); `plan_budget_status` no cuenta los adicionales (ADR-028).",
+  "screens": "Mi semana (sección \"Adicionales\"), Receta (opciones divididas)",
+  "notes": "Los adicionales se traen por fecha y no se mueven entre planes.",
+  "tests": "backend/supabase/tests/99h_meal_extras.sql; app/src/features/recipes/ui/__tests__/recipe-screen.test.tsx",
+  "subtasks": []
+ },
+ {
+  "id": 178,
+  "key": "US-178",
+  "title": "Recibir del asistente recetas propias con lo que hay en mi cocina",
+  "epic_id": 2,
+  "epic": "Planificación inteligente de comidas",
+  "epic_code": "E2",
+  "module": "M05",
+  "module_name": "Asistente IA",
+  "phase": 2,
+  "phase_name": "F2 Mejora y retención",
+  "priority": "Medium",
+  "rank": 78,
+  "type": "historia",
+  "labels": [
+   "asistente-ia",
+   "agregada-por-po"
+  ],
+  "ref": "HU-78",
+  "subarea": "Asistente IA",
+  "rol": "usuario que le pregunta al asistente qué cocinar",
+  "quiero": "que el asistente me proponga hasta tres opciones, del recetario o creadas para mí con lo que tengo",
+  "para": "cocinar algo distinto sin comprar de más",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que tengo cosas en la despensa",
+     "Cuando le pido al asistente algo para la cena",
+     "Entonces recibo hasta tres opciones, del recetario o creadas por el asistente, con lo que falta comprar."
+    ]
+   },
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que tengo alergias o una dieta",
+     "Cuando el asistente crea una receta",
+     "Entonces la base revalida alergias, dieta, tiempo y cantidades antes de guardarla; si no cumple, no se muestra."
+    ]
+   },
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que elijo una receta del asistente",
+     "Cuando la abro",
+     "Entonces dice que la creó el asistente y puedo cocinarla, ponerla en mi plan o llevar lo que falta a la lista."
+    ]
+   }
+  ],
+  "deps": [
+   157,
+   160
+  ],
+  "backend": "`assistant_ingredients` (solo lo que la persona puede comer), `create_assistant_recipe` (revalida y guarda un borrador privado), `assistant_message_suggestions` (ADR-029).",
+  "screens": "Asistente (respuesta con formato y tarjetas \"Del recetario\" / \"Receta del asistente\"), Receta",
+  "notes": "La IA usa referencias cortas (R…/I…); al borrar la cuenta se borran sus recetas del asistente.",
+  "tests": "backend/supabase/tests/99i_assistant_recipes.sql; backend/supabase/functions/assistant-chat/logic.test.ts; app/src/features/assistant/ui/__tests__/assistant-screen.test.tsx",
+  "subtasks": []
+ },
+ {
+  "id": 179,
+  "key": "US-179",
+  "title": "Que lo que compro llegue a la despensa sin perderse",
+  "epic_id": 3,
+  "epic": "Compras, presupuesto y despensa",
+  "epic_code": "E3",
+  "module": "M06",
+  "module_name": "Compras y despensa",
+  "phase": 2,
+  "phase_name": "F2 Mejora y retención",
+  "priority": "High",
+  "rank": 79,
+  "type": "historia",
+  "labels": [
+   "compras",
+   "despensa",
+   "agregada-por-po"
+  ],
+  "ref": "HU-79",
+  "subarea": "Compras",
+  "rol": "usuario que compra con la lista de mercado",
+  "quiero": "que lo que falta de una receta entre a la lista y, al comprarlo, llegue a mi despensa",
+  "para": "que la cocina, la lista y el plan digan siempre lo mismo",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que a una receta le falta algo",
+     "Cuando toco \"Agregar lo que falta\"",
+     "Entonces entra a la lista como ingrediente con sus gramos y, al comprarlo, llega a la despensa."
+    ]
+   },
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que escribí \"pollo\" a mano en la lista",
+     "Cuando lo paso a la despensa",
+     "Entonces se reconoce en el catálogo (sin importar tildes ni plurales), como alimento propio o, si no es comida, se cierra."
+    ]
+   },
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que cambia la despensa o el plan",
+     "Cuando vuelvo a la lista, a Hoy o a Mi semana",
+     "Entonces todo se ve al día sin recargar."
+    ]
+   }
+  ],
+  "deps": [
+   124,
+   126
+  ],
+  "backend": "`add_ingredients_to_list` (con gramos), reconocimiento de lo escrito al pasar a la despensa, `what_to_buy_next` en gramos (ADR-033).",
+  "screens": "Receta (\"Agregar lo que falta\"), Lista de mercado, Mi cocina",
+  "notes": "\"La cocina cambió\" (kitchen-sync): tras cualquier cambio a la despensa o al plan se rehace la lista y se refresca lo que depende de la cocina.",
+  "tests": "backend/supabase/tests/99l_kitchen_cycle.sql; app/src/features/kitchen/application/__tests__/kitchen-sync.test.tsx",
+  "subtasks": []
+ },
+ {
+  "id": 180,
+  "key": "US-180",
+  "title": "Corregir lo que hay en la despensa",
+  "epic_id": 3,
+  "epic": "Compras, presupuesto y despensa",
+  "epic_code": "E3",
+  "module": "M06",
+  "module_name": "Compras y despensa",
+  "phase": 2,
+  "phase_name": "F2 Mejora y retención",
+  "priority": "Medium",
+  "rank": 80,
+  "type": "historia",
+  "labels": [
+   "despensa",
+   "agregada-por-po"
+  ],
+  "ref": "HU-80",
+  "subarea": "Compras",
+  "rol": "usuario con despensa",
+  "quiero": "ajustar cuánto me queda de algo, cambiar su fecha de vencimiento o quitar lo vencido",
+  "para": "que las recetas y la lista se basen en lo que de verdad tengo",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que toco un alimento de la despensa",
+     "Cuando ajusto cuánto queda (−/+, ¾, ½, ¼ o \"Se acabó\")",
+     "Entonces se guarda y las recetas lo tienen en cuenta."
+    ]
+   },
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que compré lo mismo varias veces",
+     "Cuando veo la despensa",
+     "Entonces aparece en una sola fila con el total y la fecha más próxima, y cada compra se edita aparte."
+    ]
+   },
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que algo está vencido",
+     "Cuando lo veo en la despensa",
+     "Entonces puedo decir \"Todavía sirve\" (2 días más) o \"Quitar lo vencido\"."
+    ]
+   }
+  ],
+  "deps": [
+   119
+  ],
+  "backend": "`adjust_pantry`, `set_pantry_expiry` y `remove_expired_pantry` (ADR-034).",
+  "screens": "Detalle del alimento (/pantry/item), Lo que tengo",
+  "notes": "Al agregar a mano, la fecha viene propuesta según cuánto dura el alimento; el agregado rápido se deshace tocándolo otra vez.",
+  "tests": "backend/supabase/tests/99m_pantry_edit.sql; app/src/features/pantry/ui/__tests__/pantry-edit.test.tsx; app/src/features/pantry/domain/__tests__/pantry-edit-domain.test.ts",
+  "subtasks": []
+ },
+ {
+  "id": 181,
+  "key": "US-181",
+  "title": "Usar la lista de mercado en el supermercado",
+  "epic_id": 3,
+  "epic": "Compras, presupuesto y despensa",
+  "epic_code": "E3",
+  "module": "M06",
+  "module_name": "Compras y despensa",
+  "phase": 2,
+  "phase_name": "F2 Mejora y retención",
+  "priority": "High",
+  "rank": 81,
+  "type": "historia",
+  "labels": [
+   "compras",
+   "agregada-por-po"
+  ],
+  "ref": "HU-81",
+  "subarea": "Compras",
+  "rol": "usuario que va a mercar",
+  "quiero": "una lista con cantidades como se venden, que exista aunque no tenga plan y donde quitar algo se pueda deshacer",
+  "para": "comprar sin hacer cuentas en el pasillo",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que no tengo un plan",
+     "Cuando abro la lista de mercado",
+     "Entonces igual tengo una lista de la casa donde anotar y agregar lo que falta."
+    ]
+   },
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que la lista pide 350 g de cebolla",
+     "Cuando la veo",
+     "Entonces dice cuánto comprar como se vende (unidades, libras, litros o \"un poco\"), y a la despensa pasa lo que compré."
+    ]
+   },
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que quito algo de la lista",
+     "Cuando toco \"Deshacer\"",
+     "Entonces vuelve; si no lo deshago, el plan no lo vuelve a poner."
+    ]
+   }
+  ],
+  "deps": [
+   124,
+   141
+  ],
+  "backend": "`my_house_list`, `private.purchase` (cantidad comprable), `dismissed_at` y columnas `buy_kind`/`buy_g`/`buy_units` en `my_shopping_items` (ADR-035).",
+  "screens": "Lista de mercado",
+  "notes": "El presupuesto del mes se muestra redondeado (\"≈ $857.000\").",
+  "tests": "backend/supabase/tests/99n_market_list.sql; app/src/features/shopping/domain/__tests__/buy-label.test.ts; app/src/features/shopping/ui/__tests__/shopping-screen.test.tsx",
+  "subtasks": []
+ },
+ {
+  "id": 182,
+  "key": "US-182",
+  "title": "Agregar a la despensa con menos pasos",
+  "epic_id": 3,
+  "epic": "Compras, presupuesto y despensa",
+  "epic_code": "E3",
+  "module": "M06",
+  "module_name": "Compras y despensa",
+  "phase": 2,
+  "phase_name": "F2 Mejora y retención",
+  "priority": "Medium",
+  "rank": 82,
+  "type": "historia",
+  "labels": [
+   "despensa",
+   "agregada-por-po"
+  ],
+  "ref": "HU-82",
+  "subarea": "Compras",
+  "rol": "usuario que acaba de mercar",
+  "quiero": "agregar a la despensa con un toque o con un solo camino a la vez, y ver lo que tengo aunque no haya señal",
+  "para": "mantener la cocina al día sin que me tome tiempo",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que abro Mi cocina",
+     "Cuando veo la pantalla",
+     "Entonces primero está lo que tengo y lo que falta, con un encabezado de una sola fila."
+    ]
+   },
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que toco \"Agregar\"",
+     "Cuando elijo Buscar, Escribir o Foto",
+     "Entonces veo un camino a la vez, empezando por Buscar."
+    ]
+   },
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que toco un agregado rápido (\"Huevos\")",
+     "Cuando lo toco otra vez",
+     "Entonces se deshace; si ya lo tengo, dice \"ya tienes\"."
+    ]
+   },
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que no tengo señal",
+     "Cuando abro \"Lo que tengo\"",
+     "Entonces veo lo último que se guardó en el teléfono."
+    ]
+   }
+  ],
+  "deps": [
+   119
+  ],
+  "backend": "`quick_add_items` (agregado rápido por id de ingrediente, desde la base) (ADR-036).",
+  "screens": "Mi cocina, Agregar a la despensa (Buscar / Escribir / Foto)",
+  "notes": "Una sola regla de \"vence pronto\" en toda la app.",
+  "tests": "backend/supabase/tests/catalog/50_quick_add.sql; app/src/features/kitchen/ui/__tests__/kitchen-compact.test.tsx",
+  "subtasks": []
+ },
+ {
+  "id": 183,
+  "key": "US-183",
+  "title": "Pedirle ideas al asistente y que respete lo que no puedo comer",
+  "epic_id": 2,
+  "epic": "Planificación inteligente de comidas",
+  "epic_code": "E2",
+  "module": "M05",
+  "module_name": "Asistente IA",
+  "phase": 2,
+  "phase_name": "F2 Mejora y retención",
+  "priority": "High",
+  "rank": 83,
+  "type": "historia",
+  "labels": [
+   "asistente-ia",
+   "agregada-por-po"
+  ],
+  "ref": "HU-83",
+  "subarea": "Asistente IA",
+  "rol": "usuario que no sabe qué cocinar",
+  "quiero": "pedirle ideas al asistente en mis palabras, elegir una y ver la receta completa ahí mismo",
+  "para": "decidir rápido qué cocinar sin salir del chat",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que le pido al asistente \"algo rápido para la cena\"",
+     "Cuando responde",
+     "Entonces me da 4 o 5 platos distintos con nombre, una frase y los minutos."
+    ]
+   },
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que elijo uno",
+     "Cuando la IA llena la receta",
+     "Entonces la veo completa en el chat: porciones, kcal, proteína y costo calculados por la base, lo que tengo, lo que falta y los pasos."
+    ]
+   },
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que tengo alergias, una dieta o cosas que no me gustan",
+     "Cuando el asistente propone",
+     "Entonces nada las incumple; la IA recibe solo qué evitar, nunca el porqué."
+    ]
+   },
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que la IA no responde",
+     "Cuando pido ideas",
+     "Entonces recibo ideas del recetario."
+    ]
+   }
+  ],
+  "deps": [
+   178
+  ],
+  "backend": "`assistant-chat` con acciones `chat` (ideas) y `fill` (receta); `assistant_profile`, `recipe_extra_ingredients` y `create_assistant_recipe` con nombres libres (ADR-037).",
+  "screens": "Asistente (lista de ideas y receta completa en el chat)",
+  "notes": "Amplía la ADR-025: \"qué evitar sí, por qué no\". Sin alergias ni dietas puede usar ingredientes libres; con ellas, solo del catálogo. El LLM propone, la base dispone.",
+  "tests": "backend/supabase/tests/99o_assistant_v2.sql; backend/supabase/functions/assistant-chat/logic.test.ts; app/src/features/assistant/ui/__tests__/assistant-screen.test.tsx",
+  "subtasks": []
+ },
+ {
+  "id": 184,
+  "key": "US-184",
+  "title": "Dictar con el micrófono en vez de escribir",
+  "epic_id": 2,
+  "epic": "Planificación inteligente de comidas",
+  "epic_code": "E2",
+  "module": "M05",
+  "module_name": "Asistente IA",
+  "phase": 2,
+  "phase_name": "F2 Mejora y retención",
+  "priority": "Medium",
+  "rank": 84,
+  "type": "historia",
+  "labels": [
+   "asistente-ia",
+   "voz",
+   "agregada-por-po"
+  ],
+  "ref": "HU-84",
+  "subarea": "Asistente IA",
+  "rol": "usuario que cocina con las manos ocupadas",
+  "quiero": "tocar un micrófono y dictar lo que le pido al asistente o lo que voy a anotar",
+  "para": "no tener que escribir en el teléfono",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que estoy en el asistente, en \"Escríbelo como lo dirías\" o en la lista de mercado",
+     "Cuando toco el micrófono y hablo",
+     "Entonces el texto queda en la caja para revisarlo antes de enviar."
+    ]
+   },
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que no he dado permiso de micrófono",
+     "Cuando toco el botón",
+     "Entonces se pide en ese momento; si lo niego, puedo seguir escribiendo."
+    ]
+   },
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que dicto algo",
+     "Cuando termino",
+     "Entonces NutriPlan no graba ni guarda la voz."
+    ]
+   }
+  ],
+  "deps": [
+   183
+  ],
+  "backend": "Sin backend: reconocimiento de voz del teléfono (expo-speech-recognition, es-CO, en el teléfono cuando se puede) (ADR-038).",
+  "screens": "Asistente, Escríbelo como lo dirías, Lista de mercado (\"Agregar algo más\")",
+  "notes": "Permiso RECORD_AUDIO desbloqueado. Política de tratamiento de datos v3: voz y lo que sabe el asistente.",
+  "tests": "app/src/shared/voice/__tests__/dictation.test.tsx; app/src/shared/ui/__tests__/dictation-hint.test.tsx",
+  "subtasks": []
+ },
+ {
+  "id": 185,
+  "key": "US-185",
+  "title": "Agregar varios productos a la lista de una vez",
+  "epic_id": 3,
+  "epic": "Compras, presupuesto y despensa",
+  "epic_code": "E3",
+  "module": "M06",
+  "module_name": "Compras y despensa",
+  "phase": 2,
+  "phase_name": "F2 Mejora y retención",
+  "priority": "Medium",
+  "rank": 85,
+  "type": "historia",
+  "labels": [
+   "compras",
+   "agregada-por-po"
+  ],
+  "ref": "HU-85",
+  "subarea": "Compras",
+  "rol": "usuario que arma su lista de mercado",
+  "quiero": "escribir o dictar varios productos seguidos y que entren como productos separados",
+  "para": "no agregarlos uno por uno",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que escribo o dicto \"pollo, pan y yuca\"",
+     "Cuando toco \"Agregar\"",
+     "Entonces entran tres productos, cada uno en su sección del supermercado."
+    ]
+   },
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que estoy escribiendo varios productos",
+     "Cuando todavía no toco el botón",
+     "Entonces la app me dice cuáles va a agregar."
+    ]
+   }
+  ],
+  "deps": [
+   124
+  ],
+  "backend": "Sin cambios en la base: cada producto se agrega y clasifica por separado.",
+  "screens": "Lista de mercado (\"Agregar algo más\")",
+  "notes": "Separa por comas y por \"y\".",
+  "tests": "app/src/features/shopping/ui/__tests__/shopping-bugs.test.tsx; app/src/features/shopping/domain/__tests__/shopping-domain.test.ts",
+  "subtasks": []
+ },
+ {
+  "id": 186,
+  "key": "US-186",
+  "title": "Planear la semana o el mes con IA",
+  "epic_id": 2,
+  "epic": "Planificación inteligente de comidas",
+  "epic_code": "E2",
+  "module": "M04",
+  "module_name": "Motor de planificación",
+  "phase": 2,
+  "phase_name": "F2 Mejora y retención",
+  "priority": "High",
+  "rank": 86,
+  "type": "historia",
+  "labels": [
+   "plan",
+   "asistente-ia",
+   "agregada-por-po"
+  ],
+  "ref": "HU-86",
+  "subarea": "Plan de comidas",
+  "rol": "usuario que planea sus comidas",
+  "quiero": "que la IA arme mi semana o mi mes con platos variados, según mis gustos y lo que tengo en la despensa",
+  "para": "tener un plan que se sienta hecho para mí y no siempre las mismas recetas",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que toco \"Planear la semana con IA\"",
+     "Cuando termina",
+     "Entonces tengo 7 días con platos variados, sin el mismo plato dos días seguidos, y el plan dice \"Hecho con IA\"."
+    ]
+   },
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que tengo alergias, una dieta o gustos declarados",
+     "Cuando la IA arma el plan",
+     "Entonces ningún plato los incumple: la base valida cada receta antes de guardarla."
+    ]
+   },
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que tengo cosas por vencer en la despensa",
+     "Cuando se arma el plan",
+     "Entonces se usan primero, y lo que falta queda en la lista de mercado."
+    ]
+   },
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que la IA no responde o ya usé los 3 planes con IA del día",
+     "Cuando pido el plan",
+     "Entonces se arma con el recetario y la app me lo dice."
+    ]
+   },
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que pido el plan del mes",
+     "Cuando se está generando",
+     "Entonces veo el avance paso a paso."
+    ]
+   }
+  ],
+  "deps": [
+   117,
+   175,
+   183
+  ],
+  "backend": "Edge Function `plan-ai` (acciones `menu`, `recipes`, `save`); `create_assistant_recipe` con `slots`; `meal_plans.created_with_ai`; motivo `ai_pick`; cuota de 3 por día (ADR-039).",
+  "screens": "Mi semana (\"Planear la semana con IA\", \"Plan rápido con el recetario\", avance y \"Hecho con IA\")",
+  "notes": "Validación de recetas compartida con el asistente (`_shared/recipe-ai.ts`). Usa el \"no usar\" sin el porqué (ADR-037).",
+  "tests": "backend/supabase/tests/99p_plan_with_ai.sql; backend/supabase/functions/plan-ai/logic.test.ts; app/src/features/plan/ui/__tests__/plan-with-ai.test.tsx",
+  "subtasks": []
  }
 ]

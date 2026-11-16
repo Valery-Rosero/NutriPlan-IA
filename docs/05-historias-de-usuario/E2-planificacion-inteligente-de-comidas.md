@@ -4,7 +4,7 @@ Product Goal: Que cada usuario deje de improvisar qué cocinar y planifique su s
 
 Genera, ajusta y explica los planes de comidas diarios y semanales: motor de recomendación, escalado de porciones, adaptación de recetas, asistente conversacional y recordatorios.
 
-18 historias · 16 subtareas.
+24 historias · 16 subtareas.
 
 | ID | Título | Módulo | Fase | Prio |
 |---|---|---|---|---|
@@ -26,6 +26,12 @@ Genera, ajusta y explica los planes de comidas diarios y semanales: motor de rec
 | [US-172](#us-172) | Ofrecer «versión rápida» de una receta | M03 | F3 | Low |
 | [US-173](#us-173) | Respuestas rápidas en el chat del asistente | M05 | F3 | Low |
 | [US-174](#us-174) | Pedir cambios a toda la semana (más barata, más rápida, sin un ingrediente) | M05 | F2 | Medium |
+| [US-175](#us-175) | Ver Mi semana como calendario y planear por día, semana o mes | M04 | F2 | Medium |
+| [US-177](#us-177) | Sumar platos adicionales al día sin perder la comida planeada | M04 | F2 | Medium |
+| [US-178](#us-178) | Recibir del asistente recetas propias con lo que hay en mi cocina | M05 | F2 | Medium |
+| [US-183](#us-183) | Pedirle ideas al asistente y que respete lo que no puedo comer | M05 | F2 | High |
+| [US-184](#us-184) | Dictar con el micrófono en vez de escribir | M05 | F2 | Medium |
+| [US-186](#us-186) | Planear la semana o el mes con IA | M04 | F2 | High |
 
 ---
 
@@ -885,7 +891,7 @@ Genera, ajusta y explica los planes de comidas diarios y semanales: motor de rec
 | Etiquetas | asistente-ia, plan, agregada-por-po |
 | Ref. backlog | HU-74 · Subárea: Asistente IA |
 | Dependencias | US-117, US-129, US-152, US-157 |
-| Estado | Hecha (13-nov-2026) · por probar en el APK |
+| Estado | Hecha (13-nov-2026) |
 
 **Historia de usuario**
 
@@ -943,5 +949,350 @@ Genera, ajusta y explica los planes de comidas diarios y semanales: motor de rec
 - [x] Se respetan las reglas de AGENTS.md (alergias, cantidades en servidor, sin datos de salud en logs, accesibilidad).
 - [x] Textos en es-CO; estados vacío, carga y error implementados.
 - [x] Dependencias listadas resueltas.
+
+---
+
+<a id="us-175"></a>
+### US-175 · Ver Mi semana como calendario y planear por día, semana o mes
+
+| Campo | Valor |
+|---|---|
+| ID | US-175 (id Jira 175) |
+| Épica | E2 · Planificación inteligente de comidas |
+| Módulo | [M04 · Motor de planificación](../04-modulos/M04.md) |
+| Fase | F2 Mejora y retención |
+| Prioridad | Medium (orden en backlog: #75 de 86) |
+| Tipo | historia |
+| Etiquetas | plan, agregada-por-po |
+| Ref. backlog | HU-75 · Subárea: Plan de comidas |
+| Dependencias | US-117 |
+| Estado | Hecha (13-nov-2026) |
+
+**Historia de usuario**
+
+- **Como** usuario que planea sus comidas
+- **quiero** ver mi plan como un calendario, pasar de un día a otro y elegir si planeo hoy, la semana o el mes
+- **para** ubicarme rápido en el día que voy a cocinar sin desplazarme por una lista larga.
+
+**Criterios de aceptación**
+
+1. **Escenario 1**
+   - Dado que tengo un plan de una semana
+   - Cuando abro Mi semana
+   - Entonces arriba veo los 7 días con un punto por día (pendiente, a medias, hecho) y la pantalla abre en hoy.
+
+2. **Escenario 2**
+   - Dado que estoy viendo un día
+   - Cuando deslizo o toco "Día siguiente"
+   - Entonces paso al otro día; con "reducir movimiento" activo no hay animación de giro.
+
+3. **Escenario 3**
+   - Dado que voy a planear
+   - Cuando elijo Hoy, Semana o Mes
+   - Entonces se genera un plan de 1, 7 o 30 días con las mismas reglas de seguridad, y con más de 7 días el calendario muestra el mes.
+
+**Especificación técnica**
+
+- **Backend (qué existe y cómo usarlo):** `generate_plan` acepta de 1 a 31 días y `meal_plans` permite planes de hasta 31 días (migración 20261113000200).
+- **Pantallas / UI:** Mi semana: calendario (tira de 7 días o cuadrícula del mes), libro de días (DayPager) y selector Hoy · Semana · Mes
+- **Reglas, límites y notas:** Sin desplazamiento largo: el presupuesto y el gasto del mes quedan debajo como resumen.
+- **Pruebas existentes:** backend/supabase/tests/97_generate_plan.sql; app/src/features/plan/domain/__tests__/calendar.test.ts; app/src/features/plan/ui/__tests__/day-pager.test.tsx
+
+**Definición de hecho (además del DoD global)**
+
+- [x] Cada escenario y caso borde tiene una prueba automática (unitaria, de integración con la BD o Maestro E2E).
+- [x] Se respetan las reglas de AGENTS.md (alergias, cantidades en servidor, sin datos de salud en logs, accesibilidad).
+- [x] Textos en es-CO; estados vacío, carga y error implementados.
+- [x] Dependencias listadas resueltas.
+
+---
+
+<a id="us-177"></a>
+### US-177 · Sumar platos adicionales al día sin perder la comida planeada
+
+| Campo | Valor |
+|---|---|
+| ID | US-177 (id Jira 177) |
+| Épica | E2 · Planificación inteligente de comidas |
+| Módulo | [M04 · Motor de planificación](../04-modulos/M04.md) |
+| Fase | F2 Mejora y retención |
+| Prioridad | Medium (orden en backlog: #77 de 86) |
+| Tipo | historia |
+| Etiquetas | plan, agregada-por-po |
+| Ref. backlog | HU-77 · Subárea: Plan de comidas |
+| Dependencias | US-123, US-157 |
+| Estado | Hecha (13-nov-2026) |
+
+**Historia de usuario**
+
+- **Como** usuario con un plan
+- **quiero** cocinar algo que no estaba en el plan (un batido, una receta del asistente) sin que reemplace lo que ya tenía planeado
+- **para** registrar todo lo que como y que la despensa quede al día.
+
+**Criterios de aceptación**
+
+1. **Escenario 1**
+   - Dado que tengo el almuerzo planeado
+   - Cuando cocino ahora un batido que me sugirió el asistente
+   - Entonces se suma como plato adicional y mi almuerzo sigue en el plan.
+
+2. **Escenario 2**
+   - Dado que acabo de cocinar un adicional
+   - Cuando toco "Deshacer" antes de 10 s
+   - Entonces el adicional se borra y la despensa vuelve a como estaba.
+
+3. **Escenario 3**
+   - Dado que una receta tiene opciones (por ejemplo, la proteína)
+   - Cuando las veo
+   - Entonces se dividen en "En tu cocina" y "Para comprar", y puedo quitar la que elegí.
+
+**Especificación técnica**
+
+- **Backend (qué existe y cómo usarlo):** `planned_meals.is_extra` y una sola comida planeada por momento (índice único parcial); `plan_budget_status` no cuenta los adicionales (ADR-028).
+- **Pantallas / UI:** Mi semana (sección "Adicionales"), Receta (opciones divididas)
+- **Reglas, límites y notas:** Los adicionales se traen por fecha y no se mueven entre planes.
+- **Pruebas existentes:** backend/supabase/tests/99h_meal_extras.sql; app/src/features/recipes/ui/__tests__/recipe-screen.test.tsx
+
+**Definición de hecho (además del DoD global)**
+
+- [x] Cada escenario y caso borde tiene una prueba automática (unitaria, de integración con la BD o Maestro E2E).
+- [x] Se respetan las reglas de AGENTS.md (alergias, cantidades en servidor, sin datos de salud en logs, accesibilidad).
+- [x] Textos en es-CO; estados vacío, carga y error implementados.
+- [x] Dependencias listadas resueltas.
+
+---
+
+<a id="us-178"></a>
+### US-178 · Recibir del asistente recetas propias con lo que hay en mi cocina
+
+| Campo | Valor |
+|---|---|
+| ID | US-178 (id Jira 178) |
+| Épica | E2 · Planificación inteligente de comidas |
+| Módulo | [M05 · Asistente IA](../04-modulos/M05.md) |
+| Fase | F2 Mejora y retención |
+| Prioridad | Medium (orden en backlog: #78 de 86) |
+| Tipo | historia |
+| Etiquetas | asistente-ia, agregada-por-po |
+| Ref. backlog | HU-78 · Subárea: Asistente IA |
+| Dependencias | US-157, US-160 |
+| Estado | Hecha (13-nov-2026) |
+
+**Historia de usuario**
+
+- **Como** usuario que le pregunta al asistente qué cocinar
+- **quiero** que el asistente me proponga hasta tres opciones, del recetario o creadas para mí con lo que tengo
+- **para** cocinar algo distinto sin comprar de más.
+
+**Criterios de aceptación**
+
+1. **Escenario 1**
+   - Dado que tengo cosas en la despensa
+   - Cuando le pido al asistente algo para la cena
+   - Entonces recibo hasta tres opciones, del recetario o creadas por el asistente, con lo que falta comprar.
+
+2. **Escenario 2**
+   - Dado que tengo alergias o una dieta
+   - Cuando el asistente crea una receta
+   - Entonces la base revalida alergias, dieta, tiempo y cantidades antes de guardarla; si no cumple, no se muestra.
+
+3. **Escenario 3**
+   - Dado que elijo una receta del asistente
+   - Cuando la abro
+   - Entonces dice que la creó el asistente y puedo cocinarla, ponerla en mi plan o llevar lo que falta a la lista.
+
+**Especificación técnica**
+
+- **Backend (qué existe y cómo usarlo):** `assistant_ingredients` (solo lo que la persona puede comer), `create_assistant_recipe` (revalida y guarda un borrador privado), `assistant_message_suggestions` (ADR-029).
+- **Pantallas / UI:** Asistente (respuesta con formato y tarjetas "Del recetario" / "Receta del asistente"), Receta
+- **Reglas, límites y notas:** La IA usa referencias cortas (R…/I…); al borrar la cuenta se borran sus recetas del asistente.
+- **Pruebas existentes:** backend/supabase/tests/99i_assistant_recipes.sql; backend/supabase/functions/assistant-chat/logic.test.ts; app/src/features/assistant/ui/__tests__/assistant-screen.test.tsx
+
+**Definición de hecho (además del DoD global)**
+
+- [x] Cada escenario y caso borde tiene una prueba automática (unitaria, de integración con la BD o Maestro E2E).
+- [x] Se respetan las reglas de AGENTS.md (alergias, cantidades en servidor, sin datos de salud en logs, accesibilidad).
+- [x] Textos en es-CO; estados vacío, carga y error implementados.
+- [x] Dependencias listadas resueltas.
+
+---
+
+<a id="us-183"></a>
+### US-183 · Pedirle ideas al asistente y que respete lo que no puedo comer
+
+| Campo | Valor |
+|---|---|
+| ID | US-183 (id Jira 183) |
+| Épica | E2 · Planificación inteligente de comidas |
+| Módulo | [M05 · Asistente IA](../04-modulos/M05.md) |
+| Fase | F2 Mejora y retención |
+| Prioridad | High (orden en backlog: #83 de 86) |
+| Tipo | historia |
+| Etiquetas | asistente-ia, agregada-por-po |
+| Ref. backlog | HU-83 · Subárea: Asistente IA |
+| Dependencias | US-178 |
+| Estado | Hecha (15-nov-2026) |
+
+**Historia de usuario**
+
+- **Como** usuario que no sabe qué cocinar
+- **quiero** pedirle ideas al asistente en mis palabras, elegir una y ver la receta completa ahí mismo
+- **para** decidir rápido qué cocinar sin salir del chat.
+
+**Criterios de aceptación**
+
+1. **Escenario 1**
+   - Dado que le pido al asistente "algo rápido para la cena"
+   - Cuando responde
+   - Entonces me da 4 o 5 platos distintos con nombre, una frase y los minutos.
+
+2. **Escenario 2**
+   - Dado que elijo uno
+   - Cuando la IA llena la receta
+   - Entonces la veo completa en el chat: porciones, kcal, proteína y costo calculados por la base, lo que tengo, lo que falta y los pasos.
+
+3. **Escenario 3**
+   - Dado que tengo alergias, una dieta o cosas que no me gustan
+   - Cuando el asistente propone
+   - Entonces nada las incumple; la IA recibe solo qué evitar, nunca el porqué.
+
+4. **Escenario 4**
+   - Dado que la IA no responde
+   - Cuando pido ideas
+   - Entonces recibo ideas del recetario.
+
+**Especificación técnica**
+
+- **Backend (qué existe y cómo usarlo):** `assistant-chat` con acciones `chat` (ideas) y `fill` (receta); `assistant_profile`, `recipe_extra_ingredients` y `create_assistant_recipe` con nombres libres (ADR-037).
+- **Pantallas / UI:** Asistente (lista de ideas y receta completa en el chat)
+- **Reglas, límites y notas:** Amplía la ADR-025: "qué evitar sí, por qué no". Sin alergias ni dietas puede usar ingredientes libres; con ellas, solo del catálogo. El LLM propone, la base dispone.
+- **Pruebas existentes:** backend/supabase/tests/99o_assistant_v2.sql; backend/supabase/functions/assistant-chat/logic.test.ts; app/src/features/assistant/ui/__tests__/assistant-screen.test.tsx
+
+**Definición de hecho (además del DoD global)**
+
+- [x] Cada escenario y caso borde tiene una prueba automática (unitaria, de integración con la BD o Maestro E2E).
+- [x] Se respetan las reglas de AGENTS.md (alergias, cantidades en servidor, sin datos de salud en logs, accesibilidad).
+- [x] Textos en es-CO; estados vacío, carga y error implementados.
+- [x] Dependencias listadas resueltas.
+
+---
+
+<a id="us-184"></a>
+### US-184 · Dictar con el micrófono en vez de escribir
+
+| Campo | Valor |
+|---|---|
+| ID | US-184 (id Jira 184) |
+| Épica | E2 · Planificación inteligente de comidas |
+| Módulo | [M05 · Asistente IA](../04-modulos/M05.md) |
+| Fase | F2 Mejora y retención |
+| Prioridad | Medium (orden en backlog: #84 de 86) |
+| Tipo | historia |
+| Etiquetas | asistente-ia, voz, agregada-por-po |
+| Ref. backlog | HU-84 · Subárea: Asistente IA |
+| Dependencias | US-183 |
+| Estado | Hecha (15-nov-2026) |
+
+**Historia de usuario**
+
+- **Como** usuario que cocina con las manos ocupadas
+- **quiero** tocar un micrófono y dictar lo que le pido al asistente o lo que voy a anotar
+- **para** no tener que escribir en el teléfono.
+
+**Criterios de aceptación**
+
+1. **Escenario 1**
+   - Dado que estoy en el asistente, en "Escríbelo como lo dirías" o en la lista de mercado
+   - Cuando toco el micrófono y hablo
+   - Entonces el texto queda en la caja para revisarlo antes de enviar.
+
+2. **Escenario 2**
+   - Dado que no he dado permiso de micrófono
+   - Cuando toco el botón
+   - Entonces se pide en ese momento; si lo niego, puedo seguir escribiendo.
+
+3. **Escenario 3**
+   - Dado que dicto algo
+   - Cuando termino
+   - Entonces NutriPlan no graba ni guarda la voz.
+
+**Especificación técnica**
+
+- **Backend (qué existe y cómo usarlo):** Sin backend: reconocimiento de voz del teléfono (expo-speech-recognition, es-CO, en el teléfono cuando se puede) (ADR-038).
+- **Pantallas / UI:** Asistente, Escríbelo como lo dirías, Lista de mercado ("Agregar algo más")
+- **Reglas, límites y notas:** Permiso RECORD_AUDIO desbloqueado. Política de tratamiento de datos v3: voz y lo que sabe el asistente.
+- **Pruebas existentes:** app/src/shared/voice/__tests__/dictation.test.tsx; app/src/shared/ui/__tests__/dictation-hint.test.tsx
+
+**Definición de hecho (además del DoD global)**
+
+- [x] Cada escenario y caso borde tiene una prueba automática (unitaria, de integración con la BD o Maestro E2E).
+- [x] Se respetan las reglas de AGENTS.md (alergias, cantidades en servidor, sin datos de salud en logs, accesibilidad).
+- [x] Textos en es-CO; estados vacío, carga y error implementados.
+- [x] Dependencias listadas resueltas.
+
+---
+
+<a id="us-186"></a>
+### US-186 · Planear la semana o el mes con IA
+
+| Campo | Valor |
+|---|---|
+| ID | US-186 (id Jira 186) |
+| Épica | E2 · Planificación inteligente de comidas |
+| Módulo | [M04 · Motor de planificación](../04-modulos/M04.md) |
+| Fase | F2 Mejora y retención |
+| Prioridad | High (orden en backlog: #86 de 86) |
+| Tipo | historia |
+| Etiquetas | plan, asistente-ia, agregada-por-po |
+| Ref. backlog | HU-86 · Subárea: Plan de comidas |
+| Dependencias | US-117, US-175, US-183 |
+| Estado | Construida (16-nov-2026) · falta desplegar plan-ai a staging y probarla en el APK |
+
+**Historia de usuario**
+
+- **Como** usuario que planea sus comidas
+- **quiero** que la IA arme mi semana o mi mes con platos variados, según mis gustos y lo que tengo en la despensa
+- **para** tener un plan que se sienta hecho para mí y no siempre las mismas recetas.
+
+**Criterios de aceptación**
+
+1. **Escenario 1**
+   - Dado que toco "Planear la semana con IA"
+   - Cuando termina
+   - Entonces tengo 7 días con platos variados, sin el mismo plato dos días seguidos, y el plan dice "Hecho con IA".
+
+2. **Escenario 2**
+   - Dado que tengo alergias, una dieta o gustos declarados
+   - Cuando la IA arma el plan
+   - Entonces ningún plato los incumple: la base valida cada receta antes de guardarla.
+
+3. **Escenario 3**
+   - Dado que tengo cosas por vencer en la despensa
+   - Cuando se arma el plan
+   - Entonces se usan primero, y lo que falta queda en la lista de mercado.
+
+4. **Escenario 4**
+   - Dado que la IA no responde o ya usé los 3 planes con IA del día
+   - Cuando pido el plan
+   - Entonces se arma con el recetario y la app me lo dice.
+
+5. **Escenario 5**
+   - Dado que pido el plan del mes
+   - Cuando se está generando
+   - Entonces veo el avance paso a paso.
+
+**Especificación técnica**
+
+- **Backend (qué existe y cómo usarlo):** Edge Function `plan-ai` (acciones `menu`, `recipes`, `save`); `create_assistant_recipe` con `slots`; `meal_plans.created_with_ai`; motivo `ai_pick`; cuota de 3 por día (ADR-039).
+- **Pantallas / UI:** Mi semana ("Planear la semana con IA", "Plan rápido con el recetario", avance y "Hecho con IA")
+- **Reglas, límites y notas:** Validación de recetas compartida con el asistente (`_shared/recipe-ai.ts`). Usa el "no usar" sin el porqué (ADR-037).
+- **Pruebas existentes:** backend/supabase/tests/99p_plan_with_ai.sql; backend/supabase/functions/plan-ai/logic.test.ts; app/src/features/plan/ui/__tests__/plan-with-ai.test.tsx
+
+**Definición de hecho (además del DoD global)**
+
+- [x] Cada escenario y caso borde tiene una prueba automática (unitaria, de integración con la BD o Maestro E2E).
+- [x] Se respetan las reglas de AGENTS.md (alergias, cantidades en servidor, sin datos de salud en logs, accesibilidad).
+- [x] Textos en es-CO; estados vacío, carga y error implementados.
+- [ ] Dependencias listadas resueltas.
 
 ---
