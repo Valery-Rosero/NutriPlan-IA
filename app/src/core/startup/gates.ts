@@ -33,3 +33,22 @@ export function computeGates(i: GateInput): Gates {
   const decided = !hasSession || mustConsent || (consentsOk && !profile.pending) || profile.error || offlineStart;
   return { ready: i.fontsReady && !i.sessionLoading && decided, mustConsent, mustOnboard, inApp, offlineStart };
 }
+
+/** Lo que el navegador raíz necesita de las puertas una vez decididas. */
+export type DecidedGates = { signedIn: boolean; mustConsent: boolean; mustOnboard: boolean; inApp: boolean };
+
+/**
+ * Puertas que se muestran: las de ahora si ya están decididas; si se están recalculando (cambió la sesión y las
+ * consultas de arranque cargan de nuevo), las últimas decididas. Así el navegador, una vez montado, no se cambia
+ * por el splash ni vuelve a empezar: el enlace de "recuperar contraseña" abre la sesión y se queda en
+ * "Nueva contraseña". `null` solo antes de la primera decisión (splash).
+ */
+export function holdGates(gates: Gates, hasSession: boolean, last: DecidedGates | null): DecidedGates | null {
+  if (!gates.ready) return last;
+  const now = { signedIn: hasSession, mustConsent: gates.mustConsent, mustOnboard: gates.mustOnboard, inApp: gates.inApp };
+  return last && sameGates(now, last) ? last : now;
+}
+
+function sameGates(a: DecidedGates, b: DecidedGates) {
+  return a.signedIn === b.signedIn && a.mustConsent === b.mustConsent && a.mustOnboard === b.mustOnboard && a.inApp === b.inApp;
+}

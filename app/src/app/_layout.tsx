@@ -8,7 +8,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useState } from 'react';
 import { useColorScheme } from 'react-native';
 
-import { computeGates } from '@/core/startup/gates';
+import { computeGates, holdGates, type DecidedGates } from '@/core/startup/gates';
 import { createServices } from '@/di/create-services';
 import { ServicesProvider } from '@/di/services';
 import { SessionProvider, useSession } from '@/features/auth/application/session';
@@ -86,7 +86,7 @@ function RootNavigator() {
   const consents = useRequiredConsents(session?.userId);
   const consentsOk = !!session && consents.isSuccess && (consents.data?.length ?? 0) === 0;
   const profile = useProfile(consentsOk);
-  const { ready, mustConsent, mustOnboard, inApp } = computeGates({
+  const gates = computeGates({
     hasSession: !!session,
     sessionLoading: loading,
     fontsReady: true, // letra del sistema (Roboto): no hay fuentes que esperar
@@ -100,7 +100,14 @@ function RootNavigator() {
     },
   });
 
-  useNotificationTaps(inApp); // tocar un aviso abre la receta o la semana
+  // Las puertas se recuerdan mientras se recalculan (holdGates): el navegador, una vez montado, no se cambia por
+  // el splash. Antes, el enlace de "recuperar contraseña" abría la sesión, el navegador se desmontaba mientras
+  // cargaban las consultas y volvía a empezar en Hoy: se perdía "Nueva contraseña".
+  const [lastShown, setLastShown] = useState<DecidedGates | null>(null);
+  const shown = holdGates(gates, !!session, lastShown);
+  if (shown !== lastShown) setLastShown(shown);
+
+  useNotificationTaps(shown?.inApp ?? false); // tocar un aviso abre la receta o la semana
 
   // Arranque con el logo principal: el del sistema (solo el símbolo, Android 12+ lo recorta en círculo) se
   // cambia apenas carga la app por BrandSplash, con el logo completo y el lema, mientras se abre la sesión.
@@ -111,7 +118,8 @@ function RootNavigator() {
     return () => clearTimeout(timer);
   }, []);
 
-  if (!ready || !introDone) return <BrandSplash />;
+  if (!shown || !introDone) return <BrandSplash />;
+  const { signedIn, mustConsent, mustOnboard, inApp } = shown;
 
   return (
     <Stack
@@ -142,7 +150,7 @@ function RootNavigator() {
       <Stack.Protected guard={mustOnboard}>
         <Stack.Screen name="onboarding" />
       </Stack.Protected>
-      <Stack.Protected guard={!session}>
+      <Stack.Protected guard={!signedIn}>
         <Stack.Screen name="(auth)" />
       </Stack.Protected>
       <Stack.Screen name="auth-callback" />

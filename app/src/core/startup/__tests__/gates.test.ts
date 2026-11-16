@@ -1,4 +1,4 @@
-import { computeGates, type GateInput } from '@/core/startup/gates';
+import { computeGates, holdGates, type GateInput } from '@/core/startup/gates';
 
 const base: GateInput = {
   hasSession: true,
@@ -44,5 +44,29 @@ describe('puertas de arranque', () => {
   it('espera las fuentes y la sesión guardada antes de decidir', () => {
     expect(computeGates({ ...base, fontsReady: false }).ready).toBe(false);
     expect(computeGates({ ...base, sessionLoading: true }).ready).toBe(false);
+  });
+});
+
+describe('puertas mientras se recalculan (el navegador no se desmonta)', () => {
+  const signedOut = computeGates({ ...base, hasSession: false, consents: pendingConsents });
+
+  it('antes de la primera decisión: nada que mostrar (splash)', () => {
+    expect(holdGates(computeGates({ ...base, sessionLoading: true }), false, null)).toBeNull();
+  });
+
+  it('el enlace de recuperar contraseña abre la sesión: mientras carga, se quedan las de antes', () => {
+    const before = holdGates(signedOut, false, null);
+    expect(before).toEqual({ signedIn: false, mustConsent: false, mustOnboard: false, inApp: false });
+    // Con sesión nueva, consentimientos y perfil vuelven a cargar: no está decidido.
+    const loading = computeGates({ ...base, consents: pendingConsents, profile: pendingProfile });
+    expect(loading.ready).toBe(false);
+    expect(holdGates(loading, true, before)).toBe(before); // mismo objeto: no se vuelve al splash
+  });
+
+  it('cuando decide, pasa a las nuevas; si no cambian, conserva el mismo objeto', () => {
+    const before = holdGates(signedOut, false, null);
+    const after = holdGates(computeGates(base), true, before);
+    expect(after).toEqual({ signedIn: true, mustConsent: false, mustOnboard: false, inApp: true });
+    expect(holdGates(computeGates(base), true, after)).toBe(after);
   });
 });
