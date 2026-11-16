@@ -5,7 +5,7 @@ import { useKitchenChanged } from '@/features/kitchen/application/kitchen-sync';
 import { useTrack } from '@/features/analytics/application/use-track';
 import type { MealSlot } from '@/features/cooking/domain/cooking';
 import { todayIso } from '@/features/pantry/domain/pantry';
-import type { GeneratePlanInput, SavingSuggestion, WeekGoal } from '@/features/plan/domain/plan';
+import type { GeneratePlanInput, SavingSuggestion, WeekGoal, MealPlan } from '@/features/plan/domain/plan';
 
 export const planKeys = {
   all: ['plan'] as const,
@@ -105,9 +105,33 @@ export function useSwapMeal() {
   );
 }
 
+/**
+ * Omitir se ve al instante (la comida pasa a "omitida" sin esperar a la base); si la base no lo acepta, vuelve
+ * como estaba y la pantalla muestra el error.
+ */
 export function useSkipMeal() {
   const { plans } = useServices();
-  return usePlanMutation((mealId: string) => plans.skip(mealId));
+  const queryClient = useQueryClient();
+  const kitchenChanged = useKitchenChanged();
+  return useMutation<void, Error, string, { previous?: MealPlan | null }>({
+    mutationFn: (mealId) => plans.skip(mealId),
+    onMutate: async (mealId) => {
+      const key = planKeys.current(todayIso());
+      await queryClient.cancelQueries({ queryKey: key });
+      const previous = queryClient.getQueryData<MealPlan | null>(key);
+      if (previous) {
+        queryClient.setQueryData<MealPlan>(key, {
+          ...previous,
+          meals: previous.meals.map((m) => (m.id === mealId ? { ...m, status: 'skipped' as const } : m)),
+        });
+      }
+      return { previous };
+    },
+    onError: (_error, _mealId, context) => {
+      if (context?.previous) queryClient.setQueryData(planKeys.current(todayIso()), context.previous);
+    },
+    onSuccess: () => kitchenChanged(),
+  });
 }
 
 export function useConfirmPlan() {

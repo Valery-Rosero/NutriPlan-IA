@@ -24,7 +24,9 @@ describe('PlanScreen (US-117, US-129, US-132, US-155)', () => {
   it('un borrador se vuelve a generar con su misma duración, o con otra si se elige', async () => {
     const plans = fakePlans();
     await render(<PlanScreen />, { wrapper: withServices(fakeServices({ plans })) });
-    await fireEvent.press(await screen.findByRole('button', { name: 'Volver a generar (semana)' }));
+    // Plegado para no ocupar pantalla: se abre y luego se elige.
+    await fireEvent.press(await screen.findByRole('link', { name: 'Volver a generar…' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Volver a generar (semana)' }));
     expect(plans.generate).toHaveBeenLastCalledWith(expect.objectContaining({ days: 7 }));
   });
 
@@ -115,5 +117,35 @@ describe('PlanScreen (US-117, US-129, US-132, US-155)', () => {
     expect(screen.getByText('Adicionales')).toBeOnTheScreen();
     expect(screen.getByRole('link', { name: 'Batido de fruta' })).toBeOnTheScreen();
     expect(screen.getAllByText('0 de 2 comidas cocinadas').length).toBeGreaterThan(0); // el batido no cuenta en el avance
+  });
+
+  it('omitir se ve al instante ("omitida") y, si la base no lo acepta, vuelve y muestra el error', async () => {
+    const { AppError } = jest.requireActual('@/core/errors/app-error');
+    let fail = false;
+    const skipped = new Set<string>();
+    const plans = fakePlans({
+      current: jest.fn(async () => ({ ...PLAN, meals: PLAN.meals.map((m) => (skipped.has(m.id) ? { ...m, status: 'skipped' as const } : m)) })),
+      skip: jest.fn(async (id: string) => {
+        if (fail) throw new AppError('network');
+        skipped.add(id);
+      }),
+    });
+    await render(<PlanScreen />, { wrapper: withServices(fakeServices({ plans })) });
+
+    const [first] = await screen.findAllByRole('link', { name: 'Omitir' });
+    await fireEvent.press(first);
+    expect(await screen.findByText('omitida')).toBeOnTheScreen();
+    await waitFor(() => expect(plans.skip).toHaveBeenCalled());
+
+    fail = true;
+    const [next] = screen.getAllByRole('link', { name: 'Omitir' });
+    await fireEvent.press(next);
+    expect(await screen.findByText('Sin conexión. Inténtalo de nuevo.')).toBeOnTheScreen();
+  });
+
+  it('encabezado compacto: fechas cortas en una píldora (sin el "Del lunes… al domingo…")', async () => {
+    await render(<PlanScreen />, { wrapper: withServices(fakeServices()) });
+    expect(await screen.findByText('13 – 19 de oct')).toBeOnTheScreen();
+    expect(screen.queryByText(/^Del /)).not.toBeOnTheScreen();
   });
 });

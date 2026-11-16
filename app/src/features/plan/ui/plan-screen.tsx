@@ -73,12 +73,13 @@ export function PlanScreen() {
 
   return (
     <Screen scroll>
+      {/* Encabezado de una fila (como Mi cocina): el plan se ve sin bajar. */}
       <BrandHeader
+        compact
         title={t('plan.title')}
         flavor="mango"
-        subtitle={data ? t('plan.range', { start: formatDay(data.startDate), end: formatDay(data.endDate) }) : t('plan.pitch')}
         action={{ icon: 'person-circle-outline', label: t('profile.title'), onPress: () => router.push('/profile') }}>
-        {data && <WeekSummary plan={data} />}
+        {data ? <WeekSummary plan={data} /> : <AppText secondary>{t('plan.pitch')}</AppText>}
       </BrandHeader>
       {generate.error && <Banner tone="danger" message={t(errorKey(generate.error))} />}
       {generate.error && toAppError(generate.error).code === 'no_eligible_recipes' && <CookTimeNotice />}
@@ -105,13 +106,14 @@ export function PlanScreen() {
   );
 }
 
-/** Estado y avance del plan, dentro del bloque de marca. */
+/** Fechas, estado y avance del plan, en poco espacio ("16 – 22 nov · Borrador · 0 de 21"). */
 function WeekSummary({ plan }: { plan: MealPlan }) {
   const { t } = useTranslation();
   const cooked = plan.meals.filter((m) => m.status === 'cooked').length;
   return (
     <View style={styles.summary}>
       <View style={styles.pills}>
+        <Pill label={shortRange(plan.startDate, plan.endDate)} icon="calendar-outline" />
         <Pill
           label={t(`plan.status.${plan.status}`)}
           tone={plan.status === 'draft' ? 'mango' : 'accent'}
@@ -129,6 +131,7 @@ function PlanView({ plan, onRegenerate, regenerating }: { plan: MealPlan; onRege
   const c = useTheme();
   const confirm = useConfirmPlan();
   const [horizon, setHorizon] = useState<Horizon>(() => horizonOf(planDates(plan).length));
+  const [regenOpen, setRegenOpen] = useState(false);
   const today = todayIso();
   const days = calendarDays(plan, today);
   const [index, setIndex] = useState(() => initialDayIndex(days, today));
@@ -148,8 +151,15 @@ function PlanView({ plan, onRegenerate, regenerating }: { plan: MealPlan; onRege
           </View>
           {confirm.error && <Banner tone="danger" message={t(errorKey(confirm.error))} />}
           <Button label={t('plan.confirm')} icon="checkmark" flavor="mango" loading={confirm.isPending} onPress={() => confirm.mutate(plan.id)} />
-          <HorizonPicker value={horizon} onChange={setHorizon} />
-          <Button label={t(`plan.regenerateFor.${horizon}`)} icon="refresh" variant="ghost" loading={regenerating} onPress={() => onRegenerate(horizon)} />
+          {/* Volver a generar va plegado: ocupa una línea hasta que se necesita. */}
+          {!regenOpen ? (
+            <TextLink label={t('plan.regenerateMore')} icon="refresh" onPress={() => setRegenOpen(true)} />
+          ) : (
+            <>
+              <HorizonPicker value={horizon} onChange={setHorizon} />
+              <Button label={t(`plan.regenerateFor.${horizon}`)} icon="refresh" variant="ghost" loading={regenerating} onPress={() => onRegenerate(horizon)} />
+            </>
+          )}
         </Card>
       )}
 
@@ -310,6 +320,7 @@ function MealRow({ meal }: { meal: PlannedMeal }) {
             <TextLink label={t('plan.skip')} icon="play-skip-forward-outline" hint={meal.recipeTitle} onPress={() => skip.mutate(meal.id)} />
           </View>
         )}
+        {skip.error && <Banner tone="danger" message={t(errorKey(skip.error))} />}
         {pending && (
           <TextLink
             label={t('assistant.askForMeal')}
@@ -338,3 +349,11 @@ const styles = StyleSheet.create({
   extras: { gap: Spacing.sm },
   extra: { borderWidth: 1.5, borderStyle: 'dashed', borderRadius: Radius.md, paddingHorizontal: Spacing.sm },
 });
+
+/** "16 – 22 nov" (o "28 nov – 4 dic") para la píldora del plan. */
+function shortRange(start: string, end: string) {
+  const fmt = (iso: string, withMonth: boolean) =>
+    new Date(`${iso}T12:00:00Z`).toLocaleDateString('es-CO', { day: 'numeric', ...(withMonth ? { month: 'short' } : {}), timeZone: 'UTC' });
+  const sameMonth = start.slice(0, 7) === end.slice(0, 7);
+  return `${fmt(start, !sameMonth)} – ${fmt(end, true)}`.replace(/\./g, '');
+}

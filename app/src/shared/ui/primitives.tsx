@@ -1,5 +1,5 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import type { ComponentProps, ReactNode } from 'react';
+import { useRef, type ComponentProps, type ReactNode } from 'react';
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -18,6 +18,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ButtonHeight, flavorColors, MinTouch, Spacing, type FlavorName, type ThemeColors } from '@/shared/theme/colors';
 import { elevation, Radius, Typography, type TypographyVariant } from '@/shared/theme/tokens';
 import { useTheme } from '@/shared/theme/use-theme';
+import { useKeepFocusedInputVisible } from '@/shared/hooks/use-keep-focused-visible';
 
 export type IconName = ComponentProps<typeof Ionicons>['name'];
 
@@ -56,10 +57,15 @@ export function Screen({ children, scroll, refreshing, onRefresh }: {
   onRefresh?: () => void;
 }) {
   const c = useTheme();
+  const scrollRef = useRef<ScrollView>(null);
+  const onScroll = useKeepFocusedInputVisible(scrollRef);
   const body = scroll ? (
     // Edge-to-edge en Android (SDK 57): la ventana no se achica con el teclado; "padding" en ambas plataformas.
     <KeyboardAvoidingView style={styles.flex} behavior="padding">
       <ScrollView
+        ref={scrollRef}
+        onScroll={onScroll}
+        scrollEventThrottle={64}
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
         refreshControl={

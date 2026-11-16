@@ -266,7 +266,8 @@
       "noPlan": "Primero organiza tu semana: así tengo comidas que mejorar.",
       "improveTitle": "Mejorar mi semana",
       "improveHint": "Elige qué buscas y te muestro los cambios antes de aplicarlos. También se lo puedes pedir al asistente."
-    }
+    },
+    "regenerateMore": "Volver a generar…"
   },
   "shopping": {
     "title": "Lista de compras",

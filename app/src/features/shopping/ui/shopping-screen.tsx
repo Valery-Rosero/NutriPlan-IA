@@ -24,6 +24,7 @@ import { parseCop } from '@/features/profile/domain/profile';
 import { useRecordPurchase } from '@/features/spending/application/use-spending';
 import { MonthlySpendCard } from '@/features/spending/ui/monthly-spend-card';
 import { useIsOnline } from '@/shared/hooks/use-is-online';
+import { useKeepFocusedInputVisible } from '@/shared/hooks/use-keep-focused-visible';
 import { dictationAvailable, joinDictation, useDictation } from '@/shared/voice/use-dictation';
 import { Spacing } from '@/shared/theme/colors';
 import {
@@ -57,6 +58,8 @@ export function ShoppingScreen({ header }: { header?: ReactNode }) {
   const generate = useGenerateList();
   // Al escribir abajo ("Agregar algo más", "¿Cuánto pagaste?"), el teclado no debe tapar el campo.
   const scroll = useRef<ScrollView>(null);
+  const onScroll = useKeepFocusedInputVisible(scroll);
+  // Al empezar a dictar (sin teclado) se baja hasta "Agregar algo más".
   const revealInput = () => setTimeout(() => scroll.current?.scrollToEnd({ animated: true }), 250);
 
   const body = () => {
@@ -103,7 +106,12 @@ export function ShoppingScreen({ header }: { header?: ReactNode }) {
   // Igual que el asistente: la vista se encoge con el teclado ("padding", Android edge-to-edge).
   return (
     <KeyboardAvoidingView style={styles.flex} behavior="padding">
-      <ScrollView ref={scroll} contentContainerStyle={styles.embedded} keyboardShouldPersistTaps="handled">
+      <ScrollView
+        ref={scroll}
+        onScroll={onScroll}
+        scrollEventThrottle={64}
+        contentContainerStyle={styles.embedded}
+        keyboardShouldPersistTaps="handled">
         {header}
         {!online && <Banner tone="warning" message={t('common.offline')} />}
         {generate.error && <Banner tone="danger" message={t(errorKey(generate.error))} />}
@@ -311,7 +319,6 @@ function ListView({ listKey, listId, items, onRefresh, refreshing = false, house
               placeholder={t('shopping.addPlaceholder')}
               returnKeyType="done"
               onSubmitEditing={submitNew}
-              onFocus={onTyping}
             />
           </View>
           {canDictate && (

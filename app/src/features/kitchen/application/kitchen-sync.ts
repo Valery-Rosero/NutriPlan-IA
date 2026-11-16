@@ -18,9 +18,14 @@ const KITCHEN_KEYS = [['pantry'], ['shopping'], ['cooking'], ['plan'], ['nutriti
  * cocina. Si rehacer la lista falla (sin conexión), lo demás se refresca igual y la lista se pone al día después.
  */
 export async function syncKitchen(queryClient: QueryClient, shopping: ShoppingRepository) {
-  const plan = queryClient.getQueryData<MealPlan | null>(['plan', 'current', todayIso()]);
-  if (plan?.id) await shopping.generate(plan.id).catch(() => undefined);
+  // Lo que la persona acaba de cambiar se ve de inmediato (plan, despensa, sugerencias); rehacer la lista de
+  // mercado va después y no frena la pantalla (antes "Omitir" parecía no hacer nada mientras se rehacía).
   await Promise.all(KITCHEN_KEYS.map((queryKey) => queryClient.invalidateQueries({ queryKey: [...queryKey] })));
+  const plan = queryClient.getQueryData<MealPlan | null>(['plan', 'current', todayIso()]);
+  if (plan?.id) {
+    await shopping.generate(plan.id).catch(() => undefined);
+    await queryClient.invalidateQueries({ queryKey: ['shopping'] });
+  }
 }
 
 /** Para usar en `onSuccess` de cualquier cambio a la cocina o al plan. */

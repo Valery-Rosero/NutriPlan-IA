@@ -115,19 +115,22 @@ export function AssistantScreen() {
             contentContainerStyle={styles.content}
             keyboardShouldPersistTaps="handled"
             onContentSizeChange={() => scroll.current?.scrollToEnd({ animated: true })}>
-            <BrandHeader title={t('assistant.title')} caption={t('assistant.headerCaption')} flavor="berry" />
-            <Card variant="filled">
-              <View style={styles.row}>
-                <IconBadge name="sparkles-outline" tone="berry" />
-                <View style={styles.flex}>
-                  <AppText variant="subtitle">
-                    {mealTitle ? t('assistant.introSwap', { title: mealTitle }) : t('assistant.intro')}
-                  </AppText>
-                  <AppText variant="caption" secondary>{t('assistant.safety')}</AppText>
-                  {!canDictate && <DictationHint />}
+            {/* Encabezado de una fila; la bienvenida solo mientras no hay conversación (luego, todo es chat). */}
+            <BrandHeader compact title={t('assistant.title')} flavor="berry" />
+            {messages.length === 0 && (
+              <Card variant="filled">
+                <View style={styles.row}>
+                  <IconBadge name="sparkles-outline" tone="berry" />
+                  <View style={styles.flex}>
+                    <AppText variant="subtitle">
+                      {mealTitle ? t('assistant.introSwap', { title: mealTitle }) : t('assistant.intro')}
+                    </AppText>
+                    <AppText variant="caption" secondary>{t('assistant.safety')}</AppText>
+                    {!canDictate && <DictationHint />}
+                  </View>
                 </View>
-              </View>
-            </Card>
+              </Card>
+            )}
 
             {messages.map((m) =>
               m.role === 'user' ? (
