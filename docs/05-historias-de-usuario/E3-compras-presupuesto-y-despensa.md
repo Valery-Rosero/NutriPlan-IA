@@ -1262,7 +1262,7 @@ Convierte el plan de comidas en una lista de compras accionable, controla el gas
 | Etiquetas | compras, agregada-por-po |
 | Ref. backlog | HU-85 · Subárea: Compras |
 | Dependencias | US-124 |
-| Estado | Hecha (15-nov-2026) |
+| Estado | Hecha (14-nov-2026) |
 
 **Historia de usuario**
 

@@ -1131,7 +1131,7 @@ Genera, ajusta y explica los planes de comidas diarios y semanales: motor de rec
 | Etiquetas | asistente-ia, agregada-por-po |
 | Ref. backlog | HU-83 · Subárea: Asistente IA |
 | Dependencias | US-178 |
-| Estado | Hecha (15-nov-2026) |
+| Estado | Hecha (14-nov-2026) |
 
 **Historia de usuario**
 
@@ -1191,7 +1191,7 @@ Genera, ajusta y explica los planes de comidas diarios y semanales: motor de rec
 | Etiquetas | asistente-ia, voz, agregada-por-po |
 | Ref. backlog | HU-84 · Subárea: Asistente IA |
 | Dependencias | US-183 |
-| Estado | Hecha (15-nov-2026) |
+| Estado | Hecha (14-nov-2026) |
 
 **Historia de usuario**
 
