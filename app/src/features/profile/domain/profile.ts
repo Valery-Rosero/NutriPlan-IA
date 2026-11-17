@@ -25,8 +25,16 @@ export type ProfilePatch = Partial<Pick<Profile, 'regionId' | 'householdSize' | 
 
 export type CatalogOption = { id: number; code: string; name: string };
 
+/**
+ * US-187: alergia que la persona escribe. Con `ingredientId` (un ingrediente del recetario) es un filtro estricto,
+ * igual que un alérgeno; sin él (p. ej. "Kiwi"), la IA lo evita. Máximo 10, de hasta 40 caracteres.
+ */
+export type CustomAllergy = { ingredientId: string | null; label: string };
+export const MAX_CUSTOM_ALLERGIES = 10;
+export const MAX_CUSTOM_ALLERGY_LENGTH = 40;
+
 /** Alergias y dietas: restricciones DURAS (las aplica la base de datos, no la app). */
-export type Restrictions = { allergenIds: number[]; dietIds: number[] };
+export type Restrictions = { allergenIds: number[]; dietIds: number[]; customAllergies?: CustomAllergy[] };
 
 /** Puerto del perfil y sus preferencias. Falla con AppError. */
 export interface ProfileRepository {

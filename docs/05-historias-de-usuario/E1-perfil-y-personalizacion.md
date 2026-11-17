@@ -4,7 +4,7 @@ Product Goal: Que cada usuario deje de improvisar qué cocinar y planifique su s
 
 Captura y mantiene las preferencias, restricciones y ajustes finos del usuario (dieta, alergias, presupuesto, macros, tiempo de cocina) que alimentan cada recomendación de la app.
 
-13 historias · 25 subtareas.
+14 historias · 25 subtareas.
 
 | ID | Título | Módulo | Fase | Prio |
 |---|---|---|---|---|
@@ -21,6 +21,7 @@ Captura y mantiene las preferencias, restricciones y ajustes finos del usuario (
 | [US-145](#us-145) | Activar modo «priorizar despensa» | M02 | F2 | Medium |
 | [US-170](#us-170) | Activar modo batch cooking | M02 | F3 | Low |
 | [US-171](#us-171) | Definir nivel de picante preferido | M02 | F3 | Low |
+| [US-187](#us-187) | Escribir mis propias alergias y ver una lista de alergias revisada | M02 | F2 | High |
 
 ---
 
@@ -682,5 +683,75 @@ Captura y mantiene las preferencias, restricciones y ajustes finos del usuario (
 - [ ] Se respetan las reglas de AGENTS.md (alergias, cantidades en servidor, sin datos de salud en logs, accesibilidad).
 - [ ] Textos en es-CO; estados vacío, carga y error implementados.
 - [ ] Dependencias listadas resueltas.
+
+---
+
+<a id="us-187"></a>
+### US-187 · Escribir mis propias alergias y ver una lista de alergias revisada
+
+| Campo | Valor |
+|---|---|
+| ID | US-187 (id Jira 187) |
+| Épica | E1 · Perfil y personalización |
+| Módulo | [M02 · Perfil y preferencias](../04-modulos/M02.md) |
+| Fase | F2 Mejora y retención |
+| Prioridad | High (orden en backlog: #87 de 87) |
+| Tipo | historia |
+| Etiquetas | perfil, alergias, agregada-por-po |
+| Ref. backlog | HU-87 · Subárea: Perfil |
+| Dependencias | US-107 |
+| Estado | Hecha (17-nov-2026) · por probar en el APK |
+
+**Historia de usuario**
+
+- **Como** usuario con alergias
+- **quiero** escribir alergias que no están en la lista (como tomate o kiwi) y elegir de una lista clara, con ejemplos
+- **para** que nunca me propongan algo que me hace daño, aunque mi alergia no sea de las más comunes.
+
+**Criterios de aceptación**
+
+1. **Escenario 1**
+   - Dado que escribo «tom» en «¿Otra alergia? Escríbela»
+   - Cuando toco la sugerencia «Tomate»
+   - Entonces ningún plan, receta, sustituto ni propuesta de la IA vuelve a tener tomate, ni siquiera como opcional o como opción.
+
+2. **Escenario 2**
+   - Dado que escribo «kiwi», que no está en el recetario
+   - Cuando toco «Agregar «kiwi» como alergia propia»
+   - Entonces queda guardada, se ve en mi perfil y la IA nunca la usa.
+
+3. **Escenario 3**
+   - Dado que tengo alergias propias
+   - Cuando toco una de ellas
+   - Entonces se quita (en el onboarding y en el perfil).
+
+4. **Escenario 4**
+   - Dado que no di la autorización de datos de salud
+   - Cuando intento guardar una alergia propia
+   - Entonces no se guarda y la app me explica por qué.
+
+5. **Escenario 5**
+   - Dado que veo la lista de alergias
+   - Cuando la reviso
+   - Entonces dice «Soya», trae ejemplos («Frutos secos (nueces, almendras…)») e incluye «Sulfitos».
+
+6. **Escenario 6**
+   - Dado que revoco la autorización o elimino mi cuenta
+   - Cuando reviso mis datos
+   - Entonces mis alergias propias se borraron.
+
+**Especificación técnica**
+
+- **Backend (qué existe y cómo usarlo):** Tabla `user_custom_allergies` (ingrediente del catálogo o texto libre; RLS; autorización de datos sensibles) y RPC `set_my_custom_allergies`. `private.ingredient_allergic_for_user` alimenta `ingredient_blocked_for_user` y `recipe_conflicts_with_user` (filtro estricto). `assistant_profile` las incluye en «no usar» (ADR-041).
+- **Pantallas / UI:** Onboarding y Perfil › Alergias y dietas (campo «¿Otra alergia? Escríbela», sugerencias, chips que se quitan)
+- **Reglas, límites y notas:** Máximo 10, de hasta 40 caracteres, sin repetidos. Dato de salud (Ley 1581): se exporta y se borra al revocar.
+- **Pruebas existentes:** backend/supabase/tests/99q_custom_allergies.sql; app/src/features/profile/ui/__tests__/restrictions-form.test.tsx
+
+**Definición de hecho (además del DoD global)**
+
+- [x] Cada escenario y caso borde tiene una prueba automática (unitaria, de integración con la BD o Maestro E2E).
+- [x] Se respetan las reglas de AGENTS.md (alergias, cantidades en servidor, sin datos de salud en logs, accesibilidad).
+- [x] Textos en es-CO; estados vacío, carga y error implementados.
+- [x] Dependencias listadas resueltas.
 
 ---

@@ -6,7 +6,7 @@
 | Nivel | Tipo en Jira | Cuántos | Qué es aquí |
 |---|---|---|---|
 | 1 | **Epic** | 6 | Las grandes áreas del producto (E1–E6), con el Product Goal |
-| 2 | **Story** | 86 | Historias de usuario US-101 a US-186 (los *spikes* y *enablers* van como Story con su etiqueta) |
+| 2 | **Story** | 87 | Historias de usuario US-101 a US-187 (los *spikes* y *enablers* van como Story con su etiqueta) |
 | 2 | **Task** | 37 | Trabajo técnico que no es una historia: rediseño, logo, despliegues, Firebase, documentación, producción |
 | 2 | **Bug** | 25 | Errores reales que se encontraron y corrigieron |
 | 3 | **Sub-task** | 306 | Los pasos de cada historia o tarea (base de datos, pantalla, pruebas…) |

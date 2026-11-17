@@ -1713,6 +1713,32 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"user_custom_allergies": {
+                  Row: {
+                    "created_at": string,"id": string,"ingredient_id": string | null,"label": string,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"id"?: string,"ingredient_id"?: string | null,"label": string,"user_id": string
+                  }
+                  Update: {
+                    "created_at"?: string,"id"?: string,"ingredient_id"?: string | null,"label"?: string,"user_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "user_custom_allergies_ingredient_id_fkey"
+      columns: ["ingredient_id"]
+isOneToOne: false
+      referencedRelation: "ingredients"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "user_custom_allergies_user_id_fkey"
+      columns: ["user_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"user_conditions": {
                   Row: {
                     "condition_id": number,"declared_at": string,"user_id": string
@@ -2273,6 +2299,9 @@ isOneToOne: false
                            },
 "set_my_cuisines":
 { Args: { "p_cuisine_ids": (number)[] }; Returns: undefined
+                           },
+"set_my_custom_allergies":
+{ Args: { "p_items": Json }; Returns: undefined
                            },
 "set_my_restrictions":
 { Args: { "p_allergen_ids": (number)[],"p_diet_ids": (number)[] }; Returns: undefined
