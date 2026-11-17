@@ -150,10 +150,12 @@ function RootNavigator() {
       <Stack.Protected guard={mustOnboard}>
         <Stack.Screen name="onboarding" />
       </Stack.Protected>
+      {/* auth-callback va con el acceso: al canjear el código se abre la sesión y, en cuanto las puertas deciden,
+          el navegador lleva solo a la app, al onboarding o a los consentimientos (sin pantalla de carga eterna). */}
       <Stack.Protected guard={!signedIn}>
         <Stack.Screen name="(auth)" />
+        <Stack.Screen name="auth-callback" />
       </Stack.Protected>
-      <Stack.Screen name="auth-callback" />
       <Stack.Screen name="reset-password" />
       <Stack.Screen name="legal/[kind]" />
     </Stack>
