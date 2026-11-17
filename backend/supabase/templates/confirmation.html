@@ -1,26 +1,58 @@
-<!-- Asunto: Confirma tu cuenta de NutriPlan -->
-<div style="font-family: Arial, Helvetica, sans-serif; max-width: 480px; margin: 0 auto; color: #25344F;">
-  <div style="background: #25344F; padding: 24px; border-radius: 16px 16px 0 0;">
-    <p style="margin: 0; color: #B4C2D3; font-size: 13px; letter-spacing: 1px;">NUTRIPLAN</p>
-    <h1 style="margin: 8px 0 0; color: #D5B893; font-family: Georgia, serif; font-weight: normal; font-size: 26px;">
-      Confirma tu cuenta
-    </h1>
-  </div>
-  <div style="background: #FFFDF9; padding: 24px; border: 1px solid #E8DFD3; border-top: 0; border-radius: 0 0 16px 16px;">
-    <p style="font-size: 16px; line-height: 1.5;">
-      ¡Hola! Ya casi: confirma tu correo para empezar a cocinar con lo que tienes en casa.
-    </p>
-    <p style="text-align: center; margin: 28px 0;">
-      <a href="{{ .ConfirmationURL }}"
-         style="background: #25344F; color: #D5B893; padding: 14px 28px; border-radius: 999px; text-decoration: none; font-size: 16px; display: inline-block;">
-        Confirmar mi cuenta
-      </a>
-    </p>
-    <p style="font-size: 14px; line-height: 1.5; color: #617891;">
-      <strong>Ábrelo desde el teléfono donde tienes NutriPlan</strong>: el enlace abre la app directamente.
-    </p>
-    <p style="font-size: 13px; line-height: 1.5; color: #617891;">
-      Si no creaste una cuenta en NutriPlan, ignora este correo.
-    </p>
-  </div>
-</div>
+<!-- Asunto: Confirma tu cuenta de NutriPlan IA -->
+<!-- Plantilla de NutriPlan IA ("Cocina viva"). En staging/producción se pega en el panel de Supabase:
+     Authentication › Emails › Templates. Tablas y estilos en línea para que se vea igual en Gmail y Outlook. -->
+<div style="display:none; max-height:0; overflow:hidden; opacity:0; mso-hide:all; font-size:1px; line-height:1px; color:#FFF8F1;">Un toque y empiezas a planear tus comidas con lo que tienes en casa.</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#FFF8F1" style="background:#FFF8F1;">
+  <tr>
+    <td align="center" style="padding:32px 16px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#FFFFFF" style="max-width:520px; background:#FFFFFF; border:1px solid #EFE2D4; border-radius:22px;">
+        <tr>
+          <td style="padding:32px 28px 0;">
+            <img src="https://raw.githubusercontent.com/Valery-Rosero/NutriPlan-IA/main/web/img/logo-nutriplan-ia.png" width="188" height="50" alt="NutriPlan IA"
+                 style="display:block; border:0; outline:none; width:188px; max-width:188px; height:auto; font-family:Arial, Helvetica, sans-serif; font-size:22px; font-weight:bold; color:#8A3E7A;">
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:24px 28px 0; font-family:Arial, Helvetica, sans-serif;">
+            <h1 style="margin:0; font-family:Arial, Helvetica, sans-serif; font-size:24px; line-height:1.25; font-weight:bold; color:#2B211C;">Confirma tu cuenta</h1>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:12px 28px 0; font-family:Arial, Helvetica, sans-serif; font-size:16px; line-height:1.5; color:#2B211C;">¡Hola! Ya casi: confirma tu correo para empezar a planear tus comidas con lo que tienes en casa.</td>
+        </tr>
+        <tr>
+          <td style="padding:24px 28px 0;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td align="center" bgcolor="#BC3F0B" style="background:#BC3F0B; border-radius:14px;">
+                  <a href="{{ .ConfirmationURL }}"
+                     style="display:block; padding:16px 20px; font-family:Arial, Helvetica, sans-serif; font-size:16px; line-height:20px; font-weight:bold; color:#FFFFFF; text-decoration:none; border-radius:14px;">Confirmar mi cuenta</a>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:20px 28px 0;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td bgcolor="#F6ECE1" style="background:#F6ECE1; border-radius:14px; padding:12px 16px; font-family:Arial, Helvetica, sans-serif; font-size:14px; line-height:1.5; color:#2B211C;"><strong>Ábrelo desde el celular donde tienes NutriPlan IA:</strong> el botón abre la app directamente.</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:16px 28px 28px; font-family:Arial, Helvetica, sans-serif; font-size:13px; line-height:1.5; color:#6A584C;">Si no creaste una cuenta en NutriPlan IA, ignora este correo.</td>
+        </tr>
+      </table>
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:520px;">
+        <tr>
+          <td align="center" style="padding:20px 16px 0; font-family:Arial, Helvetica, sans-serif; font-size:11px; line-height:1.6; font-weight:bold; letter-spacing:2px; color:#6A584C;">ALIMENTA TU MEJOR VERSIÓN</td>
+        </tr>
+        <tr>
+          <td align="center" style="padding:4px 16px 0; font-family:Arial, Helvetica, sans-serif; font-size:12px; line-height:1.6; color:#6A584C;">NutriPlan IA · Proyecto académico · Pasto, Colombia</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
