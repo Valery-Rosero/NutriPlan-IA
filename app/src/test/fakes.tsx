@@ -53,7 +53,7 @@ export function fakeProfile(overrides: Partial<ProfileRepository> = {}): jest.Mo
   return {
     getProfile: jest.fn(async () => PROFILE),
     updateProfile: jest.fn(async () => {}),
-    getRestrictions: jest.fn(async () => ({ allergenIds: [], dietIds: [] })),
+    getRestrictions: jest.fn(async () => ({ allergenIds: [], dietIds: [], customAllergies: [] })),
     setRestrictions: jest.fn(async () => {}),
     listRegions: jest.fn(async () => [{ id: 3, code: 'CO-NAR-PASTO', name: 'Pasto' }]),
     listAllergens: jest.fn(async () => [{ id: 5, code: 'egg', name: 'Huevo' }, { id: 6, code: 'milk', name: 'Leche' }]),

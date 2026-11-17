@@ -4445,5 +4445,89 @@
   "notes": "Validación de recetas compartida con el asistente (`_shared/recipe-ai.ts`). Usa el \"no usar\" sin el porqué (ADR-037).",
   "tests": "backend/supabase/tests/99p_plan_with_ai.sql; backend/supabase/functions/plan-ai/logic.test.ts; app/src/features/plan/ui/__tests__/plan-with-ai.test.tsx",
   "subtasks": []
+ },
+ {
+  "id": 187,
+  "key": "US-187",
+  "title": "Escribir mis propias alergias y ver una lista de alergias revisada",
+  "epic_id": 1,
+  "epic": "Perfil y personalización",
+  "epic_code": "E1",
+  "module": "M02",
+  "module_name": "Perfil y preferencias",
+  "phase": 2,
+  "phase_name": "F2 Mejora y retención",
+  "priority": "High",
+  "rank": 87,
+  "type": "historia",
+  "labels": [
+   "perfil",
+   "alergias",
+   "agregada-por-po"
+  ],
+  "ref": "HU-87",
+  "subarea": "Perfil",
+  "rol": "usuario con alergias",
+  "quiero": "escribir alergias que no están en la lista (como tomate o kiwi) y elegir de una lista clara, con ejemplos",
+  "para": "que nunca me propongan algo que me hace daño, aunque mi alergia no sea de las más comunes",
+  "raw": "",
+  "criteria": [
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que escribo «tom» en «¿Otra alergia? Escríbela»",
+     "Cuando toco la sugerencia «Tomate»",
+     "Entonces ningún plan, receta, sustituto ni propuesta de la IA vuelve a tener tomate, ni siquiera como opcional o como opción."
+    ]
+   },
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que escribo «kiwi», que no está en el recetario",
+     "Cuando toco «Agregar «kiwi» como alergia propia»",
+     "Entonces queda guardada, se ve en mi perfil y la IA nunca la usa."
+    ]
+   },
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que tengo alergias propias",
+     "Cuando toco una de ellas",
+     "Entonces se quita (en el onboarding y en el perfil)."
+    ]
+   },
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que no di la autorización de datos de salud",
+     "Cuando intento guardar una alergia propia",
+     "Entonces no se guarda y la app me explica por qué."
+    ]
+   },
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que veo la lista de alergias",
+     "Cuando la reviso",
+     "Entonces dice «Soya», trae ejemplos («Frutos secos (nueces, almendras…)») e incluye «Sulfitos»."
+    ]
+   },
+   {
+    "kind": "escenario",
+    "lines": [
+     "Dado que revoco la autorización o elimino mi cuenta",
+     "Cuando reviso mis datos",
+     "Entonces mis alergias propias se borraron."
+    ]
+   }
+  ],
+  "deps": [
+   107
+  ],
+  "backend": "Tabla `user_custom_allergies` (ingrediente del catálogo o texto libre; RLS; autorización de datos sensibles) y RPC `set_my_custom_allergies`. `private.ingredient_allergic_for_user` alimenta `ingredient_blocked_for_user` y `recipe_conflicts_with_user` (filtro estricto). `assistant_profile` las incluye en «no usar» (ADR-041).",
+  "screens": "Onboarding y Perfil › Alergias y dietas (campo «¿Otra alergia? Escríbela», sugerencias, chips que se quitan)",
+  "notes": "Máximo 10, de hasta 40 caracteres, sin repetidos. Dato de salud (Ley 1581): se exporta y se borra al revocar.",
+  "tests": "backend/supabase/tests/99q_custom_allergies.sql; app/src/features/profile/ui/__tests__/restrictions-form.test.tsx",
+  "subtasks": []
  }
 ]

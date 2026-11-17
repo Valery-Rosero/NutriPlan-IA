@@ -531,7 +531,21 @@
       "dietTitle": "Dieta",
       "dietHint": "Si no sigues ninguna, déjalo sin marcar.",
       "safety": "Filtramos con la información que declaras. Aun así, lee siempre las etiquetas: puede haber trazas o ingredientes ocultos.",
-      "needsAuthorization": "Para guardar alergias y dietas primero necesitamos tu autorización de datos sensibles."
+      "needsAuthorization": "Para guardar alergias y dietas primero necesitamos tu autorización de datos sensibles.",
+      "examples": {
+        "tree_nuts": "nueces, almendras…",
+        "shellfish": "camarón, calamar…",
+        "gluten": "trigo, cebada, avena…",
+        "sesame": "ajonjolí",
+        "sulfites": "vino, embutidos…"
+      },
+      "customLabel": "¿Otra alergia? Escríbela",
+      "customPlaceholder": "Por ejemplo: tomate, kiwi, apio",
+      "customAddFree": "Agregar «{{label}}» como alergia propia",
+      "customMine": "Tus alergias propias",
+      "customRemove": "Quitar {{label}}",
+      "customNotInCatalog": "«{{labels}}» no está en nuestras recetas. Igual lo tendremos en cuenta: la IA nunca lo usará.",
+      "customMax": "Puedes escribir hasta {{count}} alergias propias."
     },
     "budget": {
       "title": "¿Cuánto quieres gastar en comida?",
@@ -675,7 +689,8 @@
     "invalid_push_token": "No pudimos registrar este teléfono. Inténtalo de nuevo.",
     "ai_unavailable": "No pude analizar la foto en este momento. Escríbelo o búscalo en el catálogo.",
     "recipe_not_created": "No pude armar esa receta. Prueba con otro plato de la lista.",
-    "not_enough_dishes": "No alcancé a armar suficientes platos. Inténtalo de nuevo o usa el plan rápido."
+    "not_enough_dishes": "No alcancé a armar suficientes platos. Inténtalo de nuevo o usa el plan rápido.",
+    "too_many_custom_allergies": "Puedes escribir hasta 10 alergias propias."
   },
   "onboarding": {
     "progress": "Paso {{step}} de {{total}}",

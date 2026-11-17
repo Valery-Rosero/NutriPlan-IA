@@ -56,18 +56,30 @@ export class SupabaseProfileRepository implements ProfileRepository {
   }
 
   async getRestrictions(): Promise<Restrictions> {
-    const [allergens, diets] = await Promise.all([
+    const [allergens, diets, custom] = await Promise.all([
       this.client.from('user_allergens').select('allergen_id'),
       this.client.from('user_diets').select('diet_id'),
+      this.client.from('user_custom_allergies').select('ingredient_id, label').order('created_at'),
     ]);
     if (allergens.error) throw toAppError(allergens.error);
     if (diets.error) throw toAppError(diets.error);
-    return { allergenIds: allergens.data.map((a) => a.allergen_id), dietIds: diets.data.map((d) => d.diet_id) };
+    if (custom.error) throw toAppError(custom.error);
+    return {
+      allergenIds: allergens.data.map((a) => a.allergen_id),
+      dietIds: diets.data.map((d) => d.diet_id),
+      customAllergies: custom.data.map((c) => ({ ingredientId: c.ingredient_id, label: c.label })),
+    };
   }
 
-  async setRestrictions({ allergenIds, dietIds }: Restrictions) {
+  async setRestrictions({ allergenIds, dietIds, customAllergies }: Restrictions) {
     const { error } = await this.client.rpc('set_my_restrictions', { p_allergen_ids: allergenIds, p_diet_ids: dietIds });
     if (error) throw toAppError(error);
+    if (customAllergies) {
+      // US-187: la base valida (máximo 10, sin repetidos, autorización de datos de salud) y reemplaza la lista completa.
+      const items = customAllergies.map((c) => ({ label: c.label, ingredient_id: c.ingredientId }));
+      const res = await this.client.rpc('set_my_custom_allergies', { p_items: items });
+      if (res.error) throw toAppError(res.error);
+    }
   }
 
   async listRegions() {

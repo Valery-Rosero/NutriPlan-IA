@@ -85,3 +85,4 @@ US-183,Pedirle ideas al asistente y que respete lo que no puedo comer,E2,M05,2,H
 US-184,Dictar con el micrófono en vez de escribir,E2,M05,2,Medium,84,historia,asistente-ia voz agregada-por-po,HU-84,Asistente IA,183,3,0
 US-185,Agregar varios productos a la lista de una vez,E3,M06,2,Medium,85,historia,compras agregada-por-po,HU-85,Compras,124,2,0
 US-186,Planear la semana o el mes con IA,E2,M04,2,High,86,historia,plan asistente-ia agregada-por-po,HU-86,Plan de comidas,117 175 183,5,0
+US-187,Escribir mis propias alergias y ver una lista de alergias revisada,E1,M02,2,High,87,historia,perfil alergias agregada-por-po,HU-87,Perfil,107,6,0

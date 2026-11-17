@@ -2,7 +2,7 @@
 
     Épica  →  Historia / Tarea / Bug  →  Subtarea
 
-Fuente: docs/05-historias-de-usuario/historias.json (las 86 historias) + lo que se construyó de verdad
+Fuente: docs/05-historias-de-usuario/historias.json (las 87 historias) + lo que se construyó de verdad
 (sprints, estado y subtareas, según git y docs/07-plan-de-construccion/plan-de-arranque.md).
 Uso:  python docs/07-plan-de-construccion/jira/_generar_jira.py
 """
@@ -60,11 +60,11 @@ for sprint, ids in {
     "Sprint 11": [101, 121, 158],
     "Sprint 12": [174, 175, 176, 177, 178],
     "Sprint 13": [179, 180, 181, 182],
-    "Sprint 14": [163, 164, 183, 184, 185, 186],  # 163 y 164 se construyeron en el 12; pasan a medir su precisión en el APK
+    "Sprint 14": [163, 164, 183, 184, 185, 186, 187],  # 163 y 164 se construyeron en el 12; pasan a medir su precisión en el APK
 }.items():
     for i in ids:
         SPRINT_DE[i] = sprint
-ESTADO = {101: "To Do", 121: "In Progress", 158: "In Progress", }  # el resto con sprint: Done; sin sprint: To Do
+ESTADO = {101: "To Do", 121: "In Progress", 158: "In Progress", 187: "In Progress"}  # el resto con sprint: Done; sin sprint: To Do
 
 PUNTOS = {101: 5, 102: 8, 103: 5, 104: 8, 105: 3, 106: 3, 107: 5, 108: 2, 109: 2, 110: 13, 111: 8, 112: 5, 113: 5,
           114: 2, 115: 3, 116: 3, 117: 13, 118: 5, 119: 5, 120: 5, 121: 5, 122: 8, 123: 5, 124: 8, 125: 3, 126: 5,
@@ -72,7 +72,7 @@ PUNTOS = {101: 5, 102: 8, 103: 5, 104: 8, 105: 3, 106: 3, 107: 5, 108: 2, 109: 2
           140: 5, 141: 5, 142: 2, 143: 2, 144: 2, 145: 2, 146: 3, 147: 5, 148: 8, 149: 3, 150: 5, 151: 5, 152: 5,
           153: 5, 154: 3, 155: 3, 156: 3, 157: 8, 158: 5, 159: 5, 160: 3, 161: 13, 162: 8, 163: 13, 164: 13, 165: 8,
           166: 13, 167: 8, 168: 5, 169: 8, 170: 5, 171: 2, 172: 5, 173: 2, 174: 8,
-          175: 8, 176: 8, 177: 5, 178: 8, 179: 8, 180: 5, 181: 8, 182: 5, 183: 8, 184: 5, 185: 2, 186: 13}
+          175: 8, 176: 8, 177: 5, 178: 8, 179: 8, 180: 5, 181: 8, 182: 5, 183: 8, 184: 5, 185: 2, 186: 13, 187: 8}
 
 COMO_QUEDO = {
     104: "En vez de bloquear 5 intentos por cuenta (Supabase no lo trae), se usan los límites de tasa de Supabase Auth (ADR-019).",
@@ -99,6 +99,7 @@ COMO_QUEDO = {
     183: "ADR-037: amplía la ADR-025 (la IA sabe qué evitar, nunca por qué). Política de datos v3.",
     184: "ADR-038. Antes hubo una pista para dictar con el teclado (tarea 233); el botón propio se hizo al pedirlo la PO.",
     185: "Pedida por la PO al probar la lista; también funciona dictando.",
+    187: "ADR-041. Pedida por la PO: las alergias escritas a mano se cumplen igual de estricto que las de la lista.",
     186: "ADR-039. plan-ai desplegada en staging y probada en el APK (\"Hecho con IA\").",
 }
 
@@ -193,6 +194,9 @@ SUB = {
     183: ["Acción chat: 4–5 platos distintos", "Acción fill: la IA llena la receta y la base la valida", "assistant_profile y lista \"no usar\" sin el porqué", "Receta completa en el chat con kcal, proteína y costo de la base", "Ideas del recetario si la IA no responde"],
     184: ["Botón de micrófono junto a enviar", "Reconocimiento de voz del teléfono en es-CO", "Permiso de micrófono (RECORD_AUDIO)", "Política de datos v3: la voz no se graba ni se guarda"],
     185: ["Separar por comas y por \"y\"", "Aviso de cuáles se van a agregar", "Cada producto en su sección"],
+    187: [("Lista revisada: «Soya», ejemplos y «Sulfitos»", "Done"), ("Tabla user_custom_allergies y filtro estricto en la base", "Done"),
+          ("Campo «¿Otra alergia? Escríbela» con sugerencias y dictado", "Done"), ("Pruebas SQL y de la app", "Done"),
+          ("Probar en el APK", "To Do")],
     186: [("Edge Function plan-ai: menú, recetas y guardado", "Done"), ("Reparto sin repetir plato en días seguidos, primero lo que vence", "Done"),
           ("Mi semana: Planear con IA, avance real y Hecho con IA", "Done"), ("Desplegar plan-ai a staging", "Done"),
           ("Probar la semana y el mes con IA en el APK", "Done")],

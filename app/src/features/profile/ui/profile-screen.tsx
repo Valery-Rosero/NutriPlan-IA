@@ -55,8 +55,14 @@ export function ProfileScreen() {
   ]
     .filter(Boolean)
     .join(' · ');
-  const restrictionsSummary = `${t('profile.summary.allergies')}: ${names(restrictions.data?.allergenIds, allergens.data)} · ${t('profile.summary.diets')}: ${names(restrictions.data?.dietIds, diets.data)}`;
-  const noAllergies = restrictions.data?.allergenIds.length === 0;
+  // US-187: las alergias propias van junto a las de la lista ("Alergias: Maní, Mariscos, Tomate, Kiwi").
+  const customLabels = (restrictions.data?.customAllergies ?? []).map((a) => a.label);
+  const allergyNames = [
+    ...(restrictions.data?.allergenIds ?? []).map((id) => allergens.data?.find((o) => o.id === id)?.name).filter(Boolean),
+    ...customLabels,
+  ].join(', ') || t('profile.none');
+  const restrictionsSummary = `${t('profile.summary.allergies')}: ${allergyNames} · ${t('profile.summary.diets')}: ${names(restrictions.data?.dietIds, diets.data)}`;
+  const noAllergies = restrictions.data?.allergenIds.length === 0 && customLabels.length === 0;
 
   const email = session?.email ?? '';
   const initial = (email.trim()[0] ?? 'N').toUpperCase();

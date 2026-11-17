@@ -44,3 +44,4 @@ Estado: **Aceptada** = ya implementada o decidida con el usuario; **Propuesta** 
 | [038](ADR-038.md) | Dictar con un botón propio, con el reconocimiento de voz del teléfono | Aceptada |
 | [039](ADR-039.md) | Semana y mes con IA: platos nuevos, validados por la base, en tres pasos | Aceptada |
 | [040](ADR-040.md) | Página "tu correo quedó confirmado" en GitHub Pages | Aceptada |
+| [041](ADR-041.md) | Alergias propias y lista de alérgenos revisada | Aceptada |

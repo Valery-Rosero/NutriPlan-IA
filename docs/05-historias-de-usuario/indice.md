@@ -1,6 +1,6 @@
 # Índice de historias de usuario
 
-Fuente de verdad legible por máquina: `historias.json` (y `historias.csv`). 86 historias, 82 subtareas. El orden del backlog (#) es la prioridad de construcción dentro de cada fase.
+Fuente de verdad legible por máquina: `historias.json` (y `historias.csv`). 87 historias, 82 subtareas. El orden del backlog (#) es la prioridad de construcción dentro de cada fase.
 
 | # | ID | Título | Épica | Módulo | Fase | Prio | Tipo | Deps |
 |---|---|---|---|---|---|---|---|---|
@@ -90,3 +90,4 @@ Fuente de verdad legible por máquina: `historias.json` (y `historias.csv`). 86 
 | 84 | US-184 | Dictar con el micrófono en vez de escribir | E2 | M05 | F2 | Medium | historia | US-183 |
 | 85 | US-185 | Agregar varios productos a la lista de una vez | E3 | M06 | F2 | Medium | historia | US-124 |
 | 86 | US-186 | Planear la semana o el mes con IA | E2 | M04 | F2 | High | historia | US-117, US-175, US-183 |
+| 87 | US-187 | Escribir mis propias alergias y ver una lista de alergias revisada | E1 | M02 | F2 | High | historia | US-107 |
