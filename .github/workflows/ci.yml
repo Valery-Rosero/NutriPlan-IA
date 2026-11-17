@@ -5,6 +5,11 @@ on:
     branches: [main]
   pull_request:
 
+# El piloto es en Pasto: la app (fecha del teléfono) y la base cuentan "hoy" en hora de Colombia. Con el reloj en
+# UTC, entre las 7 p. m. y la medianoche las pruebas veían días distintos y fallaban según la hora.
+env:
+  TZ: America/Bogota
+
 jobs:
   database:
     name: Base de datos (migraciones + pruebas SQL)
