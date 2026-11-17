@@ -15,7 +15,7 @@ Solo Android. Las compilaciones se hacen en la nube con EAS: no hace falta Andro
    npx supabase functions deploy send-notifications error-alert  # avisos y alertas de fallas
    ```
    Para producción, lo mismo con `--project-ref drgzvvkkjxqvolcerpjx`.
-2. En el panel de Supabase de ese proyecto: SMTP (Gmail con contraseña de aplicación; o Resend con dominio verificado si más adelante hay dominio), plantillas en español de `backend/supabase/templates/`, *Site URL* `nutriplan://`, *Redirect URLs* `nutriplan://**` y `exp://**`, contraseña mínima 8 con mayúsculas, minúsculas y números.
+2. En el panel de Supabase de ese proyecto: SMTP (Gmail con contraseña de aplicación; o Resend con dominio verificado si más adelante hay dominio), plantillas en español de `backend/supabase/templates/`, *Site URL* `nutriplan://`, *Redirect URLs* `nutriplan://**`, `exp://**` y `https://valery-rosero.github.io/NutriPlan-IA/**` (página de confirmación, ADR-040), contraseña mínima 8 con mayúsculas, minúsculas y números.
 3. Cuenta en [expo.dev](https://expo.dev) e iniciar sesión: `cd app && npx eas-cli@latest login`, luego `npx eas-cli@latest init` (vincula el proyecto).
 4. Notificaciones (Firebase). `google-services.json` **no va al repositorio** (tiene una clave de Google; está en `.gitignore`). Se guarda en EAS como variable secreta de tipo archivo, una vez por ambiente (`preview` y `production`, según `eas.json › build.<perfil>.environment`):
    ```bash

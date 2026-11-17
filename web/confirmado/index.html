@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="es-CO">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Correo confirmado · NutriPlan IA</title>
+<link rel="icon" href="../img/logo-nutriplan-ia.png">
+<!--
+  Página a la que Supabase devuelve a la persona después de confirmar su correo (ADR-040).
+  Supabase YA confirmó el correo antes de traerla aquí: esta página solo lee el resultado de la dirección
+  (?code=… si salió bien; error_code / error_description si el enlace venció) y nunca guarda ni envía nada.
+  En el celular, "Abrir NutriPlan IA" lleva el código a la app (nutriplan://auth-callback), que abre la sesión.
+-->
+<style>
+  :root {
+    --harina: #FFF8F1; --leche: #FFFFFF; --avena: #F6ECE1; --linea: #EFE2D4;
+    --cacao: #2B211C; --canela: #6A584C; --tomate: #BC3F0B; --albahaca: #2F7A3E; --albahaca-suave: #DDF3E1;
+    --mango-suave: #FFF0C7; --mango-texto: #6E4A00;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --harina: #17120F; --leche: #221B17; --avena: #2D241F; --linea: #3A2F28;
+      --cacao: #F7EEE6; --canela: #CDBBAE; --tomate: #FF8A5C; --albahaca: #7FD08F; --albahaca-suave: #1F3A26;
+      --mango-suave: #3A2E12; --mango-texto: #F2C55C;
+      color-scheme: dark;
+    }
+    .boton { color: #2B211C !important; }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+  body {
+    background: var(--harina); color: var(--cacao);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    display: flex; align-items: center; justify-content: center;
+    padding: 32px max(16px, env(safe-area-inset-right)) 32px max(16px, env(safe-area-inset-left));
+  }
+  main {
+    width: 100%; max-width: 440px; background: var(--leche); border: 1px solid var(--linea);
+    border-radius: 24px; padding: 32px 28px; display: flex; flex-direction: column; gap: 16px; text-align: center;
+  }
+  .logo { display: block; width: 188px; height: auto; margin: 0 auto 8px; }
+  .sello {
+    width: 64px; height: 64px; border-radius: 50%; margin: 0 auto; display: flex; align-items: center; justify-content: center;
+    background: var(--albahaca-suave); color: var(--albahaca); font-size: 34px; font-weight: 700;
+  }
+  .sello.aviso { background: var(--mango-suave); color: var(--mango-texto); }
+  h1 { margin: 0; font-size: 24px; line-height: 1.25; text-wrap: balance; }
+  p { margin: 0; font-size: 16px; line-height: 1.5; }
+  .suave { color: var(--canela); font-size: 14px; }
+  .nota { background: var(--avena); border-radius: 14px; padding: 12px 16px; font-size: 14px; text-align: left; }
+  .boton {
+    display: block; background: var(--tomate); color: #FFFFFF; font-weight: 700; font-size: 16px; text-decoration: none;
+    padding: 16px 20px; border-radius: 14px; min-height: 52px;
+  }
+  .boton:focus-visible { outline: 3px solid var(--cacao); outline-offset: 3px; }
+  .lema { margin-top: 8px; font-size: 11px; font-weight: 700; letter-spacing: 2px; color: var(--canela); }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <img class="logo" src="../img/logo-nutriplan-ia.png" width="188" height="50" alt="NutriPlan IA">
+
+  <!-- Salió bien -->
+  <section id="ok" hidden>
+    <div class="sello" aria-hidden="true">✓</div>
+    <h1>¡Listo! Tu correo quedó confirmado</h1>
+    <p id="ok-movil" hidden>Ya puedes empezar a planear tus comidas.</p>
+    <a id="abrir" class="boton" href="nutriplan://sign-in" hidden>Abrir NutriPlan IA</a>
+    <p id="ok-movil-nota" class="suave" hidden>Si la app no se abre, ábrela tú y entra con tu correo y tu contraseña.</p>
+    <p id="ok-compu" hidden>Abre NutriPlan IA en tu celular y entra con tu correo y tu contraseña.</p>
+  </section>
+
+  <!-- El enlace venció o ya se usó -->
+  <section id="vencido" hidden>
+    <div class="sello aviso" aria-hidden="true">!</div>
+    <h1>Este enlace ya no sirve</h1>
+    <p>Venció o ya se usó. Si ya confirmaste tu correo, entra a la app normalmente.</p>
+    <p class="nota">Si no: en la app, en “Revisa tu correo”, toca <b>Reenviar correo</b> y usa el enlace nuevo.</p>
+  </section>
+
+  <!-- Se abrió la página sin venir de un correo -->
+  <section id="sin-datos" hidden>
+    <h1>Confirmación de correo</h1>
+    <p>Esta página aparece después de tocar “Confirmar mi cuenta” en el correo de NutriPlan IA.</p>
+  </section>
+
+  <p class="lema">ALIMENTA TU MEJOR VERSIÓN</p>
+</main>
+<script>
+  (function () {
+    var query = new URLSearchParams(location.search);
+    var hash = new URLSearchParams(location.hash.replace(/^#/, ''));
+    var code = query.get('code');
+    var error = query.get('error_code') || query.get('error') || hash.get('error_code') || hash.get('error');
+    var movil = /Android/i.test(navigator.userAgent);
+    var mostrar = function (id) { document.getElementById(id).hidden = false; };
+
+    if (error) { mostrar('vencido'); return; }
+    if (!code) { mostrar('sin-datos'); return; }
+
+    mostrar('ok');
+    if (movil) {
+      // El código solo sirve en el celular donde se creó la cuenta: la app lo canjea y abre la sesión.
+      document.getElementById('abrir').href = 'nutriplan://auth-callback?code=' + encodeURIComponent(code);
+      mostrar('ok-movil'); mostrar('abrir'); mostrar('ok-movil-nota');
+    } else {
+      mostrar('ok-compu');
+    }
+    // El código no se queda en el historial ni en la barra de direcciones.
+    history.replaceState(null, '', location.pathname);
+  })();
+</script>
+</body>
+</html>

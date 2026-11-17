@@ -48,10 +48,20 @@ export class SupabaseAuthRepository implements AuthRepository {
   private readonly client: AuthClient;
   /** Construye la URL de retorno de los correos (nutriplan://… o exp://…/-- en Expo Go). */
   private readonly redirectUrl: (path: string) => string;
+  /**
+   * Página web a la que vuelve el correo de confirmación (ADR-040): dice "tu correo quedó confirmado" también en
+   * el computador y, en el celular, lleva el código a la app. Sin ella, se vuelve directo a la app.
+   */
+  private readonly confirmedPageUrl?: string;
 
-  constructor(client: AuthClient, redirectUrl: (path: string) => string) {
+  constructor(client: AuthClient, redirectUrl: (path: string) => string, confirmedPageUrl?: string) {
     this.client = client;
     this.redirectUrl = redirectUrl;
+    this.confirmedPageUrl = confirmedPageUrl;
+  }
+
+  private confirmationRedirect() {
+    return this.confirmedPageUrl ?? this.redirectUrl('auth-callback');
   }
 
   async getSession() {
@@ -70,7 +80,7 @@ export class SupabaseAuthRepository implements AuthRepository {
       email,
       password,
       options: {
-        emailRedirectTo: this.redirectUrl('auth-callback'),
+        emailRedirectTo: this.confirmationRedirect(),
         // El trigger private.handle_new_user exige estos tres datos (AGENTS.md regla 3).
         data: {
           privacy_policy_document_id: privacyPolicyDocumentId,
@@ -99,7 +109,7 @@ export class SupabaseAuthRepository implements AuthRepository {
     const { error } = await this.client.auth.resend({
       type: 'signup',
       email,
-      options: { emailRedirectTo: this.redirectUrl('auth-callback') },
+      options: { emailRedirectTo: this.confirmationRedirect() },
     });
     if (error) throw mapAuthError(error);
   }

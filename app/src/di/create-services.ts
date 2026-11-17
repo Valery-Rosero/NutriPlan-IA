@@ -25,10 +25,13 @@ import { anonymousId } from '@/infrastructure/analytics/anonymous-id';
 import { expoPush } from '@/infrastructure/push/expo-push';
 import { supabase } from '@/infrastructure/supabase/client';
 
+/** Página "tu correo quedó confirmado" (web/confirmado, en GitHub Pages; ADR-040). */
+const EMAIL_CONFIRMED_PAGE = 'https://valery-rosero.github.io/NutriPlan-IA/confirmado/';
+
 /** Raíz de composición: único lugar que conoce las implementaciones concretas. */
 export function createServices(): Services {
   return {
-    auth: new SupabaseAuthRepository(supabase, (path) => Linking.createURL(path)),
+    auth: new SupabaseAuthRepository(supabase, (path) => Linking.createURL(path), EMAIL_CONFIRMED_PAGE),
     legal: new SupabaseLegalRepository(supabase, legalDrafts),
     cooking: new SupabaseCookingRepository(supabase),
     profile: new SupabaseProfileRepository(supabase),

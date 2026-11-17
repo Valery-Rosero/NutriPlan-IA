@@ -31,6 +31,21 @@ describe('SupabaseAuthRepository.signUp', () => {
     });
   });
 
+  it('con la página de confirmación (ADR-040), el correo vuelve a ella; recuperar contraseña sigue yendo a la app', async () => {
+    const signUp = jest.fn(async () => ({ data: { user: { identities: [{}] }, session: null }, error: null }));
+    const resend = jest.fn(async () => ({ error: null }));
+    const resetPasswordForEmail = jest.fn(async () => ({ error: null }));
+    const page = 'https://valery-rosero.github.io/NutriPlan-IA/confirmado/';
+    const repo = new SupabaseAuthRepository(clientWith({ signUp, resend, resetPasswordForEmail }), (p) => `nutriplan://${p}`, page);
+
+    await repo.signUp(input);
+    await repo.resendConfirmation('ana@correo.com');
+    await repo.requestPasswordReset('ana@correo.com');
+    expect(signUp).toHaveBeenCalledWith(expect.objectContaining({ options: expect.objectContaining({ emailRedirectTo: page }) }));
+    expect(resend).toHaveBeenCalledWith({ type: 'signup', email: 'ana@correo.com', options: { emailRedirectTo: page } });
+    expect(resetPasswordForEmail).toHaveBeenCalledWith('ana@correo.com', { redirectTo: 'nutriplan://reset-password' });
+  });
+
   it('detecta un correo ya registrado aunque Supabase no lo diga (usuario sin identidades)', async () => {
     const signUp = jest.fn(async () => ({ data: { user: { identities: [] }, session: null }, error: null }));
     const repo = new SupabaseAuthRepository(clientWith({ signUp }), (p) => p);
