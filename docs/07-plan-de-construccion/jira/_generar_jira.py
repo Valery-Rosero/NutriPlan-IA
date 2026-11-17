@@ -242,6 +242,8 @@ OTROS = [
     (239, "Task", 6, "Sprint 14", "In Progress", 1, "Compilar e instalar el APK con el logo y el plan con IA", "npx eas-cli build -p android --profile preview; instalar en el teléfono de prueba.", "M11", []),
     (240, "Task", 6, "Sprint 14", "To Do", 1, "Desplegar plan-ai y assistant-chat v2 a staging", "supabase functions deploy con el proyecto de staging.", "M11", []),
     (241, "Task", 6, "Sprint 14", "To Do", 2, "Logo en más lugares", "Ícono de las notificaciones, Perfil › Acerca de y el nombre \"NutriPlan IA\" bajo el ícono del teléfono.", "M11", []),
+    (243, "Task", 5, "Sprint 14", "Done", 3, "Correos de la cuenta con el logo y los colores de «Cocina viva»", "Logo en PNG (Gmail no muestra SVG), tarjeta blanca, botón tomate y pie con el lema; tablas y estilos en línea. Los enlaces no cambian.", "M01", []),
+    (244, "Task", 5, "Sprint 14", "Done", 3, "Página «tu correo quedó confirmado» en GitHub Pages (ADR-040)", "Supabase confirma y devuelve a web/confirmado: en el celular abre la app con la sesión; en el computador dice que ya quedó.", "M01", []),
     (242, "Task", 2, "Sprint 14", "To Do", 2, "Poner una receta en Mi semana eligiendo día y momento", "Para recetas que se abren sin una comida destino (por ejemplo, desde el asistente).", "M04", []),
     (301, "Bug", 1, "Sprint 7", "Done", None, "Los enlaces de correo fallaban: PKCE sin SHA-256 en React Native", "Verificar el correo y recuperar la contraseña no abrían la sesión.", "M01", []),
     (302, "Bug", 4, "Sprint 7", "Done", None, "El botón de enviar la calificación no se habilitaba y no decía por qué", "Ahora explica qué falta para poder enviar.", "M08", []),
@@ -265,6 +267,9 @@ OTROS = [
     (320, "Bug", 2, "Sprint 14", "Done", None, "Generar el mes fallaba en staging con «Algo salió mal»", "Pasaba el límite de 8 s; generate_plan calcula una vez por momento del día: de ~5 s a ~0,6 s.", "M04", []),
     (321, "Bug", 2, "Sprint 14", "Done", None, "«Omitir» una comida no respondía", "Ahora es optimista y, si la base no lo acepta, vuelve y muestra el error.", "M04", []),
     (322, "Bug", 4, "Sprint 14", "Done", None, "El teclado tapaba el comentario de la calificación", "Al abrir el teclado la pantalla baja lo justo hasta el campo (useKeepFocusedVisible).", "M08", []),
+    (323, "Bug", 6, "Sprint 14", "Done", None, "Franja vacía arriba en las pantallas con flecha de volver", "Screen repetía el margen de la barra de estado bajo el encabezado del sistema.", "M11", []),
+    (324, "Bug", 1, "Sprint 14", "Done", None, "Recuperar contraseña no dejaba escribir la nueva: la app volvía a Hoy", "El navegador raíz se desmontaba al abrir la sesión; holdGates conserva las puertas mientras se recalculan.", "M01", []),
+    (325, "Bug", 1, "Sprint 14", "Done", None, "«Activando tu cuenta» se quedaba cargando", "auth-callback pasa al grupo «sin sesión»: el navegador lleva solo a la app cuando las puertas deciden.", "M01", []),
 ]
 
 VERSION = {0: "v1.0 MVP", 1: "v1.0 MVP", 2: "v1.1 Mejora y retención", 3: "v2.0 Comunidad e integraciones"}
