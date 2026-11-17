@@ -119,6 +119,32 @@ describe('Mi cocina, fase 2: corregir lo que hay (ADR-034)', () => {
     await waitFor(() => expect(pantry.add).toHaveBeenCalledWith(expect.objectContaining({ ingredientId: 'huevo', expiresOn: addDays(today, 21) })));
   });
 
+  it('toques fluidos: se marcan al instante y se pueden tocar varios seguidos sin esperar a la base', async () => {
+    let finish: () => void = () => undefined;
+    const slow = new Promise<void>((resolve) => { finish = resolve; });
+    const pantry = fakePantry({ add: jest.fn(async () => { await slow; }) });
+    await render(<QuickAdd />, { wrapper: withServices(fakeServices({ pantry })) });
+
+    await fireEvent.press(await screen.findByRole('checkbox', { name: 'Arroz blanco' }));
+    await fireEvent.press(screen.getByRole('checkbox', { name: 'Huevo' }));
+    // La base aún no responde y los dos ya se ven marcados (antes el segundo quedaba bloqueado).
+    expect(screen.getByRole('checkbox', { name: 'Arroz blanco' })).toBeChecked();
+    expect(screen.getByRole('checkbox', { name: 'Huevo' })).toBeChecked();
+    expect(pantry.add).toHaveBeenCalledTimes(2);
+
+    finish();
+    await waitFor(() => expect(screen.getByRole('checkbox', { name: 'Huevo' })).toBeChecked());
+  });
+
+  it('si la base no acepta un toque, se desmarca y se avisa', async () => {
+    const pantry = fakePantry({ add: jest.fn(async () => { throw new Error('sin red'); }) });
+    await render(<QuickAdd />, { wrapper: withServices(fakeServices({ pantry })) });
+
+    await fireEvent.press(await screen.findByRole('checkbox', { name: 'Huevo' }));
+    await waitFor(() => expect(screen.getByRole('checkbox', { name: 'Huevo' })).not.toBeChecked());
+    expect(await screen.findByText('Algo salió mal. Inténtalo de nuevo.')).toBeOnTheScreen();
+  });
+
   it('M1: lo agregado con un toque se quita tocándolo otra vez (resta exactamente lo sumado)', async () => {
     const pantry = fakePantry();
     await render(<QuickAdd />, { wrapper: withServices(fakeServices({ pantry })) });

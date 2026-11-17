@@ -137,10 +137,12 @@ export function useAddCustomToPantry() {
 /** Lo que agregó un toque del agregado rápido, para poder deshacerlo (M1). */
 export type QuickAdded = { name: string; ingredientId: string; quantity: number; unitId: number };
 
-/** Un toque: agrega lo típico con vencimiento según la vida útil del ingrediente. */
+/**
+ * Un toque: agrega lo típico con vencimiento según la vida útil del ingrediente. No recarga la cocina por su
+ * cuenta: QuickAdd la pone al día una sola vez cuando la persona deja de tocar (toques fluidos).
+ */
 export function useQuickAdd() {
   const { pantry } = useServices();
-  const invalidate = useInvalidatePantry();
   return useMutation({
     // D2: una sola llamada por toque (el ingrediente y su unidad ya vienen de la base).
     mutationFn: async (item: QuickItem): Promise<QuickAdded> => {
@@ -152,17 +154,14 @@ export function useQuickAdd() {
       });
       return { name: item.name, ingredientId: item.ingredientId, quantity: item.quantity, unitId: item.unitId };
     },
-    onSuccess: invalidate,
   });
 }
 
-/** M1: tocar otra vez lo que se agregó con un toque lo quita (resta exactamente lo que se sumó). */
+/** M1: tocar otra vez lo que se agregó con un toque lo quita (resta exactamente lo que se sumó). Igual que useQuickAdd, sin recargar. */
 export function useUndoQuickAdd() {
   const { pantry } = useServices();
-  const invalidate = useInvalidatePantry();
   return useMutation({
     mutationFn: (added: QuickAdded) => pantry.adjust(added.ingredientId, -added.quantity, added.unitId),
-    onSuccess: invalidate,
   });
 }
 
