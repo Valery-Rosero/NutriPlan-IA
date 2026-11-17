@@ -64,7 +64,7 @@ for sprint, ids in {
 }.items():
     for i in ids:
         SPRINT_DE[i] = sprint
-ESTADO = {101: "To Do", 121: "In Progress", 158: "In Progress", 163: "In Progress", 164: "In Progress", 186: "In Progress"}  # el resto con sprint: Done; sin sprint: To Do
+ESTADO = {101: "To Do", 121: "In Progress", 158: "In Progress", }  # el resto con sprint: Done; sin sprint: To Do
 
 PUNTOS = {101: 5, 102: 8, 103: 5, 104: 8, 105: 3, 106: 3, 107: 5, 108: 2, 109: 2, 110: 13, 111: 8, 112: 5, 113: 5,
           114: 2, 115: 3, 116: 3, 117: 13, 118: 5, 119: 5, 120: 5, 121: 5, 122: 8, 123: 5, 124: 8, 125: 3, 126: 5,
@@ -85,8 +85,8 @@ COMO_QUEDO = {
     145: "El generador siempre prioriza despensa y vencimientos; no hizo falta un interruptor.",
     157: "Gemini Flash-Lite con salida estructurada y sin datos de salud en el prompt (ADR-025).",
     158: "APK de staging compilado con EAS e instalado en un teléfono real (Honor 200, Android 16); faltan la cuenta y la prueba cerrada en Google Play.",
-    163: "Construida en el Sprint 12 (ADR-032); en el Sprint 14 se mide la precisión con fotos reales en el APK.",
-    164: "Construida en el Sprint 12 (ADR-032); en el Sprint 14 se mide la precisión con recibos reales de Pasto en el APK.",
+    163: "Construida en el Sprint 12 (ADR-032); probada con fotos reales en el APK en el Sprint 14.",
+    164: "Construida en el Sprint 12 (ADR-032); probada con recibos reales en el APK en el Sprint 14.",
     174: "La IA solo traduce la frase a una meta; las cifras y la seguridad las pone la base (ADR-031).",
     175: "B1 y B2: el mes de 30 días se generaba en ~4 s; en el Sprint 14 bajó a ~0,6 s (bug 320).",
     176: "ADR-027 y ADR-030. Los alimentos propios no entran en recetas, plan, lista ni avisos (limitación documentada).",
@@ -99,7 +99,7 @@ COMO_QUEDO = {
     183: "ADR-037: amplía la ADR-025 (la IA sabe qué evitar, nunca por qué). Política de datos v3.",
     184: "ADR-038. Antes hubo una pista para dictar con el teclado (tarea 233); el botón propio se hizo al pedirlo la PO.",
     185: "Pedida por la PO al probar la lista; también funciona dictando.",
-    186: "ADR-039. Probada en local (pruebas y humo); falta desplegar plan-ai a staging y probarla en el APK.",
+    186: "ADR-039. plan-ai desplegada en staging y probada en el APK (\"Hecho con IA\").",
 }
 
 # --- Subtareas por historia: (título, estado). Sin estado = el de la historia. ------------------------
@@ -169,9 +169,9 @@ SUB = {
     161: ["ADR y migración de hogares y miembros con RLS", "Invitar a otra persona y compartir la lista", "Pruebas de RLS por hogar"],
     162: ["ADR y modelo de porciones sobrantes", "Sugerir recetas con las sobras", "Pruebas"],
     163: [("Spike: modelo de visión y costo", "Done"), ("Reconocer ingredientes desde la cámara", "Done"),
-          ("Confirmar antes de agregar a la despensa", "Done"), ("Medir la precisión con fotos reales en el APK", "To Do")],
+          ("Confirmar antes de agregar a la despensa", "Done"), ("Medir la precisión con fotos reales en el APK", "Done")],
     164: [("Spike: OCR de recibos de Pasto", "Done"), ("Leer el recibo y registrar el gasto", "Done"),
-          ("Confirmar ítems antes de guardar", "Done"), ("Medir la precisión con recibos reales en el APK", "To Do")],
+          ("Confirmar ítems antes de guardar", "Done"), ("Medir la precisión con recibos reales en el APK", "Done")],
     165: ["ADR y migración de precios por tienda", "Elegir supermercado en el perfil", "Pruebas de costo por tienda"],
     166: ["Spike: integraciones con supermercados", "Enviar la lista como pedido", "Pruebas"],
     167: ["Migración de recetas de la comunidad con RLS", "Pantalla para publicar una receta o adaptación", "Validar alérgenos antes de publicar"],
@@ -194,8 +194,8 @@ SUB = {
     184: ["Botón de micrófono junto a enviar", "Reconocimiento de voz del teléfono en es-CO", "Permiso de micrófono (RECORD_AUDIO)", "Política de datos v3: la voz no se graba ni se guarda"],
     185: ["Separar por comas y por \"y\"", "Aviso de cuáles se van a agregar", "Cada producto en su sección"],
     186: [("Edge Function plan-ai: menú, recetas y guardado", "Done"), ("Reparto sin repetir plato en días seguidos, primero lo que vence", "Done"),
-          ("Mi semana: Planear con IA, avance real y Hecho con IA", "Done"), ("Desplegar plan-ai a staging", "To Do"),
-          ("Probar la semana y el mes con IA en el APK", "To Do")],
+          ("Mi semana: Planear con IA, avance real y Hecho con IA", "Done"), ("Desplegar plan-ai a staging", "Done"),
+          ("Probar la semana y el mes con IA en el APK", "Done")],
 }
 
 # --- Tareas técnicas y bugs (cuelgan de una épica). (id, tipo, épica, sprint, estado, puntos, título, descripción, módulo, subtareas)
@@ -214,9 +214,9 @@ OTROS = [
     (211, "Task", 5, "Sprint 10", "Done", 2, "Sacar google-services.json del repositorio público", "Ignorado por Git y guardado como variable secreta de tipo archivo en EAS (GOOGLE_SERVICES_JSON).", "M11", []),
     (212, "Task", 6, "Sprint 10", "Done", 3, "Poner la documentación al día con F2", "Modelo de datos regenerado, RPC, arquitectura, seguridad, pantallas y limitaciones.", "M11", []),
     (220, "Task", 6, "Sprint 11", "Done", 2, "Compilar el APK de staging con EAS", "npx eas-cli build -p android --profile preview", "M11", []),
-    (221, "Task", 6, "Sprint 11", "In Progress", 3, "Probar el APK en un teléfono real", "Arranque < 3 s, avisos, recorrido completo y checklist de accesibilidad. La PO lo prueba en un Honor 200 (Android 16) desde el 13-nov.", "M11",
-     [("Arranque en menos de 3 s (US-150)", "To Do"), ("Activar avisos y recibir uno (US-148)", "To Do"),
-      ("Recorrido completo de punta a punta", "In Progress"), ("Letra al 200 % y TalkBack (US-140)", "To Do")]),
+    (221, "Task", 6, "Sprint 11", "Done", 3, "Probar el APK en un teléfono real", "Arranque < 3 s, avisos, recorrido completo y checklist de accesibilidad. La PO lo prueba en un Honor 200 (Android 16) desde el 13-nov.", "M11",
+     [("Arranque en menos de 3 s (US-150)", "Done"), ("Activar avisos y recibir uno (US-148)", "Done"),
+      ("Recorrido completo de punta a punta", "Done"), ("Letra al 200 % y TalkBack (US-140)", "To Do")]),
     (222, "Task", 5, "Sprint 11", "To Do", 5, "Completar los textos legales y pedir revisión de un abogado", "Llenar los marcadores de los 6 borradores y nombrar a los encargados de datos.", "M01", []),
     (223, "Task", 6, "Sprint 11", "To Do", 2, "Pasar Gemini a plan de pago con tope de gasto y rotar su clave", "El plan gratuito puede usar los datos para mejorar sus modelos.", "M05", []),
     (224, "Task", 6, "Sprint 11", "To Do", 5, "Configurar producción", "Migraciones, funciones, secretos, SMTP y plantillas en el proyecto de producción.", "M11", []),
@@ -239,8 +239,8 @@ OTROS = [
     (237, "Task", 5, "Sprint 14", "Done", 2, "Política de tratamiento de datos v3", "Voz y lo que sabe el asistente (preferencias y \"no usar\" sin el porqué); se vuelve a pedir la aceptación.", "M01", []),
     (238, "Task", 6, "Sprint 14", "Done", 5, "Logo de NutriPlan IA con los colores de la app", "Propuesta de la PO llevada a la paleta «Cocina viva»: hoja en tomate, puntos de la IA en mora.", "M11",
      ["Símbolo y palabra con los colores de la app (claro y oscuro)", "Ícono de la app: adaptable y monocromo de Android", "Arranque con el logo principal y el lema", "Logo en Hoy, bienvenida, ingreso y registro"]),
-    (239, "Task", 6, "Sprint 14", "In Progress", 1, "Compilar e instalar el APK con el logo y el plan con IA", "npx eas-cli build -p android --profile preview; instalar en el teléfono de prueba.", "M11", []),
-    (240, "Task", 6, "Sprint 14", "To Do", 1, "Desplegar plan-ai y assistant-chat v2 a staging", "supabase functions deploy con el proyecto de staging.", "M11", []),
+    (239, "Task", 6, "Sprint 14", "Done", 1, "Compilar e instalar el APK con el logo y el plan con IA", "npx eas-cli build -p android --profile preview; instalar en el teléfono de prueba.", "M11", []),
+    (240, "Task", 6, "Sprint 14", "Done", 1, "Desplegar plan-ai y assistant-chat v2 a staging", "supabase functions deploy con el proyecto de staging.", "M11", []),
     (241, "Task", 6, "Sprint 14", "To Do", 2, "Logo en más lugares", "Ícono de las notificaciones, Perfil › Acerca de y el nombre \"NutriPlan IA\" bajo el ícono del teléfono.", "M11", []),
     (243, "Task", 5, "Sprint 14", "Done", 3, "Correos de la cuenta con el logo y los colores de «Cocina viva»", "Logo en PNG (Gmail no muestra SVG), tarjeta blanca, botón tomate y pie con el lema; tablas y estilos en línea. Los enlaces no cambian.", "M01", []),
     (244, "Task", 5, "Sprint 14", "Done", 3, "Página «tu correo quedó confirmado» en GitHub Pages (ADR-040)", "Supabase confirma y devuelve a web/confirmado: en el celular abre la app con la sesión; en el computador dice que ya quedó.", "M01", []),

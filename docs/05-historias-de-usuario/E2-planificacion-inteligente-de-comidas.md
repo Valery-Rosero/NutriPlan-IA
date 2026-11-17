@@ -1246,7 +1246,7 @@ Genera, ajusta y explica los planes de comidas diarios y semanales: motor de rec
 | Etiquetas | plan, asistente-ia, agregada-por-po |
 | Ref. backlog | HU-86 · Subárea: Plan de comidas |
 | Dependencias | US-117, US-175, US-183 |
-| Estado | Construida (16-nov-2026) · falta desplegar plan-ai a staging y probarla en el APK |
+| Estado | Hecha (16-nov-2026) · probada en el APK |
 
 **Historia de usuario**
 

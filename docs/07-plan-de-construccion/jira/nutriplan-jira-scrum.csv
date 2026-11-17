@@ -709,34 +709,34 @@ Ficha completa: docs/05-historias-de-usuario (US-162)."
 "1195","Sub-task","ADR y modelo de porciones sobrantes","162","To Do","","","","","","M06 Compras y despensa","estado-por-hacer","m06","","","","","","",""
 "1196","Sub-task","Sugerir recetas con las sobras","162","To Do","","","","","","M06 Compras y despensa","estado-por-hacer","m06","","","","","","",""
 "1197","Sub-task","Pruebas","162","To Do","","","","","","M06 Compras y despensa","estado-por-hacer","m06","","","","","","",""
-"163","Story","US-163 · Reconocer ingredientes desde una foto","3","In Progress","","Low","13","Sprint 14","v2.0 Comunidad e integraciones","M12 Integraciones futuras","sprint-14","estado-en-curso","prioridad-baja","v2.0","m12","F3","historia","foto-y-ocr","*Como* usuario, *quiero* tomar una foto de mi despensa o refrigerador, *para* que la app identifique automáticamente los ingredientes disponibles.
+"163","Story","US-163 · Reconocer ingredientes desde una foto","3","Done","Done","Low","13","Sprint 14","v2.0 Comunidad e integraciones","M12 Integraciones futuras","sprint-14","estado-hecho","prioridad-baja","v2.0","m12","F3","historia","foto-y-ocr","*Como* usuario, *quiero* tomar una foto de mi despensa o refrigerador, *para* que la app identifique automáticamente los ingredientes disponibles.
 
 *Criterios de aceptación*
 # Dado que tomo una foto de mi refrigerador Cuando la app procesa la imagen Entonces identifica correctamente al menos el 70% de los ítems presentes sobre una lista de prueba de 20 alimentos comunes, y me permite corregir o eliminar cualquier ítem mal identificado antes de guardar.
 
 *Depende de:* US-119
 
-*Cómo quedó:* Construida en el Sprint 12 (ADR-032); en el Sprint 14 se mide la precisión con fotos reales en el APK.
+*Cómo quedó:* Construida en el Sprint 12 (ADR-032); probada con fotos reales en el APK en el Sprint 14.
 
 Ficha completa: docs/05-historias-de-usuario (US-163)."
 "1198","Sub-task","Spike: modelo de visión y costo","163","Done","Done","","","","","M12 Integraciones futuras","estado-hecho","m12","","","","","","",""
 "1199","Sub-task","Reconocer ingredientes desde la cámara","163","Done","Done","","","","","M12 Integraciones futuras","estado-hecho","m12","","","","","","",""
 "1200","Sub-task","Confirmar antes de agregar a la despensa","163","Done","Done","","","","","M12 Integraciones futuras","estado-hecho","m12","","","","","","",""
-"1201","Sub-task","Medir la precisión con fotos reales en el APK","163","To Do","","","","","","M12 Integraciones futuras","estado-por-hacer","m12","","","","","","",""
-"164","Story","US-164 · Escanear recibo de compra con OCR","3","In Progress","","Low","13","Sprint 14","v2.0 Comunidad e integraciones","M12 Integraciones futuras","sprint-14","estado-en-curso","prioridad-baja","v2.0","m12","F3","historia","foto-y-ocr","*Como* usuario, *quiero* escanear el recibo de mi compra, *para* actualizar mi despensa y mi gasto real automáticamente.
+"1201","Sub-task","Medir la precisión con fotos reales en el APK","163","Done","Done","","","","","M12 Integraciones futuras","estado-hecho","m12","","","","","","",""
+"164","Story","US-164 · Escanear recibo de compra con OCR","3","Done","Done","Low","13","Sprint 14","v2.0 Comunidad e integraciones","M12 Integraciones futuras","sprint-14","estado-hecho","prioridad-baja","v2.0","m12","F3","historia","foto-y-ocr","*Como* usuario, *quiero* escanear el recibo de mi compra, *para* actualizar mi despensa y mi gasto real automáticamente.
 
 *Criterios de aceptación*
 # Dado que subo la foto de un recibo de supermercado estándar Cuando se procesa con OCR Entonces se extraen correctamente ítem, cantidad y precio del 80% de las líneas en una muestra de prueba de 20 recibos; las líneas no reconocidas quedan marcadas para revisión manual, nunca se descartan silenciosamente.
 
 *Depende de:* US-119, US-141
 
-*Cómo quedó:* Construida en el Sprint 12 (ADR-032); en el Sprint 14 se mide la precisión con recibos reales de Pasto en el APK.
+*Cómo quedó:* Construida en el Sprint 12 (ADR-032); probada con recibos reales en el APK en el Sprint 14.
 
 Ficha completa: docs/05-historias-de-usuario (US-164)."
 "1202","Sub-task","Spike: OCR de recibos de Pasto","164","Done","Done","","","","","M12 Integraciones futuras","estado-hecho","m12","","","","","","",""
 "1203","Sub-task","Leer el recibo y registrar el gasto","164","Done","Done","","","","","M12 Integraciones futuras","estado-hecho","m12","","","","","","",""
 "1204","Sub-task","Confirmar ítems antes de guardar","164","Done","Done","","","","","M12 Integraciones futuras","estado-hecho","m12","","","","","","",""
-"1205","Sub-task","Medir la precisión con recibos reales en el APK","164","To Do","","","","","","M12 Integraciones futuras","estado-por-hacer","m12","","","","","","",""
+"1205","Sub-task","Medir la precisión con recibos reales en el APK","164","Done","Done","","","","","M12 Integraciones futuras","estado-hecho","m12","","","","","","",""
 "165","Story","US-165 · Mostrar precios actualizados según supermercado elegido","3","To Do","","Low","8","","v2.0 Comunidad e integraciones","M12 Integraciones futuras","estado-por-hacer","prioridad-baja","v2.0","m12","F3","historia","supermercados","","*Como* usuario, *quiero* ver el precio actualizado de los ingredientes de mi lista según el supermercado que elijo, *para* presupuestar con precisión.
 
 *Criterios de aceptación*
@@ -1022,7 +1022,7 @@ Ficha completa: docs/05-historias-de-usuario (US-185)."
 "1274","Sub-task","Separar por comas y por ""y""","185","Done","Done","","","","","M06 Compras y despensa","estado-hecho","m06","","","","","","",""
 "1275","Sub-task","Aviso de cuáles se van a agregar","185","Done","Done","","","","","M06 Compras y despensa","estado-hecho","m06","","","","","","",""
 "1276","Sub-task","Cada producto en su sección","185","Done","Done","","","","","M06 Compras y despensa","estado-hecho","m06","","","","","","",""
-"186","Story","US-186 · Planear la semana o el mes con IA","2","In Progress","","High","13","Sprint 14","v1.1 Mejora y retención","M04 Motor de planificación","sprint-14","estado-en-curso","prioridad-alta","v1.1","m04","F2","historia","plan","*Como* usuario que planea sus comidas, *quiero* que la IA arme mi semana o mi mes con platos variados, según mis gustos y lo que tengo en la despensa, *para* tener un plan que se sienta hecho para mí y no siempre las mismas recetas.
+"186","Story","US-186 · Planear la semana o el mes con IA","2","Done","Done","High","13","Sprint 14","v1.1 Mejora y retención","M04 Motor de planificación","sprint-14","estado-hecho","prioridad-alta","v1.1","m04","F2","historia","plan","*Como* usuario que planea sus comidas, *quiero* que la IA arme mi semana o mi mes con platos variados, según mis gustos y lo que tengo en la despensa, *para* tener un plan que se sienta hecho para mí y no siempre las mismas recetas.
 
 *Criterios de aceptación*
 # Dado que toco ""Planear la semana con IA"" Cuando termina Entonces tengo 7 días con platos variados, sin el mismo plato dos días seguidos, y el plan dice ""Hecho con IA"".
@@ -1033,14 +1033,14 @@ Ficha completa: docs/05-historias-de-usuario (US-185)."
 
 *Depende de:* US-117, US-175, US-183
 
-*Cómo quedó:* ADR-039. Probada en local (pruebas y humo); falta desplegar plan-ai a staging y probarla en el APK.
+*Cómo quedó:* ADR-039. plan-ai desplegada en staging y probada en el APK (""Hecho con IA"").
 
 Ficha completa: docs/05-historias-de-usuario (US-186)."
 "1277","Sub-task","Edge Function plan-ai: menú, recetas y guardado","186","Done","Done","","","","","M04 Motor de planificación","estado-hecho","m04","","","","","","",""
 "1278","Sub-task","Reparto sin repetir plato en días seguidos, primero lo que vence","186","Done","Done","","","","","M04 Motor de planificación","estado-hecho","m04","","","","","","",""
 "1279","Sub-task","Mi semana: Planear con IA, avance real y Hecho con IA","186","Done","Done","","","","","M04 Motor de planificación","estado-hecho","m04","","","","","","",""
-"1280","Sub-task","Desplegar plan-ai a staging","186","To Do","","","","","","M04 Motor de planificación","estado-por-hacer","m04","","","","","","",""
-"1281","Sub-task","Probar la semana y el mes con IA en el APK","186","To Do","","","","","","M04 Motor de planificación","estado-por-hacer","m04","","","","","","",""
+"1280","Sub-task","Desplegar plan-ai a staging","186","Done","Done","","","","","M04 Motor de planificación","estado-hecho","m04","","","","","","",""
+"1281","Sub-task","Probar la semana y el mes con IA en el APK","186","Done","Done","","","","","M04 Motor de planificación","estado-hecho","m04","","","","","","",""
 "201","Task","Monorepo app/backend/docs, AGENTS.md y unificar la copia de Supabase","6","Done","Done","Medium","3","Sprint 0","v1.0 MVP","M11 Plataforma, calidad y lanzamiento","sprint-0","estado-hecho","prioridad-media","v1.0","m11","tecnica","","","Una sola fuente para el backend (C4)."
 "202","Task","Migración de refuerzo (hardening R1–R9) y runner de pruebas SQL","5","Done","Done","Medium","5","Sprint 0","v1.0 MVP","M01 Cuenta, consentimientos y privacidad","sprint-0","estado-hecho","prioridad-media","v1.0","m01","tecnica","","","Dietas como filtro duro, guardado atómico del plan y runner multiplataforma run_local.sh."
 "203","Task","Recetas versátiles: base + grupos intercambiables (ADR-020)","2","Done","Done","Medium","8","Sprint 0","v1.0 MVP","M03 Catálogo de recetas e ingredientes","sprint-0","estado-hecho","prioridad-media","v1.0","m03","tecnica","","","Las opciones de cada grupo se resuelven con la despensa y nunca con un ingrediente prohibido."
@@ -1063,10 +1063,10 @@ Ficha completa: docs/05-historias-de-usuario (US-186)."
 "211","Task","Sacar google-services.json del repositorio público","5","Done","Done","Medium","2","Sprint 10","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-10","estado-hecho","prioridad-media","v1.1","m11","tecnica","","","Ignorado por Git y guardado como variable secreta de tipo archivo en EAS (GOOGLE_SERVICES_JSON)."
 "212","Task","Poner la documentación al día con F2","6","Done","Done","Medium","3","Sprint 10","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-10","estado-hecho","prioridad-media","v1.1","m11","tecnica","","","Modelo de datos regenerado, RPC, arquitectura, seguridad, pantallas y limitaciones."
 "220","Task","Compilar el APK de staging con EAS","6","Done","Done","Medium","2","Sprint 11","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-11","estado-hecho","prioridad-media","v1.1","m11","tecnica","","","npx eas-cli build -p android --profile preview"
-"221","Task","Probar el APK en un teléfono real","6","In Progress","","Medium","3","Sprint 11","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-11","estado-en-curso","prioridad-media","v1.1","m11","tecnica","","","Arranque < 3 s, avisos, recorrido completo y checklist de accesibilidad. La PO lo prueba en un Honor 200 (Android 16) desde el 13-nov."
-"1291","Sub-task","Arranque en menos de 3 s (US-150)","221","To Do","","","","","","M11 Plataforma, calidad y lanzamiento","estado-por-hacer","m11","","","","","","",""
-"1292","Sub-task","Activar avisos y recibir uno (US-148)","221","To Do","","","","","","M11 Plataforma, calidad y lanzamiento","estado-por-hacer","m11","","","","","","",""
-"1293","Sub-task","Recorrido completo de punta a punta","221","In Progress","","","","","","M11 Plataforma, calidad y lanzamiento","estado-en-curso","m11","","","","","","",""
+"221","Task","Probar el APK en un teléfono real","6","Done","Done","Medium","3","Sprint 11","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-11","estado-hecho","prioridad-media","v1.1","m11","tecnica","","","Arranque < 3 s, avisos, recorrido completo y checklist de accesibilidad. La PO lo prueba en un Honor 200 (Android 16) desde el 13-nov."
+"1291","Sub-task","Arranque en menos de 3 s (US-150)","221","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
+"1292","Sub-task","Activar avisos y recibir uno (US-148)","221","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
+"1293","Sub-task","Recorrido completo de punta a punta","221","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
 "1294","Sub-task","Letra al 200 % y TalkBack (US-140)","221","To Do","","","","","","M11 Plataforma, calidad y lanzamiento","estado-por-hacer","m11","","","","","","",""
 "222","Task","Completar los textos legales y pedir revisión de un abogado","5","To Do","","Medium","5","Sprint 11","v1.1 Mejora y retención","M01 Cuenta, consentimientos y privacidad","sprint-11","estado-por-hacer","prioridad-media","v1.1","m01","tecnica","","","Llenar los marcadores de los 6 borradores y nombrar a los encargados de datos."
 "223","Task","Pasar Gemini a plan de pago con tope de gasto y rotar su clave","6","To Do","","Medium","2","Sprint 11","v1.1 Mejora y retención","M05 Asistente IA","sprint-11","estado-por-hacer","prioridad-media","v1.1","m05","tecnica","","","El plan gratuito puede usar los datos para mejorar sus modelos."
@@ -1097,8 +1097,8 @@ Ficha completa: docs/05-historias-de-usuario (US-186)."
 "1304","Sub-task","Ícono de la app: adaptable y monocromo de Android","238","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
 "1305","Sub-task","Arranque con el logo principal y el lema","238","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
 "1306","Sub-task","Logo en Hoy, bienvenida, ingreso y registro","238","Done","Done","","","","","M11 Plataforma, calidad y lanzamiento","estado-hecho","m11","","","","","","",""
-"239","Task","Compilar e instalar el APK con el logo y el plan con IA","6","In Progress","","Medium","1","Sprint 14","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-14","estado-en-curso","prioridad-media","v1.1","m11","tecnica","","","npx eas-cli build -p android --profile preview; instalar en el teléfono de prueba."
-"240","Task","Desplegar plan-ai y assistant-chat v2 a staging","6","To Do","","Medium","1","Sprint 14","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-14","estado-por-hacer","prioridad-media","v1.1","m11","tecnica","","","supabase functions deploy con el proyecto de staging."
+"239","Task","Compilar e instalar el APK con el logo y el plan con IA","6","Done","Done","Medium","1","Sprint 14","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-14","estado-hecho","prioridad-media","v1.1","m11","tecnica","","","npx eas-cli build -p android --profile preview; instalar en el teléfono de prueba."
+"240","Task","Desplegar plan-ai y assistant-chat v2 a staging","6","Done","Done","Medium","1","Sprint 14","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-14","estado-hecho","prioridad-media","v1.1","m11","tecnica","","","supabase functions deploy con el proyecto de staging."
 "241","Task","Logo en más lugares","6","To Do","","Medium","2","Sprint 14","v1.1 Mejora y retención","M11 Plataforma, calidad y lanzamiento","sprint-14","estado-por-hacer","prioridad-media","v1.1","m11","tecnica","","","Ícono de las notificaciones, Perfil › Acerca de y el nombre ""NutriPlan IA"" bajo el ícono del teléfono."
 "243","Task","Correos de la cuenta con el logo y los colores de «Cocina viva»","5","Done","Done","Medium","3","Sprint 14","v1.1 Mejora y retención","M01 Cuenta, consentimientos y privacidad","sprint-14","estado-hecho","prioridad-media","v1.1","m01","tecnica","","","Logo en PNG (Gmail no muestra SVG), tarjeta blanca, botón tomate y pie con el lema; tablas y estilos en línea. Los enlaces no cambian."
 "244","Task","Página «tu correo quedó confirmado» en GitHub Pages (ADR-040)","5","Done","Done","Medium","3","Sprint 14","v1.1 Mejora y retención","M01 Cuenta, consentimientos y privacidad","sprint-14","estado-hecho","prioridad-media","v1.1","m01","tecnica","","","Supabase confirma y devuelve a web/confirmado: en el celular abre la app con la sesión; en el computador dice que ya quedó."
