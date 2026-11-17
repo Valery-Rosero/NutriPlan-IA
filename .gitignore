@@ -10,3 +10,6 @@ google-services.json
 
 # Configuraciones exportadas del importador de Jira (son personales, no van al repositorio)
 BulkCreate-configuration-*.txt
+
+# Configuración local del editor
+CLAUDE.md

@@ -1,4 +1,4 @@
--- ADR-039 · Semana y mes con IA (propuesta aprobada: https://claude.ai/artifact/8zR7xTtTTrtsCwY6iDTK9Z).
+-- ADR-039 · Semana y mes con IA (propuesta aprobada por la dueña del producto).
 -- La Edge Function plan-ai arma el plan en tres pasos (platos → recetas → guardar). La base sigue disponiendo:
 -- cada receta pasa por create_assistant_recipe (alergias, dietas, tiempo, cantidades) y cada comida por el
 -- trigger de planned_meals; save_generated_plan es el mismo de siempre.

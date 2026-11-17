@@ -56,7 +56,7 @@ Rediseñado con la dueña del producto: lo que se cocina fuera del plan (receta 
 - **Para que funcione en el APK** (lo corre la dueña del producto): migraciones a staging por GitHub Actions; luego
   `npx supabase functions deploy assistant-chat`, `categorize-food` y `understand-pantry` con `--project-ref fiesvxiuxsllqcpxidap`.
 
-### B6. IA paso a paso (plan aprobado el 13-nov) · propuesta: https://claude.ai/artifact/GZ9jErVbgwbPpHu8NZhNms
+### B6. IA paso a paso (plan aprobado el 13-nov) · propuesta aprobada por la dueña del producto
 Se construye **una a la vez**: plan → aprobación → construir con pruebas → APK → la siguiente.
 | # | Qué | Estado |
 |---|---|---|
@@ -65,8 +65,8 @@ Se construye **una a la vez**: plan → aprobación → construir con pruebas �
 | 3 | Notas de voz. Decidido: primero solo la pista del micrófono del teclado; botón propio solo si no basta | ✅ Opción A hecha (13-nov): pista "¿Prefieres hablar? Toca el micrófono de tu teclado" en Agregar y en el asistente. Probar en el APK (sobre todo con personas mayores); si no basta, se planea la opción B (botón "Mantén para hablar", V-1 a V-4) |
 | — | Machine learning (predicción y agrupamiento) | **Descartado** por la dueña del producto (13-nov) |
 
-### B7. Revisión de Mi cocina (13-nov) · revisión: https://claude.ai/artifact/11mC5iX3fZi9jcWN1LbYJe
-Aprobada completa por la dueña del producto ("todo lo que recomiendas está bien"). Va **antes** del asistente v2 (https://claude.ai/artifact/PHLMTxbivbSzU4esswb4Q3).
+### B7. Revisión de Mi cocina (13-nov) · revisión aprobada por la dueña del producto
+Aprobada completa por la dueña del producto ("todo lo que recomiendas está bien"). Va **antes** del asistente v2.
 | Fase | Qué | Estado |
 |---|---|---|
 | 1 | Que el ciclo no se rompa: lo de recetas y sugerencias entra como ingrediente con gramos; lo escrito a mano llega a la despensa; la lista se rehace sola tras cualquier cambio (C1, C2, D3 · ADR-033) | ✅ Hecho (13-nov); probar en el APK: agregar lo que falta → comprar → pasar → aparece en "Lo que tengo" |
@@ -74,10 +74,10 @@ Aprobada completa por la dueña del producto ("todo lo que recomiendas está bie
 | 3 | Lista de la casa sin plan; cantidades como se venden; presupuesto redondeado; deshacer al quitar (A1, A2, M3, M5 · ADR-035) | ✅ Hecho (14-nov); probar en el APK: sin plan anotar "aguacate"; ver "Ahuyama · un pedazo pequeño"; quitar y "Deshacer" |
 | 4 | Encabezado compacto que se desplaza; Agregar de a un modo; despensa sin conexión; limpieza técnica (A3, A4, M4, D1, D2, D4 · ADR-036) | ✅ Hecho (14-nov); probar en el APK: en la lista se ven ≥ 5 productos; Agregar abre en "Buscar"; sin señal, "Lo que tengo" carga |
 
-### B8. Asistente v2 (propuesta: https://claude.ai/artifact/PHLMTxbivbSzU4esswb4Q3)
+### B8. Asistente v2 (propuesta aprobada por la dueña del producto)
 | Entrega | Qué | Estado |
 |---|---|---|
-| 1 | IA primero: lista de 4–5 platos → elegir → la IA llena la receta; usa preferencias, alergias y dietas ("qué evitar sí, por qué no"); ingredientes libres sin restricciones; recetario de respaldo; listas bien formateadas (ADR-037, planos: https://claude.ai/artifact/CgZGXGi3nddiLYGbG7WY1R) | ✅ Hecho (14-nov); desplegar `assistant-chat` y probar en el APK con Gemini. Pendiente: "Ponerla en mi semana" sin comida destino (elegir día y momento) |
+| 1 | IA primero: lista de 4–5 platos → elegir → la IA llena la receta; usa preferencias, alergias y dietas ("qué evitar sí, por qué no"); ingredientes libres sin restricciones; recetario de respaldo; listas bien formateadas (ADR-037) | ✅ Hecho (14-nov); desplegar `assistant-chat` y probar en el APK con Gemini. Pendiente: "Ponerla en mi semana" sin comida destino (elegir día y momento) |
 | 2 | Micrófono junto a enviar (voz del teléfono; permiso de micrófono, APK nuevo) · también en "Escríbelo" y en la lista (varios productos de una vez) · política v3 (ADR-038) | ✅ Hecho (14-nov); APK nuevo; probar en el Honor 200; aceptar la política v3 |
 | 3 | Pantallas compactas: Mi semana (encabezado de una fila, fechas cortas, "Volver a generar…" plegado) y Asistente (encabezado de una fila; la bienvenida solo sin conversación) | ✅ Hecho (16-nov); Hoy ya estaba bien según la dueña del producto |
 
@@ -85,7 +85,7 @@ Aprobada completa por la dueña del producto ("todo lo que recomiendas está bie
 
 **Logo NutriPlan IA** (propuesta de la dueña del producto, 16-nov) · ✅ con los colores de la app (hoja en tomate claro #FF8A5C, puntos de la IA y "NutriPlan" en mora, "IA" en tomate, fondo harina; Manrope ExtraBold incrustada). Ícono de la app (mora con la hoja; adaptable y monocromo), arranque del sistema (el símbolo, claro y oscuro) + arranque con el logo principal y el lema, Hoy (logo pequeño), ingreso y registro (logo principal), bienvenida (logo). Requiere APK nuevo.
 
-**Semana y mes con IA** (ADR-039, propuesta aprobada: https://claude.ai/artifact/8zR7xTtTTrtsCwY6iDTK9Z) · ✅ Hecho (16-nov). Desplegar `plan-ai` (y `assistant-chat`, que ahora usa el módulo compartido) y probar en el APK con Gemini en staging.
+**Semana y mes con IA** (ADR-039, propuesta aprobada por la dueña del producto) · ✅ Hecho (16-nov). Desplegar `plan-ai` (y `assistant-chat`, que ahora usa el módulo compartido) y probar en el APK con Gemini en staging.
 
 ## C. Antes de usuarios reales (sin cambios)
 Revisión de un abogado de los textos legales · revisión de una nutricionista (US-121) · validación con 5 personas (US-101) · producción (`drgzvvkkjxqvolcerpjx`) · Google Play (US-158) · monitor de disponibilidad · Gemini en plan de pago con tope de gasto y clave rotada · renovar el token de Supabase del despliegue (cada 90 días).

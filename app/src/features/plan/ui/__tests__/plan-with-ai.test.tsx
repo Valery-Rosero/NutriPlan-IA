@@ -4,7 +4,7 @@ import { AppError } from '@/core/errors/app-error';
 import { PlanScreen } from '@/features/plan/ui/plan-screen';
 import { fakePlans, fakeServices, PLAN, withServices } from '@/test/fakes';
 
-/** ADR-039 · semana y mes con IA (propuesta aprobada: https://claude.ai/artifact/8zR7xTtTTrtsCwY6iDTK9Z). */
+/** ADR-039 · semana y mes con IA (propuesta aprobada por la dueña del producto). */
 describe('Planear con IA', () => {
   beforeEach(() => jest.clearAllMocks());
 

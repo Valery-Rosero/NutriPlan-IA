@@ -112,7 +112,7 @@ Todos se implementan en **una migración nueva** con sus pruebas, sin editar las
 
 ```
 nutriplan-ai/                      ← repo git (GitHub, privado)
-├─ AGENTS.md  CLAUDE.md  README.md
+├─ AGENTS.md  README.md
 ├─ docs/                           ← este paquete de especificaciones (00-… 08-, referencias/)
 ├─ app/                            ← Expo (Expo Router, TS estricto)
 ├─ backend/
