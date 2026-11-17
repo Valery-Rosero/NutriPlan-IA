@@ -22,9 +22,11 @@ describe('Mi cocina, fase 4: más pantalla, menos pasos (ADR-036)', () => {
     const pantry = fakePantry({ list: jest.fn(async () => [PAPA, { ...PAPA, id: 'p2', grams: 500 }]) });
     await render(<KitchenScreen />, { wrapper: withServices(fakeServices({ pantry })) });
 
-    expect(await screen.findByRole('header', { name: 'Mi cocina' })).toBeOnTheScreen();
+    // Primero los datos: el encabezado se vuelve a dibujar cuando llegan, y uno buscado antes puede quedar viejo
+    // (en CI, más lento, la prueba fallaba al azar con "could not be found in the instance tree").
+    expect(await screen.findByText('1 ingrediente')).toBeOnTheScreen();
+    await waitFor(() => expect(screen.getByRole('header', { name: 'Mi cocina' })).toBeOnTheScreen());
     expect(screen.queryByText('Lo que tienes y lo que te falta, en un solo lugar.')).not.toBeOnTheScreen();
-    expect(screen.getByText('1 ingrediente')).toBeOnTheScreen();
   });
 
   it('A3: en la lista, el gasto del mes va al final (primero lo que hay que comprar)', async () => {
