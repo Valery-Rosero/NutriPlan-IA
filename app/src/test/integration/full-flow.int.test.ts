@@ -92,8 +92,13 @@ run('recorrido completo contra Supabase real', () => {
     });
     const sensitive = (await legal.getCurrentDocuments()).find((d) => d.kind === 'sensitive_data_authorization')!;
     await legal.accept([sensitive.id]);
-    await profile.setRestrictions({ allergenIds: [eggId], dietIds: [] });
-    expect(await profile.getRestrictions()).toEqual({ allergenIds: [eggId], dietIds: [] });
+    // US-187: también una alergia propia escrita a mano (no está en el recetario: la evita la IA)
+    await profile.setRestrictions({ allergenIds: [eggId], dietIds: [], customAllergies: [{ ingredientId: null, label: 'Kiwi' }] });
+    expect(await profile.getRestrictions()).toEqual({
+      allergenIds: [eggId],
+      dietIds: [],
+      customAllergies: [{ ingredientId: null, label: 'Kiwi' }],
+    });
   });
 
   it('5. despensa: buscar sin tilde, agregar en libras y por unidades, listar', async () => {
