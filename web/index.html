@@ -3,24 +3,121 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>NutriPlan IA</title>
+<title>NutriPlan IA · Planea tus comidas con lo que tienes</title>
+<meta name="description" content="App Android que arma tu semana de comidas con lo que hay en tu cocina, cuidando tus alergias, tus gustos y tu presupuesto. Piloto en Pasto.">
 <link rel="icon" href="img/logo-nutriplan-ia.png">
 <style>
-  :root { --harina: #FFF8F1; --leche: #FFFFFF; --linea: #EFE2D4; --cacao: #2B211C; --canela: #6A584C; color-scheme: light; }
-  @media (prefers-color-scheme: dark) { :root { --harina: #17120F; --leche: #221B17; --linea: #3A2F28; --cacao: #F7EEE6; --canela: #CDBBAE; color-scheme: dark; } }
+  :root {
+    --harina: #FFF8F1; --leche: #FFFFFF; --avena: #F6ECE1; --linea: #EFE2D4;
+    --cacao: #2B211C; --canela: #6A584C; --tomate: #BC3F0B; --sobre-tomate: #FFFFFF;
+    --albahaca: #2F7A3E; --albahaca-suave: #DDF3E1; --mango-suave: #FFF0C7; --mora: #8A3E7A; --mora-suave: #F6E3F1; --tomate-suave: #FFE6D6;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --harina: #17120F; --leche: #221B17; --avena: #2D241F; --linea: #3A2F28;
+      --cacao: #F7EEE6; --canela: #CDBBAE; --tomate: #FF8A5C; --sobre-tomate: #2B211C;
+      --albahaca: #7FD08F; --albahaca-suave: #1F3A26; --mango-suave: #3A2E12; --mora: #E39AD3; --mora-suave: #3A2335; --tomate-suave: #3D2519;
+      color-scheme: dark;
+    }
+  }
   * { box-sizing: border-box; }
-  body { margin: 0; min-height: 100vh; background: var(--harina); color: var(--cacao); font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; display: flex; align-items: center; justify-content: center; padding: 32px 16px; }
-  main { max-width: 440px; background: var(--leche); border: 1px solid var(--linea); border-radius: 24px; padding: 32px 28px; text-align: center; display: flex; flex-direction: column; gap: 14px; }
-  img { width: 188px; height: auto; margin: 0 auto; }
-  p { margin: 0; line-height: 1.5; }
-  .suave { color: var(--canela); font-size: 14px; }
+  body { margin: 0; background: var(--harina); color: var(--cacao); font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; line-height: 1.5; }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 40px max(16px, env(safe-area-inset-right)) 56px max(16px, env(safe-area-inset-left)); display: flex; flex-direction: column; gap: 48px; }
+  header { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 40px; align-items: center; }
+  @media (max-width: 820px) { header { grid-template-columns: 1fr; } }
+  .logo { width: 220px; height: auto; }
+  h1 { font-size: clamp(32px, 5vw, 48px); line-height: 1.08; letter-spacing: -1px; margin: 18px 0 14px; text-wrap: balance; }
+  .lema { font-size: 13px; font-weight: 800; letter-spacing: 3px; color: var(--canela); margin: 0; }
+  .lead { font-size: 18px; color: var(--canela); margin: 0 0 24px; max-width: 52ch; }
+  .acciones { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+  .boton { display: inline-flex; align-items: center; gap: 10px; background: var(--tomate); color: var(--sobre-tomate); text-decoration: none; font-weight: 700; font-size: 17px; padding: 16px 24px; border-radius: 16px; min-height: 56px; }
+  .boton:focus-visible, .enlace:focus-visible { outline: 3px solid var(--cacao); outline-offset: 3px; }
+  .enlace { color: var(--tomate); font-weight: 600; }
+  .nota { font-size: 14px; color: var(--canela); margin: 10px 0 0; }
+  .tarjeta { background: var(--leche); border: 1px solid var(--linea); border-radius: 24px; padding: 24px; }
+  .prueba h2 { margin: 0 0 8px; font-size: 18px; }
+  .prueba ol { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
+  h2 { font-size: 26px; margin: 0 0 18px; letter-spacing: -0.5px; }
+  .grid4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  @media (max-width: 900px) { .grid4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 520px) { .grid4 { grid-template-columns: 1fr; } }
+  .func { border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 6px; }
+  .func b { font-size: 12px; letter-spacing: 2px; }
+  .func h3 { margin: 0; font-size: 18px; }
+  .func p { margin: 0; font-size: 15px; color: var(--canela); }
+  .t1 { background: var(--tomate-suave); } .t1 b { color: var(--tomate); }
+  .t2 { background: var(--albahaca-suave); } .t2 b { color: var(--albahaca); }
+  .t3 { background: var(--mango-suave); } .t3 b { color: var(--canela); }
+  .t4 { background: var(--mora-suave); } .t4 b { color: var(--mora); }
+  .dos { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 760px) { .dos { grid-template-columns: 1fr; } }
+  .dos ul, .dos ol { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
+  .dos h3 { margin: 0 0 10px; font-size: 18px; }
+  footer { font-size: 14px; color: var(--canela); border-top: 1px solid var(--linea); padding-top: 20px; display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; }
 </style>
 </head>
 <body>
-<main>
-  <img src="img/logo-nutriplan-ia.png" width="188" height="50" alt="NutriPlan IA">
-  <p>Planificador de comidas con inteligencia artificial para familias y estudiantes de Pasto.</p>
-  <p class="suave">Proyecto académico · App para Android en piloto.</p>
-</main>
+<div class="wrap">
+  <header>
+    <div>
+      <img class="logo" src="img/logo-nutriplan-ia.png" width="220" height="59" alt="NutriPlan IA">
+      <h1>¿Qué cocino hoy con lo que tengo?</h1>
+      <p class="lema">ALIMENTA TU MEJOR VERSIÓN</p>
+      <p class="lead">NutriPlan IA arma tu semana de comidas con lo que hay en tu cocina, cuidando tus alergias, tus gustos y tu presupuesto. Hecha para familias y estudiantes de Pasto.</p>
+      <div class="acciones">
+        <a class="boton" href="https://github.com/Valery-Rosero/NutriPlan-IA/releases/latest/download/NutriPlan-IA.apk">⬇ Descargar para Android</a>
+        <a class="enlace" href="https://github.com/Valery-Rosero/NutriPlan-IA/releases/latest">Notas de la versión</a>
+      </div>
+      <p class="nota">Versión 1.1 · APK para Android (ARM64) · Gratis</p>
+    </div>
+    <div class="tarjeta prueba">
+      <h2>Instálala en 1 minuto</h2>
+      <ol>
+        <li>Abre esta página desde el <b>celular Android</b> y toca <b>Descargar para Android</b>.</li>
+        <li>Abre el archivo descargado. Si el celular lo pide, permite <b>instalar apps de esta fuente</b>.</li>
+        <li>Toca <b>Instalar</b> y abre NutriPlan IA.</li>
+        <li>Crea tu cuenta, confirma tu correo y responde el onboarding: hogar, alergias, presupuesto y gustos.</li>
+        <li>Toca <b>Planear la semana con IA</b>.</li>
+      </ol>
+    </div>
+  </header>
+
+  <section aria-labelledby="que-hace">
+    <h2 id="que-hace">Qué hace</h2>
+    <div class="grid4">
+      <div class="func t1"><b>HOY</b><h3>Qué cocinar ahora</h3><p>La comida del momento, lo que vence pronto y cuánto llevas del día.</p></div>
+      <div class="func t2"><b>MI COCINA</b><h3>Despensa y mercado</h3><p>Lo que tienes con su vencimiento y una lista de mercado que funciona sin señal.</p></div>
+      <div class="func t3"><b>MI SEMANA</b><h3>El plan, con IA</h3><p>Un día, una semana o un mes, con su costo, sin repetir y usando primero lo que vence.</p></div>
+      <div class="func t4"><b>ASISTENTE</b><h3>En tus palabras</h3><p>Pide «algo rápido para la cena», escribiendo o por voz.</p></div>
+    </div>
+  </section>
+
+  <section class="dos" aria-label="Seguridad y tecnología">
+    <div class="tarjeta">
+      <h3>Tu salud primero</h3>
+      <ul>
+        <li>Las alergias, incluidas las que escribes tú, son un filtro estricto: nunca se propone algo que las tenga.</li>
+        <li>La IA propone y la base de datos valida cada receta antes de guardarla.</li>
+        <li>La IA nunca recibe tus datos de salud, solo qué evitar.</li>
+        <li>Tus datos se tratan según la Ley 1581 de 2012: puedes exportarlos o borrar tu cuenta cuando quieras.</li>
+      </ul>
+    </div>
+    <div class="tarjeta">
+      <h3>Cómo está hecha</h3>
+      <ul>
+        <li>App: Expo y React Native, con TypeScript.</li>
+        <li>Backend en la nube: Supabase (PostgreSQL con seguridad por fila, Auth y Edge Functions).</li>
+        <li>IA: Google Gemini Flash-Lite.</li>
+        <li>Gestión: Scrum en Jira, con 15 sprints.</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    <span>NutriPlan IA · Proyecto académico · Pasto, Colombia · 2026</span>
+    <span>La app orienta y no reemplaza el consejo médico ni nutricional.</span>
+  </footer>
+</div>
 </body>
 </html>
